@@ -1,28 +1,22 @@
-# RailsAutoscaleAgent
+# Rails Autoscale Agent
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rails_autoscale_agent`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem works together with the Rails Autoscale Heroku add-on to automatically scale your web dynos as needed. It gathers a minimal set of metrics for each request, and periodically posts this data asynchronously to the Rails Autoscale service.
 
-TODO: Delete this and the text above, and describe your gem
+## Requirements
 
-## Installation
+We've tested this with Rails versions 3.2 through 5.0 and Ruby versions 1.9.3 through 2.3.1.
 
-Add this line to your application's Gemfile:
+## Getting Started
+
+Add this line to your application's Gemfile and run `bundle`:
 
 ```ruby
 gem 'rails_autoscale_agent'
 ```
 
-And then execute:
+This will automatically insert the agent into your Rack middleware stack.
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install rails_autoscale_agent
-
-## Usage
-
-TODO: Write usage instructions here
+The agent will only communicate with Rails Autoscale if a `RAILS_AUTOSCALE_URL` ENV variable is present, which happens automatically when you install the Heroku add-on. In development (or anytime the ENV var is missing), the middleware will still produce `INFO`-level log output to your Rails log.
 
 ## Development
 
@@ -33,7 +27,6 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rails_autoscale_agent.
-
 
 ## License
 
