@@ -13,7 +13,7 @@ describe RailsAutoscaleAgent::AutoscaleApi, :vcr do
   describe "#report_metrics!" do
     it 'returns a successful response' do
       time = Time.now
-      metrics = {'web.1' => {wait: {time => [0.123, 45.6]}}}
+      metrics = {'web.1' => {RailsAutoscaleAgent::WAIT_TIME_TYPE => {time => [0.123, 45.6]}}}
       api_base = 'http://rails-autoscale.dev/api/test-app-token'
 
 

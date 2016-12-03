@@ -5,7 +5,7 @@ http_interactions:
     uri: http://rails-autoscale.dev/api/test-app-token/reports
     body:
       encoding: UTF-8
-      string: '{"report":{"web.1":{"wait":{"2016-12-03 08:27:09 -0500":[0.123,45.6]}}}}'
+      string: '{"report":{"web.1":{"wait_time":{"2016-12-03 08:27:09 -0500":[0.123,45.6]}}}}'
     headers:
       Content-Type:
       - application/json
