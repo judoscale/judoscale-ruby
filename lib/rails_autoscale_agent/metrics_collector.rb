@@ -11,7 +11,7 @@ module RailsAutoscaleAgent
         # ensure it's a reasonable value before proceeding (under 10 minutes)
         store.push(:wait, wait_time) if (0..600).cover? wait_time
       elsif ENV['RAILS_AUTOSCALE_RANDOMIZE_WAIT_TIMES'] == 'true'
-        random_wait_time = rand(1000) / 1000.0 # between 0 and 1 second
+        random_wait_time = rand(1000) # between 0 and 1000 milliseconds
         store.push(:wait, random_wait_time)
       else
         puts "[rails-autoscale] [MetricsCollector] no wait time data to collect"
