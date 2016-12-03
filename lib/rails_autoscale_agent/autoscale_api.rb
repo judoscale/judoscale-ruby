@@ -8,19 +8,19 @@ module RailsAutoscaleAgent
     SUCCESS = 'success'
     API_BASE_PATH = '/api'
 
-    def initialize(api_base_url)
-      @api_base_url = api_base_url
+    def initialize(api_url_base)
+      @api_url_base = api_url_base
     end
 
     def report_metrics!(metrics)
-      post '/metrics_reports', metrics_report: metrics
+      post '/reports', report: metrics
     end
 
     private
 
     def post(path, data)
       header = {'Content-Type' => 'application/json'}
-      uri = URI.parse("#{@api_base_url}#{API_BASE_PATH}#{path}")
+      uri = URI.parse("#{@api_url_base}#{path}")
       http = Net::HTTP.new(uri.host, uri.port)
       request = Net::HTTP::Post.new(uri.request_uri, header)
 

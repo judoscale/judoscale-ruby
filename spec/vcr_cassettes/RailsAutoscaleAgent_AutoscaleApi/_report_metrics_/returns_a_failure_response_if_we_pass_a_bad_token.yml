@@ -2,10 +2,10 @@
 http_interactions:
 - request:
     method: post
-    uri: http://rails-autoscale.dev/api/test-app-token/reports
+    uri: http://rails-autoscale.dev/api/bad-app-token/reports
     body:
       encoding: UTF-8
-      string: '{"report":{"web.1":{"wait":{"2016-12-03 08:27:09 -0500":[0.123,45.6]}}}}'
+      string: '{"report":{}}'
     headers:
       Content-Type:
       - application/json
@@ -17,8 +17,8 @@ http_interactions:
       - Ruby
   response:
     status:
-      code: 200
-      message: OK
+      code: 401
+      message: Unauthorized
     headers:
       X-Frame-Options:
       - SAMEORIGIN
@@ -31,9 +31,9 @@ http_interactions:
       Cache-Control:
       - no-cache
       X-Request-Id:
-      - 8bc3921b-c1ff-4b40-af62-93beb6596b7b
+      - e81f25bf-b0f8-4f2d-8458-80dc40038eda
       X-Runtime:
-      - '0.046613'
+      - '0.004752'
       Transfer-Encoding:
       - chunked
       Date:
