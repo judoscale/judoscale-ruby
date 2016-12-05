@@ -1,4 +1,6 @@
 require 'singleton'
+require 'rails_autoscale_agent/metric'
+
 module RailsAutoscaleAgent
   class MetricsStore
     include Singleton
