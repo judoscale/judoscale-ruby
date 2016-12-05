@@ -11,8 +11,9 @@ module RailsAutoscaleAgent
     def call(env)
       if autoscale_url = ENV['RAILS_AUTOSCALE_URL']
         puts "[rails-autoscale] [Middleware] enter middleware for #{env['HTTP_HOST']}#{env['PATH_INFO']}"
-        MetricsReporter.start(autoscale_url)
-        MetricsCollector.collect(env)
+        store = MetricsStore.instance
+        MetricsReporter.start(autoscale_url, store)
+        MetricsCollector.collect(env, store)
       else
         puts "[rails-autoscale] [Middleware] RAILS_AUTOSCALE_URL is not set"
       end

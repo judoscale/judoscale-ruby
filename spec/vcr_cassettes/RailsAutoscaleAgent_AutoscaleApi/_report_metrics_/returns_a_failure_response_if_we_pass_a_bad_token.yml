@@ -5,7 +5,7 @@ http_interactions:
     uri: http://rails-autoscale.dev/api/bad-app-token/reports
     body:
       encoding: UTF-8
-      string: '{"report":{}}'
+      string: '{"report":[]}'
     headers:
       Content-Type:
       - application/json
@@ -31,18 +31,18 @@ http_interactions:
       Cache-Control:
       - no-cache
       X-Request-Id:
-      - e81f25bf-b0f8-4f2d-8458-80dc40038eda
+      - 7fe15fda-13b5-4915-a853-d956015c7661
       X-Runtime:
-      - '0.004752'
+      - '0.004216'
       Transfer-Encoding:
       - chunked
       Date:
-      - Sat, 03 Dec 2016 13:27:09 GMT
+      - Mon, 05 Dec 2016 03:27:03 GMT
       Connection:
       - keep-alive
     body:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Sat, 03 Dec 2016 13:27:09 GMT
+  recorded_at: Mon, 05 Dec 2016 03:27:03 GMT
 recorded_with: VCR 3.0.3
