@@ -1,3 +1,4 @@
+require 'singleton'
 require 'rails_autoscale_agent/autoscale_api'
 require 'rails_autoscale_agent/metrics_params'
 
@@ -5,25 +6,23 @@ require 'rails_autoscale_agent/metrics_params'
 
 module RailsAutoscaleAgent
   class MetricsReporter
+    include Singleton
 
     REPORT_INTERVAL_IN_SECONDS = (ENV['RAILS_AUTOSCALE_REPORT_INTERVAL_IN_SECONDS'] || 60).to_i
 
-    def self.running?
-      @running
+    def self.start(autoscale_url, store)
+      instance.start!(autoscale_url, store) unless instance.running?
     end
 
-    def self.start(autoscale_url, store)
-      return if running?
-
+    def start!(autoscale_url, store)
       puts "[rails-autoscale] [MetricsReporter] starting reporter, will report every #{REPORT_INTERVAL_IN_SECONDS} seconds"
       @running = true
-      @autoscale_url = autoscale_url
 
       Thread.new do
         loop do
           sleep REPORT_INTERVAL_IN_SECONDS
           begin
-            report!(store)
+            report!(autoscale_url, store)
           rescue => ex
             # Exceptions in threads other than the main thread will fail silently
             # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
@@ -34,17 +33,21 @@ module RailsAutoscaleAgent
       end
     end
 
-    def self.report!(store)
+    def running?
+      @running
+    end
+
+    def report!(autoscale_url, store)
       metrics = store.dump
 
       if metrics.any?
         puts "[rails-autoscale] [MetricsReporter] reporting #{metrics.size} metrics"
         metrics_params = MetricsParams.new(metrics)
-        result = AutoscaleApi.new(@autoscale_url).report_metrics!(metrics_params.to_a)
+        result = AutoscaleApi.new(autoscale_url).report_metrics!(metrics_params.to_a)
 
         case result
         when AutoscaleApi::SuccessResponse
-          puts "[rails-autoscale] [MetricsReporter] ok"
+          puts "[rails-autoscale] [MetricsReporter] reported successfully"
         when AutoscaleApi::FailureResponse
           puts "[rails-autoscale] [MetricsReporter] failed: #{result.failure_message}"
         end
