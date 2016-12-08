@@ -43,7 +43,7 @@ module RailsAutoscaleAgent
       if metrics.any?
         puts "[rails-autoscale] [MetricsReporter] reporting #{metrics.size} metrics"
         metrics_params = MetricsParams.new(metrics)
-        result = AutoscaleApi.new(autoscale_url).report_metrics!(metrics_params.to_a)
+        result = AutoscaleApi.new(autoscale_url).report_metrics!(metrics_params.to_a, Process.pid)
 
         case result
         when AutoscaleApi::SuccessResponse

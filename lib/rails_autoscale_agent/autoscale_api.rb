@@ -12,8 +12,8 @@ module RailsAutoscaleAgent
       @api_url_base = api_url_base
     end
 
-    def report_metrics!(metrics)
-      post '/reports', report: metrics
+    def report_metrics!(metrics, pid)
+      post '/reports', reports: metrics, pid: pid
     end
 
     private
