@@ -1,6 +1,8 @@
-require 'rails_autoscale_agent/metrics_store'
-require 'rails_autoscale_agent/metrics_collector'
-require 'rails_autoscale_agent/metrics_reporter'
+require 'rails_autoscale_agent/store'
+require 'rails_autoscale_agent/collector'
+require 'rails_autoscale_agent/reporter'
+require 'rails_autoscale_agent/config'
+require 'rails_autoscale_agent/request'
 
 module RailsAutoscaleAgent
   class Middleware
@@ -10,12 +12,16 @@ module RailsAutoscaleAgent
     end
 
     def call(env)
-      if autoscale_url = ENV['RAILS_AUTOSCALE_URL']
-        puts "[rails-autoscale] [Middleware] enter middleware for #{env['HTTP_HOST']}#{env['PATH_INFO']}"
+      config = Config.new(ENV)
 
-        store = MetricsStore.instance
-        MetricsReporter.start(autoscale_url, store)
-        MetricsCollector.collect(env, store)
+      if config.api_base_url
+        request = Request.new(env, config)
+
+        puts "[rails-autoscale] [Middleware] enter middleware for #{request.fullpath}"
+
+        store = Store.instance
+        Reporter.start(config, store)
+        Collector.collect(request, store)
       else
         puts "[rails-autoscale] [Middleware] RAILS_AUTOSCALE_URL is not set"
       end

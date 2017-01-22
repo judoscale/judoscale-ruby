@@ -1,17 +1,17 @@
 require 'singleton'
-require 'rails_autoscale_agent/metric'
+require 'rails_autoscale_agent/measurement'
 
 module RailsAutoscaleAgent
-  class MetricsStore
+  class Store
     include Singleton
 
     def initialize
       @metrics = []
     end
 
-    def push(type, value, time = Time.now)
-      puts "[rails-autoscale] [MetricsCollector] store stat: #{type}=#{value}"
-      @metrics << Metric.new(type, time, value)
+    def push(value, time = Time.now)
+      puts "[rails-autoscale] [Collector] queue time: #{value}"
+      @metrics << Measurement.new(time, value)
     end
 
     def dump

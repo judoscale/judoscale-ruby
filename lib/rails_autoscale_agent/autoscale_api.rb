@@ -6,14 +6,13 @@ module RailsAutoscaleAgent
   class AutoscaleApi
 
     SUCCESS = 'success'
-    API_BASE_PATH = '/api'
 
     def initialize(api_url_base)
       @api_url_base = api_url_base
     end
 
-    def report_metrics!(metrics, pid)
-      post '/reports', reports: metrics, pid: pid
+    def report_metrics!(report_params)
+      post '/reports', report: report_params
     end
 
     private

@@ -5,7 +5,7 @@ http_interactions:
     uri: http://rails-autoscale.dev/api/bad-app-token/reports
     body:
       encoding: UTF-8
-      string: '{"report":[]}'
+      string: '{"report":{}}'
     headers:
       Content-Type:
       - application/json
@@ -23,17 +23,17 @@ http_interactions:
       Content-Type:
       - text/html; charset=utf-8
       X-Web-Console-Session-Id:
-      - b361bbf4df98acf01cbcd2ec8055f1bb
+      - 1e5db49e3881c7991ca876e348e2d202
       X-Web-Console-Mount-Point:
       - "/__web_console"
       X-Request-Id:
-      - fbb65aaa-0ce5-406c-9665-7176e91940a9
+      - d618e282-4943-4635-88be-68ce96f193b4
       X-Runtime:
-      - '0.456169'
+      - '0.412526'
       Content-Length:
       - '152083'
       Date:
-      - Sun, 22 Jan 2017 17:07:28 GMT
+      - Sun, 22 Jan 2017 17:10:10 GMT
       Connection:
       - keep-alive
     body:
@@ -1582,7 +1582,7 @@ http_interactions:
         && el) {\n          currentSource.className += \" hidden\";\n          el.className
         = el.className.replace(\" hidden\", \"\");\n          currentSource = el;\n
         \       }\n      }\n    }\n  </script>\n</div>\n\n  \n<h2 style=\"margin-top:
-        30px\">Request</h2>\n<p><b>Parameters</b>:</p> <pre>{&quot;report&quot;=&gt;[],
+        30px\">Request</h2>\n<p><b>Parameters</b>:</p> <pre>{&quot;report&quot;=&gt;{},
         &quot;token&quot;=&gt;&quot;bad-app-token&quot;}\n</pre>\n\n<div class=\"details\">\n
         \ <div class=\"summary\"><a href=\"#\" onclick=\"return toggleSessionDump()\">Toggle
         session dump</a></div>\n  <div id=\"session_dump\" style=\"display:none\"><pre></pre></div>\n</div>\n\n<div
@@ -1594,7 +1594,7 @@ http_interactions:
         &quot;127.0.0.1&quot;\nSERVER_NAME: &quot;rails-autoscale.dev&quot;\nSERVER_PROTOCOL:
         &quot;HTTP/1.1&quot;</pre></div>\n</div>\n\n<h2 style=\"margin-top: 30px\">Response</h2>\n<p><b>Headers</b>:</p>
         <pre>None</pre>\n\n</div>\n\n\n<div id=\"console\"\n  data-mount-point='/__web_console'\n
-        \ data-session-id='b361bbf4df98acf01cbcd2ec8055f1bb'\n  data-prompt-label='>>
+        \ data-session-id='1e5db49e3881c7991ca876e348e2d202'\n  data-prompt-label='>>
         '>\n</div>\n\n\n<script type=\"text/javascript\" data-template=\"console\">\n(function()
         {\n  /**\n * Constructor for command storage.\n * It uses localStorage if
         available. Otherwise fallback to normal JS array.\n */\nfunction CommandStorage()
@@ -1860,5 +1860,5 @@ http_interactions:
         \   resizerElement.addEventListener('mouseup', recordConsoleElementHeight);\n
         \ });\n});\n\n}).call(this);\n</script>\n\n</body>\n</html>\n"
     http_version: 
-  recorded_at: Sun, 22 Jan 2017 17:07:28 GMT
+  recorded_at: Sun, 22 Jan 2017 17:10:10 GMT
 recorded_with: VCR 3.0.3

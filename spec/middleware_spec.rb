@@ -5,7 +5,7 @@ module RailsAutoscaleAgent
   describe Middleware do
 
     describe "#call" do
-      before { MetricsReporter.instance_variable_set('@running', nil) }
+      before { Reporter.instance.instance_variable_set('@running', nil) }
 
       let(:app) { double(:app, call: nil) }
       let(:env) { {} }
@@ -21,7 +21,7 @@ module RailsAutoscaleAgent
 
         it "starts the reporter" do
           middleware.call(env)
-          expect(MetricsReporter).to be_running
+          expect(Reporter.instance).to be_running
         end
 
         context "when the request includes HTTP_X_REQUEST_START" do
@@ -30,11 +30,11 @@ module RailsAutoscaleAgent
 
           it "stores the request wait time" do
             middleware.call(env)
-            metrics = MetricsStore.instance.dump
+            measurements = Store.instance.dump
 
-            expect(metrics.length).to eql 1
-            expect(metrics.first).to be_a Metric
-            expect(metrics.first.value).to eql 5000
+            expect(measurements.length).to eql 1
+            expect(measurements.first).to be_a Measurement
+            expect(measurements.first.value).to eql 5000
           end
         end
       end
@@ -49,7 +49,7 @@ module RailsAutoscaleAgent
 
         it "does not start the reporter" do
           middleware.call(env)
-          expect(MetricsReporter).to_not be_running
+          expect(Reporter.instance).to_not be_running
         end
       end
     end
