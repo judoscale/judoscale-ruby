@@ -42,6 +42,21 @@ describe RailsAutoscaleAgent::AutoscaleApi, vcr: {record: :once} do
       expect(result).to be_a RailsAutoscaleAgent::AutoscaleApi::FailureResponse
       expect(result.failure_message).to eql 'Service Unavailable'
     end
+
+    it 'supports HTTPS' do
+      api_base = 'https://rails-autoscale-production.herokuapp.com/api/test-token'
+      report_params = {
+        time: '2016-12-03T01:22:00+00:00',
+        dyno: 'web.1',
+        pid: '1232',
+        measurements: [11, 33],
+      }
+
+      autoscale_api = RailsAutoscaleAgent::AutoscaleApi.new(api_base)
+      result = autoscale_api.report_metrics!(report_params)
+
+      expect(result).to be_a RailsAutoscaleAgent::AutoscaleApi::SuccessResponse
+    end
   end
 
 end

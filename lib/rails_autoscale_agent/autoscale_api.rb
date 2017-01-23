@@ -20,13 +20,15 @@ module RailsAutoscaleAgent
     def post(path, data)
       header = {'Content-Type' => 'application/json'}
       uri = URI.parse("#{@api_url_base}#{path}")
-      http = Net::HTTP.new(uri.host, uri.port)
-      request = Net::HTTP::Post.new(uri.request_uri, header)
+      ssl = uri.scheme == 'https'
 
-      request.body = JSON.dump(data)
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: ssl) do |http|
+        request = Net::HTTP::Post.new(uri.request_uri, header)
+        request.body = JSON.dump(data)
 
-      puts "[rails-autoscale] [AutoscaleApi] Posting to #{request.body.size} bytes to #{uri}"
-      response = http.request(request)
+        puts "[rails-autoscale] [AutoscaleApi] Posting to #{request.body.size} bytes to #{uri}"
+        http.request(request)
+      end
 
       case response.code.to_i
       when 200...300 then SuccessResponse.new
