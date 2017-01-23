@@ -12,7 +12,7 @@ module RailsAutoscaleAgent
         @dyno = 'web.123'
         @report_interval = 5
       else
-        @dyno = environment['dyno']
+        @dyno = environment['DYNO']
         @report_interval = 60
       end
     end
