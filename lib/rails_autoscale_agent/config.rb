@@ -1,6 +1,6 @@
 module RailsAutoscaleAgent
   class Config
-    attr_reader :api_base_url, :report_interval, :dyno, :pid, :fake_mode
+    attr_reader :api_base_url, :dyno, :pid, :fake_mode
     alias_method :fake_mode?, :fake_mode
 
     def initialize(environment)
@@ -10,10 +10,8 @@ module RailsAutoscaleAgent
 
       if fake_mode?
         @dyno = 'web.123'
-        @report_interval = 5
       else
         @dyno = environment['DYNO']
-        @report_interval = 60
       end
     end
   end

@@ -13,12 +13,18 @@ module RailsAutoscaleAgent
     end
 
     def start!(config, store)
-      puts "[rails-autoscale] [Reporter] starting reporter, will report every #{config.report_interval} seconds"
+      puts "[rails-autoscale] [Reporter] starting reporter, will report every minute"
+
       @running = true
 
       Thread.new do
         loop do
-          sleep config.report_interval
+          beginning_of_next_minute = TimeRounder.beginning_of_minute(Time.now) + 60
+
+          # add 0-5 seconds to avoid slamming the API at one moment
+          next_report_time = beginning_of_next_minute + rand * 5
+
+          sleep next_report_time - Time.now
 
           begin
             report!(config, store)
@@ -37,31 +43,21 @@ module RailsAutoscaleAgent
     end
 
     def report!(config, store)
-      measurements = store.dump
+      while report = store.pop_report
+        puts "[rails-autoscale] [Reporter] reporting queue times for #{report.values.size} requests during minute #{report.time.iso8601}"
 
-      if measurements.any?
-        measurements_by_minute = measurements.group_by { |qt| TimeRounder.beginning_of_minute(qt.time) }
-        measurements_by_minute.each do |time, measurements|
-          puts "[rails-autoscale] [Reporter] reporting queue times for #{measurements.size} requests during minute #{time.iso8601}"
-          report_params = {
-            time: time.iso8601,
-            dyno: config.dyno,
-            pid: config.pid,
-            measurements: measurements.map(&:value),
-          }
+        params = report.to_params(config)
+        result = AutoscaleApi.new(config.api_base_url).report_metrics!(params)
 
-          result = AutoscaleApi.new(config.api_base_url).report_metrics!(report_params)
-
-          case result
-          when AutoscaleApi::SuccessResponse
-            puts "[rails-autoscale] [Reporter] reported successfully"
-          when AutoscaleApi::FailureResponse
-            puts "[rails-autoscale] [Reporter] failed: #{result.failure_message}"
-          end
+        case result
+        when AutoscaleApi::SuccessResponse
+          puts "[rails-autoscale] [Reporter] reported successfully"
+        when AutoscaleApi::FailureResponse
+          puts "[rails-autoscale] [Reporter] failed: #{result.failure_message}"
         end
-      else
-        puts "[rails-autoscale] [Reporter] nothing to report"
       end
+
+      puts "[rails-autoscale] [Reporter] nothing to report" unless result
     end
 
   end

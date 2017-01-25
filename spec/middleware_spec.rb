@@ -29,8 +29,11 @@ module RailsAutoscaleAgent
           let(:env) { {'HTTP_X_REQUEST_START' => five_seconds_ago_in_unix_millis } }
 
           it "stores the request wait time" do
+            store = Store.instance
+
+            store.instance_variable_set '@measurements', []
             middleware.call(env)
-            measurements = Store.instance.dump
+            measurements = store.instance_variable_get('@measurements')
 
             expect(measurements.length).to eql 1
             expect(measurements.first).to be_a Measurement
