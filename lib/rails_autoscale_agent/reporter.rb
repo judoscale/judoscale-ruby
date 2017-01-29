@@ -13,7 +13,7 @@ module RailsAutoscaleAgent
     end
 
     def start!(config, store)
-      puts "[rails-autoscale] [Reporter] starting reporter, will report every minute"
+      puts "[rails-autoscale] [Reporter] [#{config}] starting reporter, will report every minute"
 
       @running = true
 
@@ -31,7 +31,7 @@ module RailsAutoscaleAgent
           rescue => ex
             # Exceptions in threads other than the main thread will fail silently
             # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
-            puts "[rails-autoscale] [Reporter] #{ex.inspect}"
+            puts "[rails-autoscale] [Reporter] [#{config}] #{ex.inspect}"
             puts ex.backtrace.join("\n")
           end
         end
@@ -44,20 +44,20 @@ module RailsAutoscaleAgent
 
     def report!(config, store)
       while report = store.pop_report
-        puts "[rails-autoscale] [Reporter] reporting queue times for #{report.values.size} requests during minute #{report.time.iso8601}"
+        puts "[rails-autoscale] [Reporter] [#{config}] reporting queue times for #{report.values.size} requests during minute #{report.time.iso8601}"
 
         params = report.to_params(config)
         result = AutoscaleApi.new(config.api_base_url).report_metrics!(params)
 
         case result
         when AutoscaleApi::SuccessResponse
-          puts "[rails-autoscale] [Reporter] reported successfully"
+          puts "[rails-autoscale] [Reporter] [#{config}] reported successfully"
         when AutoscaleApi::FailureResponse
-          puts "[rails-autoscale] [Reporter] failed: #{result.failure_message}"
+          puts "[rails-autoscale] [Reporter] [#{config}] failed: #{result.failure_message}"
         end
       end
 
-      puts "[rails-autoscale] [Reporter] nothing to report" unless result
+      puts "[rails-autoscale] [Reporter] [#{config}] nothing to report" unless result
     end
 
   end

@@ -14,5 +14,9 @@ module RailsAutoscaleAgent
         @dyno = environment['DYNO']
       end
     end
+
+    def to_s
+      "#{@dyno}-#{@pid}"
+    end
   end
 end
