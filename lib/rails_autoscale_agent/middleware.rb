@@ -26,7 +26,7 @@ module RailsAutoscaleAgent
           Reporter.start(config, store)
           Collector.collect(request, store)
         else
-          logger.debug "[Middleware] RAILS_AUTOSCALE_URL is not set"
+          logger.info "[Middleware] RAILS_AUTOSCALE_URL is not set"
         end
       end
 

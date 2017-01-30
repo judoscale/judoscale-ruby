@@ -15,7 +15,7 @@ module RailsAutoscaleAgent
     end
 
     def start!(config, store)
-      logger.debug "[Reporter] starting reporter, will report every minute"
+      logger.info "[Reporter] starting reporter, will report every minute"
 
       @running = true
 
@@ -33,8 +33,8 @@ module RailsAutoscaleAgent
           rescue => ex
             # Exceptions in threads other than the main thread will fail silently
             # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
-            logger.debug "[Reporter] #{ex.inspect}"
-            logger.debug ex.backtrace.join("\n")
+            logger.error "[Reporter] #{ex.inspect}"
+            logger.error ex.backtrace.join("\n")
           end
         end
       end
@@ -46,16 +46,16 @@ module RailsAutoscaleAgent
 
     def report!(config, store)
       while report = store.pop_report
-        logger.debug "[Reporter] reporting queue times for #{report.values.size} requests during minute #{report.time.iso8601}"
+        logger.info "[Reporter] reporting queue times for #{report.values.size} requests during minute #{report.time.iso8601}"
 
         params = report.to_params(config)
         result = AutoscaleApi.new(config.api_base_url).report_metrics!(params)
 
         case result
         when AutoscaleApi::SuccessResponse
-          logger.debug "[Reporter] reported successfully"
+          logger.info "[Reporter] reported successfully"
         when AutoscaleApi::FailureResponse
-          logger.debug "[Reporter] failed: #{result.failure_message}"
+          logger.error "[Reporter] failed: #{result.failure_message}"
         end
       end
 
