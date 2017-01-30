@@ -1,4 +1,5 @@
 require 'singleton'
+require 'rails_autoscale_agent/logger'
 require 'rails_autoscale_agent/time_rounder'
 require 'rails_autoscale_agent/measurement'
 require 'rails_autoscale_agent/report'
@@ -6,13 +7,14 @@ require 'rails_autoscale_agent/report'
 module RailsAutoscaleAgent
   class Store
     include Singleton
+    include Logger
 
     def initialize
       @measurements = []
     end
 
     def push(value, time = Time.now)
-      puts "[rails-autoscale] [Collector] queue time: #{value}"
+      logger.debug "[Collector] queue time: #{value}"
       @measurements << Measurement.new(time, value)
     end
 

@@ -1,4 +1,5 @@
 require 'singleton'
+require 'rails_autoscale_agent/logger'
 require 'rails_autoscale_agent/autoscale_api'
 require 'rails_autoscale_agent/time_rounder'
 
@@ -7,13 +8,14 @@ require 'rails_autoscale_agent/time_rounder'
 module RailsAutoscaleAgent
   class Reporter
     include Singleton
+    include Logger
 
     def self.start(config, store)
       instance.start!(config, store) unless instance.running?
     end
 
     def start!(config, store)
-      puts "[rails-autoscale] [Reporter] [#{config}] starting reporter, will report every minute"
+      logger.debug "[Reporter] starting reporter, will report every minute"
 
       @running = true
 
@@ -31,8 +33,8 @@ module RailsAutoscaleAgent
           rescue => ex
             # Exceptions in threads other than the main thread will fail silently
             # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
-            puts "[rails-autoscale] [Reporter] [#{config}] #{ex.inspect}"
-            puts ex.backtrace.join("\n")
+            logger.debug "[Reporter] #{ex.inspect}"
+            logger.debug ex.backtrace.join("\n")
           end
         end
       end
@@ -44,20 +46,20 @@ module RailsAutoscaleAgent
 
     def report!(config, store)
       while report = store.pop_report
-        puts "[rails-autoscale] [Reporter] [#{config}] reporting queue times for #{report.values.size} requests during minute #{report.time.iso8601}"
+        logger.debug "[Reporter] reporting queue times for #{report.values.size} requests during minute #{report.time.iso8601}"
 
         params = report.to_params(config)
         result = AutoscaleApi.new(config.api_base_url).report_metrics!(params)
 
         case result
         when AutoscaleApi::SuccessResponse
-          puts "[rails-autoscale] [Reporter] [#{config}] reported successfully"
+          logger.debug "[Reporter] reported successfully"
         when AutoscaleApi::FailureResponse
-          puts "[rails-autoscale] [Reporter] [#{config}] failed: #{result.failure_message}"
+          logger.debug "[Reporter] failed: #{result.failure_message}"
         end
       end
 
-      puts "[rails-autoscale] [Reporter] [#{config}] nothing to report" unless result
+      logger.debug "[Reporter] nothing to report" unless result
     end
 
   end

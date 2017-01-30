@@ -1,9 +1,11 @@
 require 'net/http'
 require 'uri'
 require 'json'
+require 'rails_autoscale_agent/logger'
 
 module RailsAutoscaleAgent
   class AutoscaleApi
+    include Logger
 
     SUCCESS = 'success'
 
@@ -26,7 +28,7 @@ module RailsAutoscaleAgent
         request = Net::HTTP::Post.new(uri.request_uri, header)
         request.body = JSON.dump(data)
 
-        puts "[rails-autoscale] [AutoscaleApi] Posting to #{request.body.size} bytes to #{uri}"
+        logger.debug "[AutoscaleApi] Posting to #{request.body.size} bytes to #{uri}"
         http.request(request)
       end
 
