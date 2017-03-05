@@ -17,6 +17,10 @@ module RailsAutoscaleAgent
       post '/reports', report: report_params
     end
 
+    def register_reporter!(registration_params)
+      post '/registrations', registration: registration_params
+    end
+
     private
 
     def post(path, data)

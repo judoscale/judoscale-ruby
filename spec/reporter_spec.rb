@@ -40,5 +40,25 @@ module RailsAutoscaleAgent
       end
     end
 
+    describe "#register!" do
+      let(:config) { Config.new('RAILS_AUTOSCALE_URL' => 'http://example.com/api') }
+      let!(:stub) { stub_request(:post, "http://example.com/api/registrations") }
+
+      it "registers the reporter with contextual info" do
+        Reporter.instance.register!(config)
+
+        expected_payload = {
+          registration: {
+            pid: Process.pid,
+            ruby_version: '2.3.1',
+            rails_version: '5.0.fake',
+            gem_version: '0.1.0',
+          }
+        }
+
+        expect(stub.with(body: expected_payload)).to have_been_requested.once
+      end
+    end
+
   end
 end

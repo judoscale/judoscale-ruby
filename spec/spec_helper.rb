@@ -6,4 +6,8 @@ module Rails
   def self.logger
     @logger ||= ActiveSupport::TaggedLogging.new(::Logger.new(STDOUT))
   end
+
+  def self.version
+    '5.0.fake'
+  end
 end

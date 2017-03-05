@@ -2,6 +2,7 @@ require 'singleton'
 require 'rails_autoscale_agent/logger'
 require 'rails_autoscale_agent/autoscale_api'
 require 'rails_autoscale_agent/time_rounder'
+require 'rails_autoscale_agent/registration'
 
 # Reporter wakes up every minute to send metrics to the RailsAutoscale API
 
@@ -20,6 +21,8 @@ module RailsAutoscaleAgent
       @running = true
 
       Thread.new do
+        register!(config)
+
         loop do
           beginning_of_next_minute = TimeRounder.beginning_of_minute(Time.now) + 60
 
@@ -60,6 +63,15 @@ module RailsAutoscaleAgent
       end
 
       logger.debug "[Reporter] nothing to report" unless result
+    end
+
+    def register!(config)
+      params = Registration.new(config).to_params
+      result = AutoscaleApi.new(config.api_base_url).register_reporter!(params)
+
+      if result.is_a? AutoscaleApi::FailureResponse
+        logger.error "[Reporter] failed to register: #{result.failure_message}"
+      end
     end
 
   end
