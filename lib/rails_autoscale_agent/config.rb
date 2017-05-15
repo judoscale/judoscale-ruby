@@ -16,7 +16,7 @@ module RailsAutoscaleAgent
     end
 
     def to_s
-      "#{@dyno}-#{@pid}"
+      "#{@dyno}##{@pid}"
     end
   end
 end

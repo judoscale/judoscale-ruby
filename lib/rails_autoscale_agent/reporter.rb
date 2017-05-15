@@ -16,11 +16,15 @@ module RailsAutoscaleAgent
     end
 
     def start!(config, store)
-      logger.info "[Reporter] starting reporter, will report every minute"
+      logger.info "Reporter starting, will report every minute"
 
       @running = true
+      log_tags_from_main_thread = logger.formatter.current_tags
 
       Thread.new do
+        # Maintain log tagging between threads
+        logger.formatter.push_tags log_tags_from_main_thread
+
         register!(config)
 
         loop do
@@ -36,7 +40,7 @@ module RailsAutoscaleAgent
           rescue => ex
             # Exceptions in threads other than the main thread will fail silently
             # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
-            logger.error "[Reporter] #{ex.inspect}"
+            logger.error "Reporter error: #{ex.inspect}"
             logger.error ex.backtrace.join("\n")
           end
         end
@@ -48,21 +52,23 @@ module RailsAutoscaleAgent
     end
 
     def report!(config, store)
+      return unless config.api_base_url
+
       while report = store.pop_report
-        logger.info "[Reporter] reporting queue times for #{report.values.size} requests during minute #{report.time.iso8601}"
+        logger.info "Reporting queue times for #{report.values.size} requests during minute #{report.time.iso8601}"
 
         params = report.to_params(config)
         result = AutoscaleApi.new(config.api_base_url).report_metrics!(params)
 
         case result
         when AutoscaleApi::SuccessResponse
-          logger.info "[Reporter] reported successfully"
+          logger.info "Reported successfully"
         when AutoscaleApi::FailureResponse
-          logger.error "[Reporter] failed: #{result.failure_message}"
+          logger.error "Reporter failed: #{result.failure_message}"
         end
       end
 
-      logger.debug "[Reporter] nothing to report" unless result
+      logger.debug "Reporter has nothing to report" unless result
     end
 
     def register!(config)
@@ -70,7 +76,7 @@ module RailsAutoscaleAgent
       result = AutoscaleApi.new(config.api_base_url).register_reporter!(params)
 
       if result.is_a? AutoscaleApi::FailureResponse
-        logger.error "[Reporter] failed to register: #{result.failure_message}"
+        logger.error "Reporter failed to register: #{result.failure_message}"
       end
     end
 

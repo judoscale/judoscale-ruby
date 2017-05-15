@@ -16,18 +16,14 @@ module RailsAutoscaleAgent
     def call(env)
       config = Config.new(ENV)
 
-      logger.tagged 'RailsAutoscaleAgent', config.to_s do
-        if config.api_base_url
-          request = Request.new(env, config)
+      logger.tagged 'RailsAutoscale', config.to_s do
+        request = Request.new(env, config)
 
-          logger.debug "[Middleware] enter middleware for #{request.fullpath}"
+        logger.debug "Middleware entered - request_id=#{request.id} path=#{request.path}"
 
-          store = Store.instance
-          Reporter.start(config, store)
-          Collector.collect(request, store)
-        else
-          logger.info "[Middleware] RAILS_AUTOSCALE_URL is not set"
-        end
+        store = Store.instance
+        Reporter.start(config, store)
+        Collector.collect(request, store)
       end
 
       @app.call(env)

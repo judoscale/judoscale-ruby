@@ -1,9 +1,10 @@
 module RailsAutoscaleAgent
   class Request
-    attr_reader :entered_queue_at, :fullpath
+    attr_reader :id, :entered_queue_at, :path
 
     def initialize(env, config)
-      @fullpath = "#{env['HTTP_HOST']}#{env['PATH_INFO']}"
+      @id = env['HTTP_X_REQUEST_ID']
+      @path = env['PATH_INFO']
       @entered_queue_at = if unix_millis = env['HTTP_X_REQUEST_START']
                             Time.at(unix_millis.to_f / 1000)
                           elsif config.fake_mode?
