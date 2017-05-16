@@ -21,7 +21,7 @@ module RailsAutoscaleAgent
       @running = true
 
       Thread.new do
-        logger.tagged 'RailsAutoscale', config.to_s do
+        logger.tagged 'RailsAutoscale' do
           register!(config)
 
           loop do

@@ -16,7 +16,7 @@ module RailsAutoscaleAgent
     def call(env)
       config = Config.new(ENV)
 
-      logger.tagged 'RailsAutoscale', config.to_s do
+      logger.tagged 'RailsAutoscale' do
         request = Request.new(env, config)
 
         logger.debug "Middleware entered - request_id=#{request.id} path=#{request.path}"
