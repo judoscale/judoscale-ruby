@@ -5,7 +5,8 @@ module RailsAutoscaleAgent
 
     def to_params
       {
-        pid: Process.pid,
+        dyno: config.dyno,
+        pid: config.pid,
         ruby_version: RUBY_VERSION,
         rails_version: Rails.version,
         gem_version: VERSION,
