@@ -19,34 +19,27 @@ module RailsAutoscaleAgent
       logger.info "Reporter starting, will report every minute"
 
       @running = true
-      log_tags_from_main_thread = logger.formatter.current_tags
-      logger.debug "RailsAutoscale main thread - log_tags_from_main_thread=#{log_tags_from_main_thread.inspect}"
-      logger.debug "RailsAutoscale main thread - logger.formatter.current_tags=#{logger.formatter.current_tags.inspect}"
 
       Thread.new do
-        logger.debug "RailsAutoscale reporter thread - log_tags_from_main_thread=#{log_tags_from_main_thread.inspect}"
-        logger.debug "RailsAutoscale reporter thread - logger.formatter.current_tags=#{logger.formatter.current_tags.inspect}"
-        # Maintain log tagging between threads
-        logger.formatter.push_tags log_tags_from_main_thread
-        logger.debug "RailsAutoscale reporter thread - logger.formatter.current_tags=#{logger.formatter.current_tags.inspect}"
+        logger.tagged 'RailsAutoscale', config.to_s do
+          register!(config)
 
-        register!(config)
+          loop do
+            beginning_of_next_minute = TimeRounder.beginning_of_minute(Time.now) + 60
 
-        loop do
-          beginning_of_next_minute = TimeRounder.beginning_of_minute(Time.now) + 60
+            # add 0-5 seconds to avoid slamming the API at one moment
+            next_report_time = beginning_of_next_minute + rand * 5
 
-          # add 0-5 seconds to avoid slamming the API at one moment
-          next_report_time = beginning_of_next_minute + rand * 5
+            sleep next_report_time - Time.now
 
-          sleep next_report_time - Time.now
-
-          begin
-            report!(config, store)
-          rescue => ex
-            # Exceptions in threads other than the main thread will fail silently
-            # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
-            logger.error "Reporter error: #{ex.inspect}"
-            logger.error ex.backtrace.join("\n")
+            begin
+              report!(config, store)
+            rescue => ex
+              # Exceptions in threads other than the main thread will fail silently
+              # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
+              logger.error "Reporter error: #{ex.inspect}"
+              logger.error ex.backtrace.join("\n")
+            end
           end
         end
       end
