@@ -10,9 +10,8 @@ module RailsAutoscaleAgent
           # ignore unreasonable values
           logger.info "request queued for more than 10 minutes... skipping collection"
         else
-          queue_time_millis = (Time.now - request.entered_queue_at) * 1000
+          queue_time_millis = ((Time.now - request.entered_queue_at) * 1000).to_i
           queue_time_millis = 0 if queue_time_millis < 0
-          # TODO: no need to store sub-millisecond queue time. convert to integer
           store.push(queue_time_millis)
           logger.info "Collected queue_time=#{queue_time_millis}ms request_id=#{request.id}"
         end
