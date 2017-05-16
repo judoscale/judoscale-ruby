@@ -20,10 +20,15 @@ module RailsAutoscaleAgent
 
       @running = true
       log_tags_from_main_thread = logger.formatter.current_tags
+      logger.debug "RailsAutoscale main thread - log_tags_from_main_thread=#{log_tags_from_main_thread.inspect}"
+      logger.debug "RailsAutoscale main thread - logger.formatter.current_tags=#{logger.formatter.current_tags.inspect}"
 
       Thread.new do
+        logger.debug "RailsAutoscale reporter thread - log_tags_from_main_thread=#{log_tags_from_main_thread.inspect}"
+        logger.debug "RailsAutoscale reporter thread - logger.formatter.current_tags=#{logger.formatter.current_tags.inspect}"
         # Maintain log tagging between threads
         logger.formatter.push_tags log_tags_from_main_thread
+        logger.debug "RailsAutoscale reporter thread - logger.formatter.current_tags=#{logger.formatter.current_tags.inspect}"
 
         register!(config)
 
