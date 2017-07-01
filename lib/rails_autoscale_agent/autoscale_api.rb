@@ -10,39 +10,49 @@ module RailsAutoscaleAgent
     SUCCESS = 'success'
 
     def initialize(api_url_base)
-      @api_url_base = api_url_base
+      @api_url_base = "#{api_url_base}/v2"
     end
 
-    def report_metrics!(report_params)
-      post '/reports', report: report_params
+    def report_metrics!(report_params, timings_csv)
+      query = URI.encode_www_form(report_params)
+      post_raw path: "/reports?#{query}", body: timings_csv
     end
 
     def register_reporter!(registration_params)
-      post '/registrations', registration: registration_params
+      post_json '/registrations', registration: registration_params
     end
 
     private
 
-    def post(path, data)
-      header = {'Content-Type' => 'application/json'}
-      uri = URI.parse("#{@api_url_base}#{path}")
+    def post_json(path, data)
+      headers = {'Content-Type' => 'application/json'}
+      post_raw path: path, body: JSON.dump(data), headers: headers
+    end
+
+    def post_raw(options)
+      uri = URI.parse("#{@api_url_base}#{options.fetch(:path)}")
       ssl = uri.scheme == 'https'
 
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: ssl) do |http|
-        request = Net::HTTP::Post.new(uri.request_uri, header)
-        request.body = JSON.dump(data)
+        request = Net::HTTP::Post.new(uri.request_uri, options[:headers] || {})
+        request.body = options.fetch(:body)
 
         logger.debug "Posting #{request.body.size} bytes to #{uri}"
         http.request(request)
       end
 
       case response.code.to_i
-      when 200...300 then SuccessResponse.new
+      when 200...300 then SuccessResponse.new(response.body)
       else FailureResponse.new(response.message)
       end
     end
 
-    class SuccessResponse
+    class SuccessResponse < Struct.new(:body)
+      def data
+        JSON.parse(body)
+      rescue TypeError
+        {}
+      end
     end
 
     class FailureResponse < Struct.new(:failure_message)

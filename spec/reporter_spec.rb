@@ -7,47 +7,31 @@ require 'webmock/rspec'
 module RailsAutoscaleAgent
   describe Reporter do
 
+    let(:config) { Config.new('DYNO' => 'web.0', 'RAILS_AUTOSCALE_URL' => 'http://example.com/api/test-token') }
+
     describe "#report!" do
-      let(:config) { Config.new('RAILS_AUTOSCALE_URL' => 'http://example.com/api') }
-      let(:store) { Store.instance }
-      let!(:stub) { stub_request(:post, "http://example.com/api/reports") }
-
-      before { store.instance_variable_set '@measurements', [] }
-
       it "reports stored metrics to the API" do
-        store.push 123, Time.now - 60
+        store = Store.instance
+        store.instance_variable_set '@measurements', []
+
+        measurement_time = Time.now - 5
+        measurement_value = 123
+        query = { dyno: 'web.0', pid: Process.pid }
+        body = "#{measurement_time.to_i},#{measurement_value}\n"
+        stub = stub_request(:post, "http://example.com/api/test-token/v2/reports").
+                 with(query: query, body: body)
+
+        store.push measurement_value, measurement_time
 
         Reporter.instance.report!(config, store)
 
         expect(stub).to have_been_requested.once
       end
-
-      it "does not report if there are only stored requests for the current minute" do
-        store.push 123, Time.now
-
-        Reporter.instance.report!(config, store)
-
-        expect(stub).to_not have_been_requested
-      end
-
-      it "reports for each minute up to the current" do
-        store.push 123, Time.now - 600
-        store.push 456, Time.now - 60
-
-        Reporter.instance.report!(config, store)
-
-        expect(stub).to have_been_requested.twice
-      end
     end
 
     describe "#register!" do
-      let(:config) { Config.new('DYNO' => 'web.0', 'RAILS_AUTOSCALE_URL' => 'http://example.com/api') }
-      let!(:stub) { stub_request(:post, "http://example.com/api/registrations") }
-
       it "registers the reporter with contextual info" do
-        Reporter.instance.register!(config)
-
-        expected_payload = {
+        expected_body = {
           registration: {
             dyno: 'web.0',
             pid: Process.pid,
@@ -56,8 +40,14 @@ module RailsAutoscaleAgent
             gem_version: '0.1.0',
           }
         }
+        response = {report_interval: 123}.to_json
+        stub = stub_request(:post, "http://example.com/api/test-token/v2/registrations").
+                 with(body: expected_body).
+                 to_return(body: response)
 
-        expect(stub.with(body: expected_payload)).to have_been_requested.once
+        Reporter.instance.register!(config)
+
+        expect(stub).to have_been_requested.once
       end
     end
 

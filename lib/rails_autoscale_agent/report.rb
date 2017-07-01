@@ -1,17 +1,29 @@
 module RailsAutoscaleAgent
-  class Report < Struct.new(:time, :values)
+  class Report
 
-    def initialize(time, values = [])
-      super
+    attr_reader :measurements
+
+    def initialize
+      @measurements = []
     end
 
     def to_params(config)
       {
-        time: time.iso8601,
         dyno: config.dyno,
         pid: config.pid,
-        measurements: values,
       }
     end
+
+    def to_csv
+      ''.tap do |result|
+        @measurements.each do |measurement|
+          result << measurement.time.to_i.to_s
+          result << ','.freeze
+          result << measurement.value.to_s
+          result << "\n".freeze
+        end
+      end
+    end
+
   end
 end

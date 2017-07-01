@@ -2,13 +2,13 @@
 http_interactions:
 - request:
     method: post
-    uri: http://rails-autoscale.dev/api/test-app-token/reports
+    uri: http://rails-autoscale.dev/api/test-app-token/v2/reports?dyno=web.1&pid=1232
     body:
       encoding: UTF-8
-      string: '{"report":{"time":"2016-12-03T01:22:00+00:00","dyno":"web.1","pid":"1232","measurements":[11,33]}}'
+      string: |
+        1498939882,11
+        1498939882,33
     headers:
-      Content-Type:
-      - application/json
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -17,8 +17,8 @@ http_interactions:
       - Ruby
   response:
     status:
-      code: 200
-      message: OK
+      code: 204
+      message: No Content
     headers:
       X-Frame-Options:
       - SAMEORIGIN
@@ -26,23 +26,23 @@ http_interactions:
       - 1; mode=block
       X-Content-Type-Options:
       - nosniff
-      Content-Type:
-      - text/html
       Cache-Control:
-      - no-cache
+      - no-store, must-revalidate, private, max-age=0
       X-Request-Id:
-      - 2342d420-ea83-48f5-b947-17920053c6d6
+      - 5e305ae1-139a-448e-bf62-e5f0e0a44053
       X-Runtime:
-      - '0.011171'
-      Transfer-Encoding:
-      - chunked
+      - '0.484806'
+      X-Miniprofiler-Ids:
+      - '["t9agvg1u3ng5t6n7hwhw"]'
+      Set-Cookie:
+      - __profilin=p%3Dt; path=/
       Date:
-      - Sun, 22 Jan 2017 17:10:10 GMT
+      - Sat, 01 Jul 2017 20:11:22 GMT
       Connection:
       - keep-alive
     body:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Sun, 22 Jan 2017 17:10:10 GMT
+  recorded_at: Sat, 01 Jul 2017 20:11:22 GMT
 recorded_with: VCR 3.0.3

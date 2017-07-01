@@ -16,22 +16,13 @@ module RailsAutoscaleAgent
     end
 
     def pop_report
-      result = nil
-      boundary = TimeRounder.beginning_of_minute(Time.now)
+      report = Report.new
 
-      while @measurements[0] && @measurements[0].time < boundary
-        measurement = @measurements.shift
-
-        if result.nil?
-          report_time = TimeRounder.beginning_of_minute(measurement.time)
-          boundary = report_time + 60
-          result = Report.new(report_time)
-        end
-
-        result.values << measurement.value
+      while measurement = @measurements.shift
+        report.measurements << measurement
       end
 
-      result
+      report
     end
 
   end
