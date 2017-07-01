@@ -41,7 +41,7 @@ module RailsAutoscaleAgent
     end
 
     describe "#register!" do
-      let(:config) { Config.new('RAILS_AUTOSCALE_URL' => 'http://example.com/api') }
+      let(:config) { Config.new('DYNO' => 'web.0', 'RAILS_AUTOSCALE_URL' => 'http://example.com/api') }
       let!(:stub) { stub_request(:post, "http://example.com/api/registrations") }
 
       it "registers the reporter with contextual info" do
@@ -49,6 +49,7 @@ module RailsAutoscaleAgent
 
         expected_payload = {
           registration: {
+            dyno: 'web.0',
             pid: Process.pid,
             ruby_version: '2.3.1',
             rails_version: '5.0.fake',
