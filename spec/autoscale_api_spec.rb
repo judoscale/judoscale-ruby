@@ -56,4 +56,18 @@ describe RailsAutoscaleAgent::AutoscaleApi, vcr: {record: :once} do
     end
   end
 
+  describe "#register_reporter!" do
+    it 'returns a successful response' do
+      api_base = 'http://rails-autoscale.dev/api/test-app-token'
+      registration_params = {
+        dyno: 'web.1',
+        pid: '1232',
+      }
+      autoscale_api = RailsAutoscaleAgent::AutoscaleApi.new(api_base)
+      result = autoscale_api.register_reporter!(registration_params)
+
+      expect(result).to be_a RailsAutoscaleAgent::AutoscaleApi::SuccessResponse
+    end
+  end
+
 end

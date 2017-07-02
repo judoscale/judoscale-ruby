@@ -1,0 +1,52 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://rails-autoscale.dev/api/test-app-token/registrations
+    body:
+      encoding: UTF-8
+      string: '{"registration":{"dyno":"web.1","pid":"1232"}}'
+    headers:
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Content-Type:
+      - application/json; charset=utf-8
+      Cache-Control:
+      - no-store, must-revalidate, private, max-age=0
+      X-Request-Id:
+      - a90b3494-3dc4-4cde-9e48-a57e936a6d2f
+      X-Runtime:
+      - '0.017988'
+      X-Miniprofiler-Ids:
+      - '["c9y05cyxzgat7l0sc4v4","pudgnadhy6xsvsa2gcsb","hzgbnkm5hvayd9xyk68e","ycxaci27ajp7912gjz7i","6b8ecfxb06lnxm5800d2","7pqnat2m9l36cgim20is","5ij7ht09hmkx0nxvciyd","f4b3wr5a69u70frt5h17","dn9zn71ykr22iumznx6h","3e18la00cbztn3sl6ee5","yqmu4pbdkd0gxs4in1q1","jxdt9j2irrmbs4tgbd63","ri8xmiikmpk4ervlts7k","oq1gmjxmhid08bs7w8nn","1lgb7rm3it5sngmhxho9","g575yijqcvs6a1y3eyk","972ert7t12q9r2tbvxu6","zmmbcgug2ekfutg14fxv","jred59e137v5ttzglqcj","vb885vmtqnhvx75g9old"]'
+      Set-Cookie:
+      - __profilin=p%3Dt; path=/
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Sun, 02 Jul 2017 16:34:30 GMT
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '{"report_interval":15}'
+    http_version: 
+  recorded_at: Sun, 02 Jul 2017 16:34:30 GMT
+recorded_with: VCR 3.0.3

@@ -10,12 +10,12 @@ module RailsAutoscaleAgent
     SUCCESS = 'success'
 
     def initialize(api_url_base)
-      @api_url_base = "#{api_url_base}/v2"
+      @api_url_base = api_url_base
     end
 
     def report_metrics!(report_params, timings_csv)
       query = URI.encode_www_form(report_params)
-      post_raw path: "/reports?#{query}", body: timings_csv
+      post_csv "/v2/reports?#{query}", timings_csv
     end
 
     def register_reporter!(registration_params)
@@ -27,6 +27,11 @@ module RailsAutoscaleAgent
     def post_json(path, data)
       headers = {'Content-Type' => 'application/json'}
       post_raw path: path, body: JSON.dump(data), headers: headers
+    end
+
+    def post_csv(path, data)
+      headers = {'Content-Type' => 'text/csv'}
+      post_raw path: path, body: data, headers: headers
     end
 
     def post_raw(options)
