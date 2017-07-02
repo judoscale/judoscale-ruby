@@ -7,7 +7,7 @@ and periodically posts this data asynchronously to the Rails Autoscale service.
 
 ## Requirements
 
-We've tested this with Rails versions 3.2 through 5.0 and Ruby versions 1.9.3 through 2.3.1.
+We've tested this with Rails versions 3.2 and higher and Ruby versions 1.9.3 and higher.
 
 ## Getting Started
 
