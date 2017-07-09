@@ -21,14 +21,13 @@ module RailsAutoscaleAgent
 
     def start!(config, store)
       @running = true
-      @report_interval = 60 # this default will be overwritten during #register!
 
       Thread.new do
         logger.tagged 'RailsAutoscale' do
           register!(config)
 
           loop do
-            sleep @report_interval
+            sleep config.report_interval
 
             begin
               report!(config, store)
@@ -73,8 +72,8 @@ module RailsAutoscaleAgent
 
       case result
       when AutoscaleApi::SuccessResponse
-        @report_interval = result.data['report_interval'] || @report_interval
-        logger.info "Reporter starting, will report every #{@report_interval} seconds"
+        config.report_interval = result.data['report_interval']
+        logger.info "Reporter starting, will report every #{config.report_interval} seconds"
       when AutoscaleApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"
       end
