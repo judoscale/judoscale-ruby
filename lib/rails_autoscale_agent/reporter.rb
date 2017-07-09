@@ -72,7 +72,8 @@ module RailsAutoscaleAgent
 
       case result
       when AutoscaleApi::SuccessResponse
-        config.report_interval = result.data['report_interval']
+        config.report_interval = result.data['report_interval'] if result.data['report_interval']
+        config.max_request_size = result.data['max_request_size'] if result.data['max_request_size']
         logger.info "Reporter starting, will report every #{config.report_interval} seconds"
       when AutoscaleApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"
