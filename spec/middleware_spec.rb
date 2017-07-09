@@ -8,11 +8,15 @@ module RailsAutoscaleAgent
       before { Reporter.instance.instance_variable_set('@running', nil) }
 
       let(:app) { double(:app, call: nil) }
-      let(:env) { {} }
+      let(:env) { {
+        'PATH_INFO' => '/foo',
+        'REQUEST_METHOD' => 'POST',
+        'rack.input' => StringIO.new('hello'),
+      } }
       let(:middleware) { Middleware.new(app) }
 
       context "with RAILS_AUTOSCALE_URL set" do
-        before { ENV['RAILS_AUTOSCALE_URL'] = 'http://example.com' }
+        around { |example| use_env({'RAILS_AUTOSCALE_URL' => 'http://example.com'}, &example) }
 
         it "passes the request up the middleware stack" do
           middleware.call(env)
@@ -26,24 +30,33 @@ module RailsAutoscaleAgent
 
         context "when the request includes HTTP_X_REQUEST_START" do
           let(:five_seconds_ago_in_unix_millis) { (Time.now.to_f - 5) * 1000 }
-          let(:env) { {'HTTP_X_REQUEST_START' => five_seconds_ago_in_unix_millis } }
+          before { env['HTTP_X_REQUEST_START'] = five_seconds_ago_in_unix_millis }
+          before { Singleton.__init__(Store) }
 
-          it "stores the request wait time" do
-            store = Store.instance
-
-            store.instance_variable_set '@measurements', []
+          it "collects the request queue time" do
             middleware.call(env)
-            measurements = store.instance_variable_get('@measurements')
 
-            expect(measurements.length).to eql 1
-            expect(measurements.first).to be_a Measurement
-            expect(measurements.first.value).to eql 5000
+            report = Store.instance.pop_report
+            expect(report.measurements.length).to eql 1
+            expect(report.measurements.first).to be_a Measurement
+            expect(report.measurements.first.value).to be_within(1).of(5000)
+          end
+
+          context "when the request body is large enough to skew the queue time" do
+            before { env['rack.input'] = StringIO.new('.'*110_000) }
+
+            it "does not collect the request queue time" do
+              middleware.call(env)
+
+              report = Store.instance.pop_report
+              expect(report.measurements.length).to eql 0
+            end
           end
         end
       end
 
       context "without RAILS_AUTOSCALE_URL set" do
-        before { ENV['RAILS_AUTOSCALE_URL'] = nil }
+        around { |example| use_env({'RAILS_AUTOSCALE_URL' => nil}, &example) }
 
         it "passes the request up the middleware stack" do
           middleware.call(env)

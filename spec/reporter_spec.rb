@@ -7,7 +7,12 @@ require 'webmock/rspec'
 module RailsAutoscaleAgent
   describe Reporter do
 
-    let(:config) { Config.new('DYNO' => 'web.0', 'RAILS_AUTOSCALE_URL' => 'http://example.com/api/test-token') }
+    around do |example|
+      use_env({
+        'DYNO' => 'web.0',
+        'RAILS_AUTOSCALE_URL' => 'http://example.com/api/test-token',
+      }, &example)
+    end
 
     describe "#report!" do
       it "reports stored metrics to the API" do
@@ -23,7 +28,7 @@ module RailsAutoscaleAgent
 
         store.push measurement_value, measurement_time
 
-        Reporter.instance.report!(config, store)
+        Reporter.instance.report!(Config.instance, store)
 
         expect(stub).to have_been_requested.once
       end
@@ -45,7 +50,7 @@ module RailsAutoscaleAgent
                  with(body: expected_body).
                  to_return(body: response)
 
-        Reporter.instance.register!(config)
+        Reporter.instance.register!(Config.instance)
 
         expect(stub).to have_been_requested.once
       end

@@ -1,22 +1,32 @@
+require 'singleton'
+
 module RailsAutoscaleAgent
   class Config
-    attr_reader :api_base_url, :dyno, :pid, :fake_mode
+    include Singleton
+
+    attr_reader :api_base_url, :dyno, :pid, :fake_mode, :max_request_size
     alias_method :fake_mode?, :fake_mode
 
-    def initialize(environment)
-      @api_base_url = environment['RAILS_AUTOSCALE_URL']
+    def initialize
+      @api_base_url = ENV['RAILS_AUTOSCALE_URL']
       @pid = Process.pid
-      @fake_mode = true if environment['RAILS_AUTOSCALE_FAKE_MODE'] == 'true'
+      @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
+      @fake_mode = true if ENV['RAILS_AUTOSCALE_FAKE_MODE'] == 'true'
 
       if fake_mode?
         @dyno = 'web.123'
       else
-        @dyno = environment['DYNO']
+        @dyno = ENV['DYNO']
       end
     end
 
     def to_s
       "#{@dyno}##{@pid}"
     end
+
+    def ignore_large_requests?
+      @max_request_size.present?
+    end
+
   end
 end
