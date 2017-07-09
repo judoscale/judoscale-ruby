@@ -4,7 +4,7 @@ require 'active_support/tagged_logging'
 
 module Rails
   def self.logger
-    @logger ||= ActiveSupport::TaggedLogging.new(::Logger.new(STDOUT))
+    @logger ||= ActiveSupport::TaggedLogging.new(::Logger.new('log/test.log'))
   end
 
   def self.version
