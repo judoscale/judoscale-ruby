@@ -40,7 +40,7 @@ module RailsAutoscaleAgent
           registration: {
             dyno: 'web.0',
             pid: Process.pid,
-            ruby_version: '2.3.1',
+            ruby_version: RUBY_VERSION,
             rails_version: '5.0.fake',
             gem_version: '0.3.0',
           }
