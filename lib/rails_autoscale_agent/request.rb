@@ -7,7 +7,7 @@ module RailsAutoscaleAgent
       @id = env['HTTP_X_REQUEST_ID']
       @path = env['PATH_INFO']
       @method = env['REQUEST_METHOD'].downcase
-      @size = env['rack.input'].size
+      @size = env['rack.input'].respond_to?(:size) ? env['rack.input'].size : 0
       @entered_queue_at = if unix_millis = env['HTTP_X_REQUEST_START']
                             Time.at(unix_millis.to_f / 1000)
                           elsif config.fake_mode?
