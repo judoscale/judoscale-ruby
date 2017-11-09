@@ -13,7 +13,7 @@ module RailsAutoscaleAgent
           queue_time_millis = ((Time.now - request.entered_queue_at) * 1000).to_i
           queue_time_millis = 0 if queue_time_millis < 0
           store.push(queue_time_millis)
-          logger.info "Collected queue_time=#{queue_time_millis}ms request_id=#{request.id}"
+          logger.info "Collected queue_time=#{queue_time_millis}ms request_id=#{request.id} request_size=#{request.size}"
         end
       end
     end
