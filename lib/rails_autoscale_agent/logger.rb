@@ -2,7 +2,7 @@ module RailsAutoscaleAgent
   module Logger
 
     def logger
-      @logger ||= Rails.logger
+      @logger ||= Config.instance.logger
     end
 
   end
