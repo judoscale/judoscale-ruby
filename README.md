@@ -1,5 +1,7 @@
 # Rails Autoscale Agent
 
+[![Build Status](https://travis-ci.org/adamlogic/rails_autoscale_agent.svg?branch=master)](https://travis-ci.org/adamlogic/rails_autoscale_agent)
+
 This gem works together with the Rails Autoscale Heroku add-on
 to automatically scale your web dynos as needed.
 It gathers a minimal set of metrics for each request,
@@ -42,4 +44,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/adamlo
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
