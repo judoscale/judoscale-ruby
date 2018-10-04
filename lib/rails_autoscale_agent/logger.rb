@@ -2,7 +2,7 @@ module RailsAutoscaleAgent
   module Logger
 
     def logger
-      @logger ||= Rails.logger
+      @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new(STDOUT)
     end
 
   end

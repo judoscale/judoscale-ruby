@@ -24,6 +24,11 @@ which happens automatically when you install the Heroku add-on.
 In development (or anytime the ENV var is missing), the middleware will still produce
 `INFO`-level log output to your Rails log.
 
+## Non-Rails Rack apps
+
+You'll need to insert the `RailsAutoscaleAgent::Middleware` manually. Insert it
+before `Rack::Runtime` to ensure accuracy of request queue timings.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies.
@@ -42,4 +47,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/adamlo
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
