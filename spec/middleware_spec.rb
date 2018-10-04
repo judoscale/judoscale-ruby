@@ -4,10 +4,19 @@ require 'rails_autoscale_agent/middleware'
 module RailsAutoscaleAgent
   describe Middleware do
 
+    class MockApp
+      attr_reader :env
+
+      def call(env)
+        @env = env
+        nil
+      end
+    end
+
     describe "#call" do
       before { Reporter.instance.instance_variable_set('@running', nil) }
 
-      let(:app) { double(:app, call: nil) }
+      let(:app) { MockApp.new }
       let(:env) { {
         'PATH_INFO' => '/foo',
         'REQUEST_METHOD' => 'POST',
@@ -20,7 +29,7 @@ module RailsAutoscaleAgent
 
         it "passes the request up the middleware stack" do
           middleware.call(env)
-          expect(app).to have_received(:call).with(env)
+          expect(app.env).to include(env)
         end
 
         it "starts the reporter" do
@@ -42,6 +51,13 @@ module RailsAutoscaleAgent
             expect(report.measurements.first.value).to be_within(1).of(5000)
           end
 
+          it "records the queue time in the environment passed on" do
+            middleware.call(env)
+
+            expect(app.env).to have_key("queue_time")
+            expect(app.env["queue_time"]).to be_within(1).of(5000)
+          end
+
           context "when the request body is large enough to skew the queue time" do
             before { env['rack.input'] = StringIO.new('.'*110_000) }
 
@@ -60,7 +76,7 @@ module RailsAutoscaleAgent
 
         it "passes the request up the middleware stack" do
           middleware.call(env)
-          expect(app).to have_received(:call).with(env)
+          expect(app.env).to include(env)
         end
 
         it "does not start the reporter" do

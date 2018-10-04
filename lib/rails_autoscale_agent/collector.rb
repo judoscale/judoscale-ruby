@@ -16,6 +16,8 @@ module RailsAutoscaleAgent
           logger.info "Collected queue_time=#{queue_time_millis}ms request_id=#{request.id} request_size=#{request.size}"
         end
       end
+
+      queue_time_millis
     end
 
   end
