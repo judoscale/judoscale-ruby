@@ -24,6 +24,14 @@ which happens automatically when you install the Heroku add-on.
 In development (or anytime the ENV var is missing), the middleware will still produce
 `INFO`-level log output to your Rails log.
 
+## Changing the logger
+
+If you wish to use a different logger you can set it on the configuration object:
+
+```ruby
+RailsAutoscaleAgent::Config.instance.logger = MyLogger.new
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies.
