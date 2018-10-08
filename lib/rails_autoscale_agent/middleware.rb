@@ -22,7 +22,9 @@ module RailsAutoscaleAgent
 
         store = Store.instance
         Reporter.start(config, store)
-        Collector.collect(request, store) unless request.ignore?
+        unless request.ignore?
+          env["queue_time"] = Collector.collect(request, store)
+        end
       end
 
       @app.call(env)
