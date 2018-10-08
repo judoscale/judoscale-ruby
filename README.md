@@ -1,5 +1,7 @@
 # Rails Autoscale Agent
 
+[![Build Status](https://travis-ci.org/adamlogic/rails_autoscale_agent.svg?branch=master)](https://travis-ci.org/adamlogic/rails_autoscale_agent)
+
 This gem works together with the Rails Autoscale Heroku add-on
 to automatically scale your web dynos as needed.
 It gathers a minimal set of metrics for each request,
@@ -28,6 +30,14 @@ In development (or anytime the ENV var is missing), the middleware will still pr
 
 You'll need to insert the `RailsAutoscaleAgent::Middleware` manually. Insert it
 before `Rack::Runtime` to ensure accuracy of request queue timings.
+
+## Changing the logger
+
+If you wish to use a different logger you can set it on the configuration object:
+
+```ruby
+RailsAutoscaleAgent::Config.instance.logger = MyLogger.new
+```
 
 ## Development
 
