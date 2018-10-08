@@ -21,7 +21,7 @@ module RailsAutoscaleAgent
     end
 
     def ignore_large_requests?
-      @max_request_size.present?
+      @max_request_size
     end
 
   end

@@ -26,6 +26,11 @@ which happens automatically when you install the Heroku add-on.
 In development (or anytime the ENV var is missing), the middleware will still produce
 `INFO`-level log output to your Rails log.
 
+## Non-Rails Rack apps
+
+You'll need to insert the `RailsAutoscaleAgent::Middleware` manually. Insert it
+before `Rack::Runtime` to ensure accuracy of request queue timings.
+
 ## Changing the logger
 
 If you wish to use a different logger you can set it on the configuration object:
