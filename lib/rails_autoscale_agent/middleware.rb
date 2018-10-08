@@ -1,6 +1,5 @@
 require 'rails_autoscale_agent/logger'
 require 'rails_autoscale_agent/store'
-require 'rails_autoscale_agent/collector'
 require 'rails_autoscale_agent/reporter'
 require 'rails_autoscale_agent/config'
 require 'rails_autoscale_agent/request'
@@ -22,8 +21,11 @@ module RailsAutoscaleAgent
 
         store = Store.instance
         Reporter.start(config, store)
-        unless request.ignore?
-          env["queue_time"] = Collector.collect(request, store)
+
+        if !request.ignore? && queue_time = request.queue_time
+          # NOTE: Expose queue time to the app
+          env['queue_time'] = queue_time
+          store.push queue_time
         end
       end
 
