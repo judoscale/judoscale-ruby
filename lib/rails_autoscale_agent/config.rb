@@ -4,23 +4,16 @@ module RailsAutoscaleAgent
   class Config
     include Singleton
 
-    attr_reader :api_base_url, :dyno, :pid, :fake_mode, :max_request_size
-    attr_accessor :report_interval, :logger
-    alias_method :fake_mode?, :fake_mode
+    attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
+                  :dyno, :pid
 
     def initialize
       @api_base_url = ENV['RAILS_AUTOSCALE_URL']
       @pid = Process.pid
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 60 # this default will be overwritten during Reporter#register!
-      @fake_mode = true if ENV['RAILS_AUTOSCALE_FAKE_MODE'] == 'true'
       @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new(STDOUT)
-
-      if fake_mode?
-        @dyno = 'web.123'
-      else
-        @dyno = ENV['DYNO']
-      end
+      @dyno = ENV['DYNO']
     end
 
     def to_s
