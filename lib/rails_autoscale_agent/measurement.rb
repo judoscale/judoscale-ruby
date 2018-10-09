@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RailsAutoscaleAgent
   class Measurement < Struct.new(:time, :value)
     def initialize(time, value)

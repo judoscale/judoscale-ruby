@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EnvHelpers
   # Override ENV config for a single spec
   # Example:

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'singleton'
 require 'rails_autoscale_agent/logger'
 require 'rails_autoscale_agent/autoscale_api'

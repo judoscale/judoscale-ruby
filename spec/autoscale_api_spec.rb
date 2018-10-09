@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'vcr'
 require 'rails_autoscale_agent/autoscale_api'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_autoscale_agent/version'
 
 module RailsAutoscaleAgent

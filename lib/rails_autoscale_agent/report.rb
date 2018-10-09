@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RailsAutoscaleAgent
   class Report
 
@@ -15,12 +17,12 @@ module RailsAutoscaleAgent
     end
 
     def to_csv
-      ''.tap do |result|
+      String.new.tap do |result|
         @measurements.each do |measurement|
           result << measurement.time.to_i.to_s
-          result << ','.freeze
+          result << ','
           result << measurement.value.to_s
-          result << "\n".freeze
+          result << "\n"
         end
       end
     end

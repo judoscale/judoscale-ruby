@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'singleton'
 require 'rails_autoscale_agent/time_rounder'
 require 'rails_autoscale_agent/measurement'
