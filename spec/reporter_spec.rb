@@ -44,7 +44,7 @@ module RailsAutoscaleAgent
             pid: Process.pid,
             ruby_version: RUBY_VERSION,
             rails_version: '5.0.fake',
-            gem_version: '0.3.1',
+            gem_version: RailsAutoscaleAgent::VERSION,
           }
         }
         response = {report_interval: 123}.to_json
