@@ -39,6 +39,19 @@ If you wish to use a different logger you can set it on the configuration object
 RailsAutoscaleAgent::Config.instance.logger = MyLogger.new
 ```
 
+## What data is collected?
+
+The middleware agent runs in its own thread so your web requests are not impacted. The following data is submitted periodically to the Rails Autoscale API:
+
+- Ruby version
+- Rails version
+- Gem version
+- Dyno name (example: web.1)
+- PID
+- Collection of queue time measurements (time and milliseconds)
+
+Rails Autoscale processes and stores this information in order to power the autoscaling algorithm and dashboard visualizations.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies.
