@@ -7,7 +7,7 @@ require_relative './support/env_helpers'
 
 module Rails
   def self.logger
-    @logger ||= ActiveSupport::TaggedLogging.new(::Logger.new('log/test.log'))
+    @logger ||= ::Logger.new('log/test.log')
   end
 
   def self.version
