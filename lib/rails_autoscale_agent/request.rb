@@ -3,7 +3,7 @@
 module RailsAutoscaleAgent
   class Request
     include Logger
-    
+
     attr_reader :id, :entered_queue_at, :path, :method, :size
 
     def initialize(env, config)
@@ -26,11 +26,11 @@ module RailsAutoscaleAgent
       if entered_queue_at
         if entered_queue_at < (Time.now - 60 * 10)
           # ignore unreasonable values
-          logger.info "request queued for more than 10 minutes... skipping collection"
+          logger.warn "request queued for more than 10 minutes... skipping collection"
         else
           queue_time = ((Time.now - entered_queue_at) * 1000).to_i
           queue_time = 0 if queue_time < 0
-          logger.info "Collected queue_time=#{queue_time}ms request_id=#{id} request_size=#{size}"
+          logger.debug "Collected queue_time=#{queue_time}ms request_id=#{id} request_size=#{size}"
 
           queue_time
         end

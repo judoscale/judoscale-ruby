@@ -2,14 +2,11 @@
 
 [![Build Status](https://travis-ci.org/adamlogic/rails_autoscale_agent.svg?branch=master)](https://travis-ci.org/adamlogic/rails_autoscale_agent)
 
-This gem works together with the Rails Autoscale Heroku add-on
-to automatically scale your web dynos as needed.
-It gathers a minimal set of metrics for each request,
-and periodically posts this data asynchronously to the Rails Autoscale service.
+This gem works together with the [Rails Autoscale](https://railsautoscale.com) Heroku add-on to automatically scale your web dynos as needed. It gathers a minimal set of metrics for each request, and periodically posts this data asynchronously to the Rails Autoscale service.
 
 ## Requirements
 
-We've tested this with Rails versions 3.2 and higher and Ruby versions 1.9.3 and higher.
+Tested with Rails versions 3.2 and higher and Ruby versions 1.9.3 and higher.
 
 ## Getting Started
 
@@ -19,17 +16,13 @@ Add this line to your application's Gemfile and run `bundle`:
 gem 'rails_autoscale_agent'
 ```
 
-This will automatically insert the agent into your Rack middleware stack.
+This inserts the agent into your Rack middleware stack.
 
-The agent will only communicate with Rails Autoscale if a `RAILS_AUTOSCALE_URL` ENV variable is present,
-which happens automatically when you install the Heroku add-on.
-In development (or anytime the ENV var is missing), the middleware will still produce
-`INFO`-level log output to your Rails log.
+The agent will only communicate with Rails Autoscale if a `RAILS_AUTOSCALE_URL` ENV variable is present, which happens automatically when you install the Heroku add-on. The middleware does nothing if `RAILS_AUTOSCALE_URL` is not present, such as in development or a staging app.
 
 ## Non-Rails Rack apps
 
-You'll need to insert the `RailsAutoscaleAgent::Middleware` manually. Insert it
-before `Rack::Runtime` to ensure accuracy of request queue timings.
+You'll need to insert the `RailsAutoscaleAgent::Middleware` manually. Insert it before `Rack::Runtime` to ensure accuracy of request queue timings.
 
 ## Changing the logger
 
@@ -52,16 +45,27 @@ The middleware agent runs in its own thread so your web requests are not impacte
 
 Rails Autoscale processes and stores this information in order to power the autoscaling algorithm and dashboard visualizations.
 
+## Troubleshooting
+
+If your logger supports tagged logging (as the Rails logger does by default), all log output from this gem is prefixed with "[RailsAutoscale]".
+
+Once installed, you should see something like this in development:
+
+> [RailsAutoscale] Reporter not started: RAILS_AUTOSCALE_URL is not set
+
+In production, you should see something like this:
+
+> [RailsAutoscale] Reporter starting, will report every 15 seconds
+
+If you don't see either of these, try running `bundle` again and restarting your Rails application.
+
+Reach out to help@railsautoscale.com if you run into any other problems.
+
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies.
-Then, run `rake spec` to run the tests.
-You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`.
-To release a new version, update the version number in `version.rb`,
-and then run `bundle exec rake release`, which will create a git tag for the version,
-push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 

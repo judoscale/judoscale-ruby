@@ -59,7 +59,7 @@ module RailsAutoscaleAgent
 
         case result
         when AutoscaleApi::SuccessResponse
-          logger.info "Reported successfully"
+          logger.debug "Reported successfully"
         when AutoscaleApi::FailureResponse
           logger.error "Reporter failed: #{result.failure_message}"
         end
