@@ -5,6 +5,7 @@ require 'rails_autoscale_agent/logger'
 require 'rails_autoscale_agent/autoscale_api'
 require 'rails_autoscale_agent/time_rounder'
 require 'rails_autoscale_agent/registration'
+require 'rails_autoscale_agent/worker_adapters/sidekiq'
 
 # Reporter wakes up every minute to send metrics to the RailsAutoscale API
 
@@ -12,6 +13,10 @@ module RailsAutoscaleAgent
   class Reporter
     include Singleton
     include Logger
+
+    WORKER_ADAPTERS = [
+      WorkerAdapters::Sidekiq.new,
+    ]
 
     def self.start(config, store)
       if config.api_base_url
@@ -23,6 +28,7 @@ module RailsAutoscaleAgent
 
     def start!(config, store)
       @running = true
+      @worker_adapters = WORKER_ADAPTERS.select(&:enabled?)
 
       Thread.new do
         logger.tagged 'RailsAutoscale' do
@@ -32,6 +38,7 @@ module RailsAutoscaleAgent
             sleep config.report_interval
 
             begin
+              @worker_adapters.map { |a| a.collect!(store) }
               report!(config, store)
             rescue => ex
               # Exceptions in threads other than the main thread will fail silently
@@ -52,7 +59,7 @@ module RailsAutoscaleAgent
       report = store.pop_report
 
       if report.measurements.any?
-        logger.info "Reporting queue times for #{report.measurements.size} requests"
+        logger.info "Reporting #{report.measurements.size} measurements"
 
         params = report.to_params(config)
         result = AutoscaleApi.new(config.api_base_url).report_metrics!(params, report.to_csv)
