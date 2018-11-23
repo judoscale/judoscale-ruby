@@ -19,16 +19,17 @@ module RailsAutoscaleAgent
     ]
 
     def self.start(config, store)
-      if config.api_base_url
-        instance.start!(config, store) unless instance.running?
-      else
-        instance.logger.debug "Reporter not started: RAILS_AUTOSCALE_URL is not set"
-      end
+      instance.start!(config, store) unless instance.started?
     end
 
     def start!(config, store)
-      @running = true
+      @started = true
       @worker_adapters = WORKER_ADAPTERS.select(&:enabled?)
+
+      if !config.api_base_url
+        logger.debug "Reporter not started: RAILS_AUTOSCALE_URL is not set"
+        return
+      end
 
       Thread.new do
         logger.tagged 'RailsAutoscale' do
@@ -53,8 +54,8 @@ module RailsAutoscaleAgent
       end
     end
 
-    def running?
-      @running
+    def started?
+      @started
     end
 
     def report!(config, store)
