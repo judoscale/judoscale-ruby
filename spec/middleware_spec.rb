@@ -36,7 +36,7 @@ module RailsAutoscaleAgent
 
         it "starts the reporter" do
           middleware.call(env)
-          expect(Reporter.instance).to be_running
+          expect(Reporter.instance).to be_started
         end
 
         context "when the request includes HTTP_X_REQUEST_START" do
@@ -82,8 +82,9 @@ module RailsAutoscaleAgent
         end
 
         it "does not start the reporter" do
+          allow(Reporter.instance).to receive(:register!)
           middleware.call(env)
-          expect(Reporter.instance).to_not be_running
+          expect(Reporter.instance).to_not have_received(:register!)
         end
       end
     end
