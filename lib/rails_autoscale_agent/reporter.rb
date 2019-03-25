@@ -27,7 +27,7 @@ module RailsAutoscaleAgent
       @worker_adapters = WORKER_ADAPTERS.select(&:enabled?)
 
       if !config.api_base_url
-        logger.debug "Reporter not started: RAILS_AUTOSCALE_URL is not set"
+        logger.info "Reporter not started: RAILS_AUTOSCALE_URL is not set"
         return
       end
 
