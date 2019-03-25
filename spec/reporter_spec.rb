@@ -21,14 +21,13 @@ module RailsAutoscaleAgent
         store = Store.instance
         store.instance_variable_set '@measurements', []
 
-        measurement_time = Time.now - 5
-        measurement_value = 123
-        query = { dyno: 'web.0', pid: Process.pid }
-        body = "#{measurement_time.to_i},#{measurement_value}\n"
+        expected_query = { dyno: 'web.0', pid: Process.pid }
+        expected_body = "1000000001,11\n1000000002,22,high\n"
         stub = stub_request(:post, "http://example.com/api/test-token/v2/reports").
-                 with(query: query, body: body)
+                 with(query: expected_query, body: expected_body)
 
-        store.push measurement_value, measurement_time
+        store.push 11, Time.at(1_000_000_001) # web measurement
+        store.push 22, Time.at(1_000_000_002), 'high' # worker measurement
 
         Reporter.instance.report!(Config.instance, store)
 

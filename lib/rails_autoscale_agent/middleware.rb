@@ -19,8 +19,6 @@ module RailsAutoscaleAgent
         config = Config.instance
         request = Request.new(env, config)
 
-        logger.debug "Middleware entered - request_id=#{request.id} path=#{request.path} method=#{request.method} request_size=#{request.size}"
-
         store = Store.instance
         Reporter.start(config, store)
 

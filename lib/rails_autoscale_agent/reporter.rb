@@ -5,6 +5,7 @@ require 'rails_autoscale_agent/logger'
 require 'rails_autoscale_agent/autoscale_api'
 require 'rails_autoscale_agent/time_rounder'
 require 'rails_autoscale_agent/registration'
+require 'rails_autoscale_agent/worker_adapters/sidekiq'
 
 # Reporter wakes up every minute to send metrics to the RailsAutoscale API
 
@@ -13,25 +14,34 @@ module RailsAutoscaleAgent
     include Singleton
     include Logger
 
+    WORKER_ADAPTERS = [
+      WorkerAdapters::Sidekiq.new,
+    ]
+
     def self.start(config, store)
-      if config.api_base_url
-        instance.start!(config, store) unless instance.running?
-      else
-        instance.logger.debug "Reporter not started: RAILS_AUTOSCALE_URL is not set"
-      end
+      instance.start!(config, store) unless instance.started?
     end
 
     def start!(config, store)
-      @running = true
+      @started = true
+      @worker_adapters = WORKER_ADAPTERS.select(&:enabled?)
+
+      if !config.api_base_url
+        logger.debug "Reporter not started: RAILS_AUTOSCALE_URL is not set"
+        return
+      end
 
       Thread.new do
         logger.tagged 'RailsAutoscale' do
           register!(config)
 
           loop do
-            sleep config.report_interval
+            # Stagger reporting to spread out reports from many processes
+            multiplier = 1 - (rand / 4) # between 0.75 and 1.0
+            sleep config.report_interval * multiplier
 
             begin
+              @worker_adapters.map { |a| a.collect!(store) }
               report!(config, store)
             rescue => ex
               # Exceptions in threads other than the main thread will fail silently
@@ -44,15 +54,15 @@ module RailsAutoscaleAgent
       end
     end
 
-    def running?
-      @running
+    def started?
+      @started
     end
 
     def report!(config, store)
       report = store.pop_report
 
       if report.measurements.any?
-        logger.info "Reporting queue times for #{report.measurements.size} requests"
+        logger.info "Reporting #{report.measurements.size} measurements"
 
         params = report.to_params(config)
         result = AutoscaleApi.new(config.api_base_url).report_metrics!(params, report.to_csv)
@@ -76,7 +86,7 @@ module RailsAutoscaleAgent
       when AutoscaleApi::SuccessResponse
         config.report_interval = result.data['report_interval'] if result.data['report_interval']
         config.max_request_size = result.data['max_request_size'] if result.data['max_request_size']
-        logger.info "Reporter starting, will report every #{config.report_interval} seconds"
+        logger.info "Reporter starting, will report every #{config.report_interval} seconds or so"
       when AutoscaleApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"
       end

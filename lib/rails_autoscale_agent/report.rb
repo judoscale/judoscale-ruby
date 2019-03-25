@@ -22,6 +22,12 @@ module RailsAutoscaleAgent
           result << measurement.time.to_i.to_s
           result << ','
           result << measurement.value.to_s
+
+          if measurement.queue_name
+            result << ','
+            result << measurement.queue_name
+          end
+
           result << "\n"
         end
       end

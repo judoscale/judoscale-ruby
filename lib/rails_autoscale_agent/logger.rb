@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_autoscale_agent/config'
+
 module RailsAutoscaleAgent
   module Logger
     def logger

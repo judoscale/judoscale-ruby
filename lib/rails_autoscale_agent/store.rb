@@ -9,12 +9,14 @@ module RailsAutoscaleAgent
   class Store
     include Singleton
 
+    attr_reader :measurements
+
     def initialize
       @measurements = []
     end
 
-    def push(value, time = Time.now)
-      @measurements << Measurement.new(time, value)
+    def push(value, time = Time.now, queue_name = nil)
+      @measurements << Measurement.new(time, value, queue_name)
     end
 
     def pop_report
