@@ -4,11 +4,6 @@ require 'spec_helper'
 require 'rails_autoscale_agent/worker_adapters/sidekiq'
 require 'rails_autoscale_agent/store'
 
-module Sidekiq
-  class Queue < Struct.new(:name, :latency)
-  end
-end
-
 module RailsAutoscaleAgent
   describe WorkerAdapters::Sidekiq do
     describe "#enabled?" do
@@ -19,8 +14,8 @@ module RailsAutoscaleAgent
       it "collects latency for each queue" do
         store = Store.instance
         allow(Sidekiq::Queue).to receive(:all) { [
-          Sidekiq::Queue.new('low', 11),
-          Sidekiq::Queue.new('high', 22.222222),
+          double(name: 'low', latency: 11),
+          double(name: 'high', latency: 22.222222),
         ] }
 
         subject.collect! store
