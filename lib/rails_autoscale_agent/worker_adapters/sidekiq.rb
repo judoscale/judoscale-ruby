@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_autoscale_agent/logger'
-require 'sidekiq'
+require 'sidekiq/api'
 
 module WorkerAdapters
   class Sidekiq
