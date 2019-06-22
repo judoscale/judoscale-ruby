@@ -1,29 +1,31 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/module/delegation'
 require 'rails_autoscale_agent/config'
 
 module RailsAutoscaleAgent
   module Logger
     def logger
-      @logger ||= Config.instance.logger.dup.tap do |logger|
-        logger.extend(FakeTaggedLogging) unless logger.respond_to?(:tagged)
-        logger.extend(ConditionalDebugLogging)
-      end
+      @logger ||= LoggerProxy.new(Config.instance.logger)
     end
+  end
 
-    module FakeTaggedLogging
-      def tagged(*tags)
+  class LoggerProxy < Struct.new(:logger)
+    delegate :info, :warn, :error, to: :logger
+
+    def tagged(*tags, &block)
+      if logger.respond_to?(:tagged)
+        logger.tagged *tags, &block
+      else
         # NOTE: Quack like ActiveSupport::TaggedLogging, but don't reimplement
         yield self
       end
     end
 
-    module ConditionalDebugLogging
-      def debug(*args)
-        # Rails logger defaults to DEBUG level in production, but I don't want
-        # to be chatty by default.
-        super if ENV['RAILS_AUTOSCALE_LOG_LEVEL'] == 'DEBUG'
-      end
+    def debug(*args)
+      # Rails logger defaults to DEBUG level in production, but I don't want
+      # to be chatty by default.
+      logger.debug(*args) if ENV['RAILS_AUTOSCALE_LOG_LEVEL'] == 'DEBUG'
     end
   end
 end
