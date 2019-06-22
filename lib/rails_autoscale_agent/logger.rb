@@ -5,7 +5,7 @@ require 'rails_autoscale_agent/config'
 module RailsAutoscaleAgent
   module Logger
     def logger
-      @logger ||= Config.instance.logger.tap do |logger|
+      @logger ||= Config.instance.logger.dup.tap do |logger|
         logger.extend(FakeTaggedLogging) unless logger.respond_to?(:tagged)
         logger.extend(ConditionalDebugLogging)
       end

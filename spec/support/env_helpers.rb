@@ -13,7 +13,7 @@ module EnvHelpers
     end
 
     example.call
-
+  ensure
     config.each do |key, val|
       ENV[key] = original_env[key]
     end
