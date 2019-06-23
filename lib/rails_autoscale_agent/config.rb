@@ -7,10 +7,12 @@ module RailsAutoscaleAgent
     include Singleton
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
-                  :dyno, :pid
+                  :dyno, :pid, :addon_name
 
     def initialize
-      @api_base_url = ENV['RAILS_AUTOSCALE_URL']
+      # Allow the add-on name to be configured - needed for testing
+      @addon_name = ENV['RAILS_AUTOSCALE_ADDON'] || 'RAILS_AUTOSCALE'
+      @api_base_url = ENV["#{@addon_name}_URL"]
       @pid = Process.pid
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 60 # this default will be overwritten during Reporter#register!
