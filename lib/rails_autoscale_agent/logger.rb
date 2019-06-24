@@ -11,8 +11,6 @@ module RailsAutoscaleAgent
   end
 
   class LoggerProxy < Struct.new(:logger)
-    delegate :info, :warn, :error, to: :logger
-
     def tagged(*tags, &block)
       if logger.respond_to?(:tagged)
         logger.tagged *tags, &block
@@ -26,6 +24,10 @@ module RailsAutoscaleAgent
       # Rails logger defaults to DEBUG level in production, but I don't want
       # to be chatty by default.
       logger.debug(*args) if ENV['RAILS_AUTOSCALE_LOG_LEVEL'] == 'DEBUG'
+    end
+
+    def method_missing(name, *args, &block)
+      logger.send name, *args, &block
     end
   end
 end
