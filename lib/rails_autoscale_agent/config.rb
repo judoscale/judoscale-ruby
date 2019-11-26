@@ -7,7 +7,7 @@ module RailsAutoscaleAgent
     include Singleton
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
-                  :dyno, :pid, :addon_name
+                  :dyno, :pid, :addon_name, :worker_adapters
 
     def initialize
       # Allow the add-on name to be configured - needed for testing
@@ -18,6 +18,9 @@ module RailsAutoscaleAgent
       @report_interval = 60 # this default will be overwritten during Reporter#register!
       @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new(STDOUT)
       @dyno = ENV['DYNO']
+      @worker_adapters = [
+        WorkerAdapters::Sidekiq.new,
+      ]
     end
 
     def to_s

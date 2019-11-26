@@ -14,17 +14,13 @@ module RailsAutoscaleAgent
     include Singleton
     include Logger
 
-    WORKER_ADAPTERS = [
-      WorkerAdapters::Sidekiq.new,
-    ]
-
     def self.start(config, store)
       instance.start!(config, store) unless instance.started?
     end
 
     def start!(config, store)
       @started = true
-      @worker_adapters = WORKER_ADAPTERS.select(&:enabled?)
+      @worker_adapters = config.worker_adapters.select(&:enabled?)
 
       if !config.api_base_url
         logger.info "Reporter not started: #{config.addon_name}_URL is not set"
@@ -86,7 +82,8 @@ module RailsAutoscaleAgent
       when AutoscaleApi::SuccessResponse
         config.report_interval = result.data['report_interval'] if result.data['report_interval']
         config.max_request_size = result.data['max_request_size'] if result.data['max_request_size']
-        logger.info "Reporter starting, will report every #{config.report_interval} seconds or so"
+        worker_adapters_msg = @worker_adapters.map { |a| a.class.name }.join(', ')
+        logger.info "Reporter starting, will report every #{config.report_interval} seconds or so. Worker adapters: [#{worker_adapters_msg}]"
       when AutoscaleApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"
       end
