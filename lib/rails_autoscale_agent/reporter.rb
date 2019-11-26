@@ -6,6 +6,7 @@ require 'rails_autoscale_agent/autoscale_api'
 require 'rails_autoscale_agent/time_rounder'
 require 'rails_autoscale_agent/registration'
 require 'rails_autoscale_agent/worker_adapters/sidekiq'
+require 'rails_autoscale_agent/worker_adapters/delayed_job'
 
 # Reporter wakes up every minute to send metrics to the RailsAutoscale API
 

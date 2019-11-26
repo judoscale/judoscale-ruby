@@ -20,6 +20,7 @@ module RailsAutoscaleAgent
       @dyno = ENV['DYNO']
       @worker_adapters = [
         WorkerAdapters::Sidekiq.new,
+        WorkerAdapters::DelayedJob.new,
       ]
     end
 
