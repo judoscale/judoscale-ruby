@@ -21,8 +21,12 @@ module ActiveRecord
   end
 end
 
+Job = Struct.new(:queue)
+
 module RailsAutoscaleAgent
   describe WorkerAdapters::DelayedJob do
+    subject { described_class.instance }
+
     describe "#enabled?" do
       specify { expect(subject.enabled?).to be_truthy }
     end
@@ -50,6 +54,7 @@ module RailsAutoscaleAgent
         store = Store.instance
         ActiveRecord::Base.connection.rows = [['low', Time.now - 11]]
 
+        Delayed::Worker.lifecycle.run_callbacks(:enqueue, Job.new('low')) { }
         subject.collect! store
 
         expect(store.measurements.size).to eq 1
