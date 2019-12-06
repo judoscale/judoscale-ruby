@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_autoscale_agent/logger'
+require 'time'
 
 module WorkerAdapters
   class Que
@@ -31,6 +32,7 @@ module WorkerAdapters
 
       self.class.queues.each do |queue|
         run_at = run_at_by_queue[queue]
+        run_at = Time.parse(run_at) if run_at.is_a?(String)
         latency_ms = run_at ? ((t - run_at)*1000).ceil : 0
         store.push latency_ms, t, queue
         log_msg << "#{queue}=#{latency_ms} "

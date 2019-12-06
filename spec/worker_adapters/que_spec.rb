@@ -61,6 +61,21 @@ module RailsAutoscaleAgent
         expect(store.measurements[0].value).to eq 0
         expect(store.measurements[0].queue_name).to eq 'default'
       end
+
+      # Not sure why run_at would be a string, but it is for at least one customer.
+      it "handles string values for run_at" do
+        store = Store.instance
+        expected_value = (Time.now - Time.parse('2019-12-04T11:44:45Z')) * 1000
+        ActiveRecord::Base.connection.rows = [
+          ['default', '2019-12-04 11:44:45+00'],
+        ]
+
+        subject.collect! store
+
+        expect(store.measurements.size).to eq 1
+        expect(store.measurements[0].value).to be_within(2).of expected_value
+        expect(store.measurements[0].queue_name).to eq 'default'
+      end
     end
   end
 end
