@@ -12,7 +12,10 @@ module WorkerAdapters
     end
 
     def initialize
-      self.class.queues = []
+      # Track the known queues so we can continue reporting on queues that don't
+      # currently have enqueued jobs.
+      self.class.queues = Set.new
+
       install if enabled?
     end
 
@@ -30,6 +33,7 @@ module WorkerAdapters
 
       queues.each do |queue|
         run_at = run_at_by_queue[queue]
+        run_at = Time.parse(run_at) if run_at.is_a?(String)
         latency_ms = run_at ? ((t - run_at)*1000).ceil : 0
         store.push latency_ms, t, queue
         log_msg << "#{queue}=#{latency_ms} "
@@ -41,10 +45,6 @@ module WorkerAdapters
     private
 
     def install
-      # Track the known queues so we can continue reporting on queues that don't
-      # currently have enqueued jobs.
-      self.class.queues = Set.new
-
       plugin = Class.new(Delayed::Plugin) do
         require 'delayed_job'
 
