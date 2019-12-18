@@ -5,7 +5,7 @@ require 'rails_autoscale_agent/logger'
 class PumaAdapter
   include RailsAutoscaleAgent::Logger
 
-  QUEUE = '_puma_cap'
+  QUEUE = '_puma_util'
 
   def enabled?
     server.present?
@@ -20,14 +20,14 @@ class PumaAdapter
     max = server.max_threads || 0
 
     # Capacity is a fractional value representing how many of the total
-    # threads are available for work. (0.5 means half are available)
+    # threads are available for work. (0.25 means a quarter are available)
     capacity = max == 0 ? 0 : server.pool_capacity.to_f / max
 
-    # Make it an integer (0.522 becomes 52)
-    capacity = (capacity * 100).round
+    # Utilization is a whole number percentage (0.251 capacity == 75% utilization)
+    utilization = 100 - (capacity * 100).round
 
-    store.push capacity, Time.now, QUEUE
+    store.push utilization, Time.now, QUEUE
 
-    logger.debug "puma_capacity=#{capacity}"
+    logger.debug "puma_util=#{utilization}"
   end
 end
