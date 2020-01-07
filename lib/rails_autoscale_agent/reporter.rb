@@ -6,7 +6,6 @@ require 'rails_autoscale_agent/autoscale_api'
 require 'rails_autoscale_agent/time_rounder'
 require 'rails_autoscale_agent/registration'
 require 'rails_autoscale_agent/worker_adapters/sidekiq'
-require 'rails_autoscale_agent/puma_adapter'
 
 # Reporter wakes up every minute to send metrics to the RailsAutoscale API
 
@@ -22,7 +21,6 @@ module RailsAutoscaleAgent
     def start!(config, store)
       @started = true
       @worker_adapters = config.worker_adapters.select(&:enabled?)
-      @adapters = @worker_adapters + [PumaAdapter.new]
 
       if !config.api_base_url
         logger.info "Reporter not started: #{config.addon_name}_URL is not set"
@@ -39,7 +37,7 @@ module RailsAutoscaleAgent
             sleep config.report_interval * multiplier
 
             begin
-              @adapters.map { |a| a.collect!(store) }
+              @worker_adapters.map { |a| a.collect!(store) }
               report!(config, store)
             rescue => ex
               # Exceptions in threads other than the main thread will fail silently
