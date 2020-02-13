@@ -12,9 +12,11 @@ module RailsAutoscaleAgent
     def initialize
       require 'rails_autoscale_agent/worker_adapters/sidekiq'
       require 'rails_autoscale_agent/worker_adapters/delayed_job'
+      require 'rails_autoscale_agent/worker_adapters/que'
       @worker_adapters = [
         WorkerAdapters::Sidekiq.instance,
         WorkerAdapters::DelayedJob.instance,
+        WorkerAdapters::Que.instance,
       ]
 
       # Allow the add-on name to be configured - needed for testing
