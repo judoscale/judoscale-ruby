@@ -5,6 +5,7 @@ require 'rails_autoscale_agent/logger'
 module WorkerAdapters
   class Sidekiq
     include RailsAutoscaleAgent::Logger
+    include Singleton
 
     def enabled?
       require 'sidekiq/api'
@@ -13,7 +14,6 @@ module WorkerAdapters
       false
     end
 
-    # TODO: specs
     def collect!(store)
       log_msg = String.new('Sidekiq latency ')
 
