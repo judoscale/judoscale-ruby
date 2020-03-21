@@ -57,6 +57,15 @@ In production, you should see something like this:
 
 If you don't see either of these, try running `bundle` again and restarting your Rails application.
 
+You can see more detailed (debug) logging by setting the `RAILS_AUTOSCALE_DEBUG` env var on your Heroku app:
+
+```
+heroku config:add RAILS_AUTOSCALE_DEBUG=true
+```
+
+Debug logs are silenced by default because Rails apps default to a DEBUG log level in production,
+and these can get very noisy with this gem.
+
 Reach out to help@railsautoscale.com if you run into any other problems.
 
 ## Development

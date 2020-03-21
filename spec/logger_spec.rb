@@ -37,7 +37,7 @@ module RailsAutoscaleAgent
       end
 
       it 'can be configured to allow debug logs' do
-        use_env('RAILS_AUTOSCALE_LOG_LEVEL' => 'DEBUG') do
+        use_env('RAILS_AUTOSCALE_DEBUG' => 'true') do
           logger.debug 'NOISE'
           expect(original.msgs[:debug]).to eq ['NOISE']
         end
