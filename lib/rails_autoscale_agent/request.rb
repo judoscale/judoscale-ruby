@@ -26,7 +26,7 @@ module RailsAutoscaleAgent
       if entered_queue_at
         queue_time = ((Time.now - entered_queue_at) * 1000).to_i
         queue_time = 0 if queue_time < 0
-        logger.debug "[RailsAutoscale] Collected queue_time=#{queue_time}ms request_id=#{id} request_size=#{size}"
+        logger.debug "Collected queue_time=#{queue_time}ms request_id=#{id} request_size=#{size}"
 
         queue_time
       end

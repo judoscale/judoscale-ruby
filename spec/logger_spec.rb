@@ -20,34 +20,38 @@ module RailsAutoscaleAgent
   describe Logger do
     include Logger
 
-    let(:original) { FakeLogger.new }
-    before { Config.instance.logger = original }
+    let(:original_logger) { FakeLogger.new }
+    let(:debug_logger) { FakeLogger.new }
+    before { Config.instance.logger = original_logger }
+    before { allow(::Logger).to receive(:new) { debug_logger } }
 
     describe '#info' do
-      it 'delegates to the original logger' do
+      it 'delegates to the original logger, prepending RailsAutoscale' do
         logger.info 'INFO'
-        expect(original.msgs[:info]).to eq ['INFO']
+        expect(original_logger.msgs[:info]).to eq ['[RailsAutoscale] INFO']
       end
     end
 
     describe '#debug' do
       it 'silences debug logs by default' do
         logger.debug 'SILENCE'
-        expect(original.msgs[:debug]).to eq []
+        expect(original_logger.msgs[:debug]).to eq []
+        expect(debug_logger.msgs[:debug]).to eq []
       end
 
-      it 'can be configured to allow debug logs' do
+      it 'can be configured to allow debug logs (sent to a separate logger)' do
         use_env('RAILS_AUTOSCALE_DEBUG' => 'true') do
           logger.debug 'NOISE'
-          expect(original.msgs[:debug]).to eq ['NOISE']
+          expect(original_logger.msgs[:debug]).to eq []
+          expect(debug_logger.msgs[:debug]).to eq ['[RailsAutoscale] NOISE']
         end
       end
 
       it 'does not affect the original logger' do
-        # require 'pry'; binding.pry
         logger.debug 'LOGGER'
-        original.debug 'ORIGINAL'
-        expect(original.msgs[:debug]).to eq ['ORIGINAL']
+        original_logger.debug 'ORIGINAL'
+        expect(original_logger.msgs[:debug]).to eq ['ORIGINAL']
+        expect(debug_logger.msgs[:debug]).to eq []
       end
     end
   end

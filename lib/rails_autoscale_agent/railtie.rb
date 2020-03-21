@@ -8,7 +8,7 @@ module RailsAutoscaleAgent
     include Logger
 
     initializer "rails_autoscale_agent.middleware" do |app|
-      logger.info "[RailsAutoscale] Preparing middleware"
+      logger.info "Preparing middleware"
       app.middleware.insert_before Rack::Runtime, Middleware
     end
   end

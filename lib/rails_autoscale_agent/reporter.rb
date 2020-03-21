@@ -22,7 +22,7 @@ module RailsAutoscaleAgent
       @worker_adapters = config.worker_adapters.select(&:enabled?)
 
       if !config.api_base_url
-        logger.info "[RailsAutoscale] Reporter not started: #{config.addon_name}_URL is not set"
+        logger.info "Reporter not started: #{config.addon_name}_URL is not set"
         return
       end
 
@@ -40,7 +40,7 @@ module RailsAutoscaleAgent
           rescue => ex
             # Exceptions in threads other than the main thread will fail silently
             # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
-            logger.error "[RailsAutoscale] Reporter error: #{ex.inspect}"
+            logger.error "Reporter error: #{ex.inspect}"
             logger.error ex.backtrace.join("\n")
           end
         end
@@ -55,19 +55,19 @@ module RailsAutoscaleAgent
       report = store.pop_report
 
       if report.measurements.any?
-        logger.info "[RailsAutoscale] Reporting #{report.measurements.size} measurements"
+        logger.info "Reporting #{report.measurements.size} measurements"
 
         params = report.to_params(config)
         result = AutoscaleApi.new(config.api_base_url).report_metrics!(params, report.to_csv)
 
         case result
         when AutoscaleApi::SuccessResponse
-          logger.debug "[RailsAutoscale] Reported successfully"
+          logger.debug "Reported successfully"
         when AutoscaleApi::FailureResponse
-          logger.error "[RailsAutoscale] Reporter failed: #{result.failure_message}"
+          logger.error "Reporter failed: #{result.failure_message}"
         end
       else
-        logger.debug "[RailsAutoscale] Reporter has nothing to report"
+        logger.debug "Reporter has nothing to report"
       end
     end
 
@@ -81,9 +81,9 @@ module RailsAutoscaleAgent
         config.report_interval = result.data['report_interval'] if result.data['report_interval']
         config.max_request_size = result.data['max_request_size'] if result.data['max_request_size']
         worker_adapters_msg = @worker_adapters.map { |a| a.class.name }.join(', ')
-        logger.info "[RailsAutoscale] Reporter starting, will report every #{config.report_interval} seconds or so. Worker adapters: [#{worker_adapters_msg}]"
+        logger.info "Reporter starting, will report every #{config.report_interval} seconds or so. Worker adapters: [#{worker_adapters_msg}]"
       when AutoscaleApi::FailureResponse
-        logger.error "[RailsAutoscale] Reporter failed to register: #{result.failure_message}"
+        logger.error "Reporter failed to register: #{result.failure_message}"
       end
     end
   end
