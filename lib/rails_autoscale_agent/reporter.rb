@@ -27,9 +27,9 @@ module RailsAutoscaleAgent
       end
 
       Thread.new do
-        register!(config)
-
         loop do
+          register!(config) unless @registered
+
           # Stagger reporting to spread out reports from many processes
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
           sleep config.report_interval * multiplier
@@ -77,6 +77,7 @@ module RailsAutoscaleAgent
 
       case result
       when AutoscaleApi::SuccessResponse
+        @registered = true
         config.report_interval = result.data['report_interval'] if result.data['report_interval']
         config.max_request_size = result.data['max_request_size'] if result.data['max_request_size']
         worker_adapters_msg = @worker_adapters.map { |a| a.class.name }.join(', ')
@@ -85,6 +86,5 @@ module RailsAutoscaleAgent
         logger.error "[RailsAutoscale] Reporter failed to register: #{result.failure_message}"
       end
     end
-
   end
 end
