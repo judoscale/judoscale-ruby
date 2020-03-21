@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/module/delegation'
 require 'rails_autoscale_agent/config'
 
 module RailsAutoscaleAgent
@@ -11,15 +10,6 @@ module RailsAutoscaleAgent
   end
 
   class LoggerProxy < Struct.new(:logger)
-    def tagged(*tags, &block)
-      if logger.respond_to?(:tagged)
-        logger.tagged *tags, &block
-      else
-        # NOTE: Quack like ActiveSupport::TaggedLogging, but don't reimplement
-        yield self
-      end
-    end
-
     def debug(*args)
       # Rails logger defaults to DEBUG level in production, but I don't want
       # to be chatty by default.

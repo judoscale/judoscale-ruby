@@ -47,8 +47,6 @@ Rails Autoscale processes and stores this information in order to power the auto
 
 ## Troubleshooting
 
-If your logger supports tagged logging (as the Rails logger does by default), all log output from this gem is prefixed with "[RailsAutoscale]".
-
 Once installed, you should see something like this in development:
 
 > [RailsAutoscale] Reporter not started: RAILS_AUTOSCALE_URL is not set

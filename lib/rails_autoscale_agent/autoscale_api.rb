@@ -44,7 +44,7 @@ module RailsAutoscaleAgent
         request = Net::HTTP::Post.new(uri.request_uri, options[:headers] || {})
         request.body = options.fetch(:body)
 
-        logger.debug "Posting #{request.body.size} bytes to #{uri}"
+        logger.debug "[RailsAutoscale] Posting #{request.body.size} bytes to #{uri}"
         http.request(request)
       end
 

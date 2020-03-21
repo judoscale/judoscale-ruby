@@ -3,7 +3,6 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'pry'
 require 'rails_autoscale_agent'
-require 'active_support/tagged_logging'
 require_relative './support/env_helpers'
 
 module Rails
