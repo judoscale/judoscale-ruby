@@ -27,23 +27,21 @@ module RailsAutoscaleAgent
       end
 
       Thread.new do
-        logger.tagged 'RailsAutoscale' do
-          register!(config)
+        loop do
+          register!(config) unless @registered
 
-          loop do
-            # Stagger reporting to spread out reports from many processes
-            multiplier = 1 - (rand / 4) # between 0.75 and 1.0
-            sleep config.report_interval * multiplier
+          # Stagger reporting to spread out reports from many processes
+          multiplier = 1 - (rand / 4) # between 0.75 and 1.0
+          sleep config.report_interval * multiplier
 
-            begin
-              @worker_adapters.map { |a| a.collect!(store) }
-              report!(config, store)
-            rescue => ex
-              # Exceptions in threads other than the main thread will fail silently
-              # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
-              logger.error "Reporter error: #{ex.inspect}"
-              logger.error ex.backtrace.join("\n")
-            end
+          begin
+            @worker_adapters.map { |a| a.collect!(store) }
+            report!(config, store)
+          rescue => ex
+            # Exceptions in threads other than the main thread will fail silently
+            # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
+            logger.error "Reporter error: #{ex.inspect}"
+            logger.error ex.backtrace.join("\n")
           end
         end
       end
@@ -79,6 +77,7 @@ module RailsAutoscaleAgent
 
       case result
       when AutoscaleApi::SuccessResponse
+        @registered = true
         config.report_interval = result.data['report_interval'] if result.data['report_interval']
         config.max_request_size = result.data['max_request_size'] if result.data['max_request_size']
         worker_adapters_msg = @worker_adapters.map { |a| a.class.name }.join(', ')
@@ -87,6 +86,5 @@ module RailsAutoscaleAgent
         logger.error "Reporter failed to register: #{result.failure_message}"
       end
     end
-
   end
 end

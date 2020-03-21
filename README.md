@@ -47,8 +47,6 @@ Rails Autoscale processes and stores this information in order to power the auto
 
 ## Troubleshooting
 
-If your logger supports tagged logging (as the Rails logger does by default), all log output from this gem is prefixed with "[RailsAutoscale]".
-
 Once installed, you should see something like this in development:
 
 > [RailsAutoscale] Reporter not started: RAILS_AUTOSCALE_URL is not set
@@ -58,6 +56,15 @@ In production, you should see something like this:
 > [RailsAutoscale] Reporter starting, will report every 15 seconds
 
 If you don't see either of these, try running `bundle` again and restarting your Rails application.
+
+You can see more detailed (debug) logging by setting the `RAILS_AUTOSCALE_DEBUG` env var on your Heroku app:
+
+```
+heroku config:add RAILS_AUTOSCALE_DEBUG=true
+```
+
+Debug logs are silenced by default because Rails apps default to a DEBUG log level in production,
+and these can get very noisy with this gem.
 
 Reach out to help@railsautoscale.com if you run into any other problems.
 
