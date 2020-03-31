@@ -26,7 +26,7 @@ module WorkerAdapters
       log_msg = String.new('Que latency ')
       t = Time.now
 
-      # Ignore failed jobs (the retry run_at is a future time, not reflecting latency)
+      # Ignore failed jobs (they skew latency measurement due to the original run_at)
       sql = 'SELECT queue, min(run_at) FROM que_jobs WHERE error_count = 0 GROUP BY queue'
       run_at_by_queue = Hash[ActiveRecord::Base.connection.select_rows(sql)]
       self.class.queues |= run_at_by_queue.keys
