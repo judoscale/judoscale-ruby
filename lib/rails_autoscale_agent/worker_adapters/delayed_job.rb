@@ -25,7 +25,7 @@ module RailsAutoscaleAgent
       end
 
       def collect!(store)
-        log_msg = String.new('DelayedJob latency ')
+        log_msg = String.new
         t = Time.now
 
         sql = 'SELECT queue, min(run_at) FROM delayed_jobs GROUP BY queue'
@@ -37,10 +37,10 @@ module RailsAutoscaleAgent
           run_at = Time.parse(run_at) if run_at.is_a?(String)
           latency_ms = run_at ? ((t - run_at)*1000).ceil : 0
           store.push latency_ms, t, queue
-          log_msg << "#{queue}=#{latency_ms} "
+          log_msg << "dj.#{queue}=#{latency_ms} "
         end
 
-        logger.debug log_msg
+        logger.debug log_msg unless log_msg.empty?
       end
 
       private

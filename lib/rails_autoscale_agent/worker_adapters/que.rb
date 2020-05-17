@@ -24,7 +24,7 @@ module RailsAutoscaleAgent
       end
 
       def collect!(store)
-        log_msg = String.new('Que latency ')
+        log_msg = String.new
         t = Time.now
 
         # Ignore failed jobs (they skew latency measurement due to the original run_at)
@@ -37,10 +37,10 @@ module RailsAutoscaleAgent
           run_at = Time.parse(run_at) if run_at.is_a?(String)
           latency_ms = run_at ? ((t - run_at)*1000).ceil : 0
           store.push latency_ms, t, queue
-          log_msg << "#{queue}=#{latency_ms} "
+          log_msg << "que.#{queue}=#{latency_ms} "
         end
 
-        logger.debug log_msg
+        logger.debug log_msg unless log_msg.empty?
       end
     end
   end
