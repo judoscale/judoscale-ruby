@@ -7,7 +7,7 @@ module RailsAutoscaleAgent
     include Singleton
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
-                  :dyno, :pid, :addon_name, :worker_adapters
+                  :dyno, :pid, :addon_name, :worker_adapters, :dev_mode
 
     def initialize
       require 'rails_autoscale_agent/worker_adapters/sidekiq'
@@ -22,11 +22,12 @@ module RailsAutoscaleAgent
       # Allow the add-on name to be configured - needed for testing
       @addon_name = ENV['RAILS_AUTOSCALE_ADDON'] || 'RAILS_AUTOSCALE'
       @api_base_url = ENV["#{@addon_name}_URL"]
+      @dev_mode = ENV['RAILS_AUTOSCALE_DEV'] == 'true'
       @pid = Process.pid
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
-      @report_interval = 60 # this default will be overwritten during Reporter#register!
+      @report_interval = 10 # this default will be overwritten during Reporter#register!
       @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new(STDOUT)
-      @dyno = ENV['DYNO']
+      @dyno = @dev_mode ? 'dev.1' : ENV['DYNO']
     end
 
     def to_s
@@ -37,5 +38,6 @@ module RailsAutoscaleAgent
       @max_request_size
     end
 
+    alias_method :dev_mode?, :dev_mode
   end
 end

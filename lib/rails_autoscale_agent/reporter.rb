@@ -21,7 +21,7 @@ module RailsAutoscaleAgent
       @started = true
       @worker_adapters = config.worker_adapters.select(&:enabled?)
 
-      if !config.api_base_url
+      if !config.api_base_url && !config.dev_mode?
         logger.info "Reporter not started: #{config.addon_name}_URL is not set"
         return
       end
@@ -58,7 +58,7 @@ module RailsAutoscaleAgent
         logger.info "Reporting #{report.measurements.size} measurements"
 
         params = report.to_params(config)
-        result = AutoscaleApi.new(config.api_base_url).report_metrics!(params, report.to_csv)
+        result = AutoscaleApi.new(config).report_metrics!(params, report.to_csv)
 
         case result
         when AutoscaleApi::SuccessResponse
@@ -73,7 +73,7 @@ module RailsAutoscaleAgent
 
     def register!(config)
       params = Registration.new(config).to_params
-      result = AutoscaleApi.new(config.api_base_url).register_reporter!(params)
+      result = AutoscaleApi.new(config).register_reporter!(params)
 
       case result
       when AutoscaleApi::SuccessResponse
