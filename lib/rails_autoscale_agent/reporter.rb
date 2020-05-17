@@ -28,7 +28,7 @@ module RailsAutoscaleAgent
 
       Thread.new do
         loop do
-          register!(config) unless @registered
+          register!(config, @worker_adapters) unless @registered
 
           # Stagger reporting to spread out reports from many processes
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
@@ -71,8 +71,8 @@ module RailsAutoscaleAgent
       end
     end
 
-    def register!(config)
-      params = Registration.new(config).to_params
+    def register!(config, worker_adapters)
+      params = Registration.new(config, worker_adapters).to_params
       result = AutoscaleApi.new(config).register_reporter!(params)
 
       case result
