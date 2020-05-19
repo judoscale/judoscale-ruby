@@ -53,7 +53,10 @@ module RailsAutoscaleAgent
 
       it "always collects for 'default' queue" do
         store = Store.instance
-        ActiveRecord::Base.connection.rows = []
+        ActiveRecord::Base.connection.rows = [
+          # unnamed queue is ignored
+          ['', Time.now - 11],
+        ]
 
         subject.collect! store
 
