@@ -20,8 +20,10 @@ module RailsAutoscaleAgent
 
         ::Sidekiq::Queue.all.each do |queue|
           latency_ms = (queue.latency * 1000).ceil
+          depth = queue.size
           store.push latency_ms, Time.now, queue.name, :qt
-          log_msg << "sidekiq.#{queue.name}=#{latency_ms} "
+          store.push depth, Time.now, queue.name, :qd
+          log_msg << "sidekiq-qt.#{queue.name}=#{latency_ms} sidekiq-qd.#{queue.name}=#{depth} "
         end
 
         logger.debug log_msg
