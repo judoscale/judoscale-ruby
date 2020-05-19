@@ -12,7 +12,8 @@ module RailsAutoscaleAgent
         ruby_version: RUBY_VERSION,
         rails_version: defined?(Rails) && Rails.version,
         gem_version: VERSION,
-        worker_adapters: worker_adapters.map(&:class).join(','),
+        # example: { worker_adapters: ['Sidekiq'] }
+        worker_adapters: worker_adapters.map { |o| o.class.name.split('::').last }.join(','),
       }
     end
   end
