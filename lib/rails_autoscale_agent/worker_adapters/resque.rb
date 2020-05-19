@@ -20,7 +20,7 @@ module RailsAutoscaleAgent
 
         ::Resque.queues.each do |queue|
           size = ::Resque.size(queue)
-          store.push size, Time.now, queue
+          store.push size, Time.now, queue, :qd
           log_msg << "resque.#{queue}=#{size} "
         end
 
