@@ -33,6 +33,7 @@ module RailsAutoscaleAgent
         queues = self.class.queues | run_at_by_queue.keys
 
         queues.each do |queue|
+          next if queue.nil? || queue.empty?
           run_at = run_at_by_queue[queue]
           run_at = Time.parse(run_at) if run_at.is_a?(String)
           latency_ms = run_at ? ((t - run_at)*1000).ceil : 0

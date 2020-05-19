@@ -71,6 +71,15 @@ module RailsAutoscaleAgent
         expect(store.measurements[1].queue_name).to eq 'low'
       end
 
+      it "ignores unnamed queues" do
+        store = Store.instance
+        ActiveRecord::Base.connection.rows = [[nil, Time.now - 11]]
+
+        subject.collect! store
+
+        expect(store.measurements.size).to eq 0
+      end
+
       it "handles string values for run_at" do
         store = Store.instance
         expected_value = (Time.now - Time.parse('2019-12-04T11:44:45Z')) * 1000
