@@ -19,6 +19,7 @@ module RailsAutoscaleAgent
         log_msg = String.new
 
         ::Resque.queues.each do |queue|
+          next if queue.nil? || queue.empty?
           depth = ::Resque.size(queue)
           store.push depth, Time.now, queue, :qd
           log_msg << "resque-qd.#{queue}=#{depth} "
