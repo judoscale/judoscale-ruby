@@ -15,7 +15,7 @@ module RailsAutoscaleAgent
       @measurements = []
     end
 
-    def push(value, time = Time.now, queue_name = nil, metric = :qt)
+    def push(value, time = Time.now, queue_name = nil, metric = nil)
       @measurements << Measurement.new(time, value, queue_name, metric)
     end
 
