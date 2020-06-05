@@ -30,7 +30,7 @@ module RailsAutoscaleAgent
         # Without this, slow clients and large request payloads will skew queue time.
         queue_time -= @request_body_wait
 
-        logger.debug "Collected queue_time=#{queue_time}ms request_id=#{@id} request_size=#{@size}"
+        logger.debug "Request queue_time=#{queue_time}ms body_wait=#{@request_body_wait}ms request_id=#{@id} size=#{@size}"
 
         # Safeguard against negative queue times (should not happen in practice)
         queue_time > 0 ? queue_time : 0
