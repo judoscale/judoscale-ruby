@@ -8,15 +8,14 @@ module RailsAutoscaleAgent
       @config = config
       @id = env['HTTP_X_REQUEST_ID']
       @size = env['rack.input'].respond_to?(:size) ? env['rack.input'].size : 0
+      @request_body_wait = env['puma.request_body_wait'].to_i
 
       @entered_queue_at = if unix_millis = env['HTTP_X_REQUEST_START']
         Time.at(unix_millis.to_f / 1000)
       elsif config.dev_mode?
         # In dev mode, fake a queue time of 0-1000ms
-        Time.now - rand
+        Time.now - rand + @request_body_wait
       end
-
-      @request_body_wait = env['puma.request_body_wait'].to_i
     end
 
     def ignore?
@@ -32,7 +31,7 @@ module RailsAutoscaleAgent
         # Without this, slow clients and large request payloads will skew queue time.
         queue_time -= @request_body_wait
 
-        logger.debug "Collected queue_time=#{queue_time}ms request_id=#{@id} request_size=#{@size} request_body_wait=#{@request_body_wait}"
+        logger.debug "Collected queue_time=#{queue_time}ms request_id=#{@id} request_size=#{@size}"
 
         queue_time
       end
