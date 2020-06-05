@@ -25,7 +25,6 @@ module RailsAutoscaleAgent
     def queue_time
       if @entered_queue_at
         queue_time = ((Time.now - @entered_queue_at) * 1000).to_i
-        queue_time = 0 if queue_time < 0
 
         # Subtract the time Puma spent waiting on the request body. It's irrelevant to capacity-related queue time.
         # Without this, slow clients and large request payloads will skew queue time.
@@ -33,7 +32,8 @@ module RailsAutoscaleAgent
 
         logger.debug "Collected queue_time=#{queue_time}ms request_id=#{@id} request_size=#{@size}"
 
-        queue_time
+        # Safeguard against negative queue times (should not happen in practice)
+        queue_time > 0 ? queue_time : 0
       end
     end
   end
