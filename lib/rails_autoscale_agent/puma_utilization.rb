@@ -6,8 +6,6 @@ class PumaUtilization
   include Singleton
   include RailsAutoscaleAgent::Logger
 
-  QUEUE = '_puma_util'
-
   def initialize
     @server = ObjectSpace.each_object(Puma::Server).map { |obj| obj }.first if defined?(Puma::Server)
   end
