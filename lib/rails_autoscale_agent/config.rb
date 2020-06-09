@@ -10,6 +10,15 @@ module RailsAutoscaleAgent
                   :dyno, :addon_name, :worker_adapters
 
     def initialize
+      require 'rails_autoscale_agent/worker_adapters/sidekiq'
+      require 'rails_autoscale_agent/worker_adapters/delayed_job'
+      require 'rails_autoscale_agent/worker_adapters/que'
+      @worker_adapters = [
+        WorkerAdapters::Sidekiq.instance,
+        WorkerAdapters::DelayedJob.instance,
+        WorkerAdapters::Que.instance,
+      ]
+
       # Allow the add-on name to be configured - needed for testing
       @addon_name = ENV['RAILS_AUTOSCALE_ADDON'] || 'RAILS_AUTOSCALE'
       @api_base_url = ENV["#{@addon_name}_URL"]
@@ -17,9 +26,6 @@ module RailsAutoscaleAgent
       @report_interval = 60 # this default will be overwritten during Reporter#register!
       @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new(STDOUT)
       @dyno = ENV['DYNO']
-      @worker_adapters = [
-        WorkerAdapters::Sidekiq.new,
-      ]
     end
 
     def to_s

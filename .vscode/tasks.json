@@ -1,0 +1,84 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "test: all",
+      "group": "test",
+      "command": "rspec",
+      "runOptions": {
+        "reevaluateOnRerun": false
+      },
+      "problemMatcher": {
+        "owner": "ruby",
+        "fileLocation": ["relative", "${workspaceRoot}"],
+        "severity": "error",
+        "pattern": [
+          {
+            "regexp": "^\\s{7}(.*)$",
+            "message": 1
+          },
+          {
+            "regexp": "^\\s+#\\s(\\./.*):(\\d+):(in.*)$",
+            "file": 1,
+            "line": 2,
+            "code": 3
+          }
+        ]
+      }
+    },
+    {
+      "label": "test: file",
+      "group": "test",
+      "command": "rspec",
+      "args": ["${relativeFile}"],
+      "runOptions": {
+        "reevaluateOnRerun": false
+      },
+      "problemMatcher": {
+        "owner": "ruby",
+        "fileLocation": ["relative", "${workspaceRoot}"],
+        "severity": "error",
+        "pattern": [
+          {
+            "regexp": "^\\s{7}(.*)$",
+            "message": 1
+          },
+          {
+            "regexp": "^\\s+#\\s(\\./.*):(\\d+):(in.*)$",
+            "file": 1,
+            "line": 2,
+            "code": 3
+          }
+        ]
+      }
+    },
+    {
+      "label": "test: line",
+      "group": "test",
+      "command": "rspec",
+      "args": ["${relativeFile}:${lineNumber}"],
+      "runOptions": {
+        "reevaluateOnRerun": false
+      },
+      "problemMatcher": {
+        "owner": "ruby",
+        "fileLocation": ["relative", "${workspaceRoot}"],
+        "severity": "error",
+        "pattern": [
+          {
+            "regexp": "^\\s{7}(.*)$",
+            "message": 1
+          },
+          {
+            "regexp": "^\\s+#\\s(\\./.*):(\\d+):(in.*)$",
+            "file": 1,
+            "line": 2,
+            "code": 3
+          }
+        ]
+      }
+    }
+  ]
+}

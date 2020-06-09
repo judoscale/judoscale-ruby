@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/adamlogic/rails_autoscale_agent.svg?branch=master)](https://travis-ci.org/adamlogic/rails_autoscale_agent)
 
-This gem works together with the [Rails Autoscale](https://railsautoscale.com) Heroku add-on to automatically scale your web dynos as needed. It gathers a minimal set of metrics for each request, and periodically posts this data asynchronously to the Rails Autoscale service.
+This gem works together with the [Rails Autoscale](https://railsautoscale.com) Heroku add-on to automatically scale your web and worker dynos as needed. It gathers a minimal set of metrics for each request (and job queue), and periodically posts this data asynchronously to the Rails Autoscale service.
 
 ## Requirements
 
@@ -26,9 +26,11 @@ You'll need to insert the `RailsAutoscaleAgent::Middleware` manually. Insert it 
 
 ## Changing the logger
 
+The Rails logger is used by default.
 If you wish to use a different logger you can set it on the configuration object:
 
 ```ruby
+# config/initializers/rails_autoscale_agent.rb
 RailsAutoscaleAgent::Config.instance.logger = MyLogger.new
 ```
 
@@ -43,21 +45,28 @@ The middleware agent runs in its own thread so your web requests are not impacte
 - PID
 - Collection of queue time measurements (time and milliseconds)
 
-Rails Autoscale processes and stores this information in order to power the autoscaling algorithm and dashboard visualizations.
+Rails Autoscale aggregates and stores this information to power the autoscaling algorithm and dashboard visualizations.
 
 ## Troubleshooting
 
-If your logger supports tagged logging (as the Rails logger does by default), all log output from this gem is prefixed with "[RailsAutoscale]".
-
-Once installed, you should see something like this in development:
+Once installed, you should see something like this in your development log:
 
 > [RailsAutoscale] Reporter not started: RAILS_AUTOSCALE_URL is not set
 
-In production, you should see something like this:
+In production, run `heroku logs -t | grep RailsAutoscale`, and you should see something like this:
 
 > [RailsAutoscale] Reporter starting, will report every 15 seconds
 
 If you don't see either of these, try running `bundle` again and restarting your Rails application.
+
+You can see more detailed (debug) logging by setting the `RAILS_AUTOSCALE_DEBUG` env var on your Heroku app:
+
+```
+heroku config:add RAILS_AUTOSCALE_DEBUG=true
+```
+
+Debug logs are silenced by default because Rails apps default to a DEBUG log level in production,
+and these can get very noisy with this gem.
 
 Reach out to help@railsautoscale.com if you run into any other problems.
 

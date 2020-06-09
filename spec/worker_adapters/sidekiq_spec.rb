@@ -6,6 +6,8 @@ require 'rails_autoscale_agent/store'
 
 module RailsAutoscaleAgent
   describe WorkerAdapters::Sidekiq do
+    subject { described_class.instance }
+
     describe "#enabled?" do
       specify { expect(subject.enabled?).to be_truthy }
     end

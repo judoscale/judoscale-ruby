@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/module/delegation'
 require 'rails_autoscale_agent/config'
+require 'logger'
 
 module RailsAutoscaleAgent
   module Logger
@@ -11,23 +11,30 @@ module RailsAutoscaleAgent
   end
 
   class LoggerProxy < Struct.new(:logger)
-    def tagged(*tags, &block)
-      if logger.respond_to?(:tagged)
-        logger.tagged *tags, &block
-      else
-        # NOTE: Quack like ActiveSupport::TaggedLogging, but don't reimplement
-        yield self
+    TAG = '[RailsAutoscale]'
+
+    %w[info warn error].each do |name|
+      define_method name do |msg|
+        logger.send name, tag(msg)
       end
     end
 
-    def debug(*args)
-      # Rails logger defaults to DEBUG level in production, but I don't want
-      # to be chatty by default.
-      logger.debug(*args) if ENV['RAILS_AUTOSCALE_LOG_LEVEL'] == 'DEBUG'
+    def debug(msg)
+      # Silence debug logs by default to avoiding being overly chatty (Rails logger defaults
+      # to DEBUG level in production).
+      # This uses a separate logger so that RAILS_AUTOSCALE_DEBUG
+      # shows debug logs regardless of Rails log level.
+      debug_logger.debug tag(msg) if ENV['RAILS_AUTOSCALE_DEBUG'] == 'true'
     end
 
-    def method_missing(name, *args, &block)
-      logger.send name, *args, &block
+    private
+
+    def debug_logger
+      @debug_loggers ||= ::Logger.new(STDOUT)
+    end
+
+    def tag(msg)
+      "#{TAG} #{msg}"
     end
   end
 end
