@@ -24,7 +24,7 @@ module RailsAutoscaleAgent
       # to DEBUG level in production).
       # This uses a separate logger so that RAILS_AUTOSCALE_DEBUG
       # shows debug logs regardless of Rails log level.
-      debug_logger.debug tag(msg) if ENV['RAILS_AUTOSCALE_DEBUG'] == 'true'
+      debug_logger.debug tag(msg) if ENV['RAILS_AUTOSCALE_DEBUG'] == 'true' || Config.instance.dev_mode?
     end
 
     private

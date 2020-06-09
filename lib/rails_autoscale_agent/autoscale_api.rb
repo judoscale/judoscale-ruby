@@ -11,8 +11,8 @@ module RailsAutoscaleAgent
 
     SUCCESS = 'success'
 
-    def initialize(api_url_base)
-      @api_url_base = api_url_base
+    def initialize(config)
+      @config = config
     end
 
     def report_metrics!(report_params, timings_csv)
@@ -37,8 +37,13 @@ module RailsAutoscaleAgent
     end
 
     def post_raw(options)
-      uri = URI.parse("#{@api_url_base}#{options.fetch(:path)}")
+      uri = URI.parse("#{@config.api_base_url}#{options.fetch(:path)}")
       ssl = uri.scheme == 'https'
+
+      if @config.dev_mode
+        logger.debug "[DEV_MODE] Skipping request to #{uri}"
+        return SuccessResponse.new('{}')
+      end
 
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: ssl) do |http|
         request = Net::HTTP::Post.new(uri.request_uri, options[:headers] || {})

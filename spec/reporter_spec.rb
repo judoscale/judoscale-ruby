@@ -22,7 +22,7 @@ module RailsAutoscaleAgent
         store.instance_variable_set '@measurements', []
 
         expected_query = { dyno: 'web.0', pid: Process.pid }
-        expected_body = "1000000001,11\n1000000002,22,high\n"
+        expected_body = "1000000001,11,,\n1000000002,22,high,\n"
         stub = stub_request(:post, "http://example.com/api/test-token/v2/reports").
                  with(query: expected_query, body: expected_body)
 
@@ -44,6 +44,7 @@ module RailsAutoscaleAgent
             ruby_version: RUBY_VERSION,
             rails_version: '5.0.fake',
             gem_version: RailsAutoscaleAgent::VERSION,
+            worker_adapters: '',
           }
         }
         response = {report_interval: 123}.to_json
@@ -51,7 +52,7 @@ module RailsAutoscaleAgent
                  with(body: expected_body).
                  to_return(body: response)
 
-        Reporter.instance.register!(Config.instance)
+        Reporter.instance.register!(Config.instance, [])
 
         expect(stub).to have_been_requested.once
       end

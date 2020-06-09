@@ -4,12 +4,12 @@ require 'rails_autoscale_agent/logger'
 
 module RailsAutoscaleAgent
   module WorkerAdapters
-    class Sidekiq
+    class Resque
       include RailsAutoscaleAgent::Logger
       include Singleton
 
       def enabled?
-        require 'sidekiq/api'
+        require 'resque'
         true
       rescue LoadError
         false
@@ -18,12 +18,11 @@ module RailsAutoscaleAgent
       def collect!(store)
         log_msg = String.new
 
-        ::Sidekiq::Queue.all.each do |queue|
-          latency_ms = (queue.latency * 1000).ceil
-          depth = queue.size
-          store.push latency_ms, Time.now, queue.name, :qt
-          store.push depth, Time.now, queue.name, :qd
-          log_msg << "sidekiq-qt.#{queue.name}=#{latency_ms} sidekiq-qd.#{queue.name}=#{depth} "
+        ::Resque.queues.each do |queue|
+          next if queue.nil? || queue.empty?
+          depth = ::Resque.size(queue)
+          store.push depth, Time.now, queue, :qd
+          log_msg << "resque-qd.#{queue}=#{depth} "
         end
 
         logger.debug log_msg
