@@ -41,7 +41,7 @@ module RailsAutoscaleAgent
             # Exceptions in threads other than the main thread will fail silently
             # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
             logger.error "Reporter error: #{ex.inspect}"
-            logger.error ex.backtrace.join("\n")
+            AutoscaleApi.new(config.api_base_url).report_exception!(ex)
           end
         end
       end
