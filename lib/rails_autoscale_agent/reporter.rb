@@ -5,6 +5,7 @@ require 'rails_autoscale_agent/logger'
 require 'rails_autoscale_agent/autoscale_api'
 require 'rails_autoscale_agent/time_rounder'
 require 'rails_autoscale_agent/registration'
+require 'rails_autoscale_agent/puma_collector'
 
 # Reporter wakes up every minute to send metrics to the RailsAutoscale API
 
@@ -45,6 +46,8 @@ module RailsAutoscaleAgent
           end
         end
       end
+
+      PumaCollector.start! store
     end
 
     def started?
