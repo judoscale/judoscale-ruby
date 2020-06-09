@@ -24,6 +24,10 @@ module RailsAutoscaleAgent
       post_json '/registrations', registration: registration_params
     end
 
+    def report_exception!(ex)
+      post_json '/exceptions', message: ex.inspect, backtrace: ex.backtrace.join("\n")
+    end
+
     private
 
     def post_json(path, data)
