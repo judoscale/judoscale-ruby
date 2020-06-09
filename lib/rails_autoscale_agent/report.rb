@@ -19,14 +19,12 @@ module RailsAutoscaleAgent
     def to_csv
       String.new.tap do |result|
         @measurements.each do |measurement|
-          result << measurement.time.to_i.to_s
-          result << ','
-          result << measurement.value.to_s
-
-          if measurement.queue_name
-            result << ','
-            result << measurement.queue_name
-          end
+          result << [
+            measurement.time.to_i,
+            measurement.value,
+            measurement.queue_name,
+            measurement.metric,
+          ].join(',')
 
           result << "\n"
         end
