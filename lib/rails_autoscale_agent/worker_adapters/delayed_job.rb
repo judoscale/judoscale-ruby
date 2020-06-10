@@ -27,9 +27,10 @@ module RailsAutoscaleAgent
       def collect!(store)
         log_msg = String.new
         t = Time.now
+        db_time = t.strftime('%Y-%m-%d %H:%M:%S')
 
         # Ignore failed jobs (they skew latency measurement due to the original run_at)
-        sql = "SELECT queue, min(run_at) FROM delayed_jobs WHERE attempts = 0 and run_at < '#{t.to_s(:db)}' and locked_at is null GROUP BY queue"
+        sql = "SELECT queue, min(run_at) FROM delayed_jobs WHERE attempts = 0 AND run_at < '#{db_time}' AND locked_at IS NULL GROUP BY queue"
         run_at_by_queue = Hash[ActiveRecord::Base.connection.select_rows(sql)]
         queues = self.class.queues | run_at_by_queue.keys
 
