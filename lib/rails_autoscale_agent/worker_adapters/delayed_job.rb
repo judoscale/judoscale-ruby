@@ -8,7 +8,7 @@ module RailsAutoscaleAgent
       include RailsAutoscaleAgent::Logger
       include Singleton
 
-      UNNAMED_QUEUE = '[unnamed queue]'
+      UNNAMED_QUEUE = '[unnamed]'
 
       class << self
         attr_accessor :queues
