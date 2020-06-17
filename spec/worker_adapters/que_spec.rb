@@ -32,7 +32,7 @@ module RailsAutoscaleAgent
     end
 
     describe "#collect!" do
-      before { described_class.queues = described_class::DEFAULT_QUEUES }
+      before { described_class.queues = Set.new }
       after { Store.instance.instance_variable_set '@measurements', [] }
 
       it "collects latency for each queue" do
@@ -51,18 +51,17 @@ module RailsAutoscaleAgent
         expect(store.measurements[1].queue_name).to eq 'high'
       end
 
-      it "always collects for 'default' queue" do
+      it "collects metrics for jobs without a queue name" do
         store = Store.instance
         ActiveRecord::Base.connection.rows = [
-          # unnamed queue is ignored
           ['', Time.now - 11],
         ]
 
         subject.collect! store
 
         expect(store.measurements.size).to eq 1
-        expect(store.measurements[0].value).to eq 0
-        expect(store.measurements[0].queue_name).to eq 'default'
+        expect(store.measurements[0].value).to be_within(2).of 11000
+        expect(store.measurements[0].queue_name).to eq '[unnamed]'
       end
 
       # Not sure why run_at would be a string, but it is for at least one customer.

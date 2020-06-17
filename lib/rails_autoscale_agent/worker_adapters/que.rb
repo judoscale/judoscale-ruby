@@ -10,14 +10,15 @@ module RailsAutoscaleAgent
       include Singleton
 
       UNNAMED_QUEUE = '[unnamed]'
-      DEFAULT_QUEUES = ['default']
 
       class << self
         attr_accessor :queues
       end
 
       def initialize
-        self.class.queues = DEFAULT_QUEUES
+        # Track the known queues so we can continue reporting on queues that don't
+        # currently have enqueued jobs.
+        self.class.queues = Set.new
       end
 
       def enabled?

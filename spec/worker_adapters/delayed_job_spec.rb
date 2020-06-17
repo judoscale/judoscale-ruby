@@ -71,13 +71,15 @@ module RailsAutoscaleAgent
         expect(store.measurements[1].queue_name).to eq 'low'
       end
 
-      it "ignores unnamed queues" do
+      it "collects metrics for jobs without a queue name" do
         store = Store.instance
         ActiveRecord::Base.connection.rows = [[nil, Time.now - 11]]
 
         subject.collect! store
 
-        expect(store.measurements.size).to eq 0
+        expect(store.measurements.size).to eq 1
+        expect(store.measurements[0].value).to be_within(2).of 11000
+        expect(store.measurements[0].queue_name).to eq '[unnamed]'
       end
 
       it "handles string values for run_at" do
