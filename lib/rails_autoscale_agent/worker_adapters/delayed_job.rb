@@ -26,7 +26,7 @@ module RailsAutoscaleAgent
 
       def collect!(store)
         log_msg = String.new
-        t = Time.now
+        t = Time.now.utc
         db_time = t.strftime('%Y-%m-%d %H:%M:%S')
 
         # Ignore failed jobs (they skew latency measurement due to the original run_at)
