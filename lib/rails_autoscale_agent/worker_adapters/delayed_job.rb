@@ -8,6 +8,8 @@ module RailsAutoscaleAgent
       include RailsAutoscaleAgent::Logger
       include Singleton
 
+      UNNAMED_QUEUE = '[unnamed queue]'
+
       class << self
         attr_accessor :queues
       end
@@ -35,10 +37,11 @@ module RailsAutoscaleAgent
         queues = self.class.queues | run_at_by_queue.keys
 
         queues.each do |queue|
-          next if queue.nil? || queue.empty?
           run_at = run_at_by_queue[queue]
           run_at = Time.parse(run_at) if run_at.is_a?(String)
           latency_ms = run_at ? ((t - run_at)*1000).ceil : 0
+
+          queue = UNNAMED_QUEUE if queue.nil? || queue.empty?
           store.push latency_ms, t, queue
           log_msg << "dj.#{queue}=#{latency_ms} "
         end
