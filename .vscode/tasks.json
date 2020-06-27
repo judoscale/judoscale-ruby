@@ -6,7 +6,8 @@
     {
       "label": "test: all",
       "group": "test",
-      "command": "rspec",
+      "command": "bundle",
+      "args": ["exec", "rspec"],
       "runOptions": {
         "reevaluateOnRerun": false
       },
@@ -31,8 +32,8 @@
     {
       "label": "test: file",
       "group": "test",
-      "command": "rspec",
-      "args": ["${relativeFile}"],
+      "command": "bundle",
+      "args": ["exec", "rspec", "${relativeFile}"],
       "runOptions": {
         "reevaluateOnRerun": false
       },
@@ -57,8 +58,8 @@
     {
       "label": "test: line",
       "group": "test",
-      "command": "rspec",
-      "args": ["${relativeFile}:${lineNumber}"],
+      "command": "bundle",
+      "args": ["exec", "rspec", "${relativeFile}:${lineNumber}"],
       "runOptions": {
         "reevaluateOnRerun": false
       },

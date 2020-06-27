@@ -1,4 +1,15 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in rails_autoscale_agent.gemspec
 gemspec
+
+gem "rake", ">= 12.3.3"
+gem "rspec", ">= 3.0"
+gem "vcr", ">= 3.0"
+gem "webmock"
+gem "pry-byebug"
+gem "sidekiq", ">= 5.0"
+gem "delayed_job"
+gem "delayed_job_active_record"
+gem "que"
+gem "activesupport"
+gem "sqlite3", platforms: :ruby
