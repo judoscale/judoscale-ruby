@@ -8,11 +8,9 @@ module RailsAutoscaleAgent
       include RailsAutoscaleAgent::Logger
       include Singleton
 
-      class << self
-        attr_writer :queues
-      end
+      attr_writer :queues
 
-      def self.queues
+      def queues
         # Track the known queues so we can continue reporting on queues that don't
         # have enqueued jobs at the time of reporting.
         # Assume a "default" queue so we always report *something*, even when nothing
@@ -39,9 +37,9 @@ module RailsAutoscaleAgent
         SQL
 
         run_at_by_queue = Hash[ActiveRecord::Base.connection.select_rows(sql)]
-        self.class.queues |= run_at_by_queue.keys
+        self.queues |= run_at_by_queue.keys
 
-        self.class.queues.each do |queue|
+        queues.each do |queue|
           run_at = run_at_by_queue[queue]
           # DateTime.parse assumes a UTC string
           run_at = DateTime.parse(run_at) if run_at.is_a?(String)

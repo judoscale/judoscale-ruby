@@ -18,7 +18,7 @@ module RailsAutoscaleAgent
     end
 
     describe "#collect!" do
-      before { described_class.queues = nil }
+      before { subject.queues = nil }
       before { ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs") }
       after { Store.instance.instance_variable_set '@measurements', [] }
 

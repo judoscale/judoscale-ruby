@@ -8,6 +8,12 @@ module RailsAutoscaleAgent
       include RailsAutoscaleAgent::Logger
       include Singleton
 
+      attr_writer :known_queue_names
+
+      def known_queue_names
+        @known_queue_names ||= ['default']
+      end
+
       def enabled?
         require 'sidekiq/api'
         logger.info "Sidekiq enabled"
@@ -18,10 +24,18 @@ module RailsAutoscaleAgent
 
       def collect!(store)
         log_msg = String.new
-        queues = ::Sidekiq::Queue.all
-        queues = [::Sidekiq::Queue.new('default')] if queues.empty?
+        queues_by_name = ::Sidekiq::Queue.all.each_with_object({}) do |queue, obj|
+          obj[queue.name] = queue
+        end
 
-        queues.each do |queue|
+        # Ensure we continue to collect metrics for known queue names, even when nothing is
+        # enqueued at the time. Without this, it will appears that the agent is no longer reporting.
+        known_queue_names.each do |queue_name|
+          queues_by_name[queue_name] ||= ::Sidekiq::Queue.new(queue_name)
+        end
+        self.known_queue_names = queues_by_name.keys
+
+        queues_by_name.each do |queue_name, queue|
           latency_ms = (queue.latency * 1000).ceil
           depth = queue.size
           store.push latency_ms, Time.now, queue.name, :qt
