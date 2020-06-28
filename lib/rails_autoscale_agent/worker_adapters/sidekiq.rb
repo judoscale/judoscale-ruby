@@ -18,8 +18,10 @@ module RailsAutoscaleAgent
 
       def collect!(store)
         log_msg = String.new
+        queues = ::Sidekiq::Queue.all
+        queues = [::Sidekiq::Queue.new('default')] if queues.empty?
 
-        ::Sidekiq::Queue.all.each do |queue|
+        queues.each do |queue|
           latency_ms = (queue.latency * 1000).ceil
           depth = queue.size
           store.push latency_ms, Time.now, queue.name, :qt

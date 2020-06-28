@@ -11,5 +11,6 @@ gem "sidekiq", ">= 5.0"
 gem "delayed_job"
 gem "delayed_job_active_record"
 gem "que"
+gem "resque"
 gem "activesupport"
 gem "sqlite3", platforms: :ruby
