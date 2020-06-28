@@ -18,7 +18,6 @@ module RailsAutoscaleAgent
         # Track the known queues so we can continue reporting on queues that don't
         # currently have enqueued jobs.
         self.class.queues = Set.new
-        @job_class = ::Delayed::Job
       end
 
       def enabled?

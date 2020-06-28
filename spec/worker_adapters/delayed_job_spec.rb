@@ -25,7 +25,7 @@ module RailsAutoscaleAgent
       it "collects latency for each queue" do
         store = Store.instance
         Delayable.new.delay(queue: 'low').perform
-        sleep 0.015
+        sleep 0.15
         Delayable.new.delay(queue: 'high').perform
 
         subject.collect! store
@@ -34,7 +34,7 @@ module RailsAutoscaleAgent
         expect(store.measurements[0].queue_name).to eq 'high'
         expect(store.measurements[0].value).to be_within(5).of 0
         expect(store.measurements[1].queue_name).to eq 'low'
-        expect(store.measurements[1].value).to be_within(5).of 15
+        expect(store.measurements[1].value).to be_within(10).of 150
       end
 
       it "reports for known queues that have no enqueued jobs" do

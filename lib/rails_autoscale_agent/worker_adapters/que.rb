@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_autoscale_agent/logger'
-require 'time'
 
 module RailsAutoscaleAgent
   module WorkerAdapters
@@ -22,22 +21,32 @@ module RailsAutoscaleAgent
       end
 
       def enabled?
-        defined? ::Que
+        if defined?(::Que)
+          logger.info "Initializing Que reporting for Rails Autoscale (#{::ActiveRecord::Base.default_timezone})"
+          true
+        end
       end
 
       def collect!(store)
         log_msg = String.new
-        t = Time.now
+        t = Time.now.utc
+        sql = <<~SQL
+          SELECT queue, min(run_at)
+          FROM que_jobs
+          WHERE finished_at IS NULL
+          AND expired_at IS NULL
+          AND error_count = 0
+          GROUP BY queue
+        SQL
 
-        # Ignore failed jobs (they skew latency measurement due to the original run_at)
-        sql = 'SELECT queue, min(run_at) FROM que_jobs WHERE error_count = 0 GROUP BY queue'
         run_at_by_queue = Hash[ActiveRecord::Base.connection.select_rows(sql)]
         self.class.queues |= run_at_by_queue.keys
 
         self.class.queues.each do |queue|
           run_at = run_at_by_queue[queue]
-          run_at = Time.parse(run_at) if run_at.is_a?(String)
+          run_at = DateTime.parse(run_at) if run_at.is_a?(String)
           latency_ms = run_at ? ((t - run_at)*1000).ceil : 0
+          latency_ms = 0 if latency_ms < 0
 
           queue = UNNAMED_QUEUE if queue.nil? || queue.empty?
           store.push latency_ms, t, queue
