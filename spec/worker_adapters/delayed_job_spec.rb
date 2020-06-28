@@ -18,28 +18,28 @@ module RailsAutoscaleAgent
     end
 
     describe "#collect!" do
-      before { described_class.queues = Set.new }
+      before { described_class.queues = nil }
       before { ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs") }
       after { Store.instance.instance_variable_set '@measurements', [] }
 
       it "collects latency for each queue" do
         store = Store.instance
-        Delayable.new.delay(queue: 'low').perform
+        Delayable.new.delay(queue: 'default').perform
         sleep 0.15
         Delayable.new.delay(queue: 'high').perform
 
         subject.collect! store
 
         expect(store.measurements.size).to eq 2
-        expect(store.measurements[0].queue_name).to eq 'high'
-        expect(store.measurements[0].value).to be_within(5).of 0
-        expect(store.measurements[1].queue_name).to eq 'low'
-        expect(store.measurements[1].value).to be_within(10).of 150
+        expect(store.measurements[0].queue_name).to eq 'default'
+        expect(store.measurements[0].value).to be_within(10).of 150
+        expect(store.measurements[1].queue_name).to eq 'high'
+        expect(store.measurements[1].value).to be_within(5).of 0
       end
 
       it "reports for known queues that have no enqueued jobs" do
         store = Store.instance
-        Delayable.new.delay(queue: 'low').perform
+        Delayable.new.delay(queue: 'default').perform
 
         subject.collect! store
 
@@ -49,18 +49,28 @@ module RailsAutoscaleAgent
         subject.collect! store
 
         expect(store.measurements.size).to eq 2
-        expect(store.measurements[0].queue_name).to eq 'low'
-        expect(store.measurements[1].queue_name).to eq 'low'
+        expect(store.measurements[0].queue_name).to eq 'default'
+        expect(store.measurements[1].queue_name).to eq 'default'
       end
 
       it "ignores future jobs" do
         store = Store.instance
-        Delayable.new.delay(queue: 'low', run_at: Time.now + 10).perform
+        Delayable.new.delay(queue: 'default', run_at: Time.now + 10).perform
 
         subject.collect! store
 
         expect(store.measurements.size).to eq 1
-        expect(store.measurements[0].queue_name).to eq 'low'
+        expect(store.measurements[0].queue_name).to eq 'default'
+        expect(store.measurements[0].value).to eq 0
+      end
+
+      it "always collects for the default queue" do
+        store = Store.instance
+
+        subject.collect! store
+
+        expect(store.measurements.size).to eq 1
+        expect(store.measurements[0].queue_name).to eq 'default'
         expect(store.measurements[0].value).to eq 0
       end
 
@@ -71,7 +81,7 @@ module RailsAutoscaleAgent
         subject.collect! store
 
         expect(store.measurements.size).to eq 1
-        expect(store.measurements[0].queue_name).to eq '[unnamed]'
+        expect(store.measurements[0].queue_name).to eq 'default'
         expect(store.measurements[0].value).to be_within(5).of 0
       end
     end

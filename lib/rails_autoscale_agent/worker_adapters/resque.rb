@@ -10,6 +10,7 @@ module RailsAutoscaleAgent
 
       def enabled?
         require 'resque'
+        logger.info "Resque enabled"
         true
       rescue LoadError
         false

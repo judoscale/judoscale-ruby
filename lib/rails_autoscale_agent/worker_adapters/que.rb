@@ -8,21 +8,21 @@ module RailsAutoscaleAgent
       include RailsAutoscaleAgent::Logger
       include Singleton
 
-      UNNAMED_QUEUE = '[unnamed]'
-
       class << self
-        attr_accessor :queues
+        attr_writer :queues
       end
 
-      def initialize
+      def self.queues
         # Track the known queues so we can continue reporting on queues that don't
-        # currently have enqueued jobs.
-        self.class.queues = Set.new
+        # have enqueued jobs at the time of reporting.
+        # Assume a "default" queue so we always report *something*, even when nothing
+        # is enqueued.
+        @queues ||= Set.new(['default'])
       end
 
       def enabled?
         if defined?(::Que)
-          logger.info "Initializing Que reporting for Rails Autoscale (#{::ActiveRecord::Base.default_timezone})"
+          logger.info "Que enabled (#{::ActiveRecord::Base.default_timezone})"
           true
         end
       end
@@ -36,7 +36,7 @@ module RailsAutoscaleAgent
           WHERE finished_at IS NULL
           AND expired_at IS NULL
           AND error_count = 0
-          GROUP BY queue
+          GROUP BY 1
         SQL
 
         run_at_by_queue = Hash[ActiveRecord::Base.connection.select_rows(sql)]
@@ -48,7 +48,6 @@ module RailsAutoscaleAgent
           latency_ms = run_at ? ((t - run_at)*1000).ceil : 0
           latency_ms = 0 if latency_ms < 0
 
-          queue = UNNAMED_QUEUE if queue.nil? || queue.empty?
           store.push latency_ms, t, queue
           log_msg << "que.#{queue}=#{latency_ms} "
         end

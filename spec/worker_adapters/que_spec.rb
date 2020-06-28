@@ -8,9 +8,11 @@ require 'que'
 module RailsAutoscaleAgent
   describe WorkerAdapters::Que do
     def enqueue(queue, run_at)
+      queue = queue ? "'#{queue}'" : 'NULL'
+      run_at = "'#{run_at.iso8601(6)}'"
       ActiveRecord::Base.connection.insert <<~SQL
         INSERT INTO que_jobs (queue, run_at)
-        VALUES ('#{queue}', '#{run_at.iso8601(6)}')
+        VALUES (#{queue}, #{run_at})
       SQL
     end
 
@@ -21,7 +23,7 @@ module RailsAutoscaleAgent
     end
 
     describe "#collect!" do
-      before { described_class.queues = Set.new }
+      before { described_class.queues = nil }
       before { ActiveRecord::Base.connection.execute("DELETE FROM que_jobs") }
       after { Store.instance.instance_variable_set '@measurements', [] }
 
@@ -46,7 +48,7 @@ module RailsAutoscaleAgent
         subject.collect! store
 
         expect(store.measurements.size).to eq 1
-        expect(store.measurements[0].queue_name).to eq '[unnamed]'
+        expect(store.measurements[0].queue_name).to eq 'default'
         expect(store.measurements[0].value).to be_within(5).of 11000
       end
     end

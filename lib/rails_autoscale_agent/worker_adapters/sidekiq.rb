@@ -10,6 +10,7 @@ module RailsAutoscaleAgent
 
       def enabled?
         require 'sidekiq/api'
+        logger.info "Sidekiq enabled"
         true
       rescue LoadError
         false
