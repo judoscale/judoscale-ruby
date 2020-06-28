@@ -47,6 +47,8 @@ module RailsAutoscaleAgent
 
         store = Store.instance
         allow(::Sidekiq::Queue).to receive(:all) { [] }
+        allow_any_instance_of(::Sidekiq::Queue).to receive(:size) { 0 }
+        allow_any_instance_of(::Sidekiq::Queue).to receive(:latency) { 0 }
 
         subject.collect! store
 
@@ -64,6 +66,8 @@ module RailsAutoscaleAgent
         store = Store.instance
 
         allow(::Sidekiq::Queue).to receive(:all) { [ double(name: 'low', latency: 11, size: 1) ] }
+        allow_any_instance_of(::Sidekiq::Queue).to receive(:size) { 0 }
+        allow_any_instance_of(::Sidekiq::Queue).to receive(:latency) { 0 }
         subject.collect! store
 
         Store.instance.instance_variable_set '@measurements', []

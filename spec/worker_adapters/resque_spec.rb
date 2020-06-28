@@ -40,6 +40,7 @@ module RailsAutoscaleAgent
 
         store = Store.instance
         allow(::Resque).to receive(:queues) { [] }
+        allow(::Resque).to receive(:size) { 0 }
 
         subject.collect! store
 
@@ -50,11 +51,11 @@ module RailsAutoscaleAgent
       end
 
       it "always collects for known queues" do
-        allow(::Resque).to receive(:size) { 1 }
         expect(subject.enabled?).to be_truthy
         store = Store.instance
 
         allow(::Resque).to receive(:queues) { ['low'] }
+        allow(::Resque).to receive(:size) { 0 }
         subject.collect! store
 
         Store.instance.instance_variable_set '@measurements', []
