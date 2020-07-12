@@ -4,54 +4,54 @@ require 'spec_helper'
 require 'rails_autoscale_agent/logger'
 
 module RailsAutoscaleAgent
-  class FakeLogger
-    attr_reader :msgs
-    def initialize
-      @msgs = Hash.new { |h,k| h[k] = [] }
-    end
-    def debug(msg)
-      @msgs[:debug] << msg
-    end
-    def info(msg)
-      @msgs[:info] << msg
-    end
-  end
-
   describe Logger do
+    LOGFILE = 'tmp/logger_spec_output.log'
+
     include Logger
 
-    let(:original_logger) { FakeLogger.new }
-    let(:debug_logger) { FakeLogger.new }
+    def messages
+      File.read(LOGFILE).chomp.lines
+    end
+
+    let(:original_logger) { ::Logger.new(LOGFILE) }
+
+    before { `mkdir -p tmp && rm -f #{LOGFILE}` }
     before { Config.instance.logger = original_logger }
-    before { allow(::Logger).to receive(:new) { debug_logger } }
 
     describe '#info' do
       it 'delegates to the original logger, prepending RailsAutoscale' do
-        logger.info 'INFO'
-        expect(original_logger.msgs[:info]).to eq ['[RailsAutoscale] INFO']
+        logger.info 'some info'
+        expect(messages.last).to include 'INFO -- : [RailsAutoscale] some info'
+      end
+
+      it 'can be silenced via config' do
+        use_config quiet: true do
+          logger.info 'some info'
+          expect(messages.last).to_not include 'INFO -- : [RailsAutoscale] some info'
+        end
       end
     end
 
     describe '#debug' do
       it 'silences debug logs by default' do
-        logger.debug 'SILENCE'
-        expect(original_logger.msgs[:debug]).to eq []
-        expect(debug_logger.msgs[:debug]).to eq []
+        logger.debug 'silence'
+        expect(messages.last).to_not include 'silence'
       end
 
-      it 'can be configured to allow debug logs (sent to a separate logger)' do
-        use_env('RAILS_AUTOSCALE_DEBUG' => 'true') do
-          logger.debug 'NOISE'
-          expect(original_logger.msgs[:debug]).to eq []
-          expect(debug_logger.msgs[:debug]).to eq ['[RailsAutoscale] NOISE']
+      context 'configured to allow debug logs' do
+        around { |example| use_env({'RAILS_AUTOSCALE_DEBUG' => 'true'}, &example) }
+
+        it "includes debug logs if the mail logger.level is DEBUG" do
+          original_logger.level = "DEBUG"
+          logger.debug 'some noise'
+          expect(messages.last).to include 'DEBUG -- : [RailsAutoscale] some noise'
         end
-      end
 
-      it 'does not affect the original logger' do
-        logger.debug 'LOGGER'
-        original_logger.debug 'ORIGINAL'
-        expect(original_logger.msgs[:debug]).to eq ['ORIGINAL']
-        expect(debug_logger.msgs[:debug]).to eq []
+        it "includes debug logs if the mail logger.level is INFO" do
+          original_logger.level = "INFO"
+          logger.debug 'some noise'
+          expect(messages.last).to include 'INFO -- : [RailsAutoscale] [DEBUG] some noise'
+        end
       end
     end
   end

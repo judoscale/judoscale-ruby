@@ -24,16 +24,6 @@ The agent will only communicate with Rails Autoscale if a `RAILS_AUTOSCALE_URL` 
 
 You'll need to insert the `RailsAutoscaleAgent::Middleware` manually. Insert it before `Rack::Runtime` to ensure accuracy of request queue timings.
 
-## Changing the logger
-
-The Rails logger is used by default.
-If you wish to use a different logger you can set it on the configuration object:
-
-```ruby
-# config/initializers/rails_autoscale_agent.rb
-RailsAutoscaleAgent::Config.instance.logger = MyLogger.new
-```
-
 ## What data is collected?
 
 The middleware agent runs in its own thread so your web requests are not impacted. The following data is submitted periodically to the Rails Autoscale API:
@@ -59,16 +49,38 @@ In production, run `heroku logs -t | grep RailsAutoscale`, and you should see so
 
 If you don't see either of these, try running `bundle` again and restarting your Rails application.
 
-You can see more detailed (debug) logging by setting the `RAILS_AUTOSCALE_DEBUG` env var on your Heroku app:
+You can see more detailed (debug) logging by setting `RAILS_AUTOSCALE_DEBUG` on your Heroku app:
 
 ```
 heroku config:add RAILS_AUTOSCALE_DEBUG=true
 ```
 
-Debug logs are silenced by default because Rails apps default to a DEBUG log level in production,
-and these can get very noisy with this gem.
+See more in the [logging](#logging) section below.
 
 Reach out to help@railsautoscale.com if you run into any other problems.
+
+## Logging
+
+The Rails logger is used by default.
+If you wish to use a different logger you can set it on the configuration object:
+
+```ruby
+# config/initializers/rails_autoscale_agent.rb
+RailsAutoscaleAgent::Config.instance.logger = MyLogger.new
+```
+
+Debug logs are silenced by default because Rails apps default to a DEBUG log level in production, and this gem has _very_ chatty debug logs. If you want to see the debug logs, set `RAILS_AUTOSCALE_DEBUG` on your Heroku app:
+
+```
+heroku config:add RAILS_AUTOSCALE_DEBUG=true
+```
+
+If you find the gem too chatty even without this, you can quiet it down further:
+
+```ruby
+# config/initializers/rails_autoscale_agent.rb
+RailsAutoscaleAgent::Config.instance.quiet = true
+```
 
 ## Development
 

@@ -4,6 +4,7 @@ require 'bundler/setup'
 Bundler.require(:default, :test)
 # require 'rails_autoscale_agent'
 require_relative './support/env_helpers'
+require_relative './support/config_helpers'
 
 module Rails
   def self.logger
