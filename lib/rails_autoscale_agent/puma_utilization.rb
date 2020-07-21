@@ -7,6 +7,8 @@ class PumaUtilization
   include RailsAutoscaleAgent::Logger
 
   def initialize
+    # TODO: I think this is wrong. In cluster mode, there is a server for each worker,
+    # and I'm only getting stats for one.
     @server = ObjectSpace.each_object(Puma::Server).map { |obj| obj }.first if defined?(Puma::Server)
   end
 
