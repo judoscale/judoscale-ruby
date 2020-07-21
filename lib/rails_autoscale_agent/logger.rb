@@ -13,25 +13,32 @@ module RailsAutoscaleAgent
   class LoggerProxy < Struct.new(:logger)
     TAG = '[RailsAutoscale]'
 
-    %w[info warn error].each do |name|
-      define_method name do |msg|
-        logger.send name, tag(msg)
-      end
+    def error(msg)
+      logger.error tag(msg)
+    end
+
+    def warn(msg)
+      logger.warn tag(msg)
+    end
+
+    def info(msg)
+      logger.info tag(msg) unless Config.instance.quiet?
     end
 
     def debug(msg)
       # Silence debug logs by default to avoiding being overly chatty (Rails logger defaults
-      # to DEBUG level in production).
-      # This uses a separate logger so that RAILS_AUTOSCALE_DEBUG
-      # shows debug logs regardless of Rails log level.
-      debug_logger.debug tag(msg) if ENV['RAILS_AUTOSCALE_DEBUG'] == 'true' || Config.instance.dev_mode?
+      # to DEBUG level in production). Setting RAILS_AUTOSCALE_DEBUG=true enables debug logs,
+      # even if the underlying logger severity level is INFO.
+      if Config.instance.debug?
+        if logger.respond_to?(:debug?) && logger.debug?
+          logger.debug tag(msg)
+        elsif logger.respond_to?(:info?) && logger.info?
+          logger.info tag("[DEBUG] #{msg}")
+        end
+      end
     end
 
     private
-
-    def debug_logger
-      @debug_loggers ||= ::Logger.new(STDOUT)
-    end
 
     def tag(msg)
       "#{TAG} #{msg}"
