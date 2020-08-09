@@ -34,15 +34,11 @@ module RailsAutoscaleAgent
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
           sleep config.report_interval * multiplier
 
-          begin
-            @worker_adapters.map { |a| a.collect!(store) }
-            report!(config, store)
-          rescue => ex
-            # Exceptions in threads other than the main thread will fail silently
-            # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
-            logger.error "Reporter error: #{ex.inspect}"
-            AutoscaleApi.new(config).report_exception!(ex)
+          @worker_adapters.map do |adapter|
+            report_exceptions { adapter.collect!(store) }
           end
+
+          report_exceptions { report!(config, store) }
         end
       end
     end
@@ -50,6 +46,8 @@ module RailsAutoscaleAgent
     def started?
       @started
     end
+
+    private
 
     def report!(config, store)
       report = store.pop_report
@@ -85,6 +83,15 @@ module RailsAutoscaleAgent
       when AutoscaleApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"
       end
+    end
+
+    def report_exceptions
+      yield
+    rescue => ex
+      # Exceptions in threads other than the main thread will fail silently
+      # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
+      logger.error "Reporter error: #{ex.inspect}"
+      AutoscaleApi.new(config).report_exception!(ex)
     end
   end
 end
