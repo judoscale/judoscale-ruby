@@ -29,7 +29,7 @@ module RailsAutoscaleAgent
         store.push 11, Time.at(1_000_000_001) # web measurement
         store.push 22, Time.at(1_000_000_002), 'high' # worker measurement
 
-        Reporter.instance.report!(Config.instance, store)
+        Reporter.instance.send :report!, Config.instance, store
 
         expect(stub).to have_been_requested.once
       end
@@ -52,7 +52,7 @@ module RailsAutoscaleAgent
                  with(body: expected_body).
                  to_return(body: response)
 
-        Reporter.instance.register!(Config.instance, [])
+        Reporter.instance.send :register!, Config.instance, []
 
         expect(stub).to have_been_requested.once
       end
