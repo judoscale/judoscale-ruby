@@ -27,12 +27,9 @@ module RailsAutoscaleAgent
       @last_pop = Time.now
       report = Report.new
 
-      if @measurements.empty?
-        # If nothing has been collected, add a 0ms queue time metric.
-        # This way *something* is reported to Rails Autoscale, so downscaling can
-        # potentially be triggered.
-        push 0
-      end
+      # Collect a 0ms web queue time metric so that *something* is always reported to Rails Autoscale.
+      # This provides assurance that the agent is connected, allowing downscaling for apps with no traffic.
+      push 0
 
       while measurement = @measurements.shift
         report.measurements << measurement
