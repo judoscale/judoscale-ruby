@@ -24,10 +24,17 @@ module RailsAutoscaleAgent
 
       def collect!(store)
         log_msg = String.new
+        current_queues = ::Resque.queues
+
+        # Don't collect worker metrics if there are unreasonable number of queues
+        if current_queues.size > 50
+          logger.debug "Skipping Resque metrics - #{current_queues.size} queues"
+          return
+        end
 
         # Ensure we continue to collect metrics for known queue names, even when nothing is
         # enqueued at the time. Without this, it will appears that the agent is no longer reporting.
-        self.queues |= ::Resque.queues
+        self.queues |= current_queues
 
         queues.each do |queue|
           next if queue.nil? || queue.empty?

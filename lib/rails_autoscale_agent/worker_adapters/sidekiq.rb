@@ -28,8 +28,14 @@ module RailsAutoscaleAgent
           obj[queue.name] = queue
         end
 
+        # Don't collect worker metrics if there are unreasonable number of queues
+        if queues_by_name.size > 50
+          logger.debug "Skipping Sidekiq metrics - #{queues_by_name.size} queues"
+          return
+        end
+
         # Ensure we continue to collect metrics for known queue names, even when nothing is
-        # enqueued at the time. Without this, it will appears that the agent is no longer reporting.
+        # enqueued at the time. Without this, it will appear that the agent is no longer reporting.
         known_queue_names.each do |queue_name|
           queues_by_name[queue_name] ||= ::Sidekiq::Queue.new(queue_name)
         end
