@@ -48,10 +48,9 @@ module RailsAutoscaleAgent
             middleware.call(env)
 
             report = Store.instance.pop_report
-            expect(report.measurements.length).to eql 2
+            expect(report.measurements.length).to eql 1
             expect(report.measurements.first).to be_a Measurement
             expect(report.measurements.first.value).to be_within(1).of(5000)
-            expect(report.measurements.last.value).to eq 0
           end
 
           it "records the queue time in the environment passed on" do
@@ -68,10 +67,7 @@ module RailsAutoscaleAgent
               middleware.call(env)
 
               report = Store.instance.pop_report
-
-              # The default 0ms metric is still collected
-              expect(report.measurements.length).to eql 1
-              expect(report.measurements.last.value).to eq 0
+              expect(report.measurements.length).to eql 0
             end
           end
         end

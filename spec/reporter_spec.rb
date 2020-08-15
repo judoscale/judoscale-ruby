@@ -22,7 +22,7 @@ module RailsAutoscaleAgent
         store.instance_variable_set '@measurements', []
 
         expected_query = { dyno: 'web.0', pid: Process.pid }
-        expected_body = /1000000001,11,,\n1000000002,22,high,\n\d+,0,,\n/
+        expected_body = "1000000001,11,,\n1000000002,22,high,\n"
         stub = stub_request(:post, "http://example.com/api/test-token/v2/reports").
                  with(query: expected_query, body: expected_body)
 
