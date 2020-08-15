@@ -7,15 +7,18 @@ module RailsAutoscaleAgent
     include Singleton
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
-                  :dyno, :pid, :addon_name, :worker_adapters, :dev_mode, :debug, :quiet
+                  :dyno, :pid, :addon_name, :worker_adapters, :dev_mode, :debug, :quiet,
+                  :sidekiq_latency_for_active_jobs
 
     def initialize
       require 'rails_autoscale_agent/worker_adapters/sidekiq'
+      require 'rails_autoscale_agent/worker_adapters/sidekiq_active_jobs'
       require 'rails_autoscale_agent/worker_adapters/delayed_job'
       require 'rails_autoscale_agent/worker_adapters/que'
       require 'rails_autoscale_agent/worker_adapters/resque'
       @worker_adapters = [
         WorkerAdapters::Sidekiq.instance,
+        WorkerAdapters::SidekiqActiveJobs.instance,
         WorkerAdapters::DelayedJob.instance,
         WorkerAdapters::Que.instance,
         WorkerAdapters::Resque.instance,
