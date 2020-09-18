@@ -22,7 +22,7 @@ The agent will only communicate with Rails Autoscale if a `RAILS_AUTOSCALE_URL` 
 
 ## Non-Rails Rack apps
 
-You'll need to insert the `RailsAutoscaleAgent::Middleware` manually. Insert it before `Rack::Runtime` to ensure accuracy of request queue timings.
+You'll need to `require 'rails_autoscale_agent/middleware'` and insert the `RailsAutoscaleAgent::Middleware` manually. Insert it before `Rack::Runtime` to ensure accuracy of request queue timings.
 
 ## What data is collected?
 
