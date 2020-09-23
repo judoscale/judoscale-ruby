@@ -35,10 +35,10 @@ module RailsAutoscaleAgent
           sleep config.report_interval * multiplier
 
           @worker_adapters.map do |adapter|
-            report_exceptions { adapter.collect!(store) }
+            report_exceptions(config) { adapter.collect!(store) }
           end
 
-          report_exceptions { report!(config, store) }
+          report_exceptions(config) { report!(config, store) }
         end
       end
     end
@@ -85,13 +85,19 @@ module RailsAutoscaleAgent
       end
     end
 
-    def report_exceptions
-      yield
+    def report_exceptions(config)
+      begin
+        yield
+      rescue => ex
+        # Exceptions in threads other than the main thread will fail silently
+        # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
+        logger.error "Reporter error: #{ex.inspect}"
+        AutoscaleApi.new(config).report_exception!(ex)
+      end
     rescue => ex
-      # Exceptions in threads other than the main thread will fail silently
-      # https://ruby-doc.org/core-2.2.0/Thread.html#class-Thread-label-Exception+handling
-      logger.error "Reporter error: #{ex.inspect}"
-      AutoscaleApi.new(config).report_exception!(ex)
+      # An exception was encountered while trying to report the original exception.
+      # Swallow the error so the reporter continues to report.
+      logger.error "Exception reporting error: #{ex.inspect}"
     end
   end
 end

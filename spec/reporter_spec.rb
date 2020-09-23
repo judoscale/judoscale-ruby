@@ -8,7 +8,6 @@ require 'webmock/rspec'
 
 module RailsAutoscaleAgent
   describe Reporter do
-
     around do |example|
       use_env({
         'DYNO' => 'web.0',
@@ -58,5 +57,24 @@ module RailsAutoscaleAgent
       end
     end
 
+    describe "#report_exception" do
+      it "reports exception info to the API" do
+        stub = stub_request(:post, "http://example.com/api/test-token/exceptions").
+                 with(body: %r{lib/rails_autoscale_agent/reporter.rb})
+
+        Reporter.instance.send(:report_exceptions, Config.instance) { 1/0 }
+
+        expect(stub).to have_been_requested.once
+      end
+
+      it "gracefully handles a failure in exception reporting" do
+        stub = stub_request(:post, "http://example.com/api/test-token/exceptions").
+                 to_return { 1/0 }
+
+        expect {
+          Reporter.instance.send(:report_exceptions, Config.instance) { 1/0 }
+        }.to_not raise_error
+      end
+    end
   end
 end
