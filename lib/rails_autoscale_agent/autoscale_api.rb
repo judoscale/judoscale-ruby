@@ -59,7 +59,7 @@ module RailsAutoscaleAgent
 
       case response.code.to_i
       when 200...300 then SuccessResponse.new(response.body)
-      else FailureResponse.new(response.message)
+      else FailureResponse.new([response.code, response.body].join(' - '))
       end
     end
 

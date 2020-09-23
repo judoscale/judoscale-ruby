@@ -32,6 +32,19 @@ module RailsAutoscaleAgent
 
         expect(stub).to have_been_requested.once
       end
+
+      it "logs reporter failures" do
+        store = Store.instance
+        stub = stub_request(:post, %r{http://example.com/api/test-token/v2/reports}).
+                 to_return(body: 'oops', status: 503)
+
+        store.push 1, Time.at(1_000_000_001) # need some measurement to trigger reporting
+
+        allow(Reporter.instance.logger).to receive(:error)
+        Reporter.instance.send :report!, Config.instance, store
+
+        expect(Reporter.instance.logger).to have_received(:error).with("Reporter failed: 503 - oops")
+      end
     end
 
     describe "#register!" do
