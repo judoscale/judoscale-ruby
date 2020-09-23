@@ -33,7 +33,7 @@ describe RailsAutoscaleAgent::AutoscaleApi, vcr: {record: :once} do
       result = autoscale_api.report_metrics!({}, measurements_csv)
 
       expect(result).to be_a RailsAutoscaleAgent::AutoscaleApi::FailureResponse
-      expect(result.failure_message).to eql 'Bad Request'
+      expect(result.failure_message).to eql '400 - Bad Request'
     end
 
     it 'returns a failure response if the service is unavailable' do
@@ -42,7 +42,7 @@ describe RailsAutoscaleAgent::AutoscaleApi, vcr: {record: :once} do
       result = autoscale_api.report_metrics!([], measurements_csv)
 
       expect(result).to be_a RailsAutoscaleAgent::AutoscaleApi::FailureResponse
-      expect(result.failure_message).to eql 'Service Unavailable'
+      expect(result.failure_message).to eql '503 - Service Unavailable'
     end
 
     it 'supports HTTPS' do

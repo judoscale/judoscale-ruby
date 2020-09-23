@@ -43,7 +43,7 @@ module RailsAutoscaleAgent
         allow(Reporter.instance.logger).to receive(:error)
         Reporter.instance.send :report!, Config.instance, store
 
-        expect(Reporter.instance.logger).to have_received(:error).with("Reporter failed: 503 - oops")
+        expect(Reporter.instance.logger).to have_received(:error).with("Reporter failed: 503 - ")
       end
     end
 
