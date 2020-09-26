@@ -4,10 +4,6 @@ require 'rails_autoscale_agent/logger'
 
 module RailsAutoscaleAgent
   class Request
-    # A request start time before a day ago would be unreasonable, and we must be
-    # interpreting the header incorrectly.
-    MINIMUM_REQUEST_START = Time.now - 60 * 60 * 24
-
     include Logger
 
     def initialize(env, config)
@@ -24,14 +20,11 @@ module RailsAutoscaleAgent
 
     def started_at
       if @request_start_header
-        request_start_header = @request_start_header.to_f
-        # If Heroku set the header, it's measured in milliseconds
-        started_at = Time.at(request_start_header / 1000)
-
-        # But if this app is using an nginx buildpack, it might be in seconds
-        started_at = Time.at(request_start_header) if started_at < MINIMUM_REQUEST_START
-
-        started_at
+        # Heroku sets the header as an integer, measured in milliseconds.
+        # If nginx is involved, it might be in seconds with fractional milliseconds,
+        # and it might be preceeded by "t=". We can all cases by removing non-digits
+        # and treating as milliseconds.
+        Time.at(@request_start_header.gsub(/\D/, '').to_i / 1000.0)
       elsif @config.dev_mode?
         # In dev mode, fake a queue time of 0-1000ms
         Time.now - rand + @request_body_wait

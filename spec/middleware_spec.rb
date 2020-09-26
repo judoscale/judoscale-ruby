@@ -41,7 +41,7 @@ module RailsAutoscaleAgent
 
         context "when the request includes HTTP_X_REQUEST_START" do
           let(:five_seconds_ago_in_unix_millis) { (Time.now.to_f - 5) * 1000 }
-          before { env['HTTP_X_REQUEST_START'] = five_seconds_ago_in_unix_millis }
+          before { env['HTTP_X_REQUEST_START'] = five_seconds_ago_in_unix_millis.to_i.to_s }
           before { Singleton.__init__(Store) }
 
           it "collects the request queue time" do
