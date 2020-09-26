@@ -7,7 +7,7 @@ module RailsAutoscaleAgent
     include Singleton
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
-                  :dyno, :pid, :addon_name, :worker_adapters, :dev_mode, :debug, :quiet,
+                  :dyno, :addon_name, :worker_adapters, :dev_mode, :debug, :quiet,
                   :sidekiq_latency_for_active_jobs, :latency_for_active_jobs
 
     def initialize
@@ -31,7 +31,6 @@ module RailsAutoscaleAgent
       @api_base_url = ENV["#{@addon_name}_URL"]
       @dev_mode = ENV['RAILS_AUTOSCALE_DEV'] == 'true'
       @debug = dev_mode? || ENV['RAILS_AUTOSCALE_DEBUG'] == 'true'
-      @pid = Process.pid
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 10 # this default will be overwritten during Reporter#register!
       @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new(STDOUT)
@@ -39,7 +38,7 @@ module RailsAutoscaleAgent
     end
 
     def to_s
-      "#{@dyno}##{@pid}"
+      "#{@dyno}##{Process.pid}"
     end
 
     def ignore_large_requests?
