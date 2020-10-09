@@ -8,6 +8,9 @@ module RailsAutoscaleAgent
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
                   :dyno, :addon_name, :worker_adapters, :dev_mode, :debug, :quiet,
+                  :track_long_running_jobs,
+
+                  # legacy configs, no longer used
                   :sidekiq_latency_for_active_jobs, :latency_for_active_jobs
 
     def initialize
@@ -19,9 +22,9 @@ module RailsAutoscaleAgent
       require 'rails_autoscale_agent/worker_adapters/resque'
       @worker_adapters = [
         WorkerAdapters::Sidekiq.instance,
-        WorkerAdapters::SidekiqActiveJobs.instance,
+        WorkerAdapters::SidekiqBusyJobs.instance,
         WorkerAdapters::DelayedJob.instance,
-        WorkerAdapters::DelayedJobActiveJobs.instance,
+        WorkerAdapters::DelayedJobBusyJobs.instance,
         WorkerAdapters::Que.instance,
         WorkerAdapters::Resque.instance,
       ]
