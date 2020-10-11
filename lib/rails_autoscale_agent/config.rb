@@ -34,6 +34,7 @@ module RailsAutoscaleAgent
       @api_base_url = ENV["#{@addon_name}_URL"]
       @dev_mode = ENV['RAILS_AUTOSCALE_DEV'] == 'true'
       @debug = dev_mode? || ENV['RAILS_AUTOSCALE_DEBUG'] == 'true'
+      @track_long_running_jobs = ENV['RAILS_AUTOSCALE_TRACK_LONG_RUNNING_JOBS'] == 'true'
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 10 # this default will be overwritten during Reporter#register!
       @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new(STDOUT)
