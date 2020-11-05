@@ -50,6 +50,12 @@ module RailsAutoscaleAgent
         end
 
         logger.debug log_msg
+      rescue => ex
+        if ex.class.name.match?(/Redis/)
+          logger.warn "[WorkerAdapters::Sidekiq] #{ex.inspect}"
+        else
+          raise
+        end
       end
     end
   end

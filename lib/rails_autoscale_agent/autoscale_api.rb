@@ -25,7 +25,8 @@ module RailsAutoscaleAgent
     end
 
     def report_exception!(ex)
-      post_json '/exceptions', message: ex.inspect, backtrace: ex.backtrace.join("\n")
+      location = ex.backtrace.to_s.lines.grep(/rails_autoscale_agent/).first&.strip
+      post_json '/exceptions', message: ex.inspect, location: location
     end
 
     private
