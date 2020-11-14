@@ -27,6 +27,7 @@ module RailsAutoscaleAgent
 
         busy_count_by_queue = Hash[ActiveRecord::Base.connection.select_rows(sql)]
 
+        # TODO: Ensure we capture a busy metric for each queue, even if it's not busy right now.
         busy_count_by_queue.each do |queue, busy_count|
           store.push busy_count, Time.now, queue, :busy
           log_msg << "dj-busy-jobs.#{queue}=#{busy_count} "
