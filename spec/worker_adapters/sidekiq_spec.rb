@@ -13,7 +13,7 @@ module RailsAutoscaleAgent
     end
 
     describe "#collect!" do
-      before { subject.known_queue_names = nil }
+      before { subject.queues = nil }
       after { Store.instance.instance_variable_set '@measurements', [] }
 
       it "collects latency for each queue" do

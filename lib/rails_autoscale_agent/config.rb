@@ -15,16 +15,12 @@ module RailsAutoscaleAgent
 
     def initialize
       require 'rails_autoscale_agent/worker_adapters/sidekiq'
-      require 'rails_autoscale_agent/worker_adapters/sidekiq_busy_jobs'
       require 'rails_autoscale_agent/worker_adapters/delayed_job'
-      require 'rails_autoscale_agent/worker_adapters/delayed_job_busy_jobs'
       require 'rails_autoscale_agent/worker_adapters/que'
       require 'rails_autoscale_agent/worker_adapters/resque'
       @worker_adapters = [
         WorkerAdapters::Sidekiq.instance,
-        WorkerAdapters::SidekiqBusyJobs.instance,
         WorkerAdapters::DelayedJob.instance,
-        WorkerAdapters::DelayedJobBusyJobs.instance,
         WorkerAdapters::Que.instance,
         WorkerAdapters::Resque.instance,
       ]
