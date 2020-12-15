@@ -20,6 +20,7 @@ module RailsAutoscaleAgent
     def start!(config, store)
       @started = true
       @worker_adapters = config.worker_adapters.select(&:enabled?)
+      @dyno_num = config.dyno.to_s.split('.').last.to_i
 
       if !config.api_base_url && !config.dev_mode?
         logger.info "Reporter not started: #{config.addon_name}_URL is not set"
@@ -34,8 +35,11 @@ module RailsAutoscaleAgent
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
           sleep config.report_interval * multiplier
 
-          @worker_adapters.map do |adapter|
-            report_exceptions(config) { adapter.collect!(store) }
+          # It's redundant to report worker metrics from every web dyno, so only report from web.1
+          if @dyno_num == 1
+            @worker_adapters.map do |adapter|
+              report_exceptions(config) { adapter.collect!(store) }
+            end
           end
 
           report_exceptions(config) { report!(config, store) }
