@@ -37,6 +37,32 @@ The middleware agent runs in its own thread so your web requests are not impacte
 
 Rails Autoscale aggregates and stores this information to power the autoscaling algorithm and dashboard visualizations.
 
+## Configuration
+
+Most Rails Autoscale configurations are handled via the settings page on your Rails Autoscale dashboard, but there a few ways you can directly change the behavior of the agent via environment variables:
+
+- `RAILS_AUTOSCALE_DEBUG` - Enables debug logging. See more in the [logging](#logging) section below.
+- `RAILS_AUTOSCALE_WORKER_ADAPTER` - Overrides the available worker adapters. See more in the [worker adapters](#worker_adapters) section below.
+- `RAILS_AUTOSCALE_LONG_JOBS` - Enables reporting for active workers. See [Handling Long-Running Background Jobs](https://railsautoscale.com/docs/long-running-jobs/) in the Rails Autoscale docs for more.
+
+## Worker adapters
+
+Rails Autoscale supports autoscaling worker dynos. Out of the box, four job backends are supported: Sidekiq, Resque, Delayed Job, and Que. The agent will automatically enable the appropriate worker adapter based on what you have installed in your app.
+
+In some scenarios you might want to override this behavior. Let's say you have both Sidekiq and Resque installed 🤷‍♂️, but you only want Rails Autoscale to collect metrics for Sidekiq. Here's how you'd override that:
+
+```
+heroku config:add RAILS_AUTOSCALE_WORKER_ADAPTER=sidekiq
+```
+
+You can also disable collection of worker metrics altogether:
+
+```
+heroku config:add RAILS_AUTOSCALE_WORKER_ADAPTER=""
+```
+
+It's also possible to write a custom worker adapter. See [these docs](https://railsautoscale.com/docs/custom-worker-adapter/) for details.
+
 ## Troubleshooting
 
 Once installed, you should see something like this in your development log:

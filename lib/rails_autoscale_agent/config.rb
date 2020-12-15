@@ -4,6 +4,8 @@ require 'singleton'
 
 module RailsAutoscaleAgent
   class Config
+    DEFAULT_WORKER_ADAPTERS = 'sidekiq,delayed_job,que,resque'
+
     include Singleton
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
@@ -14,16 +16,7 @@ module RailsAutoscaleAgent
                   :sidekiq_latency_for_active_jobs, :latency_for_active_jobs
 
     def initialize
-      require 'rails_autoscale_agent/worker_adapters/sidekiq'
-      require 'rails_autoscale_agent/worker_adapters/delayed_job'
-      require 'rails_autoscale_agent/worker_adapters/que'
-      require 'rails_autoscale_agent/worker_adapters/resque'
-      @worker_adapters = [
-        WorkerAdapters::Sidekiq.instance,
-        WorkerAdapters::DelayedJob.instance,
-        WorkerAdapters::Que.instance,
-        WorkerAdapters::Resque.instance,
-      ]
+      @worker_adapters = prepare_worker_adapters
 
       # Allow the add-on name to be configured - needed for testing
       @addon_name = ENV['RAILS_AUTOSCALE_ADDON'] || 'RAILS_AUTOSCALE'
@@ -48,5 +41,16 @@ module RailsAutoscaleAgent
     alias_method :dev_mode?, :dev_mode
     alias_method :debug?, :debug
     alias_method :quiet?, :quiet
+
+    private
+
+    def prepare_worker_adapters
+      adapter_names = (ENV['RAILS_AUTOSCALE_WORKER_ADAPTER'] || DEFAULT_WORKER_ADAPTERS).split(',')
+      adapter_names.map do |adapter_name|
+        require "rails_autoscale_agent/worker_adapters/#{adapter_name}"
+        adapter_constant_name = adapter_name.capitalize.gsub(/(?:_)(.)/i) { $1.upcase }
+        WorkerAdapters.const_get(adapter_constant_name).instance
+      end
+    end
   end
 end
