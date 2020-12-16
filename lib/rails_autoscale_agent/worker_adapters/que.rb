@@ -37,7 +37,7 @@ module RailsAutoscaleAgent
           GROUP BY 1
         SQL
 
-        run_at_by_queue = Hash[ActiveRecord::Base.connection.select_rows(sql)]
+        run_at_by_queue = Hash[select_rows(sql)]
 
         # Don't collect worker metrics if there are unreasonable number of queues
         if run_at_by_queue.size > 50
@@ -58,6 +58,13 @@ module RailsAutoscaleAgent
         end
 
         logger.debug log_msg unless log_msg.empty?
+      end
+
+      private
+
+      def select_rows(sql)
+        # This ensures the agent doesn't hold onto a DB connection any longer than necessary
+        ActiveRecord::Base.connection_pool.with_connection { |c| c.select_rows(sql) }
       end
     end
   end
