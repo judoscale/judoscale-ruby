@@ -1,11 +1,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.0...master)
+## [Unreleased](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.1...master)
 
 _There are no currently unreleased changes._
 
-## [0.10.0](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.9.1...v0.10.0) - 2021-01-03
+## [0.10.1](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.9.1...v0.10.1) - 2021-01-03
 
 ### Added
 
@@ -24,6 +24,10 @@ _There are no currently unreleased changes._
 - Avoid holding onto database connections (DJ & Que only). ([3919ca5](https://github.com/adamlogic/rails_autoscale_agent/commit/3919ca54420cafa82abf9f8cd251569f9637482b))
 - Better error handling for worker adapters. ([190786e](https://github.com/adamlogic/rails_autoscale_agent/commit/190786e4a910d41e394a3129aac1d23b594dbd9b))
 - Don't collect metrics of the reporter isn't running. Avoids memory bloat. ([247c322](https://github.com/adamlogic/rails_autoscale_agent/commit/247c322cffc625a8c6b2395080a048ffb94e7f3b))
+
+## [0.10.0](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.9.1...v0.10.0) - 2021-01-03 [YANKED]
+
+_I released the wrong branch 🤦‍♂️_
 
 ## [0.9.1](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.9.0...v0.9.1) - 2020-07-29
 
