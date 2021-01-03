@@ -5,19 +5,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Support for [long-running jobs](https://railsautoscale.com/docs/long-running-jobs/) in Sidekiq and Delayed Job.
-- Handle x-request-start measured in seconds to support nginx buildpack ([cd092f3](https://github.com/adamlogic/rails_autoscale_agent/commit/cd092f38718abf5ffaea866bcae7831d4c910ffd))
-- Override worker adapter via env var ([75dd06b](https://github.com/adamlogic/rails_autoscale_agent/commit/75dd06b2a7ff4eeab829eec24d503dc067c8fe32))
+- Add support for [long-running jobs](https://railsautoscale.com/docs/long-running-jobs/) in Sidekiq and Delayed Job.
+- Handle x-request-start measured in seconds (instead of milliseconds) to support nginx buildpack ([cd092f3](https://github.com/adamlogic/rails_autoscale_agent/commit/cd092f38718abf5ffaea866bcae7831d4c910ffd))
+- Override worker adapter config via env var ([75dd06b](https://github.com/adamlogic/rails_autoscale_agent/commit/75dd06b2a7ff4eeab829eec24d503dc067c8fe32))
 
 ### Changed
 
 - Require Ruby 2.5 or newer. ([b033050](https://github.com/adamlogic/rails_autoscale_agent/commit/b033050b7f9d4d7f1e50dbd780cf0e1822249268))
-- Only report worker metrics from web.1. ([d5d5fa8](https://github.com/adamlogic/rails_autoscale_agent/commit/d5d5fa87fb4d7d046832a64edde9ed0c3a6ec75f))
+- Only report worker metrics from web.1 to avoid redundant data. ([d5d5fa8](https://github.com/adamlogic/rails_autoscale_agent/commit/d5d5fa87fb4d7d046832a64edde9ed0c3a6ec75f))
+- Don't collect worker metrics for an unreasonable number of queues. ([a9358af](https://github.com/adamlogic/rails_autoscale_agent/commit/a9358af74a29a941d1f1d60a0222077dafd5ce08))
 
 ### Fixed
 
 - Avoid holding onto database connections (DJ & Que only). ([3919ca5](https://github.com/adamlogic/rails_autoscale_agent/commit/3919ca54420cafa82abf9f8cd251569f9637482b))
-- Don't collect worker metrics for an unreasonable number of queues. ([a9358af](https://github.com/adamlogic/rails_autoscale_agent/commit/a9358af74a29a941d1f1d60a0222077dafd5ce08))
 - Better error handling for worker adapters. ([190786e](https://github.com/adamlogic/rails_autoscale_agent/commit/190786e4a910d41e394a3129aac1d23b594dbd9b))
 - Don't collect metrics of the reporter isn't running. Avoids memory bloat. ([247c322](https://github.com/adamlogic/rails_autoscale_agent/commit/247c322cffc625a8c6b2395080a048ffb94e7f3b))
 
@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Adjust queue time metric to exclude time waiting for large request bodies. ([#25])
+- Adjust queue time metric to exclude time waiting for large request bodies. ([#25](https://github.com/adamlogic/rails_autoscale_agent/pull/25))
 - Que and DJ jobs without a queue name will be included in the "default" queue metrics.
 
 ### Fixed
@@ -55,20 +55,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Ignore worker metrics from unnamed queues (DJ & Que only). These metrics were being lumped with web metrics. ([#21])
+- Ignore worker metrics from unnamed queues (DJ & Que only). These metrics were being lumped with web metrics. ([#21](https://github.com/adamlogic/rails_autoscale_agent/pull/21))
 
 ## [0.8.1](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.8.0...v0.8.1) - 2020-05-04
 
 ### Fixed
 
-- Ignore failed jobs in Que adapter. ([#18])
+- Ignore failed jobs in Que adapter. ([#18](https://github.com/adamlogic/rails_autoscale_agent/pull/18))
 
 ## [0.8.0](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.7.0...v0.8.0) - 2020-03-21
 
 ### Added
 
-- Add support for Delayed Job ([#14])
-- Add support for Que ([#15])
+- Add support for Delayed Job ([#14](https://github.com/adamlogic/rails_autoscale_agent/pull/14))
+- Add support for Que ([#15](https://github.com/adamlogic/rails_autoscale_agent/pull/15))
 
 ## [0.7.0](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.6.3...v0.7.0) - 2019-12-04
 
