@@ -6,6 +6,7 @@ This gem works together with the [Rails Autoscale](https://railsautoscale.com) H
 
 ## Requirements
 
+- Rack-based app
 - Ruby 2.5 or newer
 
 ## Getting Started
