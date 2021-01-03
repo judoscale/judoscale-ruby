@@ -1,7 +1,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.9.1...master)
+## [Unreleased](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.0...master)
+
+_There are no currently unreleased changes._
+
+## [0.10.0](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.9.1...v0.10.0) - 2021-01-03
 
 ### Added
 
