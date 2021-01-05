@@ -3,7 +3,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.1...master)
 
-_There are no currently unreleased changes._
+### Changed
+
+- Allow Ruby 3. ([#36](https://github.com/adamlogic/rails_autoscale_agent/pull/36))
 
 ## [0.10.1](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.9.1...v0.10.1) - 2021-01-03
 
