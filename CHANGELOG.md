@@ -1,11 +1,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.1...master)
+## [Unreleased](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.2...master)
+
+No currently unreleased changes.
+
+## [0.10.2](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.1...v0.10.2) - 2021-01-12
 
 ### Changed
 
-- Allow Ruby 3. ([#36](https://github.com/adamlogic/rails_autoscale_agent/pull/36))
+- Loosen Ruby constraint to allow Ruby 3. ([#36](https://github.com/adamlogic/rails_autoscale_agent/pull/36))
 
 ## [0.10.1](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.9.1...v0.10.1) - 2021-01-03
 
