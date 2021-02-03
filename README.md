@@ -43,7 +43,7 @@ Rails Autoscale aggregates and stores this information to power the autoscaling 
 Most Rails Autoscale configurations are handled via the settings page on your Rails Autoscale dashboard, but there a few ways you can directly change the behavior of the agent via environment variables:
 
 - `RAILS_AUTOSCALE_DEBUG` - Enables debug logging. See more in the [logging](#logging) section below.
-- `RAILS_AUTOSCALE_WORKER_ADAPTER` - Overrides the available worker adapters. See more in the [worker adapters](#worker_adapters) section below.
+- `RAILS_AUTOSCALE_WORKER_ADAPTER` - Overrides the available worker adapters. See more in the [worker adapters](#worker-adapters) section below.
 - `RAILS_AUTOSCALE_LONG_JOBS` - Enables reporting for active workers. See [Handling Long-Running Background Jobs](https://railsautoscale.com/docs/long-running-jobs/) in the Rails Autoscale docs for more.
 
 ## Worker adapters
