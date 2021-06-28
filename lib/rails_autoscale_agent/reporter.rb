@@ -6,8 +6,6 @@ require 'rails_autoscale_agent/autoscale_api'
 require 'rails_autoscale_agent/time_rounder'
 require 'rails_autoscale_agent/registration'
 
-# Reporter wakes up every minute to send metrics to the RailsAutoscale API
-
 module RailsAutoscaleAgent
   class Reporter
     include Singleton
@@ -56,20 +54,16 @@ module RailsAutoscaleAgent
     def report!(config, store)
       report = store.pop_report
 
-      if report.measurements.any?
-        logger.info "Reporting #{report.measurements.size} measurements"
+      logger.info "Reporting #{report.measurements.size} measurements"
 
-        params = report.to_params(config)
-        result = AutoscaleApi.new(config).report_metrics!(params, report.to_csv)
+      params = report.to_params(config)
+      result = AutoscaleApi.new(config).report_metrics!(params, report.to_csv)
 
-        case result
-        when AutoscaleApi::SuccessResponse
-          logger.debug "Reported successfully"
-        when AutoscaleApi::FailureResponse
-          logger.error "Reporter failed: #{result.failure_message}"
-        end
-      else
-        logger.debug "Reporter has nothing to report"
+      case result
+      when AutoscaleApi::SuccessResponse
+        logger.debug "Reported successfully"
+      when AutoscaleApi::FailureResponse
+        logger.error "Reporter failed: #{result.failure_message}"
       end
     end
 
