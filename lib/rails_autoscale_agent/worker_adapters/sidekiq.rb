@@ -30,7 +30,7 @@ module RailsAutoscaleAgent
 
         # Don't collect worker metrics if there are unreasonable number of queues
         if queues_by_name.size > 50
-          logger.debug "Skipping Sidekiq metrics - #{queues_by_name.size} queues"
+          logger.warn "Skipping Sidekiq metrics - #{queues_by_name.size} queues"
           return
         end
 

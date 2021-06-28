@@ -34,7 +34,7 @@ module RailsAutoscaleAgent
 
         # Don't collect worker metrics if there are unreasonable number of queues
         if run_at_by_queue.size > 50
-          logger.debug "Skipping DelayedJob metrics - #{run_at_by_queue.size} queues"
+          logger.warn "Skipping DelayedJob metrics - #{run_at_by_queue.size} queues"
           return
         end
 
