@@ -13,6 +13,7 @@ module RailsAutoscaleAgent
 
     def initialize
       @measurements = []
+      @last_pop = Time.now
     end
 
     def push(value, time = Time.now, queue_name = nil, metric = nil)
