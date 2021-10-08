@@ -27,8 +27,8 @@ module RailsAutoscaleAgent
         current_queues = ::Resque.queues
 
         # Don't collect worker metrics if there are unreasonable number of queues
-        if current_queues.size > 50
-          logger.warn "Skipping Resque metrics - #{current_queues.size} queues"
+        if current_queues.size > Config.instance.max_queues
+          logger.warn "Skipping Resque metrics - #{current_queues.size} queues exceeds the #{Config.instance.max_queues} queue limit"
           return
         end
 

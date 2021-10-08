@@ -33,8 +33,8 @@ module RailsAutoscaleAgent
         run_at_by_queue = Hash[select_rows(sql)]
 
         # Don't collect worker metrics if there are unreasonable number of queues
-        if run_at_by_queue.size > 50
-          logger.warn "Skipping DelayedJob metrics - #{run_at_by_queue.size} queues"
+        if run_at_by_queue.size > Config.instance.max_queues
+          logger.warn "Skipping DelayedJob metrics - #{run_at_by_queue.size} queues exceeds the #{Config.instance.max_queues} queue limit"
           return
         end
 

@@ -10,7 +10,7 @@ module RailsAutoscaleAgent
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
                   :dyno, :addon_name, :worker_adapters, :dev_mode, :debug, :quiet,
-                  :track_long_running_jobs,
+                  :track_long_running_jobs, :max_queues,
 
                   # legacy configs, no longer used
                   :sidekiq_latency_for_active_jobs, :latency_for_active_jobs
@@ -24,6 +24,7 @@ module RailsAutoscaleAgent
       @dev_mode = ENV['RAILS_AUTOSCALE_DEV'] == 'true'
       @debug = dev_mode? || ENV['RAILS_AUTOSCALE_DEBUG'] == 'true'
       @track_long_running_jobs = ENV['RAILS_AUTOSCALE_LONG_JOBS'] == 'true'
+      @max_queues = ENV.fetch('RAILS_AUTOSCALE_MAX_QUEUES', 50).to_i
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 10 # this default will be overwritten during Reporter#register!
       @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new(STDOUT)
