@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails_autoscale_agent/middleware'
+require 'judoscale/middleware'
 
-module RailsAutoscaleAgent
+module Judoscale
   describe Middleware do
 
     class MockApp
@@ -26,8 +26,8 @@ module RailsAutoscaleAgent
       } }
       let(:middleware) { Middleware.new(app) }
 
-      context "with RAILS_AUTOSCALE_URL set" do
-        around { |example| use_env({'RAILS_AUTOSCALE_URL' => 'http://example.com'}, &example) }
+      context "with JUDOSCALE_URL set" do
+        around { |example| use_env({'JUDOSCALE_URL' => 'http://example.com'}, &example) }
 
         it "passes the request up the middleware stack" do
           middleware.call(env)
@@ -73,8 +73,8 @@ module RailsAutoscaleAgent
         end
       end
 
-      context "without RAILS_AUTOSCALE_URL set" do
-        around { |example| use_env({'RAILS_AUTOSCALE_URL' => nil}, &example) }
+      context "without JUDOSCALE_URL set" do
+        around { |example| use_env({'JUDOSCALE_URL' => nil}, &example) }
 
         it "passes the request up the middleware stack" do
           middleware.call(env)

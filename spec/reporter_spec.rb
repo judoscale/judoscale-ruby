@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails_autoscale_agent/reporter'
-require 'rails_autoscale_agent/config'
-require 'rails_autoscale_agent/store'
+require 'judoscale/reporter'
+require 'judoscale/config'
+require 'judoscale/store'
 require 'webmock/rspec'
 
-module RailsAutoscaleAgent
+module Judoscale
   describe Reporter do
     around do |example|
       use_env({
         'DYNO' => 'web.0',
-        'RAILS_AUTOSCALE_URL' => 'http://example.com/api/test-token',
+        'JUDOSCALE_URL' => 'http://example.com/api/test-token',
       }, &example)
     end
 
@@ -55,7 +55,7 @@ module RailsAutoscaleAgent
             pid: Process.pid,
             ruby_version: RUBY_VERSION,
             rails_version: '5.0.fake',
-            gem_version: RailsAutoscaleAgent::VERSION,
+            gem_version: Judoscale::VERSION,
             worker_adapters: '',
           }
         }
@@ -73,7 +73,7 @@ module RailsAutoscaleAgent
     describe "#report_exception" do
       it "reports exception info to the API" do
         stub = stub_request(:post, "http://example.com/api/test-token/exceptions").
-                 with(body: %r{lib/rails_autoscale_agent/reporter.rb})
+                 with(body: %r{lib/judoscale/reporter.rb})
 
         Reporter.instance.send(:report_exceptions, Config.instance) { 1/0 }
 

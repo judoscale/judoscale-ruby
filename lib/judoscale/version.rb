@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-module RailsAutoscaleAgent
+module Judoscale
   VERSION = "0.10.2"
 end

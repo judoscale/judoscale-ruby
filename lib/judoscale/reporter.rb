@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require 'singleton'
-require 'rails_autoscale_agent/logger'
-require 'rails_autoscale_agent/autoscale_api'
-require 'rails_autoscale_agent/time_rounder'
-require 'rails_autoscale_agent/registration'
+require 'judoscale/logger'
+require 'judoscale/autoscale_api'
+require 'judoscale/time_rounder'
+require 'judoscale/registration'
 
-module RailsAutoscaleAgent
+module Judoscale
   class Reporter
     include Singleton
     include Logger

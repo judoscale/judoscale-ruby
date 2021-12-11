@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails_autoscale_agent/worker_adapters/sidekiq'
-require 'rails_autoscale_agent/store'
+require 'judoscale/worker_adapters/sidekiq'
+require 'judoscale/store'
 
-module RailsAutoscaleAgent
+module Judoscale
   describe WorkerAdapters::Sidekiq do
     subject { described_class.instance }
 

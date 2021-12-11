@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails_autoscale_agent/time_rounder'
+require 'judoscale/time_rounder'
 
-module RailsAutoscaleAgent
+module Judoscale
   describe TimeRounder do
 
     describe ".beginning_of_minute" do

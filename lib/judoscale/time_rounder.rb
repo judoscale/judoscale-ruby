@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RailsAutoscaleAgent
+module Judoscale
   class TimeRounder
 
     def self.beginning_of_minute(time)

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'rails_autoscale_agent/store'
-require 'rails_autoscale_agent/reporter'
-require 'rails_autoscale_agent/config'
-require 'rails_autoscale_agent/request'
+require 'judoscale/store'
+require 'judoscale/reporter'
+require 'judoscale/config'
+require 'judoscale/request'
 
-module RailsAutoscaleAgent
+module Judoscale
   class Middleware
     def initialize(app)
       @app = app

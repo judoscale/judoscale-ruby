@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails_autoscale_agent/worker_adapters/resque'
-require 'rails_autoscale_agent/store'
+require 'judoscale/worker_adapters/resque'
+require 'judoscale/store'
 
-module RailsAutoscaleAgent
+module Judoscale
   describe WorkerAdapters::Resque do
     subject { described_class.instance }
 

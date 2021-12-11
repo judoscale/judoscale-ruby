@@ -2,7 +2,7 @@
 
 require 'bundler/setup'
 Bundler.require(:default, :test)
-# require 'rails_autoscale_agent'
+# require 'judoscale'
 require_relative './support/env_helpers'
 require_relative './support/config_helpers'
 
@@ -44,5 +44,5 @@ ActiveRecord::Schema.define do
 end
 
 RSpec.configure do |c|
-  c.before(:example) { Singleton.__init__(RailsAutoscaleAgent::Config) if Object.const_defined?('RailsAutoscaleAgent::Config') }
+  c.before(:example) { Singleton.__init__(Judoscale::Config) if Object.const_defined?('Judoscale::Config') }
 end

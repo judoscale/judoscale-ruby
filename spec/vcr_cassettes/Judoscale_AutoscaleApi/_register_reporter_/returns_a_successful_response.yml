@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: http://rails-autoscale.dev/api/test-app-token/registrations
+    uri: http://judoscale.dev/api/test-app-token/registrations
     body:
       encoding: UTF-8
       string: '{"registration":{"dyno":"web.1","pid":"1232"}}'
@@ -47,6 +47,6 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"report_interval":15}'
-    http_version: 
+    http_version:
   recorded_at: Sun, 02 Jul 2017 16:34:30 GMT
 recorded_with: VCR 3.0.3

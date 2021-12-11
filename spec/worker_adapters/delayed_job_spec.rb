@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails_autoscale_agent/worker_adapters/delayed_job'
-require 'rails_autoscale_agent/store'
+require 'judoscale/worker_adapters/delayed_job'
+require 'judoscale/store'
 
 class Delayable
   def perform
   end
 end
 
-module RailsAutoscaleAgent
+module Judoscale
   describe WorkerAdapters::DelayedJob do
     subject { described_class.instance }
 

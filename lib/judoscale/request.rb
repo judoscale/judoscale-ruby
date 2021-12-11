@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'rails_autoscale_agent/logger'
+require 'judoscale/logger'
 
-module RailsAutoscaleAgent
+module Judoscale
   class Request
     include Logger
 

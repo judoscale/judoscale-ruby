@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: https://rails-autoscale-production.herokuapp.com/api/test-token/v2/reports?dyno=web.1&pid=1232
+    uri: https://judoscale-production.herokuapp.com/api/test-token/v2/reports?dyno=web.1&pid=1232
     body:
       encoding: UTF-8
       string: 'does not matter'
@@ -45,6 +45,6 @@ http_interactions:
     body:
       encoding: UTF-8
       string: ''
-    http_version: 
+    http_version:
   recorded_at: Mon, 23 Jan 2017 02:13:49 GMT
 recorded_with: VCR 3.0.3

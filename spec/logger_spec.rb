@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails_autoscale_agent/logger'
+require 'judoscale/logger'
 
-module RailsAutoscaleAgent
+module Judoscale
   describe Logger do
     LOGFILE = 'tmp/logger_spec_output.log'
 
@@ -19,15 +19,15 @@ module RailsAutoscaleAgent
     before { Config.instance.logger = original_logger }
 
     describe '#info' do
-      it 'delegates to the original logger, prepending RailsAutoscale' do
+      it 'delegates to the original logger, prepending Judoscale' do
         logger.info 'some info'
-        expect(messages.last).to include 'INFO -- : [RailsAutoscale] some info'
+        expect(messages.last).to include 'INFO -- : [Judoscale] some info'
       end
 
       it 'can be silenced via config' do
         use_config quiet: true do
           logger.info 'some info'
-          expect(messages.last).to_not include 'INFO -- : [RailsAutoscale] some info'
+          expect(messages.last).to_not include 'INFO -- : [Judoscale] some info'
         end
       end
     end
@@ -39,18 +39,18 @@ module RailsAutoscaleAgent
       end
 
       context 'configured to allow debug logs' do
-        around { |example| use_env({'RAILS_AUTOSCALE_DEBUG' => 'true'}, &example) }
+        around { |example| use_env({'JUDOSCALE_DEBUG' => 'true'}, &example) }
 
         it "includes debug logs if the mail logger.level is DEBUG" do
           original_logger.level = "DEBUG"
           logger.debug 'some noise'
-          expect(messages.last).to include 'DEBUG -- : [RailsAutoscale] some noise'
+          expect(messages.last).to include 'DEBUG -- : [Judoscale] some noise'
         end
 
         it "includes debug logs if the mail logger.level is INFO" do
           original_logger.level = "INFO"
           logger.debug 'some noise'
-          expect(messages.last).to include 'INFO -- : [RailsAutoscale] [DEBUG] some noise'
+          expect(messages.last).to include 'INFO -- : [Judoscale] [DEBUG] some noise'
         end
       end
     end
