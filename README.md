@@ -1,6 +1,6 @@
 # Rails Autoscale Agent
 
-[![Build Status](https://travis-ci.org/adamlogic/rails_autoscale_agent.svg?branch=master)](https://travis-ci.org/adamlogic/rails_autoscale_agent)
+[![Build Status](https://github.com/judoscale/judoscale-ruby/actions/workflows/test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 
 This gem works together with the [Rails Autoscale](https://railsautoscale.com) Heroku add-on to automatically scale your web and worker dynos as needed. It gathers a minimal set of metrics for each request (and job queue), and periodically posts this data asynchronously to the Rails Autoscale service.
 
