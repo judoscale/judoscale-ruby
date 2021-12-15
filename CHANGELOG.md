@@ -4,6 +4,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...master)
 
 - Rails Autoscale is now Judoscale.
+- Require Ruby 2.6 or newer.
 
 ## [0.10.2](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.1...v0.10.2) - 2021-01-12
 
