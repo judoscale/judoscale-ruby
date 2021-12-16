@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'rails_autoscale_agent/version'
+require 'judoscale/version'
 
-module RailsAutoscaleAgent
+module Judoscale
   class Registration < Struct.new(:config, :worker_adapters)
 
     def to_params

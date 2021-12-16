@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'singleton'
-require 'rails_autoscale_agent/time_rounder'
-require 'rails_autoscale_agent/measurement'
-require 'rails_autoscale_agent/report'
+require 'judoscale/time_rounder'
+require 'judoscale/measurement'
+require 'judoscale/report'
 
-module RailsAutoscaleAgent
+module Judoscale
   class Store
     include Singleton
 

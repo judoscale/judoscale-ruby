@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails_autoscale_agent/worker_adapters/que'
-require 'rails_autoscale_agent/store'
+require 'judoscale/worker_adapters/que'
+require 'judoscale/store'
 require 'que'
 
-module RailsAutoscaleAgent
+module Judoscale
   describe WorkerAdapters::Que do
     def enqueue(queue, run_at)
       ActiveRecord::Base.connection.insert <<~SQL

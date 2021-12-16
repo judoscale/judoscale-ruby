@@ -1,9 +1,9 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.2...master)
+## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...master)
 
-No currently unreleased changes.
+- Rails Autoscale is now Judoscale.
 
 ## [0.10.2](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.1...v0.10.2) - 2021-01-12
 
@@ -15,7 +15,7 @@ No currently unreleased changes.
 
 ### Added
 
-- Add support for [long-running jobs](https://railsautoscale.com/docs/long-running-jobs/) in Sidekiq and Delayed Job.
+- Add support for [long-running jobs](https://judoscale.com/docs/long-running-jobs/) in Sidekiq and Delayed Job.
 - Handle x-request-start measured in seconds (instead of milliseconds) to support nginx buildpack ([cd092f3](https://github.com/adamlogic/rails_autoscale_agent/commit/cd092f38718abf5ffaea866bcae7831d4c910ffd))
 - Override worker adapter config via env var ([75dd06b](https://github.com/adamlogic/rails_autoscale_agent/commit/75dd06b2a7ff4eeab829eec24d503dc067c8fe32))
 
@@ -48,7 +48,7 @@ _I released the wrong branch 🤦‍♂️_
 
 - Add support for Resque workers.
 - Add dev mode for working on the agent gem itself. ([47e3fca](https://github.com/adamlogic/rails_autoscale_agent/commit/47e3fca5b788f48567a345d9cab3a26b9cd87693))
-- Report agent exceptions to Rails Autoscale.
+- Report agent exceptions to Judoscale.
 
 ### Changed
 

@@ -2,9 +2,9 @@
 
 require 'time'
 require 'spec_helper'
-require 'rails_autoscale_agent/measurement'
+require 'judoscale/measurement'
 
-module RailsAutoscaleAgent
+module Judoscale
   describe Measurement do
 
     describe "#value" do

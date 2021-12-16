@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'rails_autoscale_agent/config'
+require 'judoscale/config'
 require 'logger'
 
-module RailsAutoscaleAgent
+module Judoscale
   module Logger
     def logger
       @logger ||= LoggerProxy.new(Config.instance.logger)
@@ -11,7 +11,7 @@ module RailsAutoscaleAgent
   end
 
   class LoggerProxy < Struct.new(:logger)
-    TAG = '[RailsAutoscale]'
+    TAG = '[Judoscale]'
 
     def error(msg)
       logger.error tag(msg)
@@ -27,7 +27,7 @@ module RailsAutoscaleAgent
 
     def debug(msg)
       # Silence debug logs by default to avoiding being overly chatty (Rails logger defaults
-      # to DEBUG level in production). Setting RAILS_AUTOSCALE_DEBUG=true enables debug logs,
+      # to DEBUG level in production). Setting JUDOSCALE_DEBUG=true enables debug logs,
       # even if the underlying logger severity level is INFO.
       if Config.instance.debug?
         if logger.respond_to?(:debug?) && logger.debug?

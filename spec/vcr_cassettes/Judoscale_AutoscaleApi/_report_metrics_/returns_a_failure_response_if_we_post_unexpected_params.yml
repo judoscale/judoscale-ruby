@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: http://rails-autoscale.dev/api/bad-app-token/v2/reports
+    uri: http://judoscale.dev/api/bad-app-token/v2/reports
     body:
       encoding: UTF-8
       string: |
@@ -1287,7 +1287,7 @@ http_interactions:
         `call&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"80\" href=\"#\">rack
         (2.0.3) lib/rack/runtime.rb:22:in `call&#39;</a><br><a class=\"trace-frames\"
         data-frame-id=\"81\" href=\"#\">newrelic_rpm (4.2.0.334) lib/new_relic/agent/instrumentation/middleware_tracing.rb:92:in
-        `call&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"82\" href=\"#\">/Users/adam/src/rails_autoscale_agent/lib/rails_autoscale_agent/middleware.rb:29:in
+        `call&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"82\" href=\"#\">/Users/adam/src/judoscale-ruby/lib/judoscale/middleware.rb:29:in
         `call&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"83\" href=\"#\">newrelic_rpm
         (4.2.0.334) lib/new_relic/agent/instrumentation/middleware_tracing.rb:92:in
         `call&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"84\" href=\"#\">activesupport
@@ -1457,7 +1457,7 @@ http_interactions:
         `call&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"80\" href=\"#\">rack
         (2.0.3) lib/rack/runtime.rb:22:in `call&#39;</a><br><a class=\"trace-frames\"
         data-frame-id=\"81\" href=\"#\">newrelic_rpm (4.2.0.334) lib/new_relic/agent/instrumentation/middleware_tracing.rb:92:in
-        `call&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"82\" href=\"#\">/Users/adam/src/rails_autoscale_agent/lib/rails_autoscale_agent/middleware.rb:29:in
+        `call&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"82\" href=\"#\">/Users/adam/src/judoscale-ruby/lib/judoscale/middleware.rb:29:in
         `call&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"83\" href=\"#\">newrelic_rpm
         (4.2.0.334) lib/new_relic/agent/instrumentation/middleware_tracing.rb:92:in
         `call&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"84\" href=\"#\">activesupport
@@ -1510,8 +1510,8 @@ http_interactions:
         env dump</a></div>\n  <div id=\"env_dump\" style=\"display:none\"><pre>GATEWAY_INTERFACE:
         &quot;CGI/1.2&quot;\nHTTP_ACCEPT: &quot;*/*&quot;\nHTTP_ACCEPT_ENCODING: &quot;gzip;q=1.0,deflate;q=0.6,identity;q=0.3&quot;\nHTTP_VERSION:
         &quot;HTTP/1.1&quot;\nHTTP_X_FORWARDED_FOR: &quot;127.0.0.1&quot;\nHTTP_X_FORWARDED_HOST:
-        &quot;rails-autoscale.dev&quot;\nORIGINAL_SCRIPT_NAME: &quot;&quot;\nREMOTE_ADDR:
-        &quot;127.0.0.1&quot;\nSERVER_NAME: &quot;rails-autoscale.dev&quot;\nSERVER_PROTOCOL:
+        &quot;judoscale.dev&quot;\nORIGINAL_SCRIPT_NAME: &quot;&quot;\nREMOTE_ADDR:
+        &quot;127.0.0.1&quot;\nSERVER_NAME: &quot;judoscale.dev&quot;\nSERVER_PROTOCOL:
         &quot;HTTP/1.1&quot;</pre></div>\n</div>\n\n<h2 style=\"margin-top: 30px\">Response</h2>\n<p><b>Headers</b>:</p>
         <pre>None</pre>\n\n</div>\n\n\n<div id=\"console\"\n  data-mount-point='/__web_console'\n
         \ data-session-id='54db1712def7a487c64726a9f42dfa68'\n  data-prompt-label='>>
@@ -1779,6 +1779,6 @@ http_interactions:
         \     setContainerElementBottomMargin(currentConsoleElementHeight);\n    }\n\n
         \   resizerElement.addEventListener('mouseup', recordConsoleElementHeight);\n
         \ });\n});\n\n}).call(this);\n</script>\n\n</body>\n</html>\n"
-    http_version: 
+    http_version:
   recorded_at: Sat, 01 Jul 2017 20:11:23 GMT
 recorded_with: VCR 3.0.3

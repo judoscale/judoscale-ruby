@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'rails_autoscale_agent/logger'
+require 'judoscale/logger'
 
-module RailsAutoscaleAgent
+module Judoscale
   module WorkerAdapters
     class Resque
-      include RailsAutoscaleAgent::Logger
+      include Judoscale::Logger
       include Singleton
 
       attr_writer :queues

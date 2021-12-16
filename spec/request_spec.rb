@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails_autoscale_agent/request'
-require 'rails_autoscale_agent/config'
+require 'judoscale/request'
+require 'judoscale/config'
 
-module RailsAutoscaleAgent
+module Judoscale
   describe Request do
     let(:request) { Request.new(env, config) }
     let(:env) { {} }

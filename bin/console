@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require "rails_autoscale_agent"
+require "judoscale"
 
 require "pry"
 Pry.start
