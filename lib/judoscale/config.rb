@@ -26,7 +26,7 @@ module Judoscale
       @max_queues = ENV.fetch("JUDOSCALE_MAX_QUEUES", 50).to_i
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 10 # this default will be overwritten during Reporter#register!
-      @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new(STDOUT)
+      @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new($stdout)
       @dyno = dev_mode? ? "dev.1" : ENV["DYNO"]
     end
 

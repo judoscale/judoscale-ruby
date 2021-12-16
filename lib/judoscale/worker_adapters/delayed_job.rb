@@ -12,7 +12,7 @@ module Judoscale
 
       def enabled?
         if defined?(::Delayed::Job) && defined?(::Delayed::Backend::ActiveRecord)
-          log_msg = String.new("DelayedJob enabled (#{::ActiveRecord::Base.default_timezone})")
+          log_msg = +"DelayedJob enabled (#{::ActiveRecord::Base.default_timezone})"
           log_msg << " with long-running job support" if track_long_running_jobs?
           logger.info log_msg
           true
@@ -20,7 +20,7 @@ module Judoscale
       end
 
       def collect!(store)
-        log_msg = String.new
+        log_msg = +""
         t = Time.now.utc
         sql = <<~SQL
           SELECT COALESCE(queue, 'default'), min(run_at)

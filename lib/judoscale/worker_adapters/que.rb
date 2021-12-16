@@ -26,7 +26,7 @@ module Judoscale
       end
 
       def collect!(store)
-        log_msg = String.new
+        log_msg = +""
         t = Time.now.utc
         sql = <<~SQL
           SELECT queue, min(run_at)

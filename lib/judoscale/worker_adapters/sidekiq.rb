@@ -13,7 +13,7 @@ module Judoscale
       def enabled?
         require "sidekiq/api"
 
-        log_msg = String.new("Sidekiq enabled")
+        log_msg = +"Sidekiq enabled"
         log_msg << " with long-running job support" if track_long_running_jobs?
         logger.info log_msg
 
@@ -23,7 +23,7 @@ module Judoscale
       end
 
       def collect!(store)
-        log_msg = String.new
+        log_msg = +""
         queues_by_name = ::Sidekiq::Queue.all.each_with_object({}) do |queue, obj|
           obj[queue.name] = queue
         end

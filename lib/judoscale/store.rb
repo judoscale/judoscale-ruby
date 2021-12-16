@@ -28,7 +28,7 @@ module Judoscale
       @last_pop = Time.now
       report = Report.new
 
-      while measurement = @measurements.shift
+      while (measurement = @measurements.shift)
         report.measurements << measurement
       end
 

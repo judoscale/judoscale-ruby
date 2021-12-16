@@ -35,7 +35,7 @@ module Judoscale
 
       it "logs reporter failures" do
         store = Store.instance
-        stub = stub_request(:post, %r{http://example.com/api/test-token/v2/reports})
+        stub_request(:post, %r{http://example.com/api/test-token/v2/reports})
           .to_return(body: "oops", status: 503)
 
         store.push 1, Time.at(1_000_000_001) # need some measurement to trigger reporting
@@ -81,7 +81,7 @@ module Judoscale
       end
 
       it "gracefully handles a failure in exception reporting" do
-        stub = stub_request(:post, "http://example.com/api/test-token/exceptions")
+        stub_request(:post, "http://example.com/api/test-token/exceptions")
           .to_return { 1 / 0 }
 
         expect {

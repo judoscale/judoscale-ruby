@@ -16,7 +16,7 @@ module Judoscale
     end
 
     def to_csv
-      String.new.tap do |result|
+      (+"").tap do |result|
         @measurements.each do |measurement|
           result << [
             measurement.time.to_i,

@@ -23,7 +23,7 @@ module Judoscale
       end
 
       def collect!(store)
-        log_msg = String.new
+        log_msg = +""
         current_queues = ::Resque.queues
 
         # Don't collect worker metrics if there are unreasonable number of queues

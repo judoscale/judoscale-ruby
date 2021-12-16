@@ -4,9 +4,9 @@ require "spec_helper"
 require "judoscale/logger"
 
 module Judoscale
-  describe Logger do
-    LOGFILE = "tmp/logger_spec_output.log"
+  LOGFILE = "tmp/logger_spec_output.log"
 
+  describe Logger do
     include Logger
 
     def messages

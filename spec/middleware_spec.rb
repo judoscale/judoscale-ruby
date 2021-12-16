@@ -4,16 +4,16 @@ require "spec_helper"
 require "judoscale/middleware"
 
 module Judoscale
-  describe Middleware do
-    class MockApp
-      attr_reader :env
+  class MockApp
+    attr_reader :env
 
-      def call(env)
-        @env = env
-        nil
-      end
+    def call(env)
+      @env = env
+      nil
     end
+  end
 
+  describe Middleware do
     describe "#call" do
       before { Reporter.instance.instance_variable_set("@running", nil) }
 
