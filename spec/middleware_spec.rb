@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'judoscale/middleware'
+require "spec_helper"
+require "judoscale/middleware"
 
 module Judoscale
   describe Middleware do
-
     class MockApp
       attr_reader :env
 
@@ -16,18 +15,20 @@ module Judoscale
     end
 
     describe "#call" do
-      before { Reporter.instance.instance_variable_set('@running', nil) }
+      before { Reporter.instance.instance_variable_set("@running", nil) }
 
       let(:app) { MockApp.new }
-      let(:env) { {
-        'PATH_INFO' => '/foo',
-        'REQUEST_METHOD' => 'POST',
-        'rack.input' => StringIO.new('hello'),
-      } }
+      let(:env) {
+        {
+          "PATH_INFO" => "/foo",
+          "REQUEST_METHOD" => "POST",
+          "rack.input" => StringIO.new("hello")
+        }
+      }
       let(:middleware) { Middleware.new(app) }
 
       context "with JUDOSCALE_URL set" do
-        around { |example| use_env({'JUDOSCALE_URL' => 'http://example.com'}, &example) }
+        around { |example| use_env({"JUDOSCALE_URL" => "http://example.com"}, &example) }
 
         it "passes the request up the middleware stack" do
           middleware.call(env)
@@ -41,7 +42,7 @@ module Judoscale
 
         context "when the request includes HTTP_X_REQUEST_START" do
           let(:five_seconds_ago_in_unix_millis) { (Time.now.to_f - 5) * 1000 }
-          before { env['HTTP_X_REQUEST_START'] = five_seconds_ago_in_unix_millis.to_i.to_s }
+          before { env["HTTP_X_REQUEST_START"] = five_seconds_ago_in_unix_millis.to_i.to_s }
           before { Singleton.__init__(Store) }
 
           it "collects the request queue time" do
@@ -61,7 +62,7 @@ module Judoscale
           end
 
           context "when the request body is large enough to skew the queue time" do
-            before { env['rack.input'] = StringIO.new('.'*110_000) }
+            before { env["rack.input"] = StringIO.new("." * 110_000) }
 
             it "does not collect the request queue time" do
               middleware.call(env)
@@ -74,7 +75,7 @@ module Judoscale
       end
 
       context "without JUDOSCALE_URL set" do
-        around { |example| use_env({'JUDOSCALE_URL' => nil}, &example) }
+        around { |example| use_env({"JUDOSCALE_URL" => nil}, &example) }
 
         it "passes the request up the middleware stack" do
           middleware.call(env)
@@ -88,6 +89,5 @@ module Judoscale
         end
       end
     end
-
   end
 end

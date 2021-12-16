@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
 gemspec
 
@@ -14,3 +14,4 @@ gem "que"
 gem "resque"
 gem "activesupport"
 gem "sqlite3", platforms: :ruby
+gem "standard"

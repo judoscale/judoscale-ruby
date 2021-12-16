@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'singleton'
-require 'judoscale/time_rounder'
-require 'judoscale/measurement'
-require 'judoscale/report'
+require "singleton"
+require "judoscale/time_rounder"
+require "judoscale/measurement"
+require "judoscale/report"
 
 module Judoscale
   class Store
@@ -34,6 +34,5 @@ module Judoscale
 
       report
     end
-
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'judoscale/logger'
+require "judoscale/logger"
 
 module Judoscale
   module WorkerAdapters
@@ -11,7 +11,7 @@ module Judoscale
       attr_writer :queues
 
       def enabled?
-        require 'sidekiq/api'
+        require "sidekiq/api"
 
         log_msg = String.new("Sidekiq enabled")
         log_msg << " with long-running job support" if track_long_running_jobs?
@@ -42,9 +42,9 @@ module Judoscale
         self.queues = queues_by_name.keys
 
         if track_long_running_jobs?
-          busy_counts = Hash.new { |h,k| h[k] = 0}
+          busy_counts = Hash.new { |h, k| h[k] = 0 }
           ::Sidekiq::Workers.new.each do |pid, tid, work|
-            busy_counts[work.dig('payload', 'queue')] += 1
+            busy_counts[work.dig("payload", "queue")] += 1
           end
         end
 
@@ -69,7 +69,7 @@ module Judoscale
       private
 
       def queues
-        @queues ||= ['default']
+        @queues ||= ["default"]
       end
 
       def track_long_running_jobs?

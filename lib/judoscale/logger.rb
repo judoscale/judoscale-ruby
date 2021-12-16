@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'judoscale/config'
-require 'logger'
+require "judoscale/config"
+require "logger"
 
 module Judoscale
   module Logger
@@ -11,7 +11,7 @@ module Judoscale
   end
 
   class LoggerProxy < Struct.new(:logger)
-    TAG = '[Judoscale]'
+    TAG = "[Judoscale]"
 
     def error(msg)
       logger.error tag(msg)

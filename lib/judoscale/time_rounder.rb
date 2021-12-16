@@ -2,7 +2,6 @@
 
 module Judoscale
   class TimeRounder
-
     def self.beginning_of_minute(time)
       Time.new(
         time.year,
@@ -14,6 +13,5 @@ module Judoscale
         time.utc_offset
       )
     end
-
   end
 end

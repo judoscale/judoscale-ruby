@@ -2,7 +2,6 @@
 
 module Judoscale
   class Report
-
     attr_reader :measurements
 
     def initialize
@@ -12,7 +11,7 @@ module Judoscale
     def to_params(config)
       {
         dyno: config.dyno,
-        pid: Process.pid,
+        pid: Process.pid
       }
     end
 
@@ -23,13 +22,12 @@ module Judoscale
             measurement.time.to_i,
             measurement.value,
             measurement.queue_name,
-            measurement.metric,
-          ].join(',')
+            measurement.metric
+          ].join(",")
 
           result << "\n"
         end
       end
     end
-
   end
 end
