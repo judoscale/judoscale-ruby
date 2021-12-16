@@ -7,7 +7,7 @@ This gem works together with the [Judoscale](https://judoscale.com) Heroku add-o
 ## Requirements
 
 - Rack-based app
-- Ruby 2.5 or newer
+- Ruby 2.6 or newer
 
 ## Getting Started
 
