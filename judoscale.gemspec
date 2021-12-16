@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
     "homepage_uri" => "https://judoscale.com",
     "bug_tracker_uri" => "https://github.com/judoscale/judoscale-ruby/issues",
     "documentation_uri" => "https://judoscale.com/docs",
-    "changelog_uri" => "https://github.com/judoscale/judoscale-ruby/blob/master/CHANGELOG.md",
+    "changelog_uri" => "https://github.com/judoscale/judoscale-ruby/blob/main/CHANGELOG.md",
     "source_code_uri" => "https://github.com/judoscale/judoscale-ruby",
   }
 end
