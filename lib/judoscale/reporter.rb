@@ -3,7 +3,6 @@
 require "singleton"
 require "judoscale/logger"
 require "judoscale/autoscale_api"
-require "judoscale/time_rounder"
 require "judoscale/registration"
 
 module Judoscale
