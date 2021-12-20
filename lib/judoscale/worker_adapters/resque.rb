@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'judoscale/logger'
+require "judoscale/logger"
 
 module Judoscale
   module WorkerAdapters
@@ -11,11 +11,11 @@ module Judoscale
       attr_writer :queues
 
       def queues
-        @queues ||= ['default']
+        @queues ||= ["default"]
       end
 
       def enabled?
-        require 'resque'
+        require "resque"
         logger.info "Resque enabled"
         true
       rescue LoadError
@@ -23,7 +23,7 @@ module Judoscale
       end
 
       def collect!(store)
-        log_msg = String.new
+        log_msg = +""
         current_queues = ::Resque.queues
 
         # Don't collect worker metrics if there are unreasonable number of queues

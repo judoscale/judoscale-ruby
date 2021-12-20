@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
-require 'bundler/setup'
+require "bundler/setup"
 Bundler.require(:default, :test)
 # require 'judoscale'
-require_relative './support/env_helpers'
-require_relative './support/config_helpers'
+require_relative "./support/env_helpers"
+require_relative "./support/config_helpers"
 
 module Rails
   def self.logger
-    @logger ||= ::Logger.new('log/test.log')
+    @logger ||= ::Logger.new("log/test.log")
   end
 
   def self.version
-    '5.0.fake'
+    "5.0.fake"
   end
 end
 
@@ -20,6 +20,7 @@ ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:"
 
 ActiveRecord::Schema.define do
   # https://github.com/collectiveidea/delayed_job_active_record/blob/master/lib/generators/delayed_job/templates/migration.rb#L3
+  # standard:disable all
   create_table :delayed_jobs do |table|
     table.integer :priority, default: 0, null: false # Allows some jobs to jump to the front of the queue
     table.integer :attempts, default: 0, null: false # Provides for retries, but still fail eventually.
@@ -41,8 +42,9 @@ ActiveRecord::Schema.define do
     t.datetime "finished_at"
     t.datetime "expired_at"
   end
+   # standard:enable all
 end
 
 RSpec.configure do |c|
-  c.before(:example) { Singleton.__init__(Judoscale::Config) if Object.const_defined?('Judoscale::Config') }
+  c.before(:example) { Singleton.__init__(Judoscale::Config) if Object.const_defined?("Judoscale::Config") }
 end

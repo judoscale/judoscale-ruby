@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'judoscale/middleware'
-require 'judoscale/logger'
+require "judoscale/middleware"
+require "judoscale/logger"
 
 module Judoscale
   class Railtie < Rails::Railtie

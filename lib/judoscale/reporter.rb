@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'singleton'
-require 'judoscale/logger'
-require 'judoscale/autoscale_api'
-require 'judoscale/time_rounder'
-require 'judoscale/registration'
+require "singleton"
+require "judoscale/logger"
+require "judoscale/autoscale_api"
+require "judoscale/time_rounder"
+require "judoscale/registration"
 
 module Judoscale
   class Reporter
@@ -18,7 +18,7 @@ module Judoscale
     def start!(config, store)
       @started = true
       @worker_adapters = config.worker_adapters.select(&:enabled?)
-      @dyno_num = config.dyno.to_s.split('.').last.to_i
+      @dyno_num = config.dyno.to_s.split(".").last.to_i
 
       if !config.api_base_url && !config.dev_mode?
         logger.info "Reporter not started: #{config.addon_name}_URL is not set"
@@ -74,9 +74,9 @@ module Judoscale
       case result
       when AutoscaleApi::SuccessResponse
         @registered = true
-        config.report_interval = result.data['report_interval'] if result.data['report_interval']
-        config.max_request_size = result.data['max_request_size'] if result.data['max_request_size']
-        worker_adapters_msg = worker_adapters.map { |a| a.class.name }.join(', ')
+        config.report_interval = result.data["report_interval"] if result.data["report_interval"]
+        config.max_request_size = result.data["max_request_size"] if result.data["max_request_size"]
+        worker_adapters_msg = worker_adapters.map { |a| a.class.name }.join(", ")
         logger.info "Reporter starting, will report every #{config.report_interval} seconds or so. Worker adapters: [#{worker_adapters_msg}]"
       when AutoscaleApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"

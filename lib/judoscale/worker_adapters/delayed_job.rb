@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'judoscale/logger'
+require "judoscale/logger"
 
 module Judoscale
   module WorkerAdapters
@@ -12,7 +12,7 @@ module Judoscale
 
       def enabled?
         if defined?(::Delayed::Job) && defined?(::Delayed::Backend::ActiveRecord)
-          log_msg = String.new("DelayedJob enabled (#{::ActiveRecord::Base.default_timezone})")
+          log_msg = +"DelayedJob enabled (#{::ActiveRecord::Base.default_timezone})"
           log_msg << " with long-running job support" if track_long_running_jobs?
           logger.info log_msg
           true
@@ -20,7 +20,7 @@ module Judoscale
       end
 
       def collect!(store)
-        log_msg = String.new
+        log_msg = +""
         t = Time.now.utc
         sql = <<~SQL
           SELECT COALESCE(queue, 'default'), min(run_at)
@@ -30,7 +30,7 @@ module Judoscale
           GROUP BY queue
         SQL
 
-        run_at_by_queue = Hash[select_rows(sql)]
+        run_at_by_queue = select_rows(sql).to_h
 
         # Don't collect worker metrics if there are unreasonable number of queues
         if run_at_by_queue.size > Config.instance.max_queues
@@ -50,7 +50,7 @@ module Judoscale
             GROUP BY 1
           SQL
 
-          busy_count_by_queue = Hash[select_rows(sql)]
+          busy_count_by_queue = select_rows(sql).to_h
           self.queues = queues | busy_count_by_queue.keys
         end
 
@@ -58,7 +58,7 @@ module Judoscale
           run_at = run_at_by_queue[queue]
           # DateTime.parse assumes a UTC string
           run_at = DateTime.parse(run_at) if run_at.is_a?(String)
-          latency_ms = run_at ? ((t - run_at)*1000).ceil : 0
+          latency_ms = run_at ? ((t - run_at) * 1000).ceil : 0
           latency_ms = 0 if latency_ms < 0
 
           store.push latency_ms, t, queue
@@ -81,7 +81,7 @@ module Judoscale
         # have enqueued jobs at the time of reporting.
         # Assume a "default" queue so we always report *something*, even when nothing
         # is enqueued.
-        @queues ||= Set.new(['default'])
+        @queues ||= Set.new(["default"])
       end
 
       def track_long_running_jobs?

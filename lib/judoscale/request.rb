@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'judoscale/logger'
+require "judoscale/logger"
 
 module Judoscale
   class Request
@@ -8,10 +8,10 @@ module Judoscale
 
     def initialize(env, config)
       @config = config
-      @id = env['HTTP_X_REQUEST_ID']
-      @size = env['rack.input'].respond_to?(:size) ? env['rack.input'].size : 0
-      @request_body_wait = env['puma.request_body_wait'].to_i
-      @request_start_header = env['HTTP_X_REQUEST_START']
+      @id = env["HTTP_X_REQUEST_ID"]
+      @size = env["rack.input"].respond_to?(:size) ? env["rack.input"].size : 0
+      @request_body_wait = env["puma.request_body_wait"].to_i
+      @request_start_header = env["HTTP_X_REQUEST_START"]
     end
 
     def ignore?
@@ -24,7 +24,7 @@ module Judoscale
         # If nginx is involved, it might be in seconds with fractional milliseconds,
         # and it might be preceeded by "t=". We can all cases by removing non-digits
         # and treating as milliseconds.
-        Time.at(@request_start_header.gsub(/\D/, '').to_i / 1000.0)
+        Time.at(@request_start_header.gsub(/\D/, "").to_i / 1000.0)
       elsif @config.dev_mode?
         # In dev mode, fake a queue time of 0-1000ms
         Time.now - rand + @request_body_wait

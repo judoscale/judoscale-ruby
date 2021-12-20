@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'judoscale/config'
+require "judoscale/config"
 
 module ConfigHelpers
   # Override Config.instance for a single spec

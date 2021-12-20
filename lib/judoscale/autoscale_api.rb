@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'net/http'
-require 'uri'
-require 'json'
-require 'judoscale/logger'
+require "net/http"
+require "uri"
+require "json"
+require "judoscale/logger"
 
 module Judoscale
   class AutoscaleApi
     include Logger
 
-    SUCCESS = 'success'
+    SUCCESS = "success"
 
     def initialize(config)
       @config = config
@@ -21,32 +21,32 @@ module Judoscale
     end
 
     def register_reporter!(registration_params)
-      post_json '/registrations', registration: registration_params
+      post_json "/registrations", registration: registration_params
     end
 
     def report_exception!(ex)
-      post_json '/exceptions', message: ex.inspect, backtrace: ex.backtrace.join("\n")
+      post_json "/exceptions", message: ex.inspect, backtrace: ex.backtrace.join("\n")
     end
 
     private
 
     def post_json(path, data)
-      headers = {'Content-Type' => 'application/json'}
+      headers = {"Content-Type" => "application/json"}
       post_raw path: path, body: JSON.dump(data), headers: headers
     end
 
     def post_csv(path, data)
-      headers = {'Content-Type' => 'text/csv'}
+      headers = {"Content-Type" => "text/csv"}
       post_raw path: path, body: data, headers: headers
     end
 
     def post_raw(options)
       uri = URI.parse("#{@config.api_base_url}#{options.fetch(:path)}")
-      ssl = uri.scheme == 'https'
+      ssl = uri.scheme == "https"
 
       if @config.dev_mode
         logger.debug "[DEV_MODE] Skipping request to #{uri}"
-        return SuccessResponse.new('{}')
+        return SuccessResponse.new("{}")
       end
 
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: ssl) do |http|
@@ -59,7 +59,7 @@ module Judoscale
 
       case response.code.to_i
       when 200...300 then SuccessResponse.new(response.body)
-      else FailureResponse.new([response.code, response.message].join(' - '))
+      else FailureResponse.new([response.code, response.message].join(" - "))
       end
     end
 
@@ -73,6 +73,5 @@ module Judoscale
 
     class FailureResponse < Struct.new(:failure_message)
     end
-
   end
 end

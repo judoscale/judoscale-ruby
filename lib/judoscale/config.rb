@@ -1,34 +1,33 @@
 # frozen_string_literal: true
 
-require 'singleton'
+require "singleton"
 
 module Judoscale
   class Config
-    DEFAULT_WORKER_ADAPTERS = 'sidekiq,delayed_job,que,resque'
+    DEFAULT_WORKER_ADAPTERS = "sidekiq,delayed_job,que,resque"
 
     include Singleton
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
-                  :dyno, :addon_name, :worker_adapters, :dev_mode, :debug, :quiet,
-                  :track_long_running_jobs, :max_queues,
-
-                  # legacy configs, no longer used
-                  :sidekiq_latency_for_active_jobs, :latency_for_active_jobs
+      :dyno, :addon_name, :worker_adapters, :dev_mode, :debug, :quiet,
+      :track_long_running_jobs, :max_queues,
+      # legacy configs, no longer used
+      :sidekiq_latency_for_active_jobs, :latency_for_active_jobs
 
     def initialize
       @worker_adapters = prepare_worker_adapters
 
       # Allow the add-on name to be configured - needed for testing
-      @addon_name = ENV['JUDOSCALE_ADDON'] || 'JUDOSCALE'
+      @addon_name = ENV["JUDOSCALE_ADDON"] || "JUDOSCALE"
       @api_base_url = ENV["#{@addon_name}_URL"]
-      @dev_mode = ENV['JUDOSCALE_DEV'] == 'true'
-      @debug = dev_mode? || ENV['JUDOSCALE_DEBUG'] == 'true'
-      @track_long_running_jobs = ENV['JUDOSCALE_LONG_JOBS'] == 'true'
-      @max_queues = ENV.fetch('JUDOSCALE_MAX_QUEUES', 50).to_i
+      @dev_mode = ENV["JUDOSCALE_DEV"] == "true"
+      @debug = dev_mode? || ENV["JUDOSCALE_DEBUG"] == "true"
+      @track_long_running_jobs = ENV["JUDOSCALE_LONG_JOBS"] == "true"
+      @max_queues = ENV.fetch("JUDOSCALE_MAX_QUEUES", 50).to_i
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 10 # this default will be overwritten during Reporter#register!
-      @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new(STDOUT)
-      @dyno = dev_mode? ? 'dev.1' : ENV['DYNO']
+      @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new($stdout)
+      @dyno = dev_mode? ? "dev.1" : ENV["DYNO"]
     end
 
     def to_s
@@ -46,7 +45,7 @@ module Judoscale
     private
 
     def prepare_worker_adapters
-      adapter_names = (ENV['JUDOSCALE_WORKER_ADAPTER'] || DEFAULT_WORKER_ADAPTERS).split(',')
+      adapter_names = (ENV["JUDOSCALE_WORKER_ADAPTER"] || DEFAULT_WORKER_ADAPTERS).split(",")
       adapter_names.map do |adapter_name|
         require "judoscale/worker_adapters/#{adapter_name}"
         adapter_constant_name = adapter_name.capitalize.gsub(/(?:_)(.)/i) { $1.upcase }

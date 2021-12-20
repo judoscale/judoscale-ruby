@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'judoscale/worker_adapters/resque'
-require 'judoscale/store'
+require "spec_helper"
+require "judoscale/worker_adapters/resque"
+require "judoscale/store"
 
 module Judoscale
   describe WorkerAdapters::Resque do
@@ -14,23 +14,23 @@ module Judoscale
 
     describe "#collect!" do
       before { subject.queues = nil }
-      after { Store.instance.instance_variable_set '@measurements', [] }
+      after { Store.instance.instance_variable_set "@measurements", [] }
 
       it "collects latency for each queue" do
         expect(subject.enabled?).to be_truthy
 
         store = Store.instance
-        allow(::Resque).to receive(:queues) { ['default', 'high'] }
-        allow(::Resque).to receive(:size).with('default') { 1 }
-        allow(::Resque).to receive(:size).with('high') { 2 }
+        allow(::Resque).to receive(:queues) { ["default", "high"] }
+        allow(::Resque).to receive(:size).with("default") { 1 }
+        allow(::Resque).to receive(:size).with("high") { 2 }
 
         subject.collect! store
 
         expect(store.measurements.size).to eq 2
-        expect(store.measurements[0].queue_name).to eq 'default'
+        expect(store.measurements[0].queue_name).to eq "default"
         expect(store.measurements[0].value).to eq 1
         expect(store.measurements[0].metric).to eq :qd
-        expect(store.measurements[1].queue_name).to eq 'high'
+        expect(store.measurements[1].queue_name).to eq "high"
         expect(store.measurements[1].value).to eq 2
         expect(store.measurements[1].metric).to eq :qd
       end
@@ -45,7 +45,7 @@ module Judoscale
         subject.collect! store
 
         expect(store.measurements.size).to eq 1
-        expect(store.measurements[0].queue_name).to eq 'default'
+        expect(store.measurements[0].queue_name).to eq "default"
         expect(store.measurements[0].value).to eq 0
         expect(store.measurements[0].metric).to eq :qd
       end
@@ -54,11 +54,11 @@ module Judoscale
         expect(subject.enabled?).to be_truthy
         store = Store.instance
 
-        allow(::Resque).to receive(:queues) { ['low'] }
+        allow(::Resque).to receive(:queues) { ["low"] }
         allow(::Resque).to receive(:size) { 0 }
         subject.collect! store
 
-        Store.instance.instance_variable_set '@measurements', []
+        Store.instance.instance_variable_set "@measurements", []
         allow(::Resque).to receive(:queues) { [] }
         subject.collect! store
 

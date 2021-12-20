@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'singleton'
-require 'judoscale/time_rounder'
-require 'judoscale/measurement'
-require 'judoscale/report'
+require "singleton"
+require "judoscale/time_rounder"
+require "judoscale/measurement"
+require "judoscale/report"
 
 module Judoscale
   class Store
@@ -28,12 +28,11 @@ module Judoscale
       @last_pop = Time.now
       report = Report.new
 
-      while measurement = @measurements.shift
+      while (measurement = @measurements.shift)
         report.measurements << measurement
       end
 
       report
     end
-
   end
 end
