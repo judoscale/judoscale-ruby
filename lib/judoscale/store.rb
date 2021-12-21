@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "singleton"
-require "judoscale/time_rounder"
 require "judoscale/measurement"
 require "judoscale/report"
 
