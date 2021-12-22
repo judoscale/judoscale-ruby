@@ -4,49 +4,53 @@ require "test_helper"
 require "judoscale/logger"
 
 module Judoscale
-  class LoggerTest < Test
+  describe Logger do
     include Logger
 
     def messages
       @string_io.string
     end
 
-    def setup
+    before do
       @string_io = StringIO.new
       @original_logger = ::Logger.new(@string_io)
       Config.instance.logger = @original_logger
     end
 
-    def test_info_delegates_to_the_original_logger_prepending_judoscale
-      logger.info "some info"
-      assert_includes messages, "INFO -- : [Judoscale] some info"
-    end
-
-    def test_info_can_be_silenced_via_config
-      use_config quiet: true do
+    describe "#info" do
+      it "delegates to the original logger, prepending Judoscale" do
         logger.info "some info"
-        refute_includes messages, "INFO -- : [Judoscale] some info"
+        _(messages).must_include "INFO -- : [Judoscale] some info"
+      end
+
+      it "can be silenced via config" do
+        use_config quiet: true do
+          logger.info "some info"
+          _(messages).wont_include "INFO -- : [Judoscale] some info"
+        end
       end
     end
 
-    def test_debug_silences_debug_logs_by_default
-      logger.debug "silence"
-      refute_includes messages, "silence"
-    end
-
-    def test_debug_includes_debug_logs_if_enabled_and_the_main_logger_level_is_DEBUG
-      use_config debug: true do
-        @original_logger.level = "DEBUG"
-        logger.debug "some noise"
-        assert_includes messages, "DEBUG -- : [Judoscale] some noise"
+    describe "#debug" do
+      it "silences debug logs by default" do
+        logger.debug "silence"
+        _(messages).wont_include "silence"
       end
-    end
 
-    def test_debug_includes_debug_logs_if_enabled_and_the_main_logger_level_is_INFO
-      use_config debug: true do
-        @original_logger.level = "INFO"
-        logger.debug "some noise"
-        assert_includes messages, "INFO -- : [Judoscale] [DEBUG] some noise"
+      it "includes debug logs if enabled and the main logger.level is DEBUG" do
+        use_config debug: true do
+          @original_logger.level = "DEBUG"
+          logger.debug "some noise"
+          _(messages).must_include "DEBUG -- : [Judoscale] some noise"
+        end
+      end
+
+      it "includes debug logs if enabled and the main logger.level is INFO" do
+        use_config debug: true do
+          @original_logger.level = "INFO"
+          logger.debug "some noise"
+          _(messages).must_include "INFO -- : [Judoscale] [DEBUG] some noise"
+        end
       end
     end
   end
