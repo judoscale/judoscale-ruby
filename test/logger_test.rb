@@ -7,14 +7,12 @@ module Judoscale
   describe Logger do
     include Logger
 
-    def messages
-      @string_io.string
-    end
+    let(:string_io) { StringIO.new }
+    let(:original_logger) { ::Logger.new(string_io) }
+    let(:messages) { string_io.string }
 
     before do
-      @string_io = StringIO.new
-      @original_logger = ::Logger.new(@string_io)
-      Config.instance.logger = @original_logger
+      Config.instance.logger = original_logger
     end
 
     describe "#info" do
@@ -39,7 +37,7 @@ module Judoscale
 
       it "includes debug logs if enabled and the main logger.level is DEBUG" do
         use_config debug: true do
-          @original_logger.level = "DEBUG"
+          original_logger.level = "DEBUG"
           logger.debug "some noise"
           _(messages).must_include "DEBUG -- : [Judoscale] some noise"
         end
@@ -47,7 +45,7 @@ module Judoscale
 
       it "includes debug logs if enabled and the main logger.level is INFO" do
         use_config debug: true do
-          @original_logger.level = "INFO"
+          original_logger.level = "INFO"
           logger.debug "some noise"
           _(messages).must_include "INFO -- : [Judoscale] [DEBUG] some noise"
         end
