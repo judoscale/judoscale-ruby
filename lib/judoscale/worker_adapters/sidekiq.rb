@@ -52,14 +52,14 @@ module Judoscale
           latency_ms = (queue.latency * 1000).ceil
           depth = queue.size
 
-          store.push latency_ms, Time.now, queue.name, :qt
-          store.push depth, Time.now, queue.name, :qd
-          log_msg << "sidekiq-qt.#{queue.name}=#{latency_ms} sidekiq-qd.#{queue.name}=#{depth} "
+          store.push latency_ms, Time.now, queue_name, :qt
+          store.push depth, Time.now, queue_name, :qd
+          log_msg << "sidekiq-qt.#{queue_name}=#{latency_ms} sidekiq-qd.#{queue_name}=#{depth} "
 
           if track_long_running_jobs?
-            busy_count = busy_counts[queue.name]
-            store.push busy_count, Time.now, queue.name, :busy
-            log_msg << "sidekiq-busy.#{queue.name}=#{busy_count} "
+            busy_count = busy_counts[queue_name]
+            store.push busy_count, Time.now, queue_name, :busy
+            log_msg << "sidekiq-busy.#{queue_name}=#{busy_count} "
           end
         end
 
