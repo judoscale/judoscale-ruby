@@ -35,16 +35,20 @@ module Judoscale
         _(messages).wont_include "silence"
       end
 
-      it "includes debug logs if enabled and the main logger.level is DEBUG" do
-        use_config debug: true do
+      describe "configured to allow debug logs" do
+        def setup
+          use_env "JUDOSCALE_DEBUG" => "true" do
+            super
+          end
+        end
+
+        it "includes debug logs if enabled and the main logger.level is DEBUG" do
           original_logger.level = "DEBUG"
           logger.debug "some noise"
           _(messages).must_include "DEBUG -- : [Judoscale] some noise"
         end
-      end
 
-      it "includes debug logs if enabled and the main logger.level is INFO" do
-        use_config debug: true do
+        it "includes debug logs if enabled and the main logger.level is INFO" do
           original_logger.level = "INFO"
           logger.debug "some noise"
           _(messages).must_include "INFO -- : [Judoscale] [DEBUG] some noise"
