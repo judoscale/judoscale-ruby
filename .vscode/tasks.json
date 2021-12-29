@@ -7,7 +7,7 @@
       "label": "test: all",
       "group": "test",
       "command": "bundle",
-      "args": ["exec", "rspec"],
+      "args": ["exec", "rake test"],
       "runOptions": {
         "reevaluateOnRerun": false
       },
@@ -33,7 +33,7 @@
       "label": "test: file",
       "group": "test",
       "command": "bundle",
-      "args": ["exec", "rspec", "${relativeFile}"],
+      "args": ["exec", "rake test TEST=${relativeFile}"],
       "runOptions": {
         "reevaluateOnRerun": false
       },
