@@ -13,13 +13,14 @@ module Judoscale
     end
 
     describe "#collect!" do
+      let(:store) { Store.instance }
+
       before { subject.queues = nil }
-      after { Store.instance.instance_variable_set "@measurements", [] }
+      after { store.instance_variable_set "@measurements", [] }
 
       it "collects latency for each queue" do
         _(subject).must_be :enabled?
 
-        store = Store.instance
         queues = ["default", "high"]
         sizes = {"default" => 1, "high" => 2}
 
@@ -41,7 +42,6 @@ module Judoscale
       it "always collects for the default queue" do
         _(subject).must_be :enabled?
 
-        store = Store.instance
         queues = []
         size = 0
 
@@ -59,7 +59,6 @@ module Judoscale
 
       it "always collects for known queues" do
         _(subject).must_be :enabled?
-        store = Store.instance
 
         queues = ["low"]
         size = 0
@@ -70,7 +69,7 @@ module Judoscale
           }
         }
 
-        Store.instance.instance_variable_set "@measurements", []
+        store.instance_variable_set "@measurements", []
         queues = []
 
         ::Resque.stub(:queues, queues) {

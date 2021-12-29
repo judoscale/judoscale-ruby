@@ -21,14 +21,15 @@ module Judoscale
     end
 
     describe "#collect!" do
+      let(:store) { Store.instance }
+
       before {
         subject.queues = nil
         ActiveRecord::Base.connection.execute("DELETE FROM que_jobs")
       }
-      after { Store.instance.instance_variable_set "@measurements", [] }
+      after { store.instance_variable_set "@measurements", [] }
 
       it "collects latency for each queue" do
-        store = Store.instance
         enqueue("default", Time.now - 11)
         enqueue("high", Time.now - 22.2222)
 

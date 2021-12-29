@@ -15,12 +15,13 @@ module Judoscale
     end
 
     describe "#collect!" do
+      let(:store) { Store.instance }
+
       before { subject.queues = nil }
-      after { Store.instance.instance_variable_set "@measurements", [] }
+      after { store.instance_variable_set "@measurements", [] }
 
       it "collects latency for each queue" do
         _(subject).must_be :enabled?
-        store = Store.instance
 
         queues = [
           SidekiqQueueStub.new(name: "default", latency: 11, size: 1),
@@ -48,7 +49,6 @@ module Judoscale
 
       it "always collects for the default queue" do
         _(subject).must_be :enabled?
-        store = Store.instance
 
         queues = []
         queue_default = SidekiqQueueStub.new(name: "default", latency: 0, size: 0)
@@ -70,7 +70,6 @@ module Judoscale
 
       it "always collects for known queues" do
         _(subject).must_be :enabled?
-        store = Store.instance
 
         queues = [SidekiqQueueStub.new(name: "low", latency: 11, size: 1)]
         queue_default = SidekiqQueueStub.new(name: "default", latency: 0, size: 0)
@@ -81,7 +80,7 @@ module Judoscale
           }
         }
 
-        Store.instance.instance_variable_set "@measurements", []
+        store.instance_variable_set "@measurements", []
         queues = []
         queue_low = SidekiqQueueStub.new(name: "low", latency: 0, size: 0)
         new_queues = {"low" => queue_low, "default" => queue_default}
