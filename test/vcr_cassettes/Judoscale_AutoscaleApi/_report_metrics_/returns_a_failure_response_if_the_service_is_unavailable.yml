@@ -1,0 +1,100 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://does-not-exist.dev/v2/reports
+    body:
+      encoding: UTF-8
+      string: |
+        1498939883,11
+        1498939883,33
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 503
+      message: Service Unavailable
+    headers:
+      Content-Type:
+      - text/html; charset=utf8
+      X-Pow-Template:
+      - application_not_found
+      Date:
+      - Sat, 01 Jul 2017 20:11:23 GMT
+      Connection:
+      - keep-alive
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        PCFkb2N0eXBlIGh0bWw+CjxodG1sPgo8aGVhZD4KICA8bWV0YSBjaGFyc2V0
+        PSJ1dGYtOCI+CiAgPHRpdGxlPkFwcGxpY2F0aW9uIG5vdCBmb3VuZDwvdGl0
+        bGU+CiAgPHN0eWxlPgogICAgYm9keSB7CiAgICAgIG1hcmdpbjogMDsKICAg
+        ICAgcGFkZGluZzogMDsKICAgICAgYmFja2dyb3VuZDogI2UwZTBkODsKICAg
+        ICAgbGluZS1oZWlnaHQ6IDE4cHg7CiAgICB9CiAgICBkaXYucGFnZSB7CiAg
+        ICAgIG1hcmdpbjogNzJweCBhdXRvOwogICAgICBtYXJnaW46IDM2cHggYXV0
+        bzsKICAgICAgYmFja2dyb3VuZDogI2ZmZjsKICAgICAgYm9yZGVyLXJhZGl1
+        czogMThweDsKICAgICAgLXdlYmtpdC1ib3gtc2hhZG93OiAwcHggMnB4IDdw
+        eCAjOTk5OwogICAgICAtbW96LWJveC1zaGFkb3c6IDBweCAycHggN3B4ICM5
+        OTk7CiAgICAgIHBhZGRpbmc6IDM2cHggOTBweDsKICAgICAgd2lkdGg6IDQ4
+        MHB4OwogICAgICBwb3NpdGlvbjogcmVsYXRpdmU7CiAgICB9CiAgICAuYmln
+        IGRpdi5wYWdlIHsKICAgICAgd2lkdGg6IDcyMHB4OwogICAgfQogICAgaDEs
+        IGgyLCBwLCBsaSB7CiAgICAgIGZvbnQtZmFtaWx5OiBIZWx2ZXRpY2EsIHNh
+        bnMtc2VyaWY7CiAgICAgIGZvbnQtc2l6ZTogMTNweDsKICAgIH0KICAgIGgx
+        IHsKICAgICAgbGluZS1oZWlnaHQ6IDQ1cHg7CiAgICAgIGZvbnQtc2l6ZTog
+        MzZweDsKICAgICAgbWFyZ2luOiAwOwogICAgfQogICAgaDE6YmVmb3JlIHsK
+        ICAgICAgZm9udC1zaXplOiA2NnB4OwogICAgICBsaW5lLWhlaWdodDogNDJw
+        eDsKICAgICAgcG9zaXRpb246IGFic29sdXRlOwogICAgICByaWdodDogNTc2
+        cHg7CiAgICB9CiAgICAuYmlnIGgxOmJlZm9yZSB7CiAgICAgIHJpZ2h0OiA4
+        MTlweDsKICAgIH0KICAgIGgxLm9rIHsKICAgICAgY29sb3I6ICMwNjA7CiAg
+        ICB9CiAgICBoMS5vazpiZWZvcmUgewogICAgICBjb250ZW50OiAi4pyTIjsK
+        ICAgICAgY29sb3I6ICMwOTA7CiAgICB9CiAgICBoMS5lcnIgewogICAgICBj
+        b2xvcjogIzYwMDsKICAgIH0KICAgIGgxLmVycjpiZWZvcmUgewogICAgICBj
+        b250ZW50OiAi4pyXIjsKICAgICAgY29sb3I6ICM5MDA7CiAgICB9CiAgICBo
+        MiB7CiAgICAgIGxpbmUtaGVpZ2h0OiAyN3B4OwogICAgICBmb250LXNpemU6
+        IDE4cHg7CiAgICAgIGZvbnQtd2VpZ2h0OiBub3JtYWw7CiAgICAgIG1hcmdp
+        bjogMDsKICAgIH0KICAgIGEsIHByZSBzcGFuIHsKICAgICAgY29sb3I6ICM3
+        NzY7CiAgICB9CiAgICBoMiwgcCwgcHJlIHsKICAgICAgY29sb3I6ICMyMjI7
+        CiAgICB9CiAgICBwcmUgewogICAgICB3aGl0ZS1zcGFjZTogcHJlLXdyYXA7
+        CiAgICAgIGZvbnQtc2l6ZTogMTNweDsKICAgIH0KICAgIHByZSwgY29kZSB7
+        CiAgICAgIGZvbnQtZmFtaWx5OiBNZW5sbywgTW9uYWNvLCBtb25vc3BhY2U7
+        CiAgICB9CiAgICBwIGNvZGUgewogICAgICBmb250LXNpemU6IDEycHg7CiAg
+        ICB9CiAgICBwcmUuYnJlYWtvdXQgewogICAgICBib3JkZXItdG9wOiAxcHgg
+        c29saWQgI2RkZDsKICAgICAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkICNk
+        ZGQ7CiAgICAgIGJhY2tncm91bmQ6ICNmYWZjZjQ7CiAgICAgIG1hcmdpbi1s
+        ZWZ0OiAtOTBweDsKICAgICAgbWFyZ2luLXJpZ2h0OiAtOTBweDsKICAgICAg
+        cGFkZGluZzogOHB4IDAgOHB4IDkwcHg7CiAgICB9CiAgICBwcmUuc21hbGxf
+        dGV4dCB7CiAgICAgIGZvbnQtc2l6ZTogMTBweDsKICAgIH0KICAgIHByZS5z
+        bWFsbF90ZXh0IHN0cm9uZyB7CiAgICAgIGZvbnQtc2l6ZTogMTNweDsKICAg
+        IH0KICAgIHVsIHsKICAgICAgcGFkZGluZzogMDsKICAgIH0KICAgIGxpIHsK
+        ICAgICAgbGlzdC1zdHlsZS10eXBlOiBub25lOwogICAgfQogIDwvc3R5bGU+
+        CjwvaGVhZD4KPGJvZHkgY2xhc3M9IiI+CiAgPGRpdiBjbGFzcz0icGFnZSI+
+        CiAgICAKICA8aDEgY2xhc3M9ImVyciI+QXBwbGljYXRpb24gbm90IGZvdW5k
+        PC9oMT4KICA8aDI+U3ltbGluayB5b3VyIGFwcCB0byA8Y29kZT5+Ly5wb3cv
+        ZG9lcy1ub3QtZXhpc3Q8L2NvZGU+IGZpcnN0LjwvaDI+CiAgPHNlY3Rpb24+
+        CiAgICA8cD5XaGVuIHlvdSBhY2Nlc3MgPGNvZGU+aHR0cDovL2RvZXMtbm90
+        LWV4aXN0LmRldi88L2NvZGU+LCBQb3cgbG9va3MgZm9yIGEgUmFjayBhcHBs
+        aWNhdGlvbiBhdCA8Y29kZT5+Ly5wb3cvZG9lcy1ub3QtZXhpc3Q8L2NvZGU+
+        LiBUbyBydW4geW91ciBhcHAgYXQgdGhpcyBkb21haW46PC9wPgogICAgPHBy
+        ZT48c3Bhbj4kPC9zcGFuPiBjZCB+Ly5wb3cKPHNwYW4+JDwvc3Bhbj4gbG4g
+        LXMgL3BhdGgvdG8vbXlhcHAgZG9lcy1ub3QtZXhpc3QKPHNwYW4+JDwvc3Bh
+        bj4gb3BlbiBodHRwOi8vZG9lcy1ub3QtZXhpc3QuZGV2LzwvcHJlPgogIDwv
+        c2VjdGlvbj4KCiAgICA8dWw+CiAgICAgIDxsaT48YSBocmVmPSJodHRwOi8v
+        cG93LmN4L21hbnVhbCI+UG93IFVzZXImcnNxdW87cyBNYW51YWw8L2E+PC9s
+        aT4KICAgICAgPGxpPjxhIGhyZWY9Imh0dHBzOi8vZ2l0aHViLmNvbS9iYXNl
+        Y2FtcC9wb3cvd2lraS9Ucm91Ymxlc2hvb3RpbmciPlRyb3VibGVzaG9vdGlu
+        ZzwvYT48L2xpPgogICAgICA8bGk+PGEgaHJlZj0iaHR0cHM6Ly9naXRodWIu
+        Y29tL2Jhc2VjYW1wL3Bvdy93aWtpL0ZBUSI+RnJlcXVlbnRseSBBc2tlZCBR
+        dWVzdGlvbnM8L2E+PC9saT4KICAgICAgPGxpPjxhIGhyZWY9Imh0dHBzOi8v
+        Z2l0aHViLmNvbS9iYXNlY2FtcC9wb3cvaXNzdWVzIj5Jc3N1ZSBUcmFja2Vy
+        PC9hPjwvbGk+CiAgICA8L3VsPgogIDwvZGl2Pgo8L2JvZHk+CjwvaHRtbD4K
+        Cg==
+    http_version: 
+  recorded_at: Sat, 01 Jul 2017 20:11:23 GMT
+recorded_with: VCR 3.0.3

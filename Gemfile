@@ -15,3 +15,5 @@ gem "resque"
 gem "activesupport"
 gem "sqlite3", platforms: :ruby
 gem "standard"
+gem "minitest"
+gem "minitest-vcr"
