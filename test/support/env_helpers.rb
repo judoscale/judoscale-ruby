@@ -14,6 +14,10 @@ module EnvHelpers
       ENV[key] = val
     end
 
+    # Force config to load with the swapped ENV.
+    Singleton.__init__(Judoscale::Config)
+    Judoscale::Config.instance
+
     example.call
   ensure
     config.each do |key, val|

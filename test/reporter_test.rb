@@ -14,8 +14,6 @@ module Judoscale
         "JUDOSCALE_URL" => "http://example.com/api/test-token"
       }) do
         super
-        # Force config to load with the swapped ENV.
-        Config.instance
       end
     end
 
