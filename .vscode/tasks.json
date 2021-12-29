@@ -54,32 +54,6 @@
           }
         ]
       }
-    },
-    {
-      "label": "test: line",
-      "group": "test",
-      "command": "bundle",
-      "args": ["exec", "rspec", "${relativeFile}:${lineNumber}"],
-      "runOptions": {
-        "reevaluateOnRerun": false
-      },
-      "problemMatcher": {
-        "owner": "ruby",
-        "fileLocation": ["relative", "${workspaceRoot}"],
-        "severity": "error",
-        "pattern": [
-          {
-            "regexp": "^\\s{7}(.*)$",
-            "message": 1
-          },
-          {
-            "regexp": "^\\s+#\\s(\\./.*):(\\d+):(in.*)$",
-            "file": 1,
-            "line": 2,
-            "code": 3
-          }
-        ]
-      }
     }
   ]
 }
