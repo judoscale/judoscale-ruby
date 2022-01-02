@@ -30,7 +30,7 @@ module RailsAutoscaleAgent
           GROUP BY queue
         SQL
 
-        run_at_by_queue = Hash[select_rows(sql)]
+        run_at_by_queue = Hash[select_rows_silently(sql)]
 
         # Don't collect worker metrics if there are unreasonable number of queues
         if run_at_by_queue.size > Config.instance.max_queues
@@ -50,7 +50,7 @@ module RailsAutoscaleAgent
             GROUP BY 1
           SQL
 
-          busy_count_by_queue = Hash[select_rows(sql)]
+          busy_count_by_queue = Hash[select_rows_silently(sql)]
           self.queues = queues | busy_count_by_queue.keys
         end
 
@@ -86,6 +86,14 @@ module RailsAutoscaleAgent
 
       def track_long_running_jobs?
         Config.instance.track_long_running_jobs
+      end
+
+      def select_rows_silently(sql)
+        if ::ActiveRecord::Base.logger.respond_to?(:silence)
+          ::ActiveRecord::Base.logger.silence { select_rows(sql) }
+        else
+          select_rows(sql)
+        end
       end
 
       def select_rows(sql)
