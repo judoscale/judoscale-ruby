@@ -1,9 +1,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.2...master)
+## [Unreleased](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.11.0...master)
 
 No currently unreleased changes.
+
+## [0.11.0](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.2...v0.11.0)
+
+### Added
+
+- Add `RAILS_AUTOSCALE_MAX_QUEUES` config option. ([28738a5](https://github.com/adamlogic/rails_autoscale_agent/commit/28738a5dc4cd6b0a46e77459d6f98e6b33072da9))
 
 ## [0.10.2](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.1...v0.10.2) - 2021-01-12
 
