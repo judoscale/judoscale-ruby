@@ -18,9 +18,10 @@ module Judoscale
     end
 
     describe "#report!" do
+      after { Store.instance.instance_variable_set "@measurements", [] }
+
       it "reports stored metrics to the API" do
         store = Store.instance
-        store.instance_variable_set "@measurements", []
 
         expected_query = {dyno: "web.0", pid: Process.pid}
         expected_body = "1000000001,11,,\n1000000002,22,high,\n"
