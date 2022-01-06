@@ -4,7 +4,6 @@ require "test_helper"
 require "judoscale/reporter"
 require "judoscale/config"
 require "judoscale/store"
-require "webmock/minitest"
 
 module Judoscale
   describe Reporter do

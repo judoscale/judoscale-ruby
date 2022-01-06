@@ -5,6 +5,16 @@ require "judoscale"
 
 require "minitest/autorun"
 require "minitest/spec"
+require "webmock/minitest"
+
+require "vcr"
+VCR.configure do |config|
+  config.cassette_library_dir = "test/vcr_cassettes"
+  config.hook_into :webmock
+end
+
+require "minitest-vcr"
+MinitestVcr::Spec.configure!
 
 require "active_record"
 require "delayed_job"

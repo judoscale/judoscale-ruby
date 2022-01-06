@@ -1,15 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "vcr"
-require "minitest-vcr"
 require "judoscale/autoscale_api"
-
-VCR.configure do |config|
-  config.cassette_library_dir = "test/vcr_cassettes"
-  config.hook_into :webmock
-end
-MinitestVcr::Spec.configure!
 
 describe Judoscale::AutoscaleApi, vcr: {record: :once} do
   let(:measurements_csv) { "#{Time.now.to_i},11\n#{Time.now.to_i},33\n" }
