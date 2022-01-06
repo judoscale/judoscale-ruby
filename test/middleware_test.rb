@@ -16,7 +16,7 @@ module Judoscale
   describe Middleware do
     describe "#call" do
       before { Reporter.instance.instance_variable_set("@running", nil) }
-      after { Store.instance.instance_variable_set "@measurements", [] }
+      after { Store.instance.clear }
 
       let(:app) { MockApp.new }
       let(:env) {
@@ -49,7 +49,7 @@ module Judoscale
           let(:five_seconds_ago_in_unix_millis) { (Time.now.to_f - 5) * 1000 }
 
           before { env["HTTP_X_REQUEST_START"] = five_seconds_ago_in_unix_millis.to_i.to_s }
-          after { Store.instance.instance_variable_set "@measurements", [] }
+          after { Store.instance.clear }
 
           it "collects the request queue time" do
             middleware.call(env)

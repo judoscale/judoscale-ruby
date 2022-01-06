@@ -18,7 +18,7 @@ module Judoscale
       let(:store) { Store.instance }
 
       before { subject.queues = nil }
-      after { store.instance_variable_set "@measurements", [] }
+      after { store.clear }
 
       it "collects latency for each queue" do
         _(subject).must_be :enabled?
@@ -80,7 +80,7 @@ module Judoscale
           }
         }
 
-        store.instance_variable_set "@measurements", []
+        store.clear
         queues = []
         queue_low = SidekiqQueueStub.new(name: "low", latency: 0, size: 0)
         new_queues = {"low" => queue_low, "default" => queue_default}

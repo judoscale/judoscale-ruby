@@ -24,7 +24,7 @@ module Judoscale
         subject.queues = nil
         ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs")
       }
-      after { store.instance_variable_set "@measurements", [] }
+      after { store.clear }
 
       it "collects latency for each queue" do
         Delayable.new.delay(queue: "default").perform

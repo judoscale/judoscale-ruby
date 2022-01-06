@@ -17,7 +17,7 @@ module Judoscale
     end
 
     describe "#report!" do
-      after { Store.instance.instance_variable_set "@measurements", [] }
+      after { Store.instance.clear }
 
       it "reports stored metrics to the API" do
         store = Store.instance
