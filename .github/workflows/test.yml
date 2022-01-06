@@ -12,9 +12,9 @@ jobs:
         gemfile:
           - Gemfile
         ruby:
-          - 2.6
-          - 2.7
-          - 3.0
+          - '2.6'
+          - '2.7'
+          - '3.0'
     runs-on: ubuntu-latest
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
@@ -32,7 +32,7 @@ jobs:
         gemfile:
           - Gemfile
         ruby:
-          - 3.0
+          - '3.0'
     runs-on: ubuntu-latest
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
