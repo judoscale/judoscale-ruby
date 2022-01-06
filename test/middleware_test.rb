@@ -15,8 +15,10 @@ module Judoscale
 
   describe Middleware do
     describe "#call" do
-      before { Reporter.instance.instance_variable_set("@running", nil) }
-      after { Store.instance.clear }
+      after {
+        Reporter.instance.stop!
+        Store.instance.clear
+      }
 
       let(:app) { MockApp.new }
       let(:env) {
