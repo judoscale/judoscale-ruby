@@ -14,7 +14,7 @@ module Judoscale
 
     describe "#collect!" do
       before { subject.queues = nil }
-      after { Store.instance.instance_variable_set "@measurements", [] }
+      after { Store.instance.instance_variable_set :@measurements, [] }
 
       it "collects latency for each queue" do
         expect(subject.enabled?).to be_truthy
@@ -58,7 +58,7 @@ module Judoscale
         allow(::Resque).to receive(:size) { 0 }
         subject.collect! store
 
-        Store.instance.instance_variable_set "@measurements", []
+        Store.instance.instance_variable_set :@measurements, []
         allow(::Resque).to receive(:queues) { [] }
         subject.collect! store
 
