@@ -61,7 +61,7 @@ end
 
 module Judoscale::Test
   def before_setup
-    Singleton.__init__(Judoscale::Config) if Object.const_defined?("Judoscale::Config")
+    Singleton.__init__(Judoscale::Config)
     super
   end
 end
