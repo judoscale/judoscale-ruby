@@ -46,5 +46,5 @@ ActiveRecord::Schema.define do
 end
 
 RSpec.configure do |c|
-  c.before(:example) { Singleton.__init__(Judoscale::Config) if Object.const_defined?("Judoscale::Config") }
+  c.before(:example) { Singleton.__init__(Judoscale::Config) }
 end
