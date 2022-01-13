@@ -95,7 +95,7 @@ module Judoscale
         end
 
         it "does not start the reporter" do
-          Reporter.instance.stub(:register!, -> { raise "NEVER CALLED" }) do
+          Reporter.instance.stub(:register!, -> { raise "SHOULD NOT BE CALLED" }) do
             middleware.call(env)
           end
         end
