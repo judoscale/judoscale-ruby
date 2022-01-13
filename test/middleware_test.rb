@@ -32,7 +32,6 @@ module Judoscale
 
       describe "with JUDOSCALE_URL set" do
         before { setup_env({"JUDOSCALE_URL" => "http://example.com"}) }
-        after { restore_env }
 
         it "passes the request up the middleware stack" do
           middleware.call(env)
@@ -81,7 +80,6 @@ module Judoscale
 
       describe "without JUDOSCALE_URL set" do
         before { setup_env({"JUDOSCALE_URL" => nil}) }
-        after { restore_env }
 
         it "passes the request up the middleware stack" do
           middleware.call(env)

@@ -41,7 +41,6 @@ module Judoscale
           # Need to reconfigure the logger with the new ENV setup.
           Config.instance.logger = original_logger
         }
-        after { restore_env }
 
         it "includes debug logs if enabled and the main logger.level is DEBUG" do
           original_logger.level = "DEBUG"
