@@ -32,7 +32,7 @@ module Judoscale
 
         Reporter.instance.send :report!, Config.instance, store
 
-        assert_request_requested stub
+        assert_requested stub
       end
 
       it "logs reporter failures" do
@@ -72,7 +72,7 @@ module Judoscale
 
         Reporter.instance.send :register!, Config.instance, []
 
-        assert_request_requested stub
+        assert_requested stub
       end
     end
 
@@ -83,7 +83,7 @@ module Judoscale
 
         Reporter.instance.send(:report_exceptions, Config.instance) { 1 / 0 }
 
-        assert_request_requested stub
+        assert_requested stub
       end
 
       it "gracefully handles a failure in exception reporting" do
@@ -92,7 +92,7 @@ module Judoscale
 
         Reporter.instance.send(:report_exceptions, Config.instance) { 1 / 0 }
 
-        assert_request_requested stub
+        assert_requested stub
       end
     end
   end
