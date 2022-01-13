@@ -60,10 +60,6 @@ ActiveRecord::Schema.define do
 end
 
 module Judoscale::Test
-  def before_setup
-    Singleton.__init__(Judoscale::Config)
-    super
-  end
 end
 
 Dir[File.expand_path("./support/*.rb", __dir__)].sort.each { |file| require file }

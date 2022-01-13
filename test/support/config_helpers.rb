@@ -22,6 +22,12 @@ module ConfigHelpers
       ::Judoscale::Config.instance.send "#{key}=", original_config[key]
     end
   end
+
+  # Reset config instance after each test to ensure changes don't leak to other tests.
+  def after_teardown
+    Singleton.__init__(Judoscale::Config)
+    super
+  end
 end
 
 Judoscale::Test.include ConfigHelpers
