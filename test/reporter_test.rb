@@ -7,14 +7,8 @@ require "judoscale/store"
 
 module Judoscale
   describe Reporter do
-    def setup
-      use_env({
-        "DYNO" => "web.0",
-        "JUDOSCALE_URL" => "http://example.com/api/test-token"
-      }) do
-        super
-      end
-    end
+    before { setup_env({"DYNO" => "web.0", "JUDOSCALE_URL" => "http://example.com/api/test-token"}) }
+    after { restore_env }
 
     describe "#report!" do
       after { Store.instance.clear }

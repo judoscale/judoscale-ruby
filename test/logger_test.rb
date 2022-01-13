@@ -36,11 +36,12 @@ module Judoscale
       end
 
       describe "configured to allow debug logs" do
-        def setup
-          use_env "JUDOSCALE_DEBUG" => "true" do
-            super
-          end
-        end
+        before {
+          setup_env({"JUDOSCALE_DEBUG" => "true"})
+          # Need to reconfigure the logger with the new ENV setup.
+          Config.instance.logger = original_logger
+        }
+        after { restore_env }
 
         it "includes debug logs if enabled and the main logger.level is DEBUG" do
           original_logger.level = "DEBUG"
