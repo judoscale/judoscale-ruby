@@ -24,7 +24,7 @@ module Judoscale
         return
       end
 
-      Thread.new do
+      @_thread = Thread.new do
         loop do
           register!(config, @worker_adapters) unless @registered
 
@@ -46,6 +46,13 @@ module Judoscale
 
     def started?
       @started
+    end
+
+    def stop!
+      @_thread&.terminate
+      @_thread = nil
+      @registered = false
+      @started = false
     end
 
     private

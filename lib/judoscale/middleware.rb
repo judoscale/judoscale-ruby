@@ -15,10 +15,12 @@ module Judoscale
       config = Config.instance
       request = Request.new(env, config)
 
+      queue_time = request.queue_time unless request.ignore?
+
       store = Store.instance
       Reporter.start(config, store)
 
-      if !request.ignore? && (queue_time = request.queue_time)
+      if queue_time
         # NOTE: Expose queue time to the app
         env["queue_time"] = queue_time
         store.push queue_time

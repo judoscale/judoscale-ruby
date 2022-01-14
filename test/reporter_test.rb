@@ -1,24 +1,19 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require "test_helper"
 require "judoscale/reporter"
 require "judoscale/config"
 require "judoscale/store"
-require "webmock/rspec"
 
 module Judoscale
   describe Reporter do
-    around do |example|
-      use_env({
-        "DYNO" => "web.0",
-        "JUDOSCALE_URL" => "http://example.com/api/test-token"
-      }, &example)
-    end
+    before { setup_env({"DYNO" => "web.0", "JUDOSCALE_URL" => "http://example.com/api/test-token"}) }
 
     describe "#report!" do
+      after { Store.instance.clear }
+
       it "reports stored metrics to the API" do
         store = Store.instance
-        store.instance_variable_set :@measurements, []
 
         expected_query = {dyno: "web.0", pid: Process.pid}
         expected_body = "1000000001,11,,\n1000000002,22,high,\n"
@@ -30,7 +25,7 @@ module Judoscale
 
         Reporter.instance.send :report!, Config.instance, store
 
-        expect(stub).to have_been_requested.once
+        assert_requested stub
       end
 
       it "logs reporter failures" do
@@ -40,10 +35,14 @@ module Judoscale
 
         store.push 1, Time.at(1_000_000_001) # need some measurement to trigger reporting
 
-        allow(Reporter.instance.logger).to receive(:error)
-        Reporter.instance.send :report!, Config.instance, store
+        log_io = StringIO.new
+        stub_logger = ::Logger.new(log_io)
 
-        expect(Reporter.instance.logger).to have_received(:error).with("Reporter failed: 503 - ")
+        Reporter.instance.stub(:logger, stub_logger) {
+          Reporter.instance.send :report!, Config.instance, store
+        }
+
+        _(log_io.string).must_include "ERROR -- : Reporter failed: 503 - "
       end
     end
 
@@ -66,7 +65,7 @@ module Judoscale
 
         Reporter.instance.send :register!, Config.instance, []
 
-        expect(stub).to have_been_requested.once
+        assert_requested stub
       end
     end
 
@@ -77,16 +76,16 @@ module Judoscale
 
         Reporter.instance.send(:report_exceptions, Config.instance) { 1 / 0 }
 
-        expect(stub).to have_been_requested.once
+        assert_requested stub
       end
 
       it "gracefully handles a failure in exception reporting" do
-        stub_request(:post, "http://example.com/api/test-token/exceptions")
+        stub = stub_request(:post, "http://example.com/api/test-token/exceptions")
           .to_return { 1 / 0 }
 
-        expect {
-          Reporter.instance.send(:report_exceptions, Config.instance) { 1 / 0 }
-        }.to_not raise_error
+        Reporter.instance.send(:report_exceptions, Config.instance) { 1 / 0 }
+
+        assert_requested stub
       end
     end
   end

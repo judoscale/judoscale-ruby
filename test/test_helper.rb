@@ -1,10 +1,24 @@
 # frozen_string_literal: true
 
-require "bundler/setup"
-Bundler.require(:default, :test)
-# require 'judoscale'
-require_relative "./support/env_helpers"
-require_relative "./support/config_helpers"
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+require "judoscale"
+
+require "minitest/autorun"
+require "minitest/spec"
+require "webmock/minitest"
+
+require "vcr"
+VCR.configure do |config|
+  config.cassette_library_dir = "test/vcr_cassettes"
+  config.hook_into :webmock
+end
+
+require "minitest-vcr"
+MinitestVcr::Spec.configure!
+
+require "active_record"
+require "delayed_job"
+require "delayed_job_active_record"
 
 module Rails
   def self.logger
@@ -45,6 +59,9 @@ ActiveRecord::Schema.define do
    # standard:enable all
 end
 
-RSpec.configure do |c|
-  c.before(:example) { Singleton.__init__(Judoscale::Config) }
+module Judoscale::Test
 end
+
+Dir[File.expand_path("./support/*.rb", __dir__)].sort.each { |file| require file }
+
+Minitest::Test.include(Judoscale::Test)

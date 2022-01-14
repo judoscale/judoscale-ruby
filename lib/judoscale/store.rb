@@ -33,5 +33,9 @@ module Judoscale
 
       report
     end
+
+    def clear
+      @measurements.clear
+    end
   end
 end

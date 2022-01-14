@@ -5,7 +5,9 @@ require "judoscale/config"
 module ConfigHelpers
   # Override Config.instance for a single spec
   # Example:
-  #   around { |example| use_config({quiet: true}, &example) }
+  #   use_config quiet: true do
+  #     ...
+  #   end
   def use_config(options, &example)
     original_config = {}
 
@@ -20,8 +22,12 @@ module ConfigHelpers
       ::Judoscale::Config.instance.send "#{key}=", original_config[key]
     end
   end
+
+  # Reset config instance after each test to ensure changes don't leak to other tests.
+  def after_teardown
+    Singleton.__init__(Judoscale::Config)
+    super
+  end
 end
 
-RSpec.configure do |c|
-  c.include ConfigHelpers
-end
+Judoscale::Test.include ConfigHelpers

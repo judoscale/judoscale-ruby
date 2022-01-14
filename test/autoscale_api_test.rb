@@ -1,14 +1,7 @@
 # frozen_string_literal: true
 
-require "spec_helper"
-require "vcr"
+require "test_helper"
 require "judoscale/autoscale_api"
-
-VCR.configure do |config|
-  config.cassette_library_dir = "spec/vcr_cassettes"
-  config.hook_into :webmock
-  config.configure_rspec_metadata!
-end
 
 describe Judoscale::AutoscaleApi, vcr: {record: :once} do
   let(:measurements_csv) { "#{Time.now.to_i},11\n#{Time.now.to_i},33\n" }
@@ -24,7 +17,7 @@ describe Judoscale::AutoscaleApi, vcr: {record: :once} do
       autoscale_api = Judoscale::AutoscaleApi.new(config)
       result = autoscale_api.report_metrics!(report_params, measurements_csv)
 
-      expect(result).to be_a Judoscale::AutoscaleApi::SuccessResponse
+      _(result).must_be_instance_of Judoscale::AutoscaleApi::SuccessResponse
     end
 
     it "returns a failure response if we post unexpected params" do
@@ -32,8 +25,8 @@ describe Judoscale::AutoscaleApi, vcr: {record: :once} do
       autoscale_api = Judoscale::AutoscaleApi.new(config)
       result = autoscale_api.report_metrics!({}, measurements_csv)
 
-      expect(result).to be_a Judoscale::AutoscaleApi::FailureResponse
-      expect(result.failure_message).to eql "400 - Bad Request"
+      _(result).must_be_instance_of Judoscale::AutoscaleApi::FailureResponse
+      _(result.failure_message).must_equal "400 - Bad Request"
     end
 
     it "returns a failure response if the service is unavailable" do
@@ -41,8 +34,8 @@ describe Judoscale::AutoscaleApi, vcr: {record: :once} do
       autoscale_api = Judoscale::AutoscaleApi.new(config)
       result = autoscale_api.report_metrics!([], measurements_csv)
 
-      expect(result).to be_a Judoscale::AutoscaleApi::FailureResponse
-      expect(result.failure_message).to eql "503 - Service Unavailable"
+      _(result).must_be_instance_of Judoscale::AutoscaleApi::FailureResponse
+      _(result.failure_message).must_equal "503 - Service Unavailable"
     end
 
     it "supports HTTPS" do
@@ -55,7 +48,7 @@ describe Judoscale::AutoscaleApi, vcr: {record: :once} do
       autoscale_api = Judoscale::AutoscaleApi.new(config)
       result = autoscale_api.report_metrics!(report_params, measurements_csv)
 
-      expect(result).to be_a Judoscale::AutoscaleApi::SuccessResponse
+      _(result).must_be_instance_of Judoscale::AutoscaleApi::SuccessResponse
     end
   end
 
@@ -69,7 +62,7 @@ describe Judoscale::AutoscaleApi, vcr: {record: :once} do
       autoscale_api = Judoscale::AutoscaleApi.new(config)
       result = autoscale_api.register_reporter!(registration_params)
 
-      expect(result).to be_a Judoscale::AutoscaleApi::SuccessResponse
+      _(result).must_be_instance_of Judoscale::AutoscaleApi::SuccessResponse
     end
   end
 end
