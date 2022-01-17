@@ -80,8 +80,6 @@ module Judoscale
       case result
       when AutoscaleApi::SuccessResponse
         @registered = true
-        config.report_interval = result.data["report_interval"] if result.data["report_interval"]
-        config.max_request_size = result.data["max_request_size"] if result.data["max_request_size"]
         worker_adapters_msg = worker_adapters.map { |a| a.class.name }.join(", ")
         logger.info "Reporter starting, will report every #{config.report_interval} seconds or so. Worker adapters: [#{worker_adapters_msg}]"
       when AutoscaleApi::FailureResponse

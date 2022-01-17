@@ -46,7 +46,7 @@ http_interactions:
       - keep-alive
     body:
       encoding: UTF-8
-      string: '{"report_interval":15}'
+      string: '{}'
     http_version:
   recorded_at: Sun, 02 Jul 2017 16:34:30 GMT
 recorded_with: VCR 3.0.3

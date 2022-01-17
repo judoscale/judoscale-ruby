@@ -57,7 +57,7 @@ module Judoscale
             worker_adapters: ""
           }
         }
-        response = {report_interval: 123}.to_json
+        response = {}.to_json
         stub = stub_request(:post, "http://example.com/api/test-token/registrations")
           .with(body: expected_body)
           .to_return(body: response)
