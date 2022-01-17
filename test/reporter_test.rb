@@ -50,7 +50,6 @@ module Judoscale
       it "registers the reporter with contextual info" do
         expected_body = {
           registration: {
-            dyno: "web.0",
             pid: Process.pid,
             ruby_version: RUBY_VERSION,
             rails_version: "5.0.fake",

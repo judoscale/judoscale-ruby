@@ -74,7 +74,7 @@ module Judoscale
     end
 
     def register!(config, worker_adapters)
-      params = Registration.new(config, worker_adapters).to_params
+      params = Registration.new(worker_adapters).to_params
       result = AutoscaleApi.new(config).register_reporter!(params)
 
       case result

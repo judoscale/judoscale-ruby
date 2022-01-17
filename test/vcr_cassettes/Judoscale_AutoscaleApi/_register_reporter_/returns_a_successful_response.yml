@@ -5,7 +5,7 @@ http_interactions:
     uri: http://judoscale.dev/api/test-app-token/registrations
     body:
       encoding: UTF-8
-      string: '{"registration":{"dyno":"web.1","pid":"1232"}}'
+      string: '{"registration":{"pid":"1232"}}'
     headers:
       Content-Type:
       - application/json

@@ -3,10 +3,9 @@
 require "judoscale/version"
 
 module Judoscale
-  class Registration < Struct.new(:config, :worker_adapters)
+  class Registration < Struct.new(:worker_adapters)
     def to_params
       {
-        dyno: config.dyno,
         pid: Process.pid,
         ruby_version: RUBY_VERSION,
         rails_version: defined?(Rails) && Rails.version,
