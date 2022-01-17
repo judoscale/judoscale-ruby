@@ -56,7 +56,6 @@ describe Judoscale::AutoscaleApi, vcr: {record: :once} do
     it "returns a successful response" do
       config.api_base_url = "http://judoscale.dev/api/test-app-token"
       registration_params = {
-        dyno: "web.1",
         pid: "1232"
       }
       autoscale_api = Judoscale::AutoscaleApi.new(config)
