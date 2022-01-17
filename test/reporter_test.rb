@@ -67,25 +67,5 @@ module Judoscale
         assert_requested stub
       end
     end
-
-    describe "#report_exception" do
-      it "reports exception info to the API" do
-        stub = stub_request(:post, "http://example.com/api/test-token/exceptions")
-          .with(body: %r{lib/judoscale/reporter.rb})
-
-        Reporter.instance.send(:report_exceptions, Config.instance) { 1 / 0 }
-
-        assert_requested stub
-      end
-
-      it "gracefully handles a failure in exception reporting" do
-        stub = stub_request(:post, "http://example.com/api/test-token/exceptions")
-          .to_return { 1 / 0 }
-
-        Reporter.instance.send(:report_exceptions, Config.instance) { 1 / 0 }
-
-        assert_requested stub
-      end
-    end
   end
 end
