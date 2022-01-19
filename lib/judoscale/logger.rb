@@ -13,35 +13,35 @@ module Judoscale
   class LoggerProxy < Struct.new(:logger)
     TAG = "[Judoscale]"
 
-    def error(msg)
-      logger.error tag(msg)
+    def error(*msgs)
+      logger.error tag(msgs)
     end
 
-    def warn(msg)
-      logger.warn tag(msg)
+    def warn(*msgs)
+      logger.warn tag(msgs)
     end
 
-    def info(msg)
-      logger.info tag(msg) unless Config.instance.quiet?
+    def info(*msgs)
+      logger.info tag(msgs) unless Config.instance.quiet?
     end
 
-    def debug(msg)
+    def debug(*msgs)
       # Silence debug logs by default to avoiding being overly chatty (Rails logger defaults
       # to DEBUG level in production). Setting JUDOSCALE_DEBUG=true enables debug logs,
       # even if the underlying logger severity level is INFO.
       if Config.instance.debug?
         if logger.respond_to?(:debug?) && logger.debug?
-          logger.debug tag(msg)
+          logger.debug tag(msgs)
         elsif logger.respond_to?(:info?) && logger.info?
-          logger.info tag("[DEBUG] #{msg}")
+          logger.info tag(msgs.map { |msg| "[DEBUG] #{msg}" })
         end
       end
     end
 
     private
 
-    def tag(msg)
-      "#{TAG} #{msg}"
+    def tag(msgs)
+      msgs.map { |msg| "#{TAG} #{msg}" }.join("\n")
     end
   end
 end
