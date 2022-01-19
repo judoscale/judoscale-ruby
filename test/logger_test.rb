@@ -15,6 +15,20 @@ module Judoscale
       Config.instance.logger = original_logger
     end
 
+    describe "#error" do
+      it "delegates to the original logger, prepending Judoscale" do
+        logger.error "some error"
+        _(messages).must_include "ERROR -- : [Judoscale] some error"
+      end
+    end
+
+    describe "#warn" do
+      it "delegates to the original logger, prepending Judoscale" do
+        logger.warn "some warn"
+        _(messages).must_include "WARN -- : [Judoscale] some warn"
+      end
+    end
+
     describe "#info" do
       it "delegates to the original logger, prepending Judoscale" do
         logger.info "some info"
