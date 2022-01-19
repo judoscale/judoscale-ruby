@@ -12,6 +12,7 @@ module Judoscale
 
   class LoggerProxy < Struct.new(:logger)
     TAG = "[Judoscale]"
+    DEBUG_TAG = "[DEBUG]"
 
     def error(*msgs)
       logger.error tag(msgs)
@@ -33,7 +34,7 @@ module Judoscale
         if logger.respond_to?(:debug?) && logger.debug?
           logger.debug tag(msgs)
         elsif logger.respond_to?(:info?) && logger.info?
-          logger.info tag(msgs.map { |msg| "[DEBUG] #{msg}" })
+          logger.info tag(msgs.map { |msg| "#{DEBUG_TAG} #{msg}" })
         end
       end
     end
