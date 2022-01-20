@@ -26,7 +26,7 @@ module Judoscale
 
       @_thread = Thread.new do
         loop do
-          register!(config, worker_adapters) unless @registered
+          register!(config, worker_adapters) unless registered?
 
           # Stagger reporting to spread out reports from many processes
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
@@ -42,6 +42,10 @@ module Judoscale
           report_exceptions(config) { report!(config, store) }
         end
       end
+    end
+
+    def registered?
+      @registered
     end
 
     def started?
