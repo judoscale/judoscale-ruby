@@ -16,8 +16,8 @@ module Judoscale
 
     def start!(config, store)
       @started = true
-      @worker_adapters = config.worker_adapters.select(&:enabled?)
-      @dyno_num = config.dyno.to_s.split(".").last.to_i
+      worker_adapters = config.worker_adapters.select(&:enabled?)
+      dyno_num = config.dyno.to_s.split(".").last.to_i
 
       if !config.api_base_url && !config.dev_mode?
         logger.info "Reporter not started: #{config.addon_name}_URL is not set"
@@ -26,15 +26,15 @@ module Judoscale
 
       @_thread = Thread.new do
         loop do
-          register!(config, @worker_adapters) unless @registered
+          register!(config, worker_adapters) unless @registered
 
           # Stagger reporting to spread out reports from many processes
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
           sleep config.report_interval * multiplier
 
           # It's redundant to report worker metrics from every web dyno, so only report from web.1
-          if @dyno_num == 1
-            @worker_adapters.map do |adapter|
+          if dyno_num == 1
+            worker_adapters.map do |adapter|
               report_exceptions(config) { adapter.collect!(store) }
             end
           end
