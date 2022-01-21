@@ -7,7 +7,60 @@ require "judoscale/store"
 
 module Judoscale
   describe Reporter do
-    before { setup_env({"DYNO" => "web.0", "JUDOSCALE_URL" => "http://example.com/api/test-token"}) }
+    before { setup_env({"DYNO" => "web.1", "JUDOSCALE_URL" => "http://example.com/api/test-token"}) }
+
+    describe "#start!" do
+      let(:string_io) { StringIO.new }
+      let(:logger) { ::Logger.new(string_io) }
+
+      before {
+        # FIXME: even though the config resets after each test, and the logger is set to the config below,
+        # the proxy included in the Reporter class itself (and a couple other places) is shared and doesn't
+        # get reset anywhere. This ensures it gets re-initialized for each test and uses the configured logger.
+        Reporter.instance.instance_variable_set(:@logger, nil)
+        Config.instance.logger = logger
+        stub_request(:post, %r{registrations}).to_return(body: "{}")
+      }
+      after {
+        Reporter.instance.stop!
+      }
+
+      def run_reporter_start_thread
+        stub_reporter_loop {
+          reporter_thread = Reporter.instance.start!(Config.instance, Store.instance)
+          reporter_thread.join
+        }
+      end
+
+      def stub_reporter_loop
+        Reporter.instance.stub(:loop, ->(&blk) { blk.call }) {
+          Reporter.instance.stub(:sleep, true) {
+            yield
+          }
+        }
+      end
+
+      it "logs exceptions when reporting collected information" do
+        Reporter.instance.stub(:report!, ->(*) { raise "REPORT BOOM!" }) {
+          run_reporter_start_thread
+        }
+
+        _(string_io.string).must_include "Reporter error: #<RuntimeError: REPORT BOOM!>"
+        _(string_io.string).must_include "lib/judoscale/reporter.rb"
+      end
+
+      it "logs exceptions when collecting adapter information" do
+        enabled_adapter = Config.instance.worker_adapters.find(&:enabled?)
+        _(enabled_adapter).wont_be :nil?
+
+        enabled_adapter.stub(:collect!, ->(*) { raise "ADAPTER BOOM!" }) {
+          run_reporter_start_thread
+        }
+
+        _(string_io.string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
+        _(string_io.string).must_include "lib/judoscale/reporter.rb"
+      end
+    end
 
     describe "#report!" do
       after { Store.instance.clear }
@@ -15,7 +68,7 @@ module Judoscale
       it "reports stored metrics to the API" do
         store = Store.instance
 
-        expected_query = {dyno: "web.0", pid: Process.pid}
+        expected_query = {dyno: "web.1", pid: Process.pid}
         expected_body = "1000000001,11,,\n1000000002,22,high,\n"
         stub = stub_request(:post, "http://example.com/api/test-token/v2/reports")
           .with(query: expected_query, body: expected_body)
@@ -63,26 +116,6 @@ module Judoscale
           .to_return(body: response)
 
         Reporter.instance.send :register!, Config.instance, []
-
-        assert_requested stub
-      end
-    end
-
-    describe "#report_exception" do
-      it "reports exception info to the API" do
-        stub = stub_request(:post, "http://example.com/api/test-token/exceptions")
-          .with(body: %r{lib/judoscale/reporter.rb})
-
-        Reporter.instance.send(:report_exceptions, Config.instance) { 1 / 0 }
-
-        assert_requested stub
-      end
-
-      it "gracefully handles a failure in exception reporting" do
-        stub = stub_request(:post, "http://example.com/api/test-token/exceptions")
-          .to_return { 1 / 0 }
-
-        Reporter.instance.send(:report_exceptions, Config.instance) { 1 / 0 }
 
         assert_requested stub
       end
