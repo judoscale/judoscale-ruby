@@ -19,7 +19,7 @@ module Judoscale
       worker_adapters = config.worker_adapters.select(&:enabled?)
       dyno_num = config.dyno.to_s.split(".").last.to_i
 
-      if !config.api_base_url && !config.dev_mode?
+      if !config.api_base_url
         logger.info "Reporter not started: #{config.addon_name}_URL is not set"
         return
       end
