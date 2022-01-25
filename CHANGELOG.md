@@ -4,8 +4,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...main)
 
 - Drop dev mode. ([#16](https://github.com/judoscale/judoscale-ruby/pull/16))
-- Rails Autoscale is now Judoscale.
-- Require Ruby 2.6 or newer.
+- Remove error reporting via the API, log exceptions with full backtraces. (that are more easily searchable now.) ([#13](https://github.com/judoscale/judoscale-ruby/pull/13))
+- Move test suite to minitest/spec. ([#8](https://github.com/judoscale/judoscale-ruby/pull/8))
+- Apply StandardRB to the code. ([#5](https://github.com/judoscale/judoscale-ruby/pull/5))
+- Require Ruby 2.6 or newer. ([#4](https://github.com/judoscale/judoscale-ruby/pull/4))
+- Move the build to GitHub Actions. ([#2](https://github.com/judoscale/judoscale-ruby/pull/2))
+- Rails Autoscale is now Judoscale. ([#1](https://github.com/judoscale/judoscale-ruby/pull/1))
 
 ## [0.10.2](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.1...v0.10.2) - 2021-01-12
 
