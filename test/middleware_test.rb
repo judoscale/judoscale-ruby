@@ -61,8 +61,8 @@ module Judoscale
           it "records the queue time in the environment passed on" do
             middleware.call(env)
 
-            _(app.env).must_include("queue_time")
-            _(app.env["queue_time"]).must_be_within_delta 5000, 1
+            _(app.env).must_include("judoscale.queue_time")
+            _(app.env["judoscale.queue_time"]).must_be_within_delta 5000, 1
           end
 
           describe "when the request body is large enough to skew the queue time" do

@@ -22,7 +22,7 @@ module Judoscale
 
       if queue_time
         # NOTE: Expose queue time to the app
-        env["queue_time"] = queue_time
+        env["judoscale.queue_time"] = queue_time
         store.push queue_time
       end
 
