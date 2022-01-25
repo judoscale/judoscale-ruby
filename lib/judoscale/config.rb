@@ -9,7 +9,7 @@ module Judoscale
     include Singleton
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
-      :dyno, :addon_name, :worker_adapters, :dev_mode, :debug, :quiet,
+      :dyno, :addon_name, :worker_adapters, :debug, :quiet,
       :track_long_running_jobs, :max_queues,
       # legacy configs, no longer used
       :sidekiq_latency_for_active_jobs, :latency_for_active_jobs
@@ -20,14 +20,13 @@ module Judoscale
       # Allow the add-on name to be configured - needed for testing
       @addon_name = ENV["JUDOSCALE_ADDON"] || "JUDOSCALE"
       @api_base_url = ENV["#{@addon_name}_URL"]
-      @dev_mode = ENV["JUDOSCALE_DEV"] == "true"
-      @debug = dev_mode? || ENV["JUDOSCALE_DEBUG"] == "true"
+      @debug = ENV["JUDOSCALE_DEBUG"] == "true"
       @track_long_running_jobs = ENV["JUDOSCALE_LONG_JOBS"] == "true"
       @max_queues = ENV.fetch("JUDOSCALE_MAX_QUEUES", 50).to_i
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 10
       @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new($stdout)
-      @dyno = dev_mode? ? "dev.1" : ENV["DYNO"]
+      @dyno = ENV["DYNO"]
     end
 
     def to_s
@@ -38,7 +37,6 @@ module Judoscale
       @max_request_size
     end
 
-    alias_method :dev_mode?, :dev_mode
     alias_method :debug?, :debug
     alias_method :quiet?, :quiet
 

@@ -5,7 +5,7 @@ require "judoscale/autoscale_api"
 
 describe Judoscale::AutoscaleApi, vcr: {record: :once} do
   let(:measurements_csv) { "#{Time.now.to_i},11\n#{Time.now.to_i},33\n" }
-  let(:config) { Struct.new(:api_base_url, :dev_mode).new("http://example.com", false) }
+  let(:config) { Struct.new(:api_base_url).new("http://example.com") }
 
   describe "#report_metrics!" do
     it "returns a successful response" do

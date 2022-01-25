@@ -25,9 +25,6 @@ module Judoscale
         # and it might be preceeded by "t=". We can all cases by removing non-digits
         # and treating as milliseconds.
         Time.at(@request_start_header.gsub(/\D/, "").to_i / 1000.0)
-      elsif @config.dev_mode?
-        # In dev mode, fake a queue time of 0-1000ms
-        Time.now - rand + @request_body_wait
       end
     end
 
