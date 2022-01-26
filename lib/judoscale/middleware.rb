@@ -15,7 +15,10 @@ module Judoscale
       config = Config.instance
       request = Request.new(env, config)
 
-      queue_time = request.queue_time unless request.ignore?
+      unless request.ignore?
+        queue_time = request.queue_time
+        network_time = request.network_time
+      end
 
       store = Store.instance
       Reporter.start(config, store)
@@ -24,6 +27,11 @@ module Judoscale
         # NOTE: Expose queue time to the app
         env["judoscale.queue_time"] = queue_time
         store.push :qt, queue_time
+
+        unless network_time.zero?
+          env["judoscale.network_time"] = network_time
+          store.push :nt, network_time
+        end
       end
 
       @app.call(env)
