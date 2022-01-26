@@ -61,12 +61,12 @@ module Judoscale
           latency_ms = run_at ? ((t - run_at) * 1000).ceil : 0
           latency_ms = 0 if latency_ms < 0
 
-          store.push latency_ms, t, queue
+          store.push :qt, latency_ms, t, queue
           log_msg << "dj-qt.#{queue}=#{latency_ms} "
 
           if track_long_running_jobs?
             busy_count = busy_count_by_queue[queue] || 0
-            store.push busy_count, Time.now, queue, :busy
+            store.push :busy, busy_count, Time.now, queue
             log_msg << "dj-busy.#{queue}=#{busy_count} "
           end
         end

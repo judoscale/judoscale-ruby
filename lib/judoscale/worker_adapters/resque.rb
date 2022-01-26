@@ -39,7 +39,7 @@ module Judoscale
         queues.each do |queue|
           next if queue.nil? || queue.empty?
           depth = ::Resque.size(queue)
-          store.push depth, Time.now, queue, :qd
+          store.push :qd, depth, Time.now, queue
           log_msg << "resque-qd.#{queue}=#{depth} "
         end
 

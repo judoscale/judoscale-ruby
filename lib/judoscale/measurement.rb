@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 module Judoscale
-  class Measurement < Struct.new(:time, :value, :queue_name, :metric)
+  class Measurement < Struct.new(:metric, :time, :value, :queue_name)
     # No queue_name is assumed to be a web request measurement
     # Metrics: qt = queue time (default), qd = queue depth (needed for Resque support)
-    def initialize(time, value, queue_name = nil, metric = nil)
-      super time.utc, value.to_i, queue_name, metric
+    def initialize(metric, time, value, queue_name = nil)
+      super metric, time.utc, value.to_i, queue_name
     end
   end
 end
