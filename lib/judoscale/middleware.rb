@@ -23,7 +23,7 @@ module Judoscale
       if queue_time
         # NOTE: Expose queue time to the app
         env["judoscale.queue_time"] = queue_time
-        store.push queue_time
+        store.push queue_time, Time.now, nil, :qt
       end
 
       @app.call(env)

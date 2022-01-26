@@ -56,6 +56,7 @@ module Judoscale
             _(report.measurements.length).must_equal 1
             _(report.measurements.first).must_be_instance_of Measurement
             _(report.measurements.first.value).must_be_within_delta 5000, 1
+            _(report.measurements.first.metric).must_equal :qt
           end
 
           it "records the queue time in the environment passed on" do
