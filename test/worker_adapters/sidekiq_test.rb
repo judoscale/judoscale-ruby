@@ -94,6 +94,18 @@ module Judoscale
         _(store.measurements.size).must_equal 4
         _(store.measurements.map(&:queue_name)).must_equal %w[low low default default]
       end
+
+      it "logs debug information for each queue being collected" do
+        use_config debug: true do
+          queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
+
+          ::Sidekiq::Queue.stub(:all, queues) {
+            subject.collect! store
+          }
+
+          _(log_string).must_match %r{sidekiq-qt.default=11000ms sidekiq-qd.default=1}
+        end
+      end
     end
   end
 end

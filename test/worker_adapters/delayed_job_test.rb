@@ -82,6 +82,16 @@ module Judoscale
         _(store.measurements[0].queue_name).must_equal "default"
         _(store.measurements[0].value).must_be_within_delta 0, 5
       end
+
+      it "logs debug information for each queue being collected" do
+        use_config debug: true do
+          Delayable.new.delay(queue: "default").perform
+
+          subject.collect! store
+
+          _(log_string).must_match %r{dj-qt.default=\d+ms}
+        end
+      end
     end
   end
 end
