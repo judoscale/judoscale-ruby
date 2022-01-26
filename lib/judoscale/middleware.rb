@@ -3,10 +3,13 @@
 require "judoscale/store"
 require "judoscale/reporter"
 require "judoscale/config"
+require "judoscale/logger"
 require "judoscale/request"
 
 module Judoscale
   class Middleware
+    include Logger
+
     def initialize(app)
       @app = app
     end
@@ -32,6 +35,8 @@ module Judoscale
           env["judoscale.network_time"] = network_time
           store.push :nt, network_time
         end
+
+        logger.debug "Request queue_time=#{queue_time}ms network_time=#{network_time}ms request_id=#{request.id} size=#{request.size}"
       end
 
       @app.call(env)

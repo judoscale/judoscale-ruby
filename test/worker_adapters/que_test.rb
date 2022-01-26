@@ -41,6 +41,16 @@ module Judoscale
         _(store.measurements[1].queue_name).must_equal "high"
         _(store.measurements[1].value).must_be_within_delta 22222, 5
       end
+
+      it "logs debug information for each queue being collected" do
+        use_config debug: true do
+          enqueue("default", Time.now)
+
+          subject.collect! store
+
+          _(log_string).must_match %r{que-qt.default=\d+ms}
+        end
+      end
     end
   end
 end

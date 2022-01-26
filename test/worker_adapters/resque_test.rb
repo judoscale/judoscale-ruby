@@ -81,6 +81,21 @@ module Judoscale
         _(store.measurements.size).must_equal 2
         _(store.measurements.map(&:queue_name)).must_equal %w[default low]
       end
+
+      it "logs debug information for each queue being collected" do
+        use_config debug: true do
+          queues = ["default"]
+          size = 2
+
+          ::Resque.stub(:queues, queues) {
+            ::Resque.stub(:size, size) {
+              subject.collect! store
+            }
+          }
+
+          _(log_string).must_match %r{resque-qd.default=2}
+        end
+      end
     end
   end
 end

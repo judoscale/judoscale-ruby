@@ -22,7 +22,7 @@ require "delayed_job_active_record"
 
 module Rails
   def self.logger
-    @logger ||= ::Logger.new("log/test.log")
+    @logger ||= ::Logger.new(LogHelpers.log_io)
   end
 
   def self.version
