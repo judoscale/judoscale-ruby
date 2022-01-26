@@ -10,15 +10,7 @@ module Judoscale
     before { setup_env({"DYNO" => "web.1", "JUDOSCALE_URL" => "http://example.com/api/test-token"}) }
 
     describe "#start!" do
-      let(:string_io) { StringIO.new }
-      let(:logger) { ::Logger.new(string_io) }
-
       before {
-        # FIXME: even though the config resets after each test, and the logger is set to the config below,
-        # the proxy included in the Reporter class itself (and a couple other places) is shared and doesn't
-        # get reset anywhere. This ensures it gets re-initialized for each test and uses the configured logger.
-        Reporter.instance.instance_variable_set(:@logger, nil)
-        Config.instance.logger = logger
         stub_request(:post, %r{registrations}).to_return(body: "{}")
       }
       after {
@@ -45,8 +37,8 @@ module Judoscale
           run_reporter_start_thread
         }
 
-        _(string_io.string).must_include "Reporter error: #<RuntimeError: REPORT BOOM!>"
-        _(string_io.string).must_include "lib/judoscale/reporter.rb"
+        _(log_string).must_include "Reporter error: #<RuntimeError: REPORT BOOM!>"
+        _(log_string).must_include "lib/judoscale/reporter.rb"
       end
 
       it "logs exceptions when collecting adapter information" do
@@ -57,8 +49,8 @@ module Judoscale
           run_reporter_start_thread
         }
 
-        _(string_io.string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
-        _(string_io.string).must_include "lib/judoscale/reporter.rb"
+        _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
+        _(log_string).must_include "lib/judoscale/reporter.rb"
       end
     end
 
