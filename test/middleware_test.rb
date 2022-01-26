@@ -72,7 +72,7 @@ module Judoscale
 
               middleware.call(env)
 
-              _(log_string).must_include "Request queue_time=5000ms network_time=0ms request_id=req-abc-123 size=5"
+              _(log_string).must_match %r{Request queue_time=500\dms network_time=0ms request_id=req-abc-123 size=5}
             end
           end
 
