@@ -69,12 +69,12 @@ module Judoscale
         store = Store.instance
 
         expected_query = {dyno: "web.1", pid: Process.pid}
-        expected_body = "1000000001,11,,\n1000000002,22,high,\n"
+        expected_body = "1000000001,11,,qt\n1000000002,22,high,qt\n"
         stub = stub_request(:post, "http://example.com/api/test-token/v2/reports")
           .with(query: expected_query, body: expected_body)
 
-        store.push 11, Time.at(1_000_000_001) # web measurement
-        store.push 22, Time.at(1_000_000_002), "high" # worker measurement
+        store.push :qt, 11, Time.at(1_000_000_001) # web measurement
+        store.push :qt, 22, Time.at(1_000_000_002), "high" # worker measurement
 
         Reporter.instance.send :report!, Config.instance, store
 
@@ -86,7 +86,7 @@ module Judoscale
         stub_request(:post, %r{http://example.com/api/test-token/v2/reports})
           .to_return(body: "oops", status: 503)
 
-        store.push 1, Time.at(1_000_000_001) # need some measurement to trigger reporting
+        store.push :qt, 1, Time.at(1_000_000_001) # need some measurement to trigger reporting
 
         log_io = StringIO.new
         stub_logger = ::Logger.new(log_io)

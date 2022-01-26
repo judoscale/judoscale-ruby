@@ -53,7 +53,7 @@ module Judoscale
           latency_ms = run_at ? ((t - run_at) * 1000).ceil : 0
           latency_ms = 0 if latency_ms < 0
 
-          store.push latency_ms, t, queue
+          store.push :qt, latency_ms, t, queue
           log_msg << "que.#{queue}=#{latency_ms} "
         end
 

@@ -15,12 +15,12 @@ module Judoscale
       @last_pop = Time.now
     end
 
-    def push(value, time = Time.now, queue_name = nil, metric = nil)
+    def push(metric, value, time = Time.now, queue_name = nil)
       # If it's been two minutes since clearing out the store, stop collecting measurements.
       # There could be an issue with the reporter, and continuing to collect will consume linear memory.
       return if @last_pop && @last_pop < Time.now - 120
 
-      @measurements << Measurement.new(time, value, queue_name, metric)
+      @measurements << Measurement.new(metric, time, value, queue_name)
     end
 
     def pop_report
