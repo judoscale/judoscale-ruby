@@ -76,6 +76,27 @@ module Judoscale
               _(report.measurements.length).must_equal 0
             end
           end
+
+          describe "when Puma request body wait / network time is available" do
+            before { env["puma.request_body_wait"] = 50 }
+
+            it "collects the request network time as a separate measurement" do
+              middleware.call(env)
+
+              report = Store.instance.pop_report
+              _(report.measurements.length).must_equal 2
+              _(report.measurements.last).must_be_instance_of Measurement
+              _(report.measurements.last.value).must_be_within_delta 50, 1
+              _(report.measurements.last.metric).must_equal :nt
+            end
+
+            it "records the network time in the environment passed on" do
+              middleware.call(env)
+
+              _(app.env).must_include("judoscale.network_time")
+              _(app.env["judoscale.network_time"]).must_be_within_delta 50, 1
+            end
+          end
         end
       end
 

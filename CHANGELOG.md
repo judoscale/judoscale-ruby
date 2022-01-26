@@ -3,6 +3,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...main)
 
+- Collect a new metric: network time, and expose it to the app via rack env with `judoscale.network_time`. This is currently only available with Puma, and represents the time Puma spent waiting for the request body. ([#20](https://github.com/judoscale/judoscale-ruby/pull/20))
 - Change the `queue_time` rack env value exposed to the app to `judoscale.queue_time`. ([#18](https://github.com/judoscale/judoscale-ruby/pull/18))
 - Drop dev mode. ([#16](https://github.com/judoscale/judoscale-ruby/pull/16))
 - Remove error reporting via the API, log exceptions with full backtraces. (that are more easily searchable now.) ([#13](https://github.com/judoscale/judoscale-ruby/pull/13))

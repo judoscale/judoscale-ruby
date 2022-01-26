@@ -42,5 +42,9 @@ module Judoscale
       # Safeguard against negative queue times (should not happen in practice)
       queue_time > 0 ? queue_time : 0
     end
+
+    def network_time
+      @request_body_wait
+    end
   end
 end
