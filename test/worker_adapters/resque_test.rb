@@ -83,6 +83,8 @@ module Judoscale
       end
 
       it "logs debug information for each queue being collected" do
+        _(subject).must_be :enabled?
+
         use_config debug: true do
           queues = ["default"]
           size = 2
