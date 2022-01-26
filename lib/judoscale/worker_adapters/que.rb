@@ -54,7 +54,7 @@ module Judoscale
           latency_ms = 0 if latency_ms < 0
 
           store.push :qt, latency_ms, t, queue
-          log_msg << "que-qt.#{queue}=#{latency_ms} "
+          log_msg << "que-qt.#{queue}=#{latency_ms}ms "
         end
 
         logger.debug log_msg unless log_msg.empty?

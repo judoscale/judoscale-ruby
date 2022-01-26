@@ -54,7 +54,7 @@ module Judoscale
 
           store.push :qt, latency_ms, Time.now, queue_name
           store.push :qd, depth, Time.now, queue_name
-          log_msg << "sidekiq-qt.#{queue_name}=#{latency_ms} sidekiq-qd.#{queue_name}=#{depth} "
+          log_msg << "sidekiq-qt.#{queue_name}=#{latency_ms}ms sidekiq-qd.#{queue_name}=#{depth} "
 
           if track_long_running_jobs?
             busy_count = busy_counts[queue_name]
