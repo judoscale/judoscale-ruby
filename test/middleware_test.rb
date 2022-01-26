@@ -66,6 +66,16 @@ module Judoscale
             _(app.env["judoscale.queue_time"]).must_be_within_delta 5000, 1
           end
 
+          it "logs debug information about the request and queue time" do
+            use_config debug: true do
+              env["HTTP_X_REQUEST_ID"] = "req-abc-123"
+
+              middleware.call(env)
+
+              _(log_string).must_include "Request queue_time=5000ms network_time=0ms request_id=req-abc-123 size=5"
+            end
+          end
+
           describe "when the request body is large enough to skew the queue time" do
             before { env["rack.input"] = StringIO.new("." * 110_000) }
 

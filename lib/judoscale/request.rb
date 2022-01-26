@@ -1,16 +1,14 @@
 # frozen_string_literal: true
 
-require "judoscale/logger"
-
 module Judoscale
   class Request
-    include Logger
+    attr_reader :id, :size, :network_time
 
     def initialize(env, config)
       @config = config
       @id = env["HTTP_X_REQUEST_ID"]
       @size = env["rack.input"].respond_to?(:size) ? env["rack.input"].size : 0
-      @request_body_wait = env["puma.request_body_wait"].to_i
+      @network_time = env["puma.request_body_wait"].to_i
       @request_start_header = env["HTTP_X_REQUEST_START"]
     end
 
@@ -33,18 +31,12 @@ module Judoscale
 
       queue_time = ((now - started_at) * 1000).to_i
 
-      # Subtract the time Puma spent waiting on the request body. It's irrelevant to capacity-related queue time.
-      # Without this, slow clients and large request payloads will skew queue time.
-      queue_time -= @request_body_wait
-
-      logger.debug "Request queue_time=#{queue_time}ms body_wait=#{@request_body_wait}ms request_id=#{@id} size=#{@size}"
+      # Subtract the time Puma spent waiting on the request body, i.e. the network time. It's irrelevant to
+      # capacity-related queue time. Without this, slow clients and large request payloads will skew queue time.
+      queue_time -= network_time
 
       # Safeguard against negative queue times (should not happen in practice)
       queue_time > 0 ? queue_time : 0
-    end
-
-    def network_time
-      @request_body_wait
     end
   end
 end
