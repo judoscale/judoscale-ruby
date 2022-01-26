@@ -26,6 +26,15 @@ module Judoscale
 
         _(request.queue_time(ended_at)).must_be_within_delta 1000, 1
       end
+
+      it "subtracts the network time / request body wait available in puma from the queue time" do
+        started_at = Time.now - 2
+        ended_at = started_at + 1
+        env["HTTP_X_REQUEST_START"] = (started_at.to_f * 1000).to_i.to_s
+        env["puma.request_body_wait"] = 50
+
+        _(request.queue_time(ended_at)).must_be_within_delta 950, 1
+      end
     end
   end
 end
