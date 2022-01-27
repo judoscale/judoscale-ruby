@@ -1,0 +1,65 @@
+# frozen_string_literal: true
+
+require "test_helper"
+require "judoscale/config"
+
+module Judoscale
+  describe Config do
+    it "initializes the config from default heroku ENV vars and other sensible defaults" do
+      use_env "DYNO" => "web.1", "JUDOSCALE_URL" => "https://example.com" do
+        config = Config.instance
+        _(config.addon_name).must_equal "JUDOSCALE"
+        _(config.api_base_url).must_equal "https://example.com"
+        _(config.dyno).must_equal "web.1"
+        _(config.debug).must_equal false
+        _(config.max_queues).must_equal 50
+        _(config.max_request_size).must_equal 100_000
+        _(config.report_interval).must_equal 10
+        _(config.track_long_running_jobs).must_equal false
+
+        config_must_match_worker_adapters config, [
+          WorkerAdapters::DelayedJob,
+          WorkerAdapters::Que,
+          WorkerAdapters::Resque,
+          WorkerAdapters::Sidekiq
+        ]
+      end
+    end
+
+    it "allows ENV vars config overrides for the addon name, debug, track long running jobs, max queues, and worker adapters" do
+      env = {
+        "DYNO" => "web.2",
+        "JUDOSCALE_ADDON" => "JUDOSCALE_CUSTOM",
+        "JUDOSCALE_CUSTOM_URL" => "https://custom.example.com",
+        "JUDOSCALE_DEBUG" => "true",
+        "JUDOSCALE_LONG_JOBS" => "true",
+        "JUDOSCALE_MAX_QUEUES" => "100",
+        "JUDOSCALE_WORKER_ADAPTER" => "sidekiq,resque"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.addon_name).must_equal "JUDOSCALE_CUSTOM"
+        _(config.api_base_url).must_equal "https://custom.example.com"
+        _(config.dyno).must_equal "web.2"
+        _(config.debug).must_equal true
+        _(config.max_queues).must_equal 100
+        _(config.track_long_running_jobs).must_equal true
+
+        config_must_match_worker_adapters config, [
+          WorkerAdapters::Resque,
+          WorkerAdapters::Sidekiq
+        ]
+      end
+    end
+
+    private
+
+    def config_must_match_worker_adapters(config, worker_adapter_classes)
+      configured_worker_adapters_object_ids = config.worker_adapters.map(&:object_id)
+      expected_worker_adapters_object_ids = worker_adapter_classes.map { |w| w.instance.object_id }
+
+      _(configured_worker_adapters_object_ids.sort).must_equal expected_worker_adapters_object_ids.sort
+    end
+  end
+end
