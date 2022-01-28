@@ -7,7 +7,10 @@ require "judoscale/store"
 
 module Judoscale
   describe Reporter do
-    before { setup_env({"DYNO" => "web.1", "JUDOSCALE_URL" => "http://example.com/api/test-token"}) }
+    before {
+      Config.instance.dyno = "web.1"
+      Config.instance.api_base_url = "http://example.com/api/test-token"
+    }
 
     describe "#start!" do
       before {

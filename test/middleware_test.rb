@@ -30,8 +30,10 @@ module Judoscale
       }
       let(:middleware) { Middleware.new(app) }
 
-      describe "with JUDOSCALE_URL set" do
-        before { setup_env({"JUDOSCALE_URL" => "http://example.com"}) }
+      describe "with the API URL configured" do
+        before {
+          Config.instance.api_base_url = "http://example.com"
+        }
 
         it "passes the request up the middleware stack" do
           middleware.call(env)
@@ -110,8 +112,10 @@ module Judoscale
         end
       end
 
-      describe "without JUDOSCALE_URL set" do
-        before { setup_env({"JUDOSCALE_URL" => nil}) }
+      describe "without the API URL configured" do
+        before {
+          Config.instance.api_base_url = nil
+        }
 
         it "passes the request up the middleware stack" do
           middleware.call(env)
