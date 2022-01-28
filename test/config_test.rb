@@ -12,6 +12,8 @@ module Judoscale
         _(config.api_base_url).must_equal "https://example.com"
         _(config.dyno).must_equal "web.1"
         _(config.debug).must_equal false
+        _(config.quiet).must_equal false
+        _(config.logger).must_equal Rails.logger
         _(config.max_queues).must_equal 50
         _(config.max_request_size).must_equal 100_000
         _(config.report_interval).must_equal 10
@@ -51,6 +53,41 @@ module Judoscale
           WorkerAdapters::Sidekiq
         ]
       end
+    end
+
+    it "allows configuring all options via a block" do
+      test_logger = ::Logger.new(StringIO.new)
+
+      Judoscale.configure do |config|
+        config.dyno = "web.3"
+        config.addon_name = "JUDOSCALE_BLOCK"
+        config.api_base_url = "https://block.example.com"
+        config.debug = true
+        config.quiet = true
+        config.logger = test_logger
+        config.track_long_running_jobs = true
+        config.max_queues = 100
+        config.max_request_size = 50_000
+        config.report_interval = 20
+        config.worker_adapters = "sidekiq,resque"
+      end
+
+      config = Config.instance
+      _(config.addon_name).must_equal "JUDOSCALE_BLOCK"
+      _(config.api_base_url).must_equal "https://block.example.com"
+      _(config.dyno).must_equal "web.3"
+      _(config.debug).must_equal true
+      _(config.quiet).must_equal true
+      _(config.logger).must_equal test_logger
+      _(config.max_queues).must_equal 100
+      _(config.max_request_size).must_equal 50_000
+      _(config.report_interval).must_equal 20
+      _(config.track_long_running_jobs).must_equal true
+
+      config_must_match_worker_adapters config, [
+        WorkerAdapters::Resque,
+        WorkerAdapters::Sidekiq
+      ]
     end
 
     private
