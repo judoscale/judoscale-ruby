@@ -3,6 +3,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...main)
 
+- Configure Judoscale through a block: `Judoscale.configure { |config| config.logger = MyLogger.new }`. ([#25](https://github.com/judoscale/judoscale-ruby/pull/25))
 - Remove legacy configs: `sidekiq_latency_for_active_jobs`, `latency_for_active_jobs`. ([#22](https://github.com/judoscale/judoscale-ruby/pull/22))
 - Collect a new metric: network time, and expose it to the app via rack env with `judoscale.network_time`. This is currently only available with Puma, and represents the time Puma spent waiting for the request body. ([#20](https://github.com/judoscale/judoscale-ruby/pull/20))
 - Change the `queue_time` rack env value exposed to the app to `judoscale.queue_time`. ([#18](https://github.com/judoscale/judoscale-ruby/pull/18))

@@ -8,8 +8,10 @@ require "judoscale/store"
 module Judoscale
   describe Reporter do
     before {
-      Config.instance.dyno = "web.1"
-      Config.instance.api_base_url = "http://example.com/api/test-token"
+      Judoscale.configure do |config|
+        config.dyno = "web.1"
+        config.api_base_url = "http://example.com/api/test-token"
+      end
     }
 
     describe "#start!" do

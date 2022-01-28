@@ -32,7 +32,7 @@ module Judoscale
 
       describe "with the API URL configured" do
         before {
-          Config.instance.api_base_url = "http://example.com"
+          Judoscale.configure { |config| config.api_base_url = "http://example.com" }
         }
 
         it "passes the request up the middleware stack" do
@@ -114,7 +114,7 @@ module Judoscale
 
       describe "without the API URL configured" do
         before {
-          Config.instance.api_base_url = nil
+          Judoscale.configure { |config| config.api_base_url = nil }
         }
 
         it "passes the request up the middleware stack" do

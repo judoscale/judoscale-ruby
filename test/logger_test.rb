@@ -11,9 +11,9 @@ module Judoscale
     let(:original_logger) { ::Logger.new(string_io) }
     let(:messages) { string_io.string }
 
-    before do
-      Config.instance.logger = original_logger
-    end
+    before {
+      Judoscale.configure { |config| config.logger = original_logger }
+    }
 
     describe "#error" do
       it "delegates to the original logger, prepending Judoscale" do
@@ -66,7 +66,7 @@ module Judoscale
 
       describe "configured to allow debug logs" do
         before {
-          Config.instance.debug = true
+          Judoscale.configure { |config| config.debug = true }
         }
 
         it "includes debug logs if enabled and the main logger.level is DEBUG" do
