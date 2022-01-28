@@ -13,6 +13,10 @@ module Judoscale
       :track_long_running_jobs, :max_queues
 
     def initialize
+      reset
+    end
+
+    def reset
       @worker_adapters = prepare_worker_adapters
 
       # Allow the add-on name to be configured - needed for testing
@@ -23,7 +27,7 @@ module Judoscale
       @max_queues = ENV.fetch("JUDOSCALE_MAX_QUEUES", 50).to_i
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 10
-      @logger ||= defined?(Rails) ? Rails.logger : ::Logger.new($stdout)
+      @logger = defined?(Rails) ? Rails.logger : ::Logger.new($stdout)
       @dyno = ENV["DYNO"]
     end
 
