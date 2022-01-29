@@ -4,6 +4,7 @@ require "singleton"
 require "judoscale/logger"
 require "judoscale/autoscale_api"
 require "judoscale/registration"
+require "judoscale/worker_adapters"
 
 module Judoscale
   class Reporter
@@ -16,7 +17,7 @@ module Judoscale
 
     def start!(config, store)
       @started = true
-      worker_adapters = config.worker_adapters.select(&:enabled?)
+      worker_adapters = WorkerAdapters.load_adapters(config.worker_adapters).select(&:enabled?)
       dyno_num = config.dyno.to_s.split(".").last.to_i
 
       if !config.api_base_url

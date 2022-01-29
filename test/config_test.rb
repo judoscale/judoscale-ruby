@@ -17,13 +17,7 @@ module Judoscale
         _(config.max_request_size).must_equal 100_000
         _(config.report_interval).must_equal 10
         _(config.track_long_running_jobs).must_equal false
-
-        config_must_match_worker_adapters config, [
-          WorkerAdapters::DelayedJob,
-          WorkerAdapters::Que,
-          WorkerAdapters::Resque,
-          WorkerAdapters::Sidekiq
-        ]
+        _(config.worker_adapters).must_equal %i[sidekiq delayed_job que resque]
       end
     end
 
@@ -68,20 +62,7 @@ module Judoscale
       _(config.max_request_size).must_equal 50_000
       _(config.report_interval).must_equal 20
       _(config.track_long_running_jobs).must_equal true
-
-      config_must_match_worker_adapters config, [
-        WorkerAdapters::Resque,
-        WorkerAdapters::Sidekiq
-      ]
-    end
-
-    private
-
-    def config_must_match_worker_adapters(config, worker_adapter_classes)
-      configured_worker_adapters_object_ids = config.worker_adapters.map(&:object_id)
-      expected_worker_adapters_object_ids = worker_adapter_classes.map { |w| w.instance.object_id }
-
-      _(configured_worker_adapters_object_ids.sort).must_equal expected_worker_adapters_object_ids.sort
+      _(config.worker_adapters).must_equal %i[sidekiq resque]
     end
   end
 end

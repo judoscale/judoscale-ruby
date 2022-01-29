@@ -9,16 +9,13 @@ module Judoscale
     include Singleton
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
-      :dyno, :debug, :quiet, :track_long_running_jobs, :max_queues
-    attr_reader :worker_adapters
+      :dyno, :debug, :quiet, :track_long_running_jobs, :max_queues, :worker_adapters
 
     def initialize
       reset
     end
 
     def reset
-      self.worker_adapters = DEFAULT_WORKER_ADAPTERS
-
       # Allow the API URL to be configured - needed for testing.
       @api_base_url = ENV["JUDOSCALE_URL"]
       @dyno = ENV["DYNO"]
@@ -29,10 +26,7 @@ module Judoscale
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 10
       @logger = defined?(Rails) ? Rails.logger : ::Logger.new($stdout)
-    end
-
-    def worker_adapters=(adapters_config)
-      @worker_adapters = prepare_worker_adapters(adapters_config)
+      @worker_adapters = DEFAULT_WORKER_ADAPTERS
     end
 
     def to_s
@@ -45,16 +39,5 @@ module Judoscale
 
     alias_method :debug?, :debug
     alias_method :quiet?, :quiet
-
-    private
-
-    def prepare_worker_adapters(adapter_names)
-      adapter_names.map do |adapter_name|
-        adapter_name = adapter_name.to_s
-        require "judoscale/worker_adapters/#{adapter_name}"
-        adapter_constant_name = adapter_name.capitalize.gsub(/(?:_)(.)/i) { $1.upcase }
-        WorkerAdapters.const_get(adapter_constant_name).instance
-      end
-    end
   end
 end
