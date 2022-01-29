@@ -9,27 +9,31 @@ module Judoscale
     include Singleton
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
-      :dyno, :addon_name, :debug, :quiet, :track_long_running_jobs, :max_queues
-    attr_reader :worker_adapters
+      :dyno, :debug, :quiet, :track_long_running_jobs, :max_queues
+    attr_reader :addon_name, :worker_adapters
 
     def initialize
       reset
     end
 
     def reset
-      self.worker_adapters = ENV["JUDOSCALE_WORKER_ADAPTER"] || DEFAULT_WORKER_ADAPTERS
+      self.worker_adapters = DEFAULT_WORKER_ADAPTERS
 
       # Allow the add-on name to be configured - needed for testing
-      @addon_name = ENV["JUDOSCALE_ADDON"] || "JUDOSCALE"
-      @api_base_url = ENV["#{@addon_name}_URL"]
+      self.addon_name = ENV["JUDOSCALE_ADDON"] || "JUDOSCALE"
+      @dyno = ENV["DYNO"]
       @debug = ENV["JUDOSCALE_DEBUG"] == "true"
       @quiet = false
-      @track_long_running_jobs = ENV["JUDOSCALE_LONG_JOBS"] == "true"
-      @max_queues = ENV.fetch("JUDOSCALE_MAX_QUEUES", 50).to_i
+      @track_long_running_jobs = false
+      @max_queues = 50
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 10
       @logger = defined?(Rails) ? Rails.logger : ::Logger.new($stdout)
-      @dyno = ENV["DYNO"]
+    end
+
+    def addon_name=(name)
+      @addon_name = name
+      @api_base_url = ENV["#{@addon_name}_URL"]
     end
 
     def worker_adapters=(adapters_config)

@@ -28,15 +28,12 @@ module Judoscale
       end
     end
 
-    it "allows ENV vars config overrides for the addon name, debug, track long running jobs, max queues, and worker adapters" do
+    it "allows ENV vars config overrides for the addon name, debug, and url (automatically set via the addon name)" do
       env = {
         "DYNO" => "web.2",
         "JUDOSCALE_ADDON" => "JUDOSCALE_CUSTOM",
         "JUDOSCALE_CUSTOM_URL" => "https://custom.example.com",
-        "JUDOSCALE_DEBUG" => "true",
-        "JUDOSCALE_LONG_JOBS" => "true",
-        "JUDOSCALE_MAX_QUEUES" => "100",
-        "JUDOSCALE_WORKER_ADAPTER" => "sidekiq,resque"
+        "JUDOSCALE_DEBUG" => "true"
       }
 
       use_env env do
@@ -45,13 +42,6 @@ module Judoscale
         _(config.api_base_url).must_equal "https://custom.example.com"
         _(config.dyno).must_equal "web.2"
         _(config.debug).must_equal true
-        _(config.max_queues).must_equal 100
-        _(config.track_long_running_jobs).must_equal true
-
-        config_must_match_worker_adapters config, [
-          WorkerAdapters::Resque,
-          WorkerAdapters::Sidekiq
-        ]
       end
     end
 
@@ -88,6 +78,18 @@ module Judoscale
         WorkerAdapters::Resque,
         WorkerAdapters::Sidekiq
       ]
+    end
+
+    it "allows configuring the addon name via a block, reading the API url from the ENV based on the name" do
+      use_env "DYNO" => "web.2", "JUDOSCALE_CUSTOM_URL" => "https://custom.example.com" do
+        Judoscale.configure do |config|
+          config.addon_name = "JUDOSCALE_CUSTOM"
+        end
+
+        config = Config.instance
+        _(config.addon_name).must_equal "JUDOSCALE_CUSTOM"
+        _(config.api_base_url).must_equal "https://custom.example.com"
+      end
     end
 
     private

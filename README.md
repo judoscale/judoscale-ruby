@@ -40,27 +40,49 @@ Judoscale aggregates and stores this information to power the autoscaling algori
 
 ## Configuration
 
-Most Judoscale configurations are handled via the settings page on your Judoscale dashboard, but there a few ways you can directly change the behavior of the agent via environment variables:
+Most Judoscale configurations are handled via the settings page on your Judoscale dashboard, but there a few ways you can directly change the behavior of the agent by creating an initializer in your app like the following:
 
-- `JUDOSCALE_DEBUG` - Enables debug logging. See more in the [logging](#logging) section below.
-- `JUDOSCALE_WORKER_ADAPTER` - Overrides the available worker adapters. See more in the [worker adapters](#worker-adapters) section below.
-- `JUDOSCALE_LONG_JOBS` - Enables reporting for active workers. See [Handling Long-Running Background Jobs](https://judoscale.com/docs/long-running-jobs/) in the Judoscale docs for more.
-- `JUDOSCALE_MAX_QUEUES` - Worker metrics will only report up to 50 queues by default. If you have more than 50 queues, you'll need to configure this settings or reduce your number of queues.
+```ruby
+# config/initializers/judoscale.rb
+Judoscale.configure do |config|
+  # configure Judoscale here, more on each configuration option below.
+
+  # Enables debug logging. This can also be enabled/disabled via the JUDOSCALE_DEBUG environment variable.
+  # See more in the [logging](#logging) section below.
+  config.debug = true
+
+  # Overrides the available worker adapters. See more in the [worker adapters](#worker-adapters) section below.
+  config.worker_adapters = "sidekiq,resque"
+
+  # Enables reporting for active workers.
+  # See [Handling Long-Running Background Jobs](https://judoscale.com/docs/long-running-jobs/) in the Judoscale docs for more.
+  config.track_long_running_jobs = true
+
+  # Worker metrics will only report up to 50 queues by default. If you have more than
+  # 50 queues, you'll need to configure this settings or reduce your number of queues.
+  config.max_queues = 100
+end
+```
 
 ## Worker adapters
 
 Judoscale supports autoscaling worker dynos. Out of the box, four job backends are supported: Sidekiq, Resque, Delayed Job, and Que. The agent will automatically enable the appropriate worker adapter based on what you have installed in your app.
 
-In some scenarios you might want to override this behavior. Let's say you have both Sidekiq and Resque installed 🤷‍♂️, but you only want Judoscale to collect metrics for Sidekiq. Here's how you'd override that:
+In some scenarios you might want to override this behavior. Let's say you have both Sidekiq and Resque installed 🤷‍♂️, but you only want Judoscale to collect metrics for Sidekiq. You can override that via configuration:
 
-```
-heroku config:add JUDOSCALE_WORKER_ADAPTER=sidekiq
+```ruby
+Judoscale.configure do |config|
+  config.worker_adapters = "sidekiq"
+end
 ```
 
 You can also disable collection of worker metrics altogether:
 
 ```
-heroku config:add JUDOSCALE_WORKER_ADAPTER=""
+Judoscale.configure do |config|
+  config.worker_adapters = ""
+end
+
 ```
 
 It's also possible to write a custom worker adapter. See [these docs](https://judoscale.com/docs/custom-worker-adapter/) for details.
@@ -102,7 +124,7 @@ end
 Debug logs are silenced by default because Rails apps default to a DEBUG log level in production, and this gem has _very_ chatty debug logs. If you want to see the debug logs, set `JUDOSCALE_DEBUG` on your Heroku app:
 
 ```
-heroku config:add JUDOSCALE_DEBUG=true
+heroku config:set JUDOSCALE_DEBUG=true
 ```
 
 If you find the gem too chatty even without this, you can quiet it down further:
