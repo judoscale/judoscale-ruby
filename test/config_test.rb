@@ -55,7 +55,7 @@ module Judoscale
         config.max_queues = 100
         config.max_request_size = 50_000
         config.report_interval = 20
-        config.worker_adapters = "sidekiq,resque"
+        config.worker_adapters = [:sidekiq, :resque]
       end
 
       config = Config.instance

@@ -4,7 +4,7 @@ require "singleton"
 
 module Judoscale
   class Config
-    DEFAULT_WORKER_ADAPTERS = "sidekiq,delayed_job,que,resque"
+    DEFAULT_WORKER_ADAPTERS = %i[sidekiq delayed_job que resque]
 
     include Singleton
 
@@ -48,9 +48,9 @@ module Judoscale
 
     private
 
-    def prepare_worker_adapters(adapters_config)
-      adapter_names = adapters_config.split(",")
+    def prepare_worker_adapters(adapter_names)
       adapter_names.map do |adapter_name|
+        adapter_name = adapter_name.to_s
         require "judoscale/worker_adapters/#{adapter_name}"
         adapter_constant_name = adapter_name.capitalize.gsub(/(?:_)(.)/i) { $1.upcase }
         WorkerAdapters.const_get(adapter_constant_name).instance

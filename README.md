@@ -52,7 +52,7 @@ Judoscale.configure do |config|
   config.debug = true
 
   # Overrides the available worker adapters. See more in the [worker adapters](#worker-adapters) section below.
-  config.worker_adapters = "sidekiq,resque"
+  config.worker_adapters = %i[sidekiq resque]
 
   # Enables reporting for active workers.
   # See [Handling Long-Running Background Jobs](https://judoscale.com/docs/long-running-jobs/) in the Judoscale docs for more.
@@ -71,16 +71,18 @@ Judoscale supports autoscaling worker dynos. Out of the box, four job backends a
 In some scenarios you might want to override this behavior. Let's say you have both Sidekiq and Resque installed 🤷‍♂️, but you only want Judoscale to collect metrics for Sidekiq. You can override that via configuration:
 
 ```ruby
+# config/initializers/judoscale.rb
 Judoscale.configure do |config|
-  config.worker_adapters = "sidekiq"
+  config.worker_adapters = [:sidekiq]
 end
 ```
 
 You can also disable collection of worker metrics altogether:
 
-```
+```ruby
+# config/initializers/judoscale.rb
 Judoscale.configure do |config|
-  config.worker_adapters = ""
+  config.worker_adapters = []
 end
 
 ```
