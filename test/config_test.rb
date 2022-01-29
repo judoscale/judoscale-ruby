@@ -8,7 +8,6 @@ module Judoscale
     it "initializes the config from default heroku ENV vars and other sensible defaults" do
       use_env "DYNO" => "web.1", "JUDOSCALE_URL" => "https://example.com" do
         config = Config.instance
-        _(config.addon_name).must_equal "JUDOSCALE"
         _(config.api_base_url).must_equal "https://example.com"
         _(config.dyno).must_equal "web.1"
         _(config.debug).must_equal false
@@ -28,17 +27,15 @@ module Judoscale
       end
     end
 
-    it "allows ENV vars config overrides for the addon name, debug, and url (automatically set via the addon name)" do
+    it "allows ENV vars config overrides for the debug and URL" do
       env = {
         "DYNO" => "web.2",
-        "JUDOSCALE_ADDON" => "JUDOSCALE_CUSTOM",
-        "JUDOSCALE_CUSTOM_URL" => "https://custom.example.com",
+        "JUDOSCALE_URL" => "https://custom.example.com",
         "JUDOSCALE_DEBUG" => "true"
       }
 
       use_env env do
         config = Config.instance
-        _(config.addon_name).must_equal "JUDOSCALE_CUSTOM"
         _(config.api_base_url).must_equal "https://custom.example.com"
         _(config.dyno).must_equal "web.2"
         _(config.debug).must_equal true
@@ -50,7 +47,6 @@ module Judoscale
 
       Judoscale.configure do |config|
         config.dyno = "web.3"
-        config.addon_name = "JUDOSCALE_BLOCK"
         config.api_base_url = "https://block.example.com"
         config.debug = true
         config.quiet = true
@@ -63,7 +59,6 @@ module Judoscale
       end
 
       config = Config.instance
-      _(config.addon_name).must_equal "JUDOSCALE_BLOCK"
       _(config.api_base_url).must_equal "https://block.example.com"
       _(config.dyno).must_equal "web.3"
       _(config.debug).must_equal true
@@ -78,18 +73,6 @@ module Judoscale
         WorkerAdapters::Resque,
         WorkerAdapters::Sidekiq
       ]
-    end
-
-    it "allows configuring the addon name via a block, reading the API url from the ENV based on the name" do
-      use_env "DYNO" => "web.2", "JUDOSCALE_CUSTOM_URL" => "https://custom.example.com" do
-        Judoscale.configure do |config|
-          config.addon_name = "JUDOSCALE_CUSTOM"
-        end
-
-        config = Config.instance
-        _(config.addon_name).must_equal "JUDOSCALE_CUSTOM"
-        _(config.api_base_url).must_equal "https://custom.example.com"
-      end
     end
 
     private

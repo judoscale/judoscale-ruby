@@ -10,7 +10,7 @@ module Judoscale
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
       :dyno, :debug, :quiet, :track_long_running_jobs, :max_queues
-    attr_reader :addon_name, :worker_adapters
+    attr_reader :worker_adapters
 
     def initialize
       reset
@@ -19,8 +19,8 @@ module Judoscale
     def reset
       self.worker_adapters = DEFAULT_WORKER_ADAPTERS
 
-      # Allow the add-on name to be configured - needed for testing
-      self.addon_name = ENV["JUDOSCALE_ADDON"] || "JUDOSCALE"
+      # Allow the API URL to be configured - needed for testing.
+      @api_base_url = ENV["JUDOSCALE_URL"]
       @dyno = ENV["DYNO"]
       @debug = ENV["JUDOSCALE_DEBUG"] == "true"
       @quiet = false
@@ -29,11 +29,6 @@ module Judoscale
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 10
       @logger = defined?(Rails) ? Rails.logger : ::Logger.new($stdout)
-    end
-
-    def addon_name=(name)
-      @addon_name = name
-      @api_base_url = ENV["#{@addon_name}_URL"]
     end
 
     def worker_adapters=(adapters_config)
