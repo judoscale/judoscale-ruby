@@ -94,7 +94,9 @@ If you wish to use a different logger you can set it on the configuration object
 
 ```ruby
 # config/initializers/judoscale.rb
-Judoscale::Config.instance.logger = MyLogger.new
+Judoscale.configure do |config|
+  config.logger = MyLogger.new
+end
 ```
 
 Debug logs are silenced by default because Rails apps default to a DEBUG log level in production, and this gem has _very_ chatty debug logs. If you want to see the debug logs, set `JUDOSCALE_DEBUG` on your Heroku app:
@@ -107,7 +109,9 @@ If you find the gem too chatty even without this, you can quiet it down further:
 
 ```ruby
 # config/initializers/judoscale.rb
-Judoscale::Config.instance.quiet = true
+Judoscale.configure do |config|
+  config.quiet = true
+end
 ```
 
 ## Development

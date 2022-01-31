@@ -33,8 +33,7 @@ module EnvHelpers
     end
 
     # Force config to load with the swapped ENV.
-    Singleton.__init__(Judoscale::Config)
-    Judoscale::Config.instance
+    Judoscale::Config.instance.reset
   end
 
   # Restores ENV values to their original state. (from when `setup_env` was called, see it for more info.)
