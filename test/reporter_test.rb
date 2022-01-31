@@ -47,7 +47,7 @@ module Judoscale
       end
 
       it "logs exceptions when collecting adapter information" do
-        enabled_adapter = Config.instance.worker_adapters.find(&:enabled?)
+        enabled_adapter = WorkerAdapters.load_adapters(Config.instance.worker_adapters).find(&:enabled?)
         _(enabled_adapter).wont_be :nil?
 
         enabled_adapter.stub(:collect!, ->(*) { raise "ADAPTER BOOM!" }) {
