@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require "judoscale/logger"
+require "judoscale/worker_adapters/base"
 
 module Judoscale
   module WorkerAdapters
-    class Sidekiq
-      include Judoscale::Logger
-      include Singleton
-
+    class Sidekiq < Base
       attr_writer :queues
 
       def enabled?

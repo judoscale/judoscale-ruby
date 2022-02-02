@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require "judoscale/logger"
+require "judoscale/worker_adapters/base"
 
 module Judoscale
   module WorkerAdapters
-    class Que
-      include Judoscale::Logger
-      include Singleton
-
+    class Que < Base
       attr_writer :queues
 
       def queues
