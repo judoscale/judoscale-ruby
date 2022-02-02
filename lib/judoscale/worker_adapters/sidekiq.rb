@@ -5,8 +5,6 @@ require "judoscale/worker_adapters/base"
 module Judoscale
   module WorkerAdapters
     class Sidekiq < Base
-      attr_writer :queues
-
       def enabled?
         require "sidekiq/api"
 
@@ -36,7 +34,7 @@ module Judoscale
         queues.each do |queue_name|
           queues_by_name[queue_name] ||= ::Sidekiq::Queue.new(queue_name)
         end
-        self.queues = queues_by_name.keys
+        self.queues |= queues_by_name.keys
 
         if track_long_running_jobs?
           busy_counts = Hash.new { |h, k| h[k] = 0 }
@@ -64,10 +62,6 @@ module Judoscale
       end
 
       private
-
-      def queues
-        @queues ||= ["default"]
-      end
 
       def track_long_running_jobs?
         Config.instance.track_long_running_jobs

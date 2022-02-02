@@ -5,8 +5,6 @@ require "judoscale/worker_adapters/base"
 module Judoscale
   module WorkerAdapters
     class DelayedJob < Base
-      attr_writer :queues
-
       def enabled?
         if defined?(::Delayed::Job) && defined?(::Delayed::Backend::ActiveRecord)
           log_msg = +"DelayedJob enabled (#{::ActiveRecord::Base.default_timezone})"
@@ -35,7 +33,7 @@ module Judoscale
           return
         end
 
-        self.queues = queues | run_at_by_queue.keys
+        self.queues |= run_at_by_queue.keys
 
         if track_long_running_jobs?
           sql = <<~SQL
@@ -48,7 +46,7 @@ module Judoscale
           SQL
 
           busy_count_by_queue = select_rows(sql).to_h
-          self.queues = queues | busy_count_by_queue.keys
+          self.queues |= busy_count_by_queue.keys
         end
 
         queues.each do |queue|
@@ -72,14 +70,6 @@ module Judoscale
       end
 
       private
-
-      def queues
-        # Track the known queues so we can continue reporting on queues that don't
-        # have enqueued jobs at the time of reporting.
-        # Assume a "default" queue so we always report *something*, even when nothing
-        # is enqueued.
-        @queues ||= Set.new(["default"])
-      end
 
       def track_long_running_jobs?
         Config.instance.track_long_running_jobs

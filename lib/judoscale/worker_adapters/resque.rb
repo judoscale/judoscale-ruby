@@ -5,12 +5,6 @@ require "judoscale/worker_adapters/base"
 module Judoscale
   module WorkerAdapters
     class Resque < Base
-      attr_writer :queues
-
-      def queues
-        @queues ||= ["default"]
-      end
-
       def enabled?
         require "resque"
         logger.info "Resque enabled"

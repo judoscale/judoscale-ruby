@@ -92,7 +92,7 @@ module Judoscale
         }
 
         _(store.measurements.size).must_equal 4
-        _(store.measurements.map(&:queue_name)).must_equal %w[low low default default]
+        _(store.measurements.map(&:queue_name)).must_equal %w[default default low low]
       end
 
       it "logs debug information for each queue being collected" do

@@ -5,16 +5,6 @@ require "judoscale/worker_adapters/base"
 module Judoscale
   module WorkerAdapters
     class Que < Base
-      attr_writer :queues
-
-      def queues
-        # Track the known queues so we can continue reporting on queues that don't
-        # have enqueued jobs at the time of reporting.
-        # Assume a "default" queue so we always report *something*, even when nothing
-        # is enqueued.
-        @queues ||= Set.new(["default"])
-      end
-
       def enabled?
         if defined?(::Que)
           logger.info "Que enabled (#{::ActiveRecord::Base.default_timezone})"
