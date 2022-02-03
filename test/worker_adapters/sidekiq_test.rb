@@ -160,7 +160,7 @@ module Judoscale
       it "skips metrics collection if exceeding max queues configured limit" do
         _(subject).must_be :enabled?
 
-        use_config max_queues: 2 do
+        use_adapter_config :sidekiq, max_queues: 2 do
           queues = %w[low default high].map { |name| SidekiqQueueStub.new(name: name) }
 
           ::Sidekiq::Queue.stub(:all, queues) {

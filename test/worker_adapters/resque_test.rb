@@ -102,7 +102,7 @@ module Judoscale
       it "skips metrics collection if exceeding max queues configured limit" do
         _(subject).must_be :enabled?
 
-        use_config max_queues: 2 do
+        use_adapter_config :resque, max_queues: 2 do
           queues = %w[low default high]
 
           ::Resque.stub(:queues, queues) {

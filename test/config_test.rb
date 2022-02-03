@@ -13,11 +13,15 @@ module Judoscale
         _(config.debug).must_equal false
         _(config.quiet).must_equal false
         _(config.logger).must_equal Rails.logger
-        _(config.max_queues).must_equal 50
         _(config.max_request_size).must_equal 100_000
         _(config.report_interval).must_equal 10
         _(config.track_long_running_jobs).must_equal false
         _(config.worker_adapters).must_equal %i[sidekiq delayed_job que resque]
+
+        config.worker_adapters.each do |adapter_name|
+          adapter_config = config.public_send(adapter_name)
+          _(adapter_config.max_queues).must_equal 50
+        end
       end
     end
 
@@ -46,10 +50,10 @@ module Judoscale
         config.quiet = true
         config.logger = test_logger
         config.track_long_running_jobs = true
-        config.max_queues = 100
         config.max_request_size = 50_000
         config.report_interval = 20
         config.worker_adapters = [:sidekiq, :resque]
+        config.sidekiq.max_queues = 100
       end
 
       config = Config.instance
@@ -58,11 +62,12 @@ module Judoscale
       _(config.debug).must_equal true
       _(config.quiet).must_equal true
       _(config.logger).must_equal test_logger
-      _(config.max_queues).must_equal 100
       _(config.max_request_size).must_equal 50_000
       _(config.report_interval).must_equal 20
       _(config.track_long_running_jobs).must_equal true
       _(config.worker_adapters).must_equal %i[sidekiq resque]
+      _(config.resque.max_queues).must_equal 50
+      _(config.sidekiq.max_queues).must_equal 100
     end
   end
 end

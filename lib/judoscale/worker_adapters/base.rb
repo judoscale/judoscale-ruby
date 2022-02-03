@@ -8,8 +8,20 @@ module Judoscale
       include Judoscale::Logger
       include Singleton
 
+      # Adapter class name extracted from the full class name.
+      # Example: Judoscale::WorkerAdapters::MyAdapter.adapter_name => 'MyAdapter'
       def self.adapter_name
         @_adapter_name ||= name.split("::").last
+      end
+
+      # Underscored version of the adapter name used as identifier.
+      # Example: Judoscale::WorkerAdapters::MyAdapter.adapter_identifier => 'my_adapter'
+      def self.adapter_identifier
+        @_adapter_identifer ||= adapter_name.scan(/[A-Z][a-z]+/).join("_").downcase
+      end
+
+      def self.adapter_config
+        Config.instance.public_send(adapter_identifier)
       end
 
       attr_writer :queues
@@ -31,11 +43,15 @@ module Judoscale
 
       private
 
+      def adapter_config
+        self.class.adapter_config
+      end
+
       # Don't collect worker metrics if there are unreasonable number of queues.
       # Should be checked within each worker adapter `collect!` method.
       def number_of_queues_to_collect_exceeded_limit?(queues_to_collect)
         queues_size = queues_to_collect.size
-        max_queues = Config.instance.max_queues
+        max_queues = adapter_config.max_queues
 
         if queues_size > max_queues
           logger.warn "Skipping #{self.class.adapter_name} metrics - #{queues_size} queues exceeds the #{max_queues} queue limit"

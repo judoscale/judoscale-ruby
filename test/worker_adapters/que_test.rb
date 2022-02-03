@@ -53,7 +53,7 @@ module Judoscale
       end
 
       it "skips metrics collection if exceeding max queues configured limit" do
-        use_config max_queues: 2 do
+        use_adapter_config :que, max_queues: 2 do
           %w[low default high].each { |queue| enqueue(queue, Time.now) }
 
           subject.collect! store
