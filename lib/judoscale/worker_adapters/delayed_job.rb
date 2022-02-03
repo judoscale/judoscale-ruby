@@ -1,15 +1,10 @@
 # frozen_string_literal: true
 
-require "judoscale/logger"
+require "judoscale/worker_adapters/base"
 
 module Judoscale
   module WorkerAdapters
-    class DelayedJob
-      include Judoscale::Logger
-      include Singleton
-
-      attr_writer :queues
-
+    class DelayedJob < Base
       def enabled?
         if defined?(::Delayed::Job) && defined?(::Delayed::Backend::ActiveRecord)
           log_msg = +"DelayedJob enabled (#{::ActiveRecord::Base.default_timezone})"
@@ -32,13 +27,9 @@ module Judoscale
 
         run_at_by_queue = select_rows(sql).to_h
 
-        # Don't collect worker metrics if there are unreasonable number of queues
-        if run_at_by_queue.size > Config.instance.max_queues
-          logger.warn "Skipping DelayedJob metrics - #{run_at_by_queue.size} queues exceeds the #{Config.instance.max_queues} queue limit"
-          return
-        end
+        return if number_of_queues_to_collect_exceeded_limit?(run_at_by_queue)
 
-        self.queues = queues | run_at_by_queue.keys
+        self.queues |= run_at_by_queue.keys
 
         if track_long_running_jobs?
           sql = <<~SQL
@@ -51,7 +42,7 @@ module Judoscale
           SQL
 
           busy_count_by_queue = select_rows(sql).to_h
-          self.queues = queues | busy_count_by_queue.keys
+          self.queues |= busy_count_by_queue.keys
         end
 
         queues.each do |queue|
@@ -75,18 +66,6 @@ module Judoscale
       end
 
       private
-
-      def queues
-        # Track the known queues so we can continue reporting on queues that don't
-        # have enqueued jobs at the time of reporting.
-        # Assume a "default" queue so we always report *something*, even when nothing
-        # is enqueued.
-        @queues ||= Set.new(["default"])
-      end
-
-      def track_long_running_jobs?
-        Config.instance.track_long_running_jobs
-      end
 
       def select_rows(sql)
         # This ensures the agent doesn't hold onto a DB connection any longer than necessary

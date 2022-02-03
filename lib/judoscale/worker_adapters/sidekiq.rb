@@ -1,15 +1,10 @@
 # frozen_string_literal: true
 
-require "judoscale/logger"
+require "judoscale/worker_adapters/base"
 
 module Judoscale
   module WorkerAdapters
-    class Sidekiq
-      include Judoscale::Logger
-      include Singleton
-
-      attr_writer :queues
-
+    class Sidekiq < Base
       def enabled?
         require "sidekiq/api"
 
@@ -28,18 +23,14 @@ module Judoscale
           obj[queue.name] = queue
         end
 
-        # Don't collect worker metrics if there are unreasonable number of queues
-        if queues_by_name.size > Config.instance.max_queues
-          logger.warn "Skipping Sidekiq metrics - #{queues_by_name.size} queues exceeds the #{Config.instance.max_queues} queue limit"
-          return
-        end
+        return if number_of_queues_to_collect_exceeded_limit?(queues_by_name)
 
         # Ensure we continue to collect metrics for known queue names, even when nothing is
         # enqueued at the time. Without this, it will appear that the agent is no longer reporting.
         queues.each do |queue_name|
           queues_by_name[queue_name] ||= ::Sidekiq::Queue.new(queue_name)
         end
-        self.queues = queues_by_name.keys
+        self.queues |= queues_by_name.keys
 
         if track_long_running_jobs?
           busy_counts = Hash.new { |h, k| h[k] = 0 }
@@ -64,16 +55,6 @@ module Judoscale
         end
 
         logger.debug log_msg
-      end
-
-      private
-
-      def queues
-        @queues ||= ["default"]
-      end
-
-      def track_long_running_jobs?
-        Config.instance.track_long_running_jobs
       end
     end
   end

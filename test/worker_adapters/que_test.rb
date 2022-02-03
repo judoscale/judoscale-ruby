@@ -51,6 +51,17 @@ module Judoscale
           _(log_string).must_match %r{que-qt.default=\d+ms}
         end
       end
+
+      it "skips metrics collection if exceeding max queues configured limit" do
+        use_config max_queues: 2 do
+          %w[low default high].each { |queue| enqueue(queue, Time.now) }
+
+          subject.collect! store
+
+          _(store.measurements.size).must_equal 0
+          _(log_string).must_match %r{Skipping Que metrics - 3 queues exceeds the 2 queue limit}
+        end
+      end
     end
   end
 end

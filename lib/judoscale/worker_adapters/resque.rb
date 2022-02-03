@@ -1,19 +1,10 @@
 # frozen_string_literal: true
 
-require "judoscale/logger"
+require "judoscale/worker_adapters/base"
 
 module Judoscale
   module WorkerAdapters
-    class Resque
-      include Judoscale::Logger
-      include Singleton
-
-      attr_writer :queues
-
-      def queues
-        @queues ||= ["default"]
-      end
-
+    class Resque < Base
       def enabled?
         require "resque"
         logger.info "Resque enabled"
@@ -26,11 +17,7 @@ module Judoscale
         log_msg = +""
         current_queues = ::Resque.queues
 
-        # Don't collect worker metrics if there are unreasonable number of queues
-        if current_queues.size > Config.instance.max_queues
-          logger.warn "Skipping Resque metrics - #{current_queues.size} queues exceeds the #{Config.instance.max_queues} queue limit"
-          return
-        end
+        return if number_of_queues_to_collect_exceeded_limit?(current_queues)
 
         # Ensure we continue to collect metrics for known queue names, even when nothing is
         # enqueued at the time. Without this, it will appears that the agent is no longer reporting.

@@ -1,23 +1,10 @@
 # frozen_string_literal: true
 
-require "judoscale/logger"
+require "judoscale/worker_adapters/base"
 
 module Judoscale
   module WorkerAdapters
-    class Que
-      include Judoscale::Logger
-      include Singleton
-
-      attr_writer :queues
-
-      def queues
-        # Track the known queues so we can continue reporting on queues that don't
-        # have enqueued jobs at the time of reporting.
-        # Assume a "default" queue so we always report *something*, even when nothing
-        # is enqueued.
-        @queues ||= Set.new(["default"])
-      end
-
+    class Que < Base
       def enabled?
         if defined?(::Que)
           logger.info "Que enabled (#{::ActiveRecord::Base.default_timezone})"
@@ -39,11 +26,7 @@ module Judoscale
 
         run_at_by_queue = select_rows(sql).to_h
 
-        # Don't collect worker metrics if there are unreasonable number of queues
-        if run_at_by_queue.size > Config.instance.max_queues
-          logger.warn "Skipping Que metrics - #{run_at_by_queue.size} queues exceeds the #{Config.instance.max_queues} queue limit"
-          return
-        end
+        return if number_of_queues_to_collect_exceeded_limit?(run_at_by_queue)
 
         self.queues |= run_at_by_queue.keys
 
