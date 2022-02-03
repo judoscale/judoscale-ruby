@@ -24,6 +24,12 @@ module Judoscale
 
       def collect!(store)
       end
+
+      private
+
+      def track_long_running_jobs?
+        Config.instance.track_long_running_jobs
+      end
     end
   end
 end

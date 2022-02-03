@@ -71,10 +71,6 @@ module Judoscale
 
       private
 
-      def track_long_running_jobs?
-        Config.instance.track_long_running_jobs
-      end
-
       def select_rows(sql)
         # This ensures the agent doesn't hold onto a DB connection any longer than necessary
         ActiveRecord::Base.connection_pool.with_connection { |c| c.select_rows(sql) }
