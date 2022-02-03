@@ -92,6 +92,17 @@ module Judoscale
           _(log_string).must_match %r{dj-qt.default=\d+ms}
         end
       end
+
+      it "skips metrics collection if exceeding max queues configured limit" do
+        use_config max_queues: 2 do
+          %w[low default high].each { |queue| Delayable.new.delay(queue: queue).perform }
+
+          subject.collect! store
+
+          _(store.measurements.size).must_equal 0
+          _(log_string).must_match %r{Skipping DelayedJob metrics - 3 queues exceeds the 2 queue limit}
+        end
+      end
     end
   end
 end

@@ -98,6 +98,21 @@ module Judoscale
           _(log_string).must_match %r{resque-qd.default=2}
         end
       end
+
+      it "skips metrics collection if exceeding max queues configured limit" do
+        _(subject).must_be :enabled?
+
+        use_config max_queues: 2 do
+          queues = %w[low default high]
+
+          ::Resque.stub(:queues, queues) {
+            subject.collect! store
+          }
+
+          _(store.measurements.size).must_equal 0
+          _(log_string).must_match %r{Skipping Resque metrics - 3 queues exceeds the 2 queue limit}
+        end
+      end
     end
   end
 end
