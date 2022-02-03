@@ -9,7 +9,7 @@ module Judoscale
       include Singleton
 
       def self.adapter_name
-        name.split("::").last
+        @_adapter_name ||= name.split("::").last
       end
 
       attr_writer :queues
