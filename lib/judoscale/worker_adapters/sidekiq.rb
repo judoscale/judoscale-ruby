@@ -23,11 +23,7 @@ module Judoscale
           obj[queue.name] = queue
         end
 
-        # Don't collect worker metrics if there are unreasonable number of queues
-        if queues_by_name.size > Config.instance.max_queues
-          logger.warn "Skipping Sidekiq metrics - #{queues_by_name.size} queues exceeds the #{Config.instance.max_queues} queue limit"
-          return
-        end
+        return if number_of_queues_to_collect_exceeded_limit?(queues_by_name)
 
         # Ensure we continue to collect metrics for known queue names, even when nothing is
         # enqueued at the time. Without this, it will appear that the agent is no longer reporting.

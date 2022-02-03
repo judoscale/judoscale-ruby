@@ -8,6 +8,10 @@ module Judoscale
       include Judoscale::Logger
       include Singleton
 
+      def self.adapter_name
+        name.split("::").last
+      end
+
       attr_writer :queues
 
       def queues
@@ -26,6 +30,20 @@ module Judoscale
       end
 
       private
+
+      # Don't collect worker metrics if there are unreasonable number of queues.
+      # Should be checked within each worker adapter `collect!` method.
+      def number_of_queues_to_collect_exceeded_limit?(queues_to_collect)
+        queues_size = queues_to_collect.size
+        max_queues = Config.instance.max_queues
+
+        if queues_size > max_queues
+          logger.warn "Skipping #{self.class.adapter_name} metrics - #{queues_size} queues exceeds the #{max_queues} queue limit"
+          true
+        else
+          false
+        end
+      end
 
       def track_long_running_jobs?
         Config.instance.track_long_running_jobs

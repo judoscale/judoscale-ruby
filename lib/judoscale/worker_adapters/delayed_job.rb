@@ -27,11 +27,7 @@ module Judoscale
 
         run_at_by_queue = select_rows(sql).to_h
 
-        # Don't collect worker metrics if there are unreasonable number of queues
-        if run_at_by_queue.size > Config.instance.max_queues
-          logger.warn "Skipping DelayedJob metrics - #{run_at_by_queue.size} queues exceeds the #{Config.instance.max_queues} queue limit"
-          return
-        end
+        return if number_of_queues_to_collect_exceeded_limit?(run_at_by_queue)
 
         self.queues |= run_at_by_queue.keys
 
