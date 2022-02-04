@@ -53,10 +53,6 @@ Judoscale.configure do |config|
 
   # Overrides the available worker adapters. See more in the [worker adapters](#worker-adapters) section below.
   config.worker_adapters = %i[sidekiq resque]
-
-  # Enables reporting for active workers.
-  # See [Handling Long-Running Background Jobs](https://judoscale.com/docs/long-running-jobs/) in the Judoscale docs for more.
-  config.track_long_running_jobs = true
 end
 ```
 
@@ -90,6 +86,10 @@ Judoscale.configure do |config|
   # Worker metrics will only report up to 50 queues by default. If you have more than 50 queues,
   # you'll need to configure this settings for the specific worker adapter or reduce your number of queues.
   config.sidekiq.max_queues = 100
+
+  # Enables reporting for active workers.
+  # See [Handling Long-Running Background Jobs](https://judoscale.com/docs/long-running-jobs/) in the Judoscale docs for more.
+  config.sidekiq.track_long_running_jobs = true
 end
 ```
 

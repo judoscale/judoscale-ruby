@@ -62,7 +62,7 @@ module Judoscale
       end
 
       def track_long_running_jobs?
-        Config.instance.track_long_running_jobs
+        adapter_config.track_long_running_jobs
       end
     end
   end

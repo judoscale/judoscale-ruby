@@ -3,7 +3,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...main)
 
-- Allow per-adapter configuration of `max_queues`, dropping support for the global `max_queues` configuration. ([#29](https://github.com/judoscale/judoscale-ruby/pull/29))
+- Allow per-adapter configuration of `max_queues` and `track_long_running_jobs`, dropping support for the global configurations. ([#29](https://github.com/judoscale/judoscale-ruby/pull/29))
 - Drop support for ENV vars `JUDOSCALE_WORKER_ADAPTER`, `JUDOSCALE_LONG_JOBS`, and `JUDOSCALE_MAX_QUEUES`, in favor of using the new block config format. ([#26](https://github.com/judoscale/judoscale-ruby/pull/26))
 - Configure Judoscale through a block: `Judoscale.configure { |config| config.logger = MyLogger.new }`. ([#25](https://github.com/judoscale/judoscale-ruby/pull/25))
 - Remove legacy configs: `sidekiq_latency_for_active_jobs`, `latency_for_active_jobs`. ([#22](https://github.com/judoscale/judoscale-ruby/pull/22))

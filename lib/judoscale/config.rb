@@ -7,18 +7,19 @@ module Judoscale
     DEFAULT_WORKER_ADAPTERS = %i[sidekiq delayed_job que resque]
 
     class WorkerAdapterConfig
-      attr_accessor :max_queues
+      attr_accessor :max_queues, :track_long_running_jobs
 
       def initialize(adapter_name)
         @adapter_name = adapter_name
         @max_queues = 50
+        @track_long_running_jobs = false
       end
     end
 
     include Singleton
 
     attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
-      :dyno, :debug, :quiet, :track_long_running_jobs, :worker_adapters, *DEFAULT_WORKER_ADAPTERS
+      :dyno, :debug, :quiet, :worker_adapters, *DEFAULT_WORKER_ADAPTERS
 
     def initialize
       reset
@@ -30,7 +31,6 @@ module Judoscale
       @dyno = ENV["DYNO"]
       @debug = ENV["JUDOSCALE_DEBUG"] == "true"
       @quiet = false
-      @track_long_running_jobs = false
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval = 10
       @logger = defined?(Rails) ? Rails.logger : ::Logger.new($stdout)
