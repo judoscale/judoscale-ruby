@@ -182,6 +182,20 @@ module Judoscale
         end
       end
 
+      it "collects metrics only from the configured queues if the configuration is present" do
+        use_adapter_config :sidekiq, queues: %w[low] do
+          queues = %w[low default high].map { |name| SidekiqQueueStub.new(name: name, latency: 5, size: 1) }
+
+          ::Sidekiq::Queue.stub(:all, queues) {
+            subject.collect! store
+          }
+
+          _(store.measurements.size).must_equal 2
+          _(store.measurements[0].queue_name).must_equal "low"
+          _(store.measurements[1].queue_name).must_equal "low"
+        end
+      end
+
       it "collects metrics up to the configured number of max queues, sorting by length of the queue name" do
         use_adapter_config :sidekiq, max_queues: 2 do
           queues = %w[low default high].map { |name| SidekiqQueueStub.new(name: name, latency: 1, size: 1) }

@@ -125,6 +125,22 @@ module Judoscale
         end
       end
 
+      it "collects metrics only from the configured queues if the configuration is present" do
+        use_adapter_config :resque, queues: %w[low] do
+          queues = %w[low default high]
+          size = 2
+
+          ::Resque.stub(:queues, queues) {
+            ::Resque.stub(:size, size) {
+              subject.collect! store
+            }
+          }
+
+          _(store.measurements.size).must_equal 1
+          _(store.measurements[0].queue_name).must_equal "low"
+        end
+      end
+
       it "collects metrics up to the configured number of max queues, sorting by length of the queue name" do
         use_adapter_config :resque, max_queues: 2 do
           queues = %w[low default high]

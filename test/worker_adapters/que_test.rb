@@ -38,8 +38,10 @@ module Judoscale
         _(store.measurements.size).must_equal 2
         _(store.measurements[0].queue_name).must_equal "default"
         _(store.measurements[0].value).must_be_within_delta 11000, 5
+        _(store.measurements[0].metric).must_equal :qt
         _(store.measurements[1].queue_name).must_equal "high"
         _(store.measurements[1].value).must_be_within_delta 22222, 5
+        _(store.measurements[1].metric).must_equal :qt
       end
 
       it "logs debug information for each queue being collected" do
@@ -70,6 +72,17 @@ module Judoscale
           _(store.measurements.size).must_equal 2
           _(store.measurements[0].queue_name).must_equal "low"
           _(store.measurements[1].queue_name).must_be :start_with?, "low-"
+        end
+      end
+
+      it "collects metrics only from the configured queues if the configuration is present" do
+        use_adapter_config :que, queues: %w[low] do
+          %w[low default high].each { |queue| enqueue(queue, Time.now) }
+
+          subject.collect! store
+
+          _(store.measurements.size).must_equal 1
+          _(store.measurements[0].queue_name).must_equal "low"
         end
       end
 
