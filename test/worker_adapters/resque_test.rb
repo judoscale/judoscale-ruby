@@ -99,6 +99,24 @@ module Judoscale
         end
       end
 
+      it "filters queues to collect metrics from based on the configured queue filter proc" do
+        _(subject).must_be :enabled?
+
+        use_adapter_config :resque, queue_filter: ->(queue_name) { queue_name == "low" } do
+          queues = %w[low default high]
+          size = 2
+
+          ::Resque.stub(:queues, queues) {
+            ::Resque.stub(:size, size) {
+              subject.collect! store
+            }
+          }
+
+          _(store.measurements.size).must_equal 1
+          _(store.measurements[0].queue_name).must_equal "low"
+        end
+      end
+
       it "skips metrics collection if exceeding max queues configured limit" do
         _(subject).must_be :enabled?
 

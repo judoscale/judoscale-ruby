@@ -7,11 +7,12 @@ module Judoscale
     DEFAULT_WORKER_ADAPTERS = %i[sidekiq delayed_job que resque]
 
     class WorkerAdapterConfig
-      attr_accessor :max_queues, :track_long_running_jobs
+      attr_accessor :max_queues, :queue_filter, :track_long_running_jobs
 
       def initialize(adapter_name)
         @adapter_name = adapter_name
         @max_queues = 50
+        @queue_filter = nil
         @track_long_running_jobs = false
       end
     end

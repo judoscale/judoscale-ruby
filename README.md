@@ -87,6 +87,10 @@ Judoscale.configure do |config|
   # you'll need to configure this settings for the specific worker adapter or reduce your number of queues.
   config.sidekiq.max_queues = 100
 
+  # Filter queues to collect metrics from with a custom proc.
+  # Return a falsy value (`nil`/`false`) to exclude the queue, any other value will include it.
+  config.sidekiq.queue_filter = ->(queue_name) { %w[low default high].include?(queue_name) }
+
   # Enables reporting for active workers.
   # See [Handling Long-Running Background Jobs](https://judoscale.com/docs/long-running-jobs/) in the Judoscale docs for more.
   config.sidekiq.track_long_running_jobs = true
