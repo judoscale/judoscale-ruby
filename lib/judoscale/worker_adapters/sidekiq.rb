@@ -49,7 +49,7 @@ module Judoscale
 
           if track_long_running_jobs?
             busy_count = busy_counts[queue_name]
-            store.push busy_count, Time.now, queue_name, :busy
+            store.push :busy, busy_count, Time.now, queue_name
             log_msg << "sidekiq-busy.#{queue_name}=#{busy_count} "
           end
         end
