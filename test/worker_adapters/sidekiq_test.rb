@@ -113,7 +113,7 @@ module Judoscale
       it "tracks long running jobs when the configuration is enabled" do
         _(subject).must_be :enabled?
 
-        use_config track_long_running_jobs: true do
+        use_adapter_config :sidekiq, track_long_running_jobs: true do
           queues = [
             SidekiqQueueStub.new(name: "default", latency: 11, size: 1),
             SidekiqQueueStub.new(name: "high", latency: 22.222222, size: 2)
@@ -143,24 +143,26 @@ module Judoscale
       it "logs debug information about long running jobs being collected" do
         _(subject).must_be :enabled?
 
-        use_config debug: true, track_long_running_jobs: true do
-          queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
-          workers = [["pid1", "tid1", {"payload" => {"queue" => "default"}}]]
+        use_config debug: true do
+          use_adapter_config :sidekiq, track_long_running_jobs: true do
+            queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
+            workers = [["pid1", "tid1", {"payload" => {"queue" => "default"}}]]
 
-          ::Sidekiq::Workers.stub(:new, workers) {
-            ::Sidekiq::Queue.stub(:all, queues) {
-              subject.collect! store
+            ::Sidekiq::Workers.stub(:new, workers) {
+              ::Sidekiq::Queue.stub(:all, queues) {
+                subject.collect! store
+              }
             }
-          }
 
-          _(log_string).must_match %r{sidekiq-qt.default=.+ sidekiq-qd.default=.+ sidekiq-busy.default=1}
+            _(log_string).must_match %r{sidekiq-qt.default=.+ sidekiq-qd.default=.+ sidekiq-busy.default=1}
+          end
         end
       end
 
       it "skips metrics collection if exceeding max queues configured limit" do
         _(subject).must_be :enabled?
 
-        use_config max_queues: 2 do
+        use_adapter_config :sidekiq, max_queues: 2 do
           queues = %w[low default high].map { |name| SidekiqQueueStub.new(name: name) }
 
           ::Sidekiq::Queue.stub(:all, queues) {

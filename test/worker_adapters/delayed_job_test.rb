@@ -95,7 +95,7 @@ module Judoscale
       end
 
       it "tracks long running jobs when the configuration is enabled" do
-        use_config track_long_running_jobs: true do
+        use_adapter_config :delayed_job, track_long_running_jobs: true do
           %w[default default high].each_with_index { |queue, index|
             Delayable.new.delay(queue: queue).perform
             # Create a new worker to simulate "reserving/locking" the next available job for running.
@@ -116,18 +116,20 @@ module Judoscale
       end
 
       it "logs debug information about long running jobs being collected" do
-        use_config debug: true, track_long_running_jobs: true do
-          Delayable.new.delay(queue: "default").perform
-          Delayed::Worker.new.send(:reserve_job)
+        use_config debug: true do
+          use_adapter_config :delayed_job, track_long_running_jobs: true do
+            Delayable.new.delay(queue: "default").perform
+            Delayed::Worker.new.send(:reserve_job)
 
-          subject.collect! store
+            subject.collect! store
 
-          _(log_string).must_match %r{dj-qt.default=.+ dj-busy.default=1}
+            _(log_string).must_match %r{dj-qt.default=.+ dj-busy.default=1}
+          end
         end
       end
 
       it "skips metrics collection if exceeding max queues configured limit" do
-        use_config max_queues: 2 do
+        use_adapter_config :delayed_job, max_queues: 2 do
           %w[low default high].each { |queue| Delayable.new.delay(queue: queue).perform }
 
           subject.collect! store
