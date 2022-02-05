@@ -90,6 +90,39 @@ module Judoscale
           subject.collect! store
 
           _(log_string).must_match %r{dj-qt.default=\d+ms}
+          _(log_string).wont_match %r{dj-busy}
+        end
+      end
+
+      it "tracks long running jobs when the configuration is enabled" do
+        use_config track_long_running_jobs: true do
+          %w[default default high].each_with_index { |queue, index|
+            Delayable.new.delay(queue: queue).perform
+            # Create a new worker to simulate "reserving/locking" the next available job for running.
+            # Setting a different name ensures each worker will lock a different job.
+            Delayed::Worker.new.tap { |w| w.name = "dj_worker_#{index}" }.send(:reserve_job)
+          }
+
+          subject.collect! store
+
+          _(store.measurements.size).must_equal 4
+          _(store.measurements[1].value).must_equal 2
+          _(store.measurements[1].queue_name).must_equal "default"
+          _(store.measurements[1].metric).must_equal :busy
+          _(store.measurements[3].value).must_equal 1
+          _(store.measurements[3].queue_name).must_equal "high"
+          _(store.measurements[3].metric).must_equal :busy
+        end
+      end
+
+      it "logs debug information about long running jobs being collected" do
+        use_config debug: true, track_long_running_jobs: true do
+          Delayable.new.delay(queue: "default").perform
+          Delayed::Worker.new.send(:reserve_job)
+
+          subject.collect! store
+
+          _(log_string).must_match %r{dj-qt.default=.+ dj-busy.default=1}
         end
       end
 

@@ -106,6 +106,54 @@ module Judoscale
           }
 
           _(log_string).must_match %r{sidekiq-qt.default=11000ms sidekiq-qd.default=1}
+          _(log_string).wont_match %r{sidekiq-busy}
+        end
+      end
+
+      it "tracks long running jobs when the configuration is enabled" do
+        _(subject).must_be :enabled?
+
+        use_config track_long_running_jobs: true do
+          queues = [
+            SidekiqQueueStub.new(name: "default", latency: 11, size: 1),
+            SidekiqQueueStub.new(name: "high", latency: 22.222222, size: 2)
+          ]
+          workers = [
+            ["pid1", "tid1", {"payload" => {"queue" => "default"}}],
+            ["pid1", "tid2", {"payload" => {"queue" => "default"}}],
+            ["pid1", "tid3", {"payload" => {"queue" => "high"}}]
+          ]
+
+          ::Sidekiq::Workers.stub(:new, workers) {
+            ::Sidekiq::Queue.stub(:all, queues) {
+              subject.collect! store
+            }
+          }
+
+          _(store.measurements.size).must_equal 6
+          _(store.measurements[2].value).must_equal 2
+          _(store.measurements[2].queue_name).must_equal "default"
+          _(store.measurements[2].metric).must_equal :busy
+          _(store.measurements[5].value).must_equal 1
+          _(store.measurements[5].queue_name).must_equal "high"
+          _(store.measurements[5].metric).must_equal :busy
+        end
+      end
+
+      it "logs debug information about long running jobs being collected" do
+        _(subject).must_be :enabled?
+
+        use_config debug: true, track_long_running_jobs: true do
+          queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
+          workers = [["pid1", "tid1", {"payload" => {"queue" => "default"}}]]
+
+          ::Sidekiq::Workers.stub(:new, workers) {
+            ::Sidekiq::Queue.stub(:all, queues) {
+              subject.collect! store
+            }
+          }
+
+          _(log_string).must_match %r{sidekiq-qt.default=.+ sidekiq-qd.default=.+ sidekiq-busy.default=1}
         end
       end
 
