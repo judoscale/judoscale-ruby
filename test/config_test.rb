@@ -19,7 +19,7 @@ module Judoscale
 
         config.worker_adapters.each do |adapter_name|
           adapter_config = config.public_send(adapter_name)
-          _(adapter_config.max_queues).must_equal 50
+          _(adapter_config.max_queues).must_equal 20
           _(adapter_config.track_long_running_jobs).must_equal false
         end
       end
@@ -65,7 +65,7 @@ module Judoscale
       _(config.max_request_size).must_equal 50_000
       _(config.report_interval).must_equal 20
       _(config.worker_adapters).must_equal %i[sidekiq resque]
-      _(config.resque.max_queues).must_equal 50
+      _(config.resque.max_queues).must_equal 20
       _(config.resque.track_long_running_jobs).must_equal false
       _(config.sidekiq.max_queues).must_equal 100
       _(config.sidekiq.track_long_running_jobs).must_equal true
