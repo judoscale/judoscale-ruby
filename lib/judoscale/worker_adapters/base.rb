@@ -63,7 +63,7 @@ module Judoscale
       end
 
       # Collect up to the configured `max_queues`, skipping the rest.
-      # We sort queues by name before making the cut-off, as a simple heuristic to keep the shorter ones
+      # We sort queues by name length before making the cut-off, as a simple heuristic to keep the shorter ones
       # and possibly ignore the longer ones, which are more likely to be dynamically generated for example.
       def filter_max_queues(queues_to_collect)
         queues_size = queues_to_collect.size
