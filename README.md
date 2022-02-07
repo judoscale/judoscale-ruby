@@ -89,7 +89,7 @@ Judoscale.configure do |config|
 
   # Filter queues to collect metrics from with a custom proc.
   # Return a falsy value (`nil`/`false`) to exclude the queue, any other value will include it.
-  config.sidekiq.queue_filter = ->(queue_name) { %w[low default high].include?(queue_name) }
+  config.sidekiq.queue_filter = ->(queue_name) { /custom/.match?(queue_name) }
 
   # Enables reporting for active workers.
   # See [Handling Long-Running Background Jobs](https://judoscale.com/docs/long-running-jobs/) in the Judoscale docs for more.
