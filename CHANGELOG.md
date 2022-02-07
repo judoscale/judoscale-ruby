@@ -3,6 +3,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...main)
 
+- Allow configuring a custom proc to filter queues to collect metrics from by name: `queue_filter = ->(queue_name) { /custom/.match?(queue_name) }`. By default it will filter out queues matching UUIDs. ([#30](https://github.com/judoscale/judoscale-ruby/pull/30))
 - Allow per-adapter configuration of `max_queues` and `track_long_running_jobs`, dropping support for the global configurations. ([#29](https://github.com/judoscale/judoscale-ruby/pull/29))
 - Drop support for ENV vars `JUDOSCALE_WORKER_ADAPTER`, `JUDOSCALE_LONG_JOBS`, and `JUDOSCALE_MAX_QUEUES`, in favor of using the new block config format. ([#26](https://github.com/judoscale/judoscale-ruby/pull/26))
 - Configure Judoscale through a block: `Judoscale.configure { |config| config.logger = MyLogger.new }`. ([#25](https://github.com/judoscale/judoscale-ruby/pull/25))

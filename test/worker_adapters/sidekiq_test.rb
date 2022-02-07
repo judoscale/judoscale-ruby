@@ -159,6 +159,42 @@ module Judoscale
         end
       end
 
+      it "filters queues matching UUID format by default, to prevent reporting for dynamically generated queues" do
+        _(subject).must_be :enabled?
+
+        queues = %W[low-#{SecureRandom.uuid} default #{SecureRandom.uuid}-high].map { |name|
+          SidekiqQueueStub.new(name: name, latency: 5, size: 1)
+        }
+
+        ::Sidekiq::Queue.stub(:all, queues) {
+          subject.collect! store
+        }
+
+        _(store.measurements.size).must_equal 2
+        _(store.measurements[0].queue_name).must_equal "default"
+        _(store.measurements[1].queue_name).must_equal "default"
+      end
+
+      it "filters queues to collect metrics from based on the configured queue filter proc, overriding the default UUID filter" do
+        _(subject).must_be :enabled?
+
+        use_adapter_config :sidekiq, queue_filter: ->(queue_name) { queue_name.start_with? "low" } do
+          queues = %W[low default high low-#{SecureRandom.uuid}].map { |name|
+            SidekiqQueueStub.new(name: name, latency: 5, size: 1)
+          }
+
+          ::Sidekiq::Queue.stub(:all, queues) {
+            subject.collect! store
+          }
+
+          _(store.measurements.size).must_equal 4
+          _(store.measurements[0].queue_name).must_equal "low"
+          _(store.measurements[1].queue_name).must_equal "low"
+          _(store.measurements[2].queue_name).must_be :start_with?, "low-"
+          _(store.measurements[3].queue_name).must_be :start_with?, "low-"
+        end
+      end
+
       it "skips metrics collection if exceeding max queues configured limit" do
         _(subject).must_be :enabled?
 

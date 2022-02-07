@@ -128,6 +128,31 @@ module Judoscale
         end
       end
 
+      it "filters queues matching UUID format by default, to prevent reporting for dynamically generated queues" do
+        %W[low-#{SecureRandom.uuid} default #{SecureRandom.uuid}-high].each { |queue|
+          Delayable.new.delay(queue: queue).perform
+        }
+
+        subject.collect! store
+
+        _(store.measurements.size).must_equal 1
+        _(store.measurements[0].queue_name).must_equal "default"
+      end
+
+      it "filters queues to collect metrics from based on the configured queue filter proc, overriding the default UUID filter" do
+        use_adapter_config :delayed_job, queue_filter: ->(queue_name) { queue_name.start_with? "low" } do
+          %W[low default high low-#{SecureRandom.uuid}].each { |queue|
+            Delayable.new.delay(queue: queue).perform
+          }
+
+          subject.collect! store
+
+          _(store.measurements.size).must_equal 2
+          _(store.measurements[0].queue_name).must_equal "low"
+          _(store.measurements[1].queue_name).must_be :start_with?, "low-"
+        end
+      end
+
       it "skips metrics collection if exceeding max queues configured limit" do
         use_adapter_config :delayed_job, max_queues: 2 do
           %w[low default high].each { |queue| Delayable.new.delay(queue: queue).perform }

@@ -39,7 +39,8 @@ module Judoscale
           end
         end
 
-        queues_by_name.each do |queue_name, queue|
+        queues.each do |queue_name|
+          queue = queues_by_name[queue_name]
           latency_ms = (queue.latency * 1000).ceil
           depth = queue.size
 

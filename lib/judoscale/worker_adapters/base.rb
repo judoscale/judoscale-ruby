@@ -24,14 +24,16 @@ module Judoscale
         Config.instance.public_send(adapter_identifier)
       end
 
-      attr_writer :queues
-
       def queues
         # Track the known queues so we can continue reporting on queues that don't
         # have enqueued jobs at the time of reporting.
         # Assume a "default" queue on all worker adapters so we always report *something*,
         # even when nothing is enqueued.
         @queues ||= Set.new(["default"])
+      end
+
+      def queues=(new_queues)
+        @queues = filter_queues(new_queues)
       end
 
       def enabled?
@@ -45,6 +47,17 @@ module Judoscale
 
       def adapter_config
         self.class.adapter_config
+      end
+
+      def filter_queues(queues)
+        return if queues.nil?
+        configured_filter = adapter_config.queue_filter
+
+        if configured_filter.respond_to?(:call)
+          queues = queues.select { |queue| configured_filter.call(queue) }
+        end
+
+        Set.new(queues)
       end
 
       # Don't collect worker metrics if there are unreasonable number of queues.

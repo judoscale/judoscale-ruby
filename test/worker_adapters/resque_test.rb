@@ -99,6 +99,41 @@ module Judoscale
         end
       end
 
+      it "filters queues matching UUID format by default, to prevent reporting for dynamically generated queues" do
+        _(subject).must_be :enabled?
+
+        queues = %W[low-#{SecureRandom.uuid} default #{SecureRandom.uuid}-high]
+        size = 2
+
+        ::Resque.stub(:queues, queues) {
+          ::Resque.stub(:size, size) {
+            subject.collect! store
+          }
+        }
+
+        _(store.measurements.size).must_equal 1
+        _(store.measurements[0].queue_name).must_equal "default"
+      end
+
+      it "filters queues to collect metrics from based on the configured queue filter proc, overriding the default UUID filter" do
+        _(subject).must_be :enabled?
+
+        use_adapter_config :resque, queue_filter: ->(queue_name) { queue_name.start_with? "low" } do
+          queues = %W[low default high low-#{SecureRandom.uuid}]
+          size = 2
+
+          ::Resque.stub(:queues, queues) {
+            ::Resque.stub(:size, size) {
+              subject.collect! store
+            }
+          }
+
+          _(store.measurements.size).must_equal 2
+          _(store.measurements[0].queue_name).must_equal "low"
+          _(store.measurements[1].queue_name).must_be :start_with?, "low-"
+        end
+      end
+
       it "skips metrics collection if exceeding max queues configured limit" do
         _(subject).must_be :enabled?
 
