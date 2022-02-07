@@ -195,18 +195,22 @@ module Judoscale
         end
       end
 
-      it "skips metrics collection if exceeding max queues configured limit" do
+      it "collects metrics up to the configured number of max queues, sorting by length of the queue name" do
         _(subject).must_be :enabled?
 
         use_adapter_config :sidekiq, max_queues: 2 do
-          queues = %w[low default high].map { |name| SidekiqQueueStub.new(name: name) }
+          queues = %w[low default high].map { |name| SidekiqQueueStub.new(name: name, latency: 1, size: 1) }
 
           ::Sidekiq::Queue.stub(:all, queues) {
             subject.collect! store
           }
 
-          _(store.measurements.size).must_equal 0
-          _(log_string).must_match %r{Skipping Sidekiq metrics - 3 queues exceeds the 2 queue limit}
+          _(store.measurements.size).must_equal 4
+          _(store.measurements[0].queue_name).must_equal "low"
+          _(store.measurements[1].queue_name).must_equal "low"
+          _(store.measurements[2].queue_name).must_equal "high"
+          _(store.measurements[3].queue_name).must_equal "high"
+          _(log_string).must_match %r{Sidekiq metrics reporting only 2 queues max, skipping the rest \(1\)}
         end
       end
     end

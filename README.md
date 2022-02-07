@@ -84,7 +84,7 @@ Each worker adapter have its own set of configurations as well:
 # config/initializers/judoscale.rb
 Judoscale.configure do |config|
   # Worker metrics will only report up to 20 queues by default. If you have more than 20 queues,
-  # you'll need to configure this settings for the specific worker adapter or reduce your number of queues.
+  # you'll need to configure this setting for the specific worker adapter or reduce your number of queues.
   config.sidekiq.max_queues = 30
 
   # Filter queues to collect metrics from with a custom proc.
