@@ -57,20 +57,23 @@ module Judoscale
           queues = queues.select { |queue| configured_filter.call(queue) }
         end
 
+        queues = filter_max_queues(queues)
+
         Set.new(queues)
       end
 
-      # Don't collect worker metrics if there are unreasonable number of queues.
-      # Should be checked within each worker adapter `collect!` method.
-      def number_of_queues_to_collect_exceeded_limit?(queues_to_collect)
+      # Collect up to the configured `max_queues`, skipping the rest.
+      # We sort queues by name length before making the cut-off, as a simple heuristic to keep the shorter ones
+      # and possibly ignore the longer ones, which are more likely to be dynamically generated for example.
+      def filter_max_queues(queues_to_collect)
         queues_size = queues_to_collect.size
         max_queues = adapter_config.max_queues
 
         if queues_size > max_queues
-          logger.warn "Skipping #{self.class.adapter_name} metrics - #{queues_size} queues exceeds the #{max_queues} queue limit"
-          true
+          logger.warn "#{self.class.adapter_name} metrics reporting only #{max_queues} queues max, skipping the rest (#{queues_size - max_queues})"
+          queues_to_collect.sort_by(&:length).first(max_queues)
         else
-          false
+          queues_to_collect
         end
       end
 

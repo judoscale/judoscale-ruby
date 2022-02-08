@@ -25,9 +25,6 @@ module Judoscale
         SQL
 
         run_at_by_queue = select_rows(sql).to_h
-
-        return if number_of_queues_to_collect_exceeded_limit?(run_at_by_queue)
-
         self.queues |= run_at_by_queue.keys
 
         queues.each do |queue|

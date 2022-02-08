@@ -14,7 +14,7 @@ module Judoscale
 
       def initialize(adapter_name)
         @adapter_name = adapter_name
-        @max_queues = 50
+        @max_queues = 20
         @queue_filter = DEFAULT_QUEUE_FILTER
         @track_long_running_jobs = false
       end

@@ -23,8 +23,6 @@ module Judoscale
           obj[queue.name] = queue
         end
 
-        return if number_of_queues_to_collect_exceeded_limit?(queues_by_name)
-
         # Ensure we continue to collect metrics for known queue names, even when nothing is
         # enqueued at the time. Without this, it will appear that the agent is no longer reporting.
         queues.each do |queue_name|

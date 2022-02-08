@@ -16,9 +16,6 @@ module Judoscale
       def collect!(store)
         log_msg = +""
         current_queues = ::Resque.queues
-
-        return if number_of_queues_to_collect_exceeded_limit?(current_queues)
-
         # Ensure we continue to collect metrics for known queue names, even when nothing is
         # enqueued at the time. Without this, it will appears that the agent is no longer reporting.
         self.queues |= current_queues
