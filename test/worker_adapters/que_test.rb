@@ -75,8 +75,8 @@ module Judoscale
         end
       end
 
-      it "collects metrics only from the configured queues if the configuration is present" do
-        use_adapter_config :que, queues: %w[low] do
+      it "collects metrics only from the configured queues if the configuration is present, ignoring the queue filter" do
+        use_adapter_config :que, queues: %w[low], queue_filter: ->(queue_name) { queue_name != "low" } do
           %w[low default high].each { |queue| enqueue(queue, Time.now) }
 
           subject.collect! store

@@ -125,8 +125,8 @@ module Judoscale
         end
       end
 
-      it "collects metrics only from the configured queues if the configuration is present" do
-        use_adapter_config :resque, queues: %w[low] do
+      it "collects metrics only from the configured queues if the configuration is present, ignoring the queue filter" do
+        use_adapter_config :resque, queues: %w[low], queue_filter: ->(queue_name) { queue_name != "low" } do
           queues = %w[low default high]
           size = 2
 
