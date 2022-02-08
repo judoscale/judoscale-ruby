@@ -23,10 +23,8 @@ module Judoscale
     describe "#collect!" do
       let(:store) { Store.instance }
 
-      before {
-        ActiveRecord::Base.connection.execute("DELETE FROM que_jobs")
-      }
       after {
+        ActiveRecord::Base.connection.execute("DELETE FROM que_jobs")
         subject.clear_queues
         store.clear
       }
