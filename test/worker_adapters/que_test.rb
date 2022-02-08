@@ -24,10 +24,12 @@ module Judoscale
       let(:store) { Store.instance }
 
       before {
-        subject.queues = nil
         ActiveRecord::Base.connection.execute("DELETE FROM que_jobs")
       }
-      after { store.clear }
+      after {
+        subject.clear_queues
+        store.clear
+      }
 
       it "collects latency for each queue" do
         enqueue("default", Time.now - 11)

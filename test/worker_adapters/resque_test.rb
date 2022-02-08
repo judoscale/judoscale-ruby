@@ -15,8 +15,10 @@ module Judoscale
     describe "#collect!" do
       let(:store) { Store.instance }
 
-      before { subject.queues = nil }
-      after { store.clear }
+      after {
+        subject.clear_queues
+        store.clear
+      }
 
       it "collects latency for each queue" do
         _(subject).must_be :enabled?
