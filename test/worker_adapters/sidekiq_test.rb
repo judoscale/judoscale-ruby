@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "sidekiq/api"
 require "judoscale/worker_adapters/sidekiq"
 require "judoscale/store"
 
@@ -17,11 +18,6 @@ module Judoscale
     describe "#collect!" do
       let(:store) { Store.instance }
 
-      before {
-        # FIXME: We need to run the `enabled?` check before each test to ensure Sidekiq
-        # gets required, otherwise depending on the tests order some test might fail.
-        _(subject).must_be :enabled?
-      }
       after {
         subject.clear_queues
         store.clear

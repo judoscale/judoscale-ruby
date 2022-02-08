@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "que"
 require "judoscale/worker_adapters/que"
 require "judoscale/store"
-require "que"
 
 module Judoscale
   describe WorkerAdapters::Que do

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "delayed_job_active_record"
 require "judoscale/worker_adapters/delayed_job"
 require "judoscale/store"
 
