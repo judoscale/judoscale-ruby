@@ -87,7 +87,8 @@ Judoscale.configure do |config|
   # you'll need to configure this setting for the specific worker adapter or reduce your number of queues.
   config.sidekiq.max_queues = 30
 
-  # Specify a list of queues to collect metrics from. Anything not listed will be excluded.
+  # Specify a list of queues to collect metrics from. Anything not explicitly listed will be excluded.
+  # When setting the list of queues, `queue_filter` is ignored, but `max_queues` is still respected.
   config.sidekiq.queues = %w[low default high]
 
   # Filter queues to collect metrics from with a custom proc.
