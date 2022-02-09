@@ -11,7 +11,7 @@ module Judoscale
         rails_version: defined?(Rails) && Rails.version,
         gem_version: VERSION,
         # example: { worker_adapters: 'Sidekiq,Que' }
-        worker_adapters: worker_adapters.map { |o| o.class.name.split("::").last }.join(",")
+        worker_adapters: worker_adapters.map { |o| o.class.adapter_name }.join(",")
       }
     end
   end
