@@ -125,6 +125,21 @@ module Judoscale
         end
       end
 
+      it "collects metrics only from the configured queues if the configuration is present, ignoring the queue filter" do
+        use_adapter_config :resque, queues: %w[low ultra], queue_filter: ->(queue_name) { queue_name != "low" } do
+          queues = %w[low default high]
+          size = 2
+
+          ::Resque.stub(:queues, queues) {
+            ::Resque.stub(:size, size) {
+              subject.collect! store
+            }
+          }
+
+          _(store.measurements.map(&:queue_name)).must_equal %w[low ultra]
+        end
+      end
+
       it "collects metrics up to the configured number of max queues, sorting by length of the queue name" do
         use_adapter_config :resque, max_queues: 2 do
           queues = %w[low default high]
@@ -136,9 +151,7 @@ module Judoscale
             }
           }
 
-          _(store.measurements.size).must_equal 2
-          _(store.measurements[0].queue_name).must_equal "low"
-          _(store.measurements[1].queue_name).must_equal "high"
+          _(store.measurements.map(&:queue_name)).must_equal %w[low high]
           _(log_string).must_match %r{Resque metrics reporting only 2 queues max, skipping the rest \(1\)}
         end
       end

@@ -23,11 +23,6 @@ module Judoscale
           obj[queue.name] = queue
         end
 
-        # Ensure we continue to collect metrics for known queue names, even when nothing is
-        # enqueued at the time. Without this, it will appear that the agent is no longer reporting.
-        queues.each do |queue_name|
-          queues_by_name[queue_name] ||= ::Sidekiq::Queue.new(queue_name)
-        end
         self.queues |= queues_by_name.keys
 
         if track_long_running_jobs?
@@ -38,7 +33,7 @@ module Judoscale
         end
 
         queues.each do |queue_name|
-          queue = queues_by_name[queue_name]
+          queue = queues_by_name.fetch(queue_name) { |name| ::Sidekiq::Queue.new(name) }
           latency_ms = (queue.latency * 1000).ceil
           depth = queue.size
 
