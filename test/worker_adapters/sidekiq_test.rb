@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "sidekiq/api"
 require "judoscale/worker_adapters/sidekiq"
 require "judoscale/store"
 
@@ -17,12 +18,12 @@ module Judoscale
     describe "#collect!" do
       let(:store) { Store.instance }
 
-      before { subject.queues = nil }
-      after { store.clear }
+      after {
+        subject.clear_queues
+        store.clear
+      }
 
       it "collects latency for each queue" do
-        _(subject).must_be :enabled?
-
         queues = [
           SidekiqQueueStub.new(name: "default", latency: 11, size: 1),
           SidekiqQueueStub.new(name: "high", latency: 22.222222, size: 2)
@@ -48,8 +49,6 @@ module Judoscale
       end
 
       it "always collects for the default queue" do
-        _(subject).must_be :enabled?
-
         queues = []
         queue_default = SidekiqQueueStub.new(name: "default", latency: 0, size: 0)
 
@@ -69,8 +68,6 @@ module Judoscale
       end
 
       it "always collects for known queues" do
-        _(subject).must_be :enabled?
-
         queues = [SidekiqQueueStub.new(name: "low", latency: 11, size: 1)]
         queue_default = SidekiqQueueStub.new(name: "default", latency: 0, size: 0)
 
@@ -96,8 +93,6 @@ module Judoscale
       end
 
       it "logs debug information for each queue being collected" do
-        _(subject).must_be :enabled?
-
         use_config debug: true do
           queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
 
@@ -111,8 +106,6 @@ module Judoscale
       end
 
       it "tracks long running jobs when the configuration is enabled" do
-        _(subject).must_be :enabled?
-
         use_adapter_config :sidekiq, track_long_running_jobs: true do
           queues = [
             SidekiqQueueStub.new(name: "default", latency: 11, size: 1),
@@ -141,8 +134,6 @@ module Judoscale
       end
 
       it "logs debug information about long running jobs being collected" do
-        _(subject).must_be :enabled?
-
         use_config debug: true do
           use_adapter_config :sidekiq, track_long_running_jobs: true do
             queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
@@ -160,8 +151,6 @@ module Judoscale
       end
 
       it "filters queues matching UUID format by default, to prevent reporting for dynamically generated queues" do
-        _(subject).must_be :enabled?
-
         queues = %W[low-#{SecureRandom.uuid} default #{SecureRandom.uuid}-high].map { |name|
           SidekiqQueueStub.new(name: name, latency: 5, size: 1)
         }
@@ -176,8 +165,6 @@ module Judoscale
       end
 
       it "filters queues to collect metrics from based on the configured queue filter proc, overriding the default UUID filter" do
-        _(subject).must_be :enabled?
-
         use_adapter_config :sidekiq, queue_filter: ->(queue_name) { queue_name.start_with? "low" } do
           queues = %W[low default high low-#{SecureRandom.uuid}].map { |name|
             SidekiqQueueStub.new(name: name, latency: 5, size: 1)
@@ -196,8 +183,6 @@ module Judoscale
       end
 
       it "collects metrics up to the configured number of max queues, sorting by length of the queue name" do
-        _(subject).must_be :enabled?
-
         use_adapter_config :sidekiq, max_queues: 2 do
           queues = %w[low default high].map { |name| SidekiqQueueStub.new(name: name, latency: 1, size: 1) }
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "resque"
 require "judoscale/worker_adapters/resque"
 require "judoscale/store"
 
@@ -15,12 +16,12 @@ module Judoscale
     describe "#collect!" do
       let(:store) { Store.instance }
 
-      before { subject.queues = nil }
-      after { store.clear }
+      after {
+        subject.clear_queues
+        store.clear
+      }
 
       it "collects latency for each queue" do
-        _(subject).must_be :enabled?
-
         queues = ["default", "high"]
         sizes = {"default" => 1, "high" => 2}
 
@@ -40,8 +41,6 @@ module Judoscale
       end
 
       it "always collects for the default queue" do
-        _(subject).must_be :enabled?
-
         queues = []
         size = 0
 
@@ -58,8 +57,6 @@ module Judoscale
       end
 
       it "always collects for known queues" do
-        _(subject).must_be :enabled?
-
         queues = ["low"]
         size = 0
 
@@ -83,8 +80,6 @@ module Judoscale
       end
 
       it "logs debug information for each queue being collected" do
-        _(subject).must_be :enabled?
-
         use_config debug: true do
           queues = ["default"]
           size = 2
@@ -100,8 +95,6 @@ module Judoscale
       end
 
       it "filters queues matching UUID format by default, to prevent reporting for dynamically generated queues" do
-        _(subject).must_be :enabled?
-
         queues = %W[low-#{SecureRandom.uuid} default #{SecureRandom.uuid}-high]
         size = 2
 
@@ -116,8 +109,6 @@ module Judoscale
       end
 
       it "filters queues to collect metrics from based on the configured queue filter proc, overriding the default UUID filter" do
-        _(subject).must_be :enabled?
-
         use_adapter_config :resque, queue_filter: ->(queue_name) { queue_name.start_with? "low" } do
           queues = %W[low default high low-#{SecureRandom.uuid}]
           size = 2
@@ -135,8 +126,6 @@ module Judoscale
       end
 
       it "collects metrics up to the configured number of max queues, sorting by length of the queue name" do
-        _(subject).must_be :enabled?
-
         use_adapter_config :resque, max_queues: 2 do
           queues = %w[low default high]
           size = 2

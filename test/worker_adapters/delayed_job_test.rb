@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "delayed_job_active_record"
 require "judoscale/worker_adapters/delayed_job"
 require "judoscale/store"
 
@@ -20,11 +21,11 @@ module Judoscale
     describe "#collect!" do
       let(:store) { Store.instance }
 
-      before {
-        subject.queues = nil
+      after {
         ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs")
+        subject.clear_queues
+        store.clear
       }
-      after { store.clear }
 
       it "collects latency for each queue" do
         Delayable.new.delay(queue: "default").perform

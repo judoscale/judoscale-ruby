@@ -36,6 +36,10 @@ module Judoscale
         @queues = filter_queues(new_queues)
       end
 
+      def clear_queues
+        @queues = nil
+      end
+
       def enabled?
         false
       end
@@ -50,7 +54,6 @@ module Judoscale
       end
 
       def filter_queues(queues)
-        return if queues.nil?
         configured_filter = adapter_config.queue_filter
 
         if configured_filter.respond_to?(:call)

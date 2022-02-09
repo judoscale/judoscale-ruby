@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "que"
 require "judoscale/worker_adapters/que"
 require "judoscale/store"
-require "que"
 
 module Judoscale
   describe WorkerAdapters::Que do
@@ -23,11 +23,11 @@ module Judoscale
     describe "#collect!" do
       let(:store) { Store.instance }
 
-      before {
-        subject.queues = nil
+      after {
         ActiveRecord::Base.connection.execute("DELETE FROM que_jobs")
+        subject.clear_queues
+        store.clear
       }
-      after { store.clear }
 
       it "collects latency for each queue" do
         enqueue("default", Time.now - 11)
