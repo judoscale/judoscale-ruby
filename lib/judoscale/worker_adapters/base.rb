@@ -55,13 +55,15 @@ module Judoscale
 
       def filter_queues(queues)
         configured_queues = adapter_config.queues
+
         if configured_queues.empty?
           configured_filter = adapter_config.queue_filter
+
           if configured_filter.respond_to?(:call)
             queues = queues.select { |queue| configured_filter.call(queue) }
           end
         else
-          queues &= configured_queues
+          queues = configured_queues
         end
 
         queues = filter_max_queues(queues)

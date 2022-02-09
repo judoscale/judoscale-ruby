@@ -183,16 +183,17 @@ module Judoscale
       end
 
       it "collects metrics only from the configured queues if the configuration is present, ignoring the queue filter" do
-        use_adapter_config :sidekiq, queues: %w[low], queue_filter: ->(queue_name) { queue_name != "low" } do
+        use_adapter_config :sidekiq, queues: %w[low ultra], queue_filter: ->(queue_name) { queue_name != "low" } do
           queues = %w[low default high].map { |name| SidekiqQueueStub.new(name: name, latency: 5, size: 1) }
+          new_queues = {"ultra" => SidekiqQueueStub.new(name: "ultra", latency: 0, size: 0)}
 
           ::Sidekiq::Queue.stub(:all, queues) {
-            subject.collect! store
+            ::Sidekiq::Queue.stub(:new, ->(queue_name) { new_queues.fetch(queue_name) }) {
+              subject.collect! store
+            }
           }
 
-          _(store.measurements.size).must_equal 2
-          _(store.measurements[0].queue_name).must_equal "low"
-          _(store.measurements[1].queue_name).must_equal "low"
+          _(store.measurements.map(&:queue_name)).must_equal %w[low low ultra ultra]
         end
       end
 
@@ -204,11 +205,7 @@ module Judoscale
             subject.collect! store
           }
 
-          _(store.measurements.size).must_equal 4
-          _(store.measurements[0].queue_name).must_equal "low"
-          _(store.measurements[1].queue_name).must_equal "low"
-          _(store.measurements[2].queue_name).must_equal "high"
-          _(store.measurements[3].queue_name).must_equal "high"
+          _(store.measurements.map(&:queue_name)).must_equal %w[low low high high]
           _(log_string).must_match %r{Sidekiq metrics reporting only 2 queues max, skipping the rest \(1\)}
         end
       end

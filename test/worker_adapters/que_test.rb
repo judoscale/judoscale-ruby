@@ -76,13 +76,12 @@ module Judoscale
       end
 
       it "collects metrics only from the configured queues if the configuration is present, ignoring the queue filter" do
-        use_adapter_config :que, queues: %w[low], queue_filter: ->(queue_name) { queue_name != "low" } do
+        use_adapter_config :que, queues: %w[low ultra], queue_filter: ->(queue_name) { queue_name != "low" } do
           %w[low default high].each { |queue| enqueue(queue, Time.now) }
 
           subject.collect! store
 
-          _(store.measurements.size).must_equal 1
-          _(store.measurements[0].queue_name).must_equal "low"
+          _(store.measurements.map(&:queue_name)).must_equal %w[low ultra]
         end
       end
 
@@ -92,9 +91,7 @@ module Judoscale
 
           subject.collect! store
 
-          _(store.measurements.size).must_equal 2
-          _(store.measurements[0].queue_name).must_equal "low"
-          _(store.measurements[1].queue_name).must_equal "high"
+          _(store.measurements.map(&:queue_name)).must_equal %w[low high]
           _(log_string).must_match %r{Que metrics reporting only 2 queues max, skipping the rest \(1\)}
         end
       end
