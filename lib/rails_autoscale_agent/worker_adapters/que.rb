@@ -32,6 +32,7 @@ module RailsAutoscaleAgent
           SELECT queue, min(run_at)
           FROM que_jobs
           WHERE finished_at IS NULL
+          AND id NOT IN (SELECT (classid::bigint << 32) + objid::bigint AS id FROM pg_locks WHERE locktype = 'advisory')
           AND expired_at IS NULL
           AND error_count = 0
           GROUP BY 1
