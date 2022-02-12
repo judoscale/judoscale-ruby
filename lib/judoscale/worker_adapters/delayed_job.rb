@@ -25,7 +25,7 @@ module Judoscale
           GROUP BY queue
         SQL
 
-        run_at_by_queue = select_rows(sql).to_h
+        run_at_by_queue = select_rows_silently(sql).to_h
         self.queues |= run_at_by_queue.keys
 
         if track_long_running_jobs?
@@ -38,7 +38,7 @@ module Judoscale
             GROUP BY 1
           SQL
 
-          busy_count_by_queue = select_rows(sql).to_h
+          busy_count_by_queue = select_rows_silently(sql).to_h
           self.queues |= busy_count_by_queue.keys
         end
 
@@ -63,6 +63,14 @@ module Judoscale
       end
 
       private
+
+      def select_rows_silently(sql)
+        if ::ActiveRecord::Base.logger.respond_to?(:silence)
+          ::ActiveRecord::Base.logger.silence { select_rows(sql) }
+        else
+          select_rows(sql)
+        end
+      end
 
       def select_rows(sql)
         # This ensures the agent doesn't hold onto a DB connection any longer than necessary
