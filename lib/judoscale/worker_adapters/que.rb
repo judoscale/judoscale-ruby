@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require "judoscale/worker_adapters/base"
+require "judoscale/worker_adapters/active_record_helper"
 
 module Judoscale
   module WorkerAdapters
     class Que < Base
+      include ActiveRecordHelper
+
       def enabled?
         if defined?(::Que)
           logger.info "Que enabled (#{::ActiveRecord::Base.default_timezone})"
@@ -38,21 +41,6 @@ module Judoscale
         end
 
         logger.debug log_msg unless log_msg.empty?
-      end
-
-      private
-
-      def select_rows_silently(sql)
-        if ::ActiveRecord::Base.logger.respond_to?(:silence)
-          ::ActiveRecord::Base.logger.silence { select_rows(sql) }
-        else
-          select_rows(sql)
-        end
-      end
-
-      def select_rows(sql)
-        # This ensures the agent doesn't hold onto a DB connection any longer than necessary
-        ActiveRecord::Base.connection_pool.with_connection { |c| c.select_rows(sql) }
       end
     end
   end
