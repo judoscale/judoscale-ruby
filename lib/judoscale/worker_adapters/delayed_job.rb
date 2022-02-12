@@ -10,7 +10,7 @@ module Judoscale
 
       def enabled?
         if defined?(::Delayed::Job) && defined?(::Delayed::Backend::ActiveRecord)
-          log_msg = +"DelayedJob enabled (#{::ActiveRecord::Base.default_timezone})"
+          log_msg = +"DelayedJob enabled (#{default_timezone})"
           log_msg << " with long-running job support" if track_long_running_jobs?
           logger.info log_msg
           true

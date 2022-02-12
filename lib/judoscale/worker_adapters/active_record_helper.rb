@@ -3,6 +3,16 @@ module Judoscale
     module ActiveRecordHelper
       private
 
+      def default_timezone
+        if ::ActiveRecord.respond_to?(:default_timezone)
+          # Rails >= 7
+          ::ActiveRecord.default_timezone
+        else
+          # Rails < 7
+          ::ActiveRecord::Base.default_timezone
+        end
+      end
+
       def select_rows_silently(sql)
         if ::ActiveRecord::Base.logger.respond_to?(:silence)
           ::ActiveRecord::Base.logger.silence { select_rows(sql) }

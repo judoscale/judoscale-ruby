@@ -10,7 +10,7 @@ module Judoscale
 
       def enabled?
         if defined?(::Que)
-          logger.info "Que enabled (#{::ActiveRecord::Base.default_timezone})"
+          logger.info "Que enabled (#{default_timezone})"
           true
         end
       end
