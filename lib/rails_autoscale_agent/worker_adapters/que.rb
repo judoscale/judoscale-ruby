@@ -20,7 +20,7 @@ module RailsAutoscaleAgent
 
       def enabled?
         if defined?(::Que)
-          logger.info "Que enabled (#{::ActiveRecord.default_timezone})"
+          logger.info "Que enabled (#{default_timezone})"
           true
         end
       end
@@ -61,6 +61,16 @@ module RailsAutoscaleAgent
       end
 
       private
+
+      def default_timezone
+        if ::ActiveRecord.respond_to?(:default_timezone)
+          # Rails >= 7
+          ::ActiveRecord.default_timezone
+        else
+          # Rails < 7
+          ::ActiveRecord::Base.default_timezone
+        end
+      end
 
       def select_rows_silently(sql)
         if ::ActiveRecord::Base.logger.respond_to?(:silence)

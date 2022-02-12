@@ -12,7 +12,7 @@ module RailsAutoscaleAgent
 
       def enabled?
         if defined?(::Delayed::Job) && defined?(::Delayed::Backend::ActiveRecord)
-          log_msg = String.new("DelayedJob enabled (#{::ActiveRecord.default_timezone})")
+          log_msg = String.new("DelayedJob enabled (#{default_timezone})")
           log_msg << " with long-running job support" if track_long_running_jobs?
           logger.info log_msg
           true
@@ -86,6 +86,16 @@ module RailsAutoscaleAgent
 
       def track_long_running_jobs?
         Config.instance.track_long_running_jobs
+      end
+
+      def default_timezone
+        if ::ActiveRecord.respond_to?(:default_timezone)
+          # Rails >= 7
+          ::ActiveRecord.default_timezone
+        else
+          # Rails < 7
+          ::ActiveRecord::Base.default_timezone
+        end
       end
 
       def select_rows_silently(sql)
