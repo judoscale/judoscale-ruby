@@ -23,7 +23,7 @@ module Judoscale
 
     include Singleton
 
-    attr_accessor :report_interval, :logger, :api_base_url, :max_request_size,
+    attr_accessor :report_interval_seconds, :logger, :api_base_url, :max_request_size,
       :dyno, :debug, :quiet, :worker_adapters, *DEFAULT_WORKER_ADAPTERS
 
     def initialize
@@ -37,7 +37,7 @@ module Judoscale
       @debug = ENV["JUDOSCALE_DEBUG"] == "true"
       @quiet = false
       @max_request_size = 100_000 # ignore request payloads over 100k since they skew the queue times
-      @report_interval = 10
+      @report_interval_seconds = 10
       @logger = defined?(Rails) ? Rails.logger : ::Logger.new($stdout)
       @worker_adapters = DEFAULT_WORKER_ADAPTERS
 

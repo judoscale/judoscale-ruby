@@ -31,7 +31,7 @@ module Judoscale
 
           # Stagger reporting to spread out reports from many processes
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
-          sleep config.report_interval * multiplier
+          sleep config.report_interval_seconds * multiplier
 
           # It's redundant to report worker metrics from every web dyno, so only report from web.1
           if dyno_num == 1
@@ -86,7 +86,7 @@ module Judoscale
       when AutoscaleApi::SuccessResponse
         @registered = true
         worker_adapters_msg = worker_adapters.map { |a| a.class.name }.join(", ")
-        logger.info "Reporter starting, will report every #{config.report_interval} seconds or so. Worker adapters: [#{worker_adapters_msg}]"
+        logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Worker adapters: [#{worker_adapters_msg}]"
       when AutoscaleApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"
       end
