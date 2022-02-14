@@ -98,7 +98,7 @@ module Judoscale
       end
 
       it "tracks long running jobs when the configuration is enabled" do
-        use_adapter_config :delayed_job, track_long_running_jobs: true do
+        use_adapter_config :delayed_job, track_busy_jobs: true do
           %w[default default high].each_with_index { |queue, index|
             Delayable.new.delay(queue: queue).perform
             # Create a new worker to simulate "reserving/locking" the next available job for running.
@@ -120,7 +120,7 @@ module Judoscale
 
       it "logs debug information about long running jobs being collected" do
         use_config debug: true do
-          use_adapter_config :delayed_job, track_long_running_jobs: true do
+          use_adapter_config :delayed_job, track_busy_jobs: true do
             Delayable.new.delay(queue: "default").perform
             Delayed::Worker.new.send(:reserve_job)
 

@@ -86,8 +86,8 @@ module Judoscale
         end
       end
 
-      def track_long_running_jobs?
-        adapter_config.track_long_running_jobs
+      def track_busy_jobs?
+        adapter_config.track_busy_jobs
       end
     end
   end

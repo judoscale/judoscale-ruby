@@ -11,7 +11,7 @@ module Judoscale
       def enabled?
         if defined?(::Delayed::Job) && defined?(::Delayed::Backend::ActiveRecord)
           log_msg = +"DelayedJob enabled (#{default_timezone})"
-          log_msg << " with long-running job support" if track_long_running_jobs?
+          log_msg << " with busy job tracking support" if track_busy_jobs?
           logger.info log_msg
           true
         end
@@ -31,7 +31,7 @@ module Judoscale
         run_at_by_queue = select_rows_silently(sql).to_h
         self.queues |= run_at_by_queue.keys
 
-        if track_long_running_jobs?
+        if track_busy_jobs?
           sql = <<~SQL
             SELECT COALESCE(queue, 'default'), count(*)
             FROM delayed_jobs
@@ -55,7 +55,7 @@ module Judoscale
           store.push :qt, latency_ms, t, queue
           log_msg << "dj-qt.#{queue}=#{latency_ms}ms "
 
-          if track_long_running_jobs?
+          if track_busy_jobs?
             busy_count = busy_count_by_queue[queue] || 0
             store.push :busy, busy_count, Time.now, queue
             log_msg << "dj-busy.#{queue}=#{busy_count} "

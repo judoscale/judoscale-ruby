@@ -106,7 +106,7 @@ module Judoscale
       end
 
       it "tracks long running jobs when the configuration is enabled" do
-        use_adapter_config :sidekiq, track_long_running_jobs: true do
+        use_adapter_config :sidekiq, track_busy_jobs: true do
           queues = [
             SidekiqQueueStub.new(name: "default", latency: 11, size: 1),
             SidekiqQueueStub.new(name: "high", latency: 22.222222, size: 2)
@@ -135,7 +135,7 @@ module Judoscale
 
       it "logs debug information about long running jobs being collected" do
         use_config debug: true do
-          use_adapter_config :sidekiq, track_long_running_jobs: true do
+          use_adapter_config :sidekiq, track_busy_jobs: true do
             queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
             workers = [["pid1", "tid1", {"payload" => {"queue" => "default"}}]]
 

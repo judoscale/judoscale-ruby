@@ -3,6 +3,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...main)
 
+- `track_long_running_jobs` has been renamed to `track_busy_jobs`. ([#36](https://github.com/judoscale/judoscale-ruby/issues/36))
 - Silence queries from DelayedJob and Que adapters when collecting metrics. ([#35](https://github.com/judoscale/judoscale-ruby/pull/35))
 - Allow configuring a list of `queues` to collect metrics from. Any queues not in that list will be excluded, and `queue_filter` is not applied. Please note that `max_queues` still applies. ([#33](https://github.com/judoscale/judoscale-ruby/pull/33))
 - Adapter config `max_queues` to report is now 20 by default (previously 50), and will report up to that number of queues (sorted by queue name length) instead of skipping all the reporting once that threshold is crossed. ([#31](https://github.com/judoscale/judoscale-ruby/pull/31))

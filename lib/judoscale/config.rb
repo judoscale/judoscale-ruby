@@ -10,14 +10,14 @@ module Judoscale
       UUID_REGEXP = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
       DEFAULT_QUEUE_FILTER = ->(queue_name) { !UUID_REGEXP.match?(queue_name) }
 
-      attr_accessor :max_queues, :queues, :queue_filter, :track_long_running_jobs
+      attr_accessor :max_queues, :queues, :queue_filter, :track_busy_jobs
 
       def initialize(adapter_name)
         @adapter_name = adapter_name
         @max_queues = 20
         @queues = []
         @queue_filter = DEFAULT_QUEUE_FILTER
-        @track_long_running_jobs = false
+        @track_busy_jobs = false
       end
     end
 

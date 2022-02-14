@@ -20,7 +20,7 @@ module Judoscale
         config.worker_adapters.each do |adapter_name|
           adapter_config = config.public_send(adapter_name)
           _(adapter_config.max_queues).must_equal 20
-          _(adapter_config.track_long_running_jobs).must_equal false
+          _(adapter_config.track_busy_jobs).must_equal false
         end
       end
     end
@@ -53,7 +53,7 @@ module Judoscale
         config.report_interval = 20
         config.worker_adapters = [:sidekiq, :resque]
         config.sidekiq.max_queues = 100
-        config.sidekiq.track_long_running_jobs = true
+        config.sidekiq.track_busy_jobs = true
       end
 
       config = Config.instance
@@ -66,9 +66,9 @@ module Judoscale
       _(config.report_interval).must_equal 20
       _(config.worker_adapters).must_equal %i[sidekiq resque]
       _(config.resque.max_queues).must_equal 20
-      _(config.resque.track_long_running_jobs).must_equal false
+      _(config.resque.track_busy_jobs).must_equal false
       _(config.sidekiq.max_queues).must_equal 100
-      _(config.sidekiq.track_long_running_jobs).must_equal true
+      _(config.sidekiq.track_busy_jobs).must_equal true
     end
   end
 end
