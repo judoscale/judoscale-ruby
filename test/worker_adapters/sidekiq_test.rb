@@ -93,7 +93,7 @@ module Judoscale
       end
 
       it "logs debug information for each queue being collected" do
-        use_config debug: true do
+        use_config log_level: :debug do
           queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
 
           ::Sidekiq::Queue.stub(:all, queues) {
@@ -134,7 +134,7 @@ module Judoscale
       end
 
       it "logs debug information about long running jobs being collected" do
-        use_config debug: true do
+        use_config log_level: :debug do
           use_adapter_config :sidekiq, track_busy_jobs: true do
             queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
             workers = [["pid1", "tid1", {"payload" => {"queue" => "default"}}]]

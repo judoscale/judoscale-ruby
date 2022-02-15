@@ -47,9 +47,9 @@ Most Judoscale configurations are handled via the settings page on your Judoscal
 Judoscale.configure do |config|
   # configure Judoscale here, more on each configuration option below.
 
-  # Enables debug logging. This can also be enabled/disabled via the JUDOSCALE_DEBUG environment variable.
+  # Enables debug logging. This can also be enabled/disabled by setting `JUDOSCALE_LOG_LEVEL=debug`.
   # See more in the [logging](#logging) section below.
-  config.debug = true
+  config.log_level = :debug
 
   # Overrides the available worker adapters. See more in the [worker adapters](#worker-adapters) section below.
   config.worker_adapters = %i[sidekiq resque]
@@ -111,14 +111,14 @@ Once installed, you should see something like this in your development log:
 
 In production, run `heroku logs -t | grep Judoscale`, and you should see something like this:
 
-> [Judoscale] Reporter starting, will report every 15 seconds
+> [Judoscale] Reporter starting, will report every 10 seconds
 
 If you don't see either of these, try running `bundle` again and restarting your Rails application.
 
-You can see more detailed (debug) logging by setting `JUDOSCALE_DEBUG` on your Heroku app:
+You can see more detailed (debug) logging by setting `JUDOSCALE_LOG_LEVEL` on your Heroku app:
 
 ```
-heroku config:add JUDOSCALE_DEBUG=true
+heroku config:set JUDOSCALE_LOG_LEVEL=debug
 ```
 
 See more in the [logging](#logging) section below.
@@ -127,7 +127,7 @@ Reach out to help@judoscale.com if you run into any other problems.
 
 ## Logging
 
-The Rails logger is used by default.
+The Rails logger is used by default when present, otherwise Judoscale will log everything to `stdout`.
 If you wish to use a different logger you can set it on the configuration object:
 
 ```ruby
@@ -137,20 +137,43 @@ Judoscale.configure do |config|
 end
 ```
 
-Debug logs are silenced by default because Rails apps default to a DEBUG log level in production, and this gem has _very_ chatty debug logs. If you want to see the debug logs, set `JUDOSCALE_DEBUG` on your Heroku app:
+The logger controls the log level by default. In case of Rails apps, that's going to be defined by the `log_level` config in each environment, so if your app is set to log at INFO level, you will only see Judoscale INFO logs as well. Please note that this gem has _very_ chatty debug logs, so if your app is set to DEBUG you will also see a lot of Judoscale debug logging output, which looks like this:
 
 ```
-heroku config:set JUDOSCALE_DEBUG=true
+[Judoscale] [DEBUG] Some debug log message
 ```
 
-If you find the gem too chatty even without this, you can quiet it down further:
+If you find the gem too chatty with that setup, you can quiet it down further with a more strict log level that only affects Judoscale logging:
 
 ```ruby
 # config/initializers/judoscale.rb
 Judoscale.configure do |config|
-  config.quiet = true
+  config.log_level = :info
 end
 ```
+
+Alternatively, set the `JUDOSCALE_LOG_LEVEL` environment variable on your Heroku app:
+
+```
+heroku config:set JUDOSCALE_LOG_LEVEL=info
+```
+
+If you want the debug logs even if your app is not using the DEBUG level, set either the `log_level` config:
+
+```ruby
+# config/initializers/judoscale.rb
+Judoscale.configure do |config|
+  config.log_level = :debug
+end
+```
+
+Or `JUDOSCALE_LOG_LEVEL` on your app:
+
+```
+heroku config:set JUDOSCALE_LOG_LEVEL=debug
+```
+
+Enabling the debug level will start logging everything, independently of the underlying logger level. It's recommended to enable it temporarily if you need to [troubleshoot](#troubleshooting) any issues.
 
 ## Development
 

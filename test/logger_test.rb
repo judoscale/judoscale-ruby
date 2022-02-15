@@ -15,83 +15,57 @@ module Judoscale
       Judoscale.configure { |config| config.logger = original_logger }
     }
 
-    describe "#error" do
-      it "delegates to the original logger, prepending Judoscale" do
-        logger.error "some error"
-        _(messages).must_include "ERROR -- : [Judoscale] some error"
-      end
+    %w[ERROR WARN INFO].each do |level|
+      method_name = level.downcase
 
-      it "allows logging multiple error messages in separate lines, all prepending Judoscale" do
-        logger.error "some error", "error context", "more error context"
-        _(messages).must_include "ERROR -- : [Judoscale] some error\n[Judoscale] error context\n[Judoscale] more error context"
-      end
-    end
+      describe "##{method_name}" do
+        it "delegates to the original logger, prepending Judoscale" do
+          logger.public_send method_name, "some message"
+          _(messages).must_include "#{level} -- : [Judoscale] some message"
+        end
 
-    describe "#warn" do
-      it "delegates to the original logger, prepending Judoscale" do
-        logger.warn "some warn"
-        _(messages).must_include "WARN -- : [Judoscale] some warn"
-      end
+        it "allows logging multiple messages in separate lines, all prepending Judoscale" do
+          logger.public_send method_name, "some msg", "msg context", "more msg context"
+          _(messages).must_include "#{level} -- : [Judoscale] some msg\n[Judoscale] msg context\n[Judoscale] more msg context"
+        end
 
-      it "allows logging multiple warn messages in separate lines, all prepending Judoscale" do
-        logger.warn "some warn", "warn context", "more warn context"
-        _(messages).must_include "WARN -- : [Judoscale] some warn\n[Judoscale] warn context\n[Judoscale] more warn context"
-      end
-    end
+        it "respects the configured log_level" do
+          use_config log_level: :unknown do
+            logger.public_send method_name, "some message"
+            _(messages).wont_include "some message"
+          end
+        end
 
-    describe "#info" do
-      it "delegates to the original logger, prepending Judoscale" do
-        logger.info "some info"
-        _(messages).must_include "INFO -- : [Judoscale] some info"
-      end
-
-      it "allows logging multiple info messages in separate lines, all prepending Judoscale" do
-        logger.info "some info", "info context", "more info context"
-        _(messages).must_include "INFO -- : [Judoscale] some info\n[Judoscale] info context\n[Judoscale] more info context"
-      end
-
-      it "can be silenced via config" do
-        use_config quiet: true do
-          logger.info "some info"
-          _(messages).wont_include "INFO -- : [Judoscale] some info"
+        it "respects the level set by the original logger" do
+          original_logger.level = ::Logger::Severity::UNKNOWN
+          logger.public_send method_name, "some message"
+          _(messages).wont_include "some message"
         end
       end
     end
 
     describe "#debug" do
-      it "silences debug logs by default" do
-        logger.debug "silence"
-        _(messages).wont_include "silence"
+      it "delegates to the original logger, prepending Judoscale and [DEBUG]" do
+        logger.debug "some message"
+        _(messages).must_include "DEBUG -- : [Judoscale] [DEBUG] some message"
       end
 
-      describe "configured to allow debug logs" do
-        before {
-          Judoscale.configure { |config| config.debug = true }
-        }
+      it "allows logging multiple messages in separate lines, all prepending Judoscale and [DEBUG]" do
+        logger.debug "some msg", "msg context", "more msg context"
+        _(messages).must_include "DEBUG -- : [Judoscale] [DEBUG] some msg\n[Judoscale] [DEBUG] msg context\n[Judoscale] [DEBUG] more msg context"
+      end
 
-        it "includes debug logs if enabled and the main logger.level is DEBUG" do
-          original_logger.level = "DEBUG"
-          logger.debug "some noise"
-          _(messages).must_include "DEBUG -- : [Judoscale] some noise"
+      it "respects the configured log_level" do
+        use_config log_level: :info do
+          logger.debug "some message"
+          _(messages).wont_include "some message"
         end
+      end
 
-        it "allows logging multiple debug messages in separate lines, all prepending Judoscale" do
-          original_logger.level = "DEBUG"
-          logger.debug "some noise", "more noise"
-          _(messages).must_include "DEBUG -- : [Judoscale] some noise\n[Judoscale] more noise"
-        end
-
-        it "includes debug logs if enabled and the main logger.level is INFO" do
-          original_logger.level = "INFO"
-          logger.debug "some noise"
-          _(messages).must_include "INFO -- : [Judoscale] [DEBUG] some noise"
-        end
-
-        it "allows logging multiple debug messages in separate lines if debug mode is enabled and logger.level is INFO" do
-          original_logger.level = "INFO"
-          logger.debug "some noise", "more noise"
-          _(messages).must_include "INFO -- : [Judoscale] [DEBUG] some noise\n[Judoscale] [DEBUG] more noise"
-        end
+      it "logs at the original logger level to ensure debug messages are always logged when enabled" do
+        original_logger.level = ::Logger::Severity::INFO
+        logger.debug "some message"
+        _(messages).must_include "INFO -- : [Judoscale] [DEBUG] some message"
       end
     end
   end

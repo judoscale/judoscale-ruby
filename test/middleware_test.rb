@@ -69,7 +69,7 @@ module Judoscale
           end
 
           it "logs debug information about the request and queue time" do
-            use_config debug: true do
+            use_config log_level: :debug do
               env["HTTP_X_REQUEST_ID"] = "req-abc-123"
 
               middleware.call(env)
