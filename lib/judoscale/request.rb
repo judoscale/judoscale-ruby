@@ -13,7 +13,7 @@ module Judoscale
     end
 
     def ignore?
-      @config.ignore_large_requests? && @size > @config.max_request_size
+      @config.ignore_large_requests? && @size > @config.max_request_size_bytes
     end
 
     def started_at

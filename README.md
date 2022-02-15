@@ -97,7 +97,7 @@ Judoscale.configure do |config|
 
   # Enables reporting for active workers.
   # See [Handling Long-Running Background Jobs](https://judoscale.com/docs/long-running-jobs/) in the Judoscale docs for more.
-  config.sidekiq.track_long_running_jobs = true
+  config.sidekiq.track_busy_jobs = true
 end
 ```
 

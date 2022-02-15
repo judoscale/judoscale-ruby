@@ -9,7 +9,7 @@ module Judoscale
         require "sidekiq/api"
 
         log_msg = +"Sidekiq enabled"
-        log_msg << " with long-running job support" if track_long_running_jobs?
+        log_msg << " with busy job tracking support" if track_busy_jobs?
         logger.info log_msg
 
         true
@@ -25,7 +25,7 @@ module Judoscale
 
         self.queues |= queues_by_name.keys
 
-        if track_long_running_jobs?
+        if track_busy_jobs?
           busy_counts = Hash.new { |h, k| h[k] = 0 }
           ::Sidekiq::Workers.new.each do |pid, tid, work|
             busy_counts[work.dig("payload", "queue")] += 1
@@ -41,7 +41,7 @@ module Judoscale
           store.push :qd, depth, Time.now, queue_name
           log_msg << "sidekiq-qt.#{queue_name}=#{latency_ms}ms sidekiq-qd.#{queue_name}=#{depth} "
 
-          if track_long_running_jobs?
+          if track_busy_jobs?
             busy_count = busy_counts[queue_name]
             store.push :busy, busy_count, Time.now, queue_name
             log_msg << "sidekiq-busy.#{queue_name}=#{busy_count} "
