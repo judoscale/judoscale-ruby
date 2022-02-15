@@ -11,10 +11,11 @@ module Judoscale
       UUID_REGEXP = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
       DEFAULT_QUEUE_FILTER = ->(queue_name) { !UUID_REGEXP.match?(queue_name) }
 
-      attr_accessor :max_queues, :queues, :queue_filter, :track_busy_jobs
+      attr_accessor :enabled, :max_queues, :queues, :queue_filter, :track_busy_jobs
 
       def initialize(adapter_name)
         @adapter_name = adapter_name
+        @enabled = true
         @max_queues = 20
         @queues = []
         @queue_filter = DEFAULT_QUEUE_FILTER
@@ -25,7 +26,7 @@ module Judoscale
     include Singleton
 
     attr_accessor :api_base_url, :dyno, :report_interval_seconds, :max_request_size_bytes,
-      :logger, :worker_adapters, *DEFAULT_WORKER_ADAPTERS
+      :logger, *DEFAULT_WORKER_ADAPTERS
     attr_reader :log_level
 
     def initialize
@@ -57,6 +58,12 @@ module Judoscale
 
     def ignore_large_requests?
       @max_request_size_bytes
+    end
+
+    def worker_adapters
+      DEFAULT_WORKER_ADAPTERS.select { |adapter|
+        instance_variable_get(:"@#{adapter}").enabled
+      }
     end
   end
 end
