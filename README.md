@@ -50,9 +50,6 @@ Judoscale.configure do |config|
   # Enables debug logging. This can also be enabled/disabled by setting `JUDOSCALE_LOG_LEVEL=debug`.
   # See more in the [logging](#logging) section below.
   config.log_level = :debug
-
-  # Overrides the available worker adapters. See more in the [worker adapters](#worker-adapters) section below.
-  config.worker_adapters = %i[sidekiq resque]
 end
 ```
 
@@ -65,7 +62,7 @@ In some scenarios you might want to override this behavior. Let's say you have b
 ```ruby
 # config/initializers/judoscale.rb
 Judoscale.configure do |config|
-  config.worker_adapters = [:sidekiq]
+  config.resque.enabled = false
 end
 ```
 
@@ -74,7 +71,8 @@ You can also disable collection of worker metrics altogether:
 ```ruby
 # config/initializers/judoscale.rb
 Judoscale.configure do |config|
-  config.worker_adapters = []
+  config.resque.enabled = false
+  config.sidekiq.enabled = false
 end
 ```
 

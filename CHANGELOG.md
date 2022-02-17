@@ -3,6 +3,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...main)
 
+- Drop `worker_adapters` config list in favor of setting it for each individual adapter `<adapter>.enabled = true|false`. This allows to manually disable reporting for any automatically enabled adapter. ([#38](https://github.com/judoscale/judoscale-ruby/issues/38))
 - Combine `debug` and `quiet` config options into a single `log_level` which controls how our logging should behave. ([#37](https://github.com/judoscale/judoscale-ruby/issues/37))
 - Rename some configs: `<adapter>.track_long_running_jobs` => `<adapter>.track_busy_jobs`, `report_interval` => `report_interval_seconds`, `max_request_size` => `max_request_size_bytes`. ([#36](https://github.com/judoscale/judoscale-ruby/issues/36))
 - Silence queries from DelayedJob and Que adapters when collecting metrics. ([#35](https://github.com/judoscale/judoscale-ruby/pull/35))
