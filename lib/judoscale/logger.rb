@@ -6,43 +6,38 @@ require "logger"
 module Judoscale
   module Logger
     def logger
-      @logger ||= LoggerProxy.new(Config.instance.logger)
+      @logger ||= LoggerProxy.new(Config.instance.logger, Config.instance.log_level)
     end
   end
 
-  class LoggerProxy < Struct.new(:logger)
+  class LoggerProxy < Struct.new(:logger, :log_level)
     TAG = "[Judoscale]"
-    DEBUG_TAG = "[DEBUG]"
+    DEBUG_TAG = " [DEBUG]"
 
-    def error(*msgs)
-      logger.error tag(msgs)
-    end
+    %w[ERROR WARN INFO].each do |severity_name|
+      severity_level = ::Logger::Severity.const_get(severity_name)
 
-    def warn(*msgs)
-      logger.warn tag(msgs)
-    end
-
-    def info(*msgs)
-      logger.info tag(msgs) unless Config.instance.quiet?
-    end
-
-    def debug(*msgs)
-      # Silence debug logs by default to avoiding being overly chatty (Rails logger defaults
-      # to DEBUG level in production). Setting JUDOSCALE_DEBUG=true enables debug logs,
-      # even if the underlying logger severity level is INFO.
-      if Config.instance.debug?
-        if logger.respond_to?(:debug?) && logger.debug?
-          logger.debug tag(msgs)
-        elsif logger.respond_to?(:info?) && logger.info?
-          logger.info tag(msgs.map { |msg| "#{DEBUG_TAG} #{msg}" })
+      define_method(severity_name.downcase) do |*messages|
+        if log?(severity_level)
+          logger.add(severity_level, tag(messages))
         end
+      end
+    end
+
+    def debug(*messages)
+      if log?(::Logger::Severity::DEBUG)
+        logger.add(logger.level, tag(messages, debug: true))
       end
     end
 
     private
 
-    def tag(msgs)
-      msgs.map { |msg| "#{TAG} #{msg}" }.join("\n")
+    def log?(severity_level)
+      log_level.nil? || severity_level >= log_level
+    end
+
+    def tag(msgs, debug: false)
+      msgs.map { |msg| "#{TAG}#{DEBUG_TAG if debug} #{msg}" }.join("\n")
     end
   end
 end

@@ -3,6 +3,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...main)
 
+- Combine `debug` and `quiet` config options into a single `log_level` which controls how our logging should behave. ([#37](https://github.com/judoscale/judoscale-ruby/issues/37))
 - Rename some configs: `<adapter>.track_long_running_jobs` => `<adapter>.track_busy_jobs`, `report_interval` => `report_interval_seconds`, `max_request_size` => `max_request_size_bytes`. ([#36](https://github.com/judoscale/judoscale-ruby/issues/36))
 - Silence queries from DelayedJob and Que adapters when collecting metrics. ([#35](https://github.com/judoscale/judoscale-ruby/pull/35))
 - Allow configuring a list of `queues` to collect metrics from. Any queues not in that list will be excluded, and `queue_filter` is not applied. Please note that `max_queues` still applies. ([#33](https://github.com/judoscale/judoscale-ruby/pull/33))

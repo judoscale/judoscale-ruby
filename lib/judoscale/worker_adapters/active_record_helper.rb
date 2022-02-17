@@ -14,8 +14,8 @@ module Judoscale
       end
 
       def select_rows_silently(sql)
-        if ::ActiveRecord::Base.logger.respond_to?(:silence)
-          ::ActiveRecord::Base.logger.silence { select_rows(sql) }
+        if Config.instance.log_level && ::ActiveRecord::Base.logger.respond_to?(:silence)
+          ::ActiveRecord::Base.logger.silence(Config.instance.log_level) { select_rows(sql) }
         else
           select_rows(sql)
         end

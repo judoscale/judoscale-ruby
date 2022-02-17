@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "singleton"
+require "logger"
 
 module Judoscale
   class Config
@@ -23,8 +24,9 @@ module Judoscale
 
     include Singleton
 
-    attr_accessor :report_interval_seconds, :logger, :api_base_url, :max_request_size_bytes,
-      :dyno, :debug, :quiet, :worker_adapters, *DEFAULT_WORKER_ADAPTERS
+    attr_accessor :api_base_url, :dyno, :report_interval_seconds, :max_request_size_bytes,
+      :logger, :worker_adapters, *DEFAULT_WORKER_ADAPTERS
+    attr_reader :log_level
 
     def initialize
       reset
@@ -34,16 +36,19 @@ module Judoscale
       # Allow the API URL to be configured - needed for testing.
       @api_base_url = ENV["JUDOSCALE_URL"]
       @dyno = ENV["DYNO"]
-      @debug = ENV["JUDOSCALE_DEBUG"] == "true"
-      @quiet = false
       @max_request_size_bytes = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval_seconds = 10
+      self.log_level = ENV["JUDOSCALE_LOG_LEVEL"]
       @logger = defined?(Rails) ? Rails.logger : ::Logger.new($stdout)
       @worker_adapters = DEFAULT_WORKER_ADAPTERS
 
       DEFAULT_WORKER_ADAPTERS.each do |adapter|
         instance_variable_set(:"@#{adapter}", WorkerAdapterConfig.new(adapter))
       end
+    end
+
+    def log_level=(new_level)
+      @log_level = new_level ? ::Logger::Severity.const_get(new_level.to_s.upcase) : nil
     end
 
     def to_s
@@ -53,8 +58,5 @@ module Judoscale
     def ignore_large_requests?
       @max_request_size_bytes
     end
-
-    alias_method :debug?, :debug
-    alias_method :quiet?, :quiet
   end
 end

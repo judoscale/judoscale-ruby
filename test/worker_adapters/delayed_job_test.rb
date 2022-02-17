@@ -87,7 +87,7 @@ module Judoscale
       end
 
       it "logs debug information for each queue being collected" do
-        use_config debug: true do
+        use_config log_level: :debug do
           Delayable.new.delay(queue: "default").perform
 
           subject.collect! store
@@ -119,7 +119,7 @@ module Judoscale
       end
 
       it "logs debug information about long running jobs being collected" do
-        use_config debug: true do
+        use_config log_level: :debug do
           use_adapter_config :delayed_job, track_busy_jobs: true do
             Delayable.new.delay(queue: "default").perform
             Delayed::Worker.new.send(:reserve_job)

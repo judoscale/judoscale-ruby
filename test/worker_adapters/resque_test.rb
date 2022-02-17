@@ -80,7 +80,7 @@ module Judoscale
       end
 
       it "logs debug information for each queue being collected" do
-        use_config debug: true do
+        use_config log_level: :debug do
           queues = ["default"]
           size = 2
 
