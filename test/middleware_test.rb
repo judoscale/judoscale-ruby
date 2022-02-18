@@ -55,10 +55,10 @@ module Judoscale
             middleware.call(env)
 
             report = MetricsStore.instance.pop_report
-            _(report.measurements.length).must_equal 1
-            _(report.measurements.first).must_be_instance_of Measurement
-            _(report.measurements.first.value).must_be_within_delta 5000, 1
-            _(report.measurements.first.metric).must_equal :qt
+            _(report.metrics.length).must_equal 1
+            _(report.metrics.first).must_be_instance_of Metric
+            _(report.metrics.first.value).must_be_within_delta 5000, 1
+            _(report.metrics.first.identifier).must_equal :qt
           end
 
           it "records the queue time in the environment passed on" do
@@ -85,21 +85,21 @@ module Judoscale
               middleware.call(env)
 
               report = MetricsStore.instance.pop_report
-              _(report.measurements.length).must_equal 0
+              _(report.metrics.length).must_equal 0
             end
           end
 
           describe "when Puma request body wait / network time is available" do
             before { env["puma.request_body_wait"] = 50 }
 
-            it "collects the request network time as a separate measurement" do
+            it "collects the request network time as a separate metric" do
               middleware.call(env)
 
               report = MetricsStore.instance.pop_report
-              _(report.measurements.length).must_equal 2
-              _(report.measurements.last).must_be_instance_of Measurement
-              _(report.measurements.last.value).must_be_within_delta 50, 1
-              _(report.measurements.last.metric).must_equal :nt
+              _(report.metrics.length).must_equal 2
+              _(report.metrics.last).must_be_instance_of Metric
+              _(report.metrics.last.value).must_be_within_delta 50, 1
+              _(report.metrics.last.identifier).must_equal :nt
             end
 
             it "records the network time in the environment passed on" do

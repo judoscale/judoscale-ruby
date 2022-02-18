@@ -65,7 +65,7 @@ module Judoscale
     def report!(config, store)
       report = store.pop_report
 
-      logger.info "Reporting #{report.measurements.size} measurements"
+      logger.info "Reporting #{report.metrics.size} metrics"
 
       params = report.to_params(config)
       result = AdapterApi.new(config).report_metrics!(params, report.to_csv)

@@ -34,7 +34,7 @@ The middleware agent runs in its own thread so your web requests are not impacte
 - Gem version
 - Dyno name (example: web.1)
 - PID
-- Collection of queue time measurements (time and milliseconds)
+- Collection of queue time metrics (time and milliseconds)
 
 Judoscale aggregates and stores this information to power the autoscaling algorithm and dashboard visualizations.
 

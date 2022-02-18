@@ -4,7 +4,7 @@ require "test_helper"
 require "judoscale/adapter_api"
 
 describe Judoscale::AdapterApi, vcr: {record: :once} do
-  let(:measurements_csv) { "#{Time.now.to_i},11\n#{Time.now.to_i},33\n" }
+  let(:metrics_csv) { "#{Time.now.to_i},11\n#{Time.now.to_i},33\n" }
   let(:config) { Struct.new(:api_base_url).new("http://example.com") }
 
   describe "#report_metrics!" do
@@ -15,7 +15,7 @@ describe Judoscale::AdapterApi, vcr: {record: :once} do
         pid: "1232"
       }
       adapter_api = Judoscale::AdapterApi.new(config)
-      result = adapter_api.report_metrics!(report_params, measurements_csv)
+      result = adapter_api.report_metrics!(report_params, metrics_csv)
 
       _(result).must_be_instance_of Judoscale::AdapterApi::SuccessResponse
     end
@@ -23,7 +23,7 @@ describe Judoscale::AdapterApi, vcr: {record: :once} do
     it "returns a failure response if we post unexpected params" do
       config.api_base_url = "http://judoscale.dev/api/bad-app-token"
       adapter_api = Judoscale::AdapterApi.new(config)
-      result = adapter_api.report_metrics!({}, measurements_csv)
+      result = adapter_api.report_metrics!({}, metrics_csv)
 
       _(result).must_be_instance_of Judoscale::AdapterApi::FailureResponse
       _(result.failure_message).must_equal "400 - Bad Request"
@@ -32,7 +32,7 @@ describe Judoscale::AdapterApi, vcr: {record: :once} do
     it "returns a failure response if the service is unavailable" do
       config.api_base_url = "http://does-not-exist.dev"
       adapter_api = Judoscale::AdapterApi.new(config)
-      result = adapter_api.report_metrics!([], measurements_csv)
+      result = adapter_api.report_metrics!([], metrics_csv)
 
       _(result).must_be_instance_of Judoscale::AdapterApi::FailureResponse
       _(result.failure_message).must_equal "503 - Service Unavailable"
@@ -46,7 +46,7 @@ describe Judoscale::AdapterApi, vcr: {record: :once} do
       }
 
       adapter_api = Judoscale::AdapterApi.new(config)
-      result = adapter_api.report_metrics!(report_params, measurements_csv)
+      result = adapter_api.report_metrics!(report_params, metrics_csv)
 
       _(result).must_be_instance_of Judoscale::AdapterApi::SuccessResponse
     end
