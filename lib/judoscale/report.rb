@@ -4,8 +4,8 @@ module Judoscale
   class Report
     attr_reader :metrics
 
-    def initialize
-      @metrics = []
+    def initialize(metrics = [])
+      @metrics = metrics
     end
 
     def to_params(config)

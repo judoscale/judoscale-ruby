@@ -63,7 +63,7 @@ module Judoscale
     private
 
     def report!(config, store)
-      report = store.pop_report
+      report = Report.new(store.flush)
 
       logger.info "Reporting #{report.metrics.size} metrics"
 

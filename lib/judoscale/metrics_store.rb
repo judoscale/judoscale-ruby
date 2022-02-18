@@ -34,15 +34,6 @@ module Judoscale
       flushed_metrics
     end
 
-    # TODO: This is going to be left untouched temporarily while we refactor how the reporting happens.
-    def pop_report
-      flushed_metrics = flush
-
-      report = Report.new
-      report.metrics.concat(flushed_metrics)
-      report
-    end
-
     def clear
       @metrics.clear
     end
