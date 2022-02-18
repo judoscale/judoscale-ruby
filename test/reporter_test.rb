@@ -67,7 +67,7 @@ module Judoscale
 
         expected_query = {dyno: "web.1", pid: Process.pid}
         expected_body = "1000000001,11,,qt\n1000000002,22,high,qt\n"
-        stub = stub_request(:post, "http://example.com/api/test-token/v2/reports")
+        stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics")
           .with(query: expected_query, body: expected_body)
 
         store.push :qt, 11, Time.at(1_000_000_001) # web measurement
@@ -80,7 +80,7 @@ module Judoscale
 
       it "logs reporter failures" do
         store = Store.instance
-        stub_request(:post, %r{http://example.com/api/test-token/v2/reports})
+        stub_request(:post, %r{http://example.com/api/test-token/adapter/v1/metrics})
           .to_return(body: "oops", status: 503)
 
         store.push :qt, 1, Time.at(1_000_000_001) # need some measurement to trigger reporting
@@ -108,7 +108,7 @@ module Judoscale
           }
         }
         response = {}.to_json
-        stub = stub_request(:post, "http://example.com/api/test-token/registrations")
+        stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/registrations")
           .with(body: expected_body)
           .to_return(body: response)
 

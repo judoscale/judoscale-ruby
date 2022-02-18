@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: http://judoscale.dev/api/test-app-token/registrations
+    uri: http://judoscale.dev/api/test-app-token/adapter/v1/registrations
     body:
       encoding: UTF-8
       string: '{"registration":{"pid":"1232"}}'

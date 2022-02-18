@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: http://judoscale.dev/api/bad-app-token/v2/reports
+    uri: http://judoscale.dev/api/bad-app-token/adapter/v1/metrics
     body:
       encoding: UTF-8
       string: |
@@ -1148,7 +1148,7 @@ http_interactions:
         return false;\">Framework Trace</a> |\n    <a href=\"#\" onclick=\"hide(&#39;Application-Trace&#39;);hide(&#39;Framework-Trace&#39;);show(&#39;Full-Trace&#39;);;
         return false;\">Full Trace</a> \n\n    <div id=\"Application-Trace\" style=\"display:
         block;\">\n      <pre><code><a class=\"trace-frames\" data-frame-id=\"1\"
-        href=\"#\">app/controllers/api/v2/reports_controller.rb:8:in `create&#39;</a><br></code></pre>\n
+        href=\"#\">app/controllers/api/adapter/v1/metrics_controller.rb:8:in `create&#39;</a><br></code></pre>\n
         \   </div>\n    <div id=\"Framework-Trace\" style=\"display: none;\">\n      <pre><code><a
         class=\"trace-frames\" data-frame-id=\"0\" href=\"#\">actionpack (5.1.1) lib/action_controller/metal/strong_parameters.rb:430:in
         `require&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"2\" href=\"#\">actionpack
@@ -1320,7 +1320,7 @@ http_interactions:
         `block in spawn_thread&#39;</a><br></code></pre>\n    </div>\n    <div id=\"Full-Trace\"
         style=\"display: none;\">\n      <pre><code><a class=\"trace-frames\" data-frame-id=\"0\"
         href=\"#\">actionpack (5.1.1) lib/action_controller/metal/strong_parameters.rb:430:in
-        `require&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"1\" href=\"#\">app/controllers/api/v2/reports_controller.rb:8:in
+        `require&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"1\" href=\"#\">app/controllers/api/adapter/v1/metrics_controller.rb:8:in
         `create&#39;</a><br><a class=\"trace-frames\" data-frame-id=\"2\" href=\"#\">actionpack
         (5.1.1) lib/action_controller/metal/basic_implicit_render.rb:4:in `send_action&#39;</a><br><a
         class=\"trace-frames\" data-frame-id=\"3\" href=\"#\">actionpack (5.1.1) lib/abstract_controller/base.rb:186:in

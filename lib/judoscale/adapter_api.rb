@@ -17,11 +17,11 @@ module Judoscale
 
     def report_metrics!(report_params, timings_csv)
       query = URI.encode_www_form(report_params)
-      post_csv "/v2/reports?#{query}", timings_csv
+      post_csv "/adapter/v1/metrics?#{query}", timings_csv
     end
 
     def register_reporter!(registration_params)
-      post_json "/registrations", registration: registration_params
+      post_json "/adapter/v1/registrations", registration: registration_params
     end
 
     private
