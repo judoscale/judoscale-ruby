@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module Judoscale
-  class Request
-    attr_reader :id, :size, :network_time
+  class RequestMetrics
+    attr_reader :request_id, :size, :network_time
 
     def initialize(env, config)
       @config = config
-      @id = env["HTTP_X_REQUEST_ID"]
+      @request_id = env["HTTP_X_REQUEST_ID"]
       @size = env["rack.input"].respond_to?(:size) ? env["rack.input"].size : 0
       @network_time = env["puma.request_body_wait"].to_i
       @request_start_header = env["HTTP_X_REQUEST_START"]
