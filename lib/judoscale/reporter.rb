@@ -2,7 +2,7 @@
 
 require "singleton"
 require "judoscale/logger"
-require "judoscale/autoscale_api"
+require "judoscale/adapter_api"
 require "judoscale/registration"
 require "judoscale/worker_adapters"
 
@@ -68,26 +68,26 @@ module Judoscale
       logger.info "Reporting #{report.measurements.size} measurements"
 
       params = report.to_params(config)
-      result = AutoscaleApi.new(config).report_metrics!(params, report.to_csv)
+      result = AdapterApi.new(config).report_metrics!(params, report.to_csv)
 
       case result
-      when AutoscaleApi::SuccessResponse
+      when AdapterApi::SuccessResponse
         logger.debug "Reported successfully"
-      when AutoscaleApi::FailureResponse
+      when AdapterApi::FailureResponse
         logger.error "Reporter failed: #{result.failure_message}"
       end
     end
 
     def register!(config, worker_adapters)
       params = Registration.new(worker_adapters).to_params
-      result = AutoscaleApi.new(config).register_reporter!(params)
+      result = AdapterApi.new(config).register_reporter!(params)
 
       case result
-      when AutoscaleApi::SuccessResponse
+      when AdapterApi::SuccessResponse
         @registered = true
         worker_adapters_msg = worker_adapters.map { |a| a.class.name }.join(", ")
         logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Worker adapters: [#{worker_adapters_msg}]"
-      when AutoscaleApi::FailureResponse
+      when AdapterApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"
       end
     end

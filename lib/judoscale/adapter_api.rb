@@ -6,7 +6,7 @@ require "json"
 require "judoscale/logger"
 
 module Judoscale
-  class AutoscaleApi
+  class AdapterApi
     include Logger
 
     SUCCESS = "success"
