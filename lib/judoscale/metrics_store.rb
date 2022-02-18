@@ -5,7 +5,7 @@ require "judoscale/measurement"
 require "judoscale/report"
 
 module Judoscale
-  class Store
+  class MetricsStore
     include Singleton
 
     attr_reader :measurements

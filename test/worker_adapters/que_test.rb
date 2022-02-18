@@ -3,7 +3,7 @@
 require "test_helper"
 require "que"
 require "judoscale/worker_adapters/que"
-require "judoscale/store"
+require "judoscale/metrics_store"
 
 module Judoscale
   describe WorkerAdapters::Que do
@@ -21,7 +21,7 @@ module Judoscale
     end
 
     describe "#collect!" do
-      let(:store) { Store.instance }
+      let(:store) { MetricsStore.instance }
 
       after {
         ActiveRecord::Base.connection.execute("DELETE FROM que_jobs")

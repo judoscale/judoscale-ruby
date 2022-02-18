@@ -3,7 +3,7 @@
 require "test_helper"
 require "sidekiq/api"
 require "judoscale/worker_adapters/sidekiq"
-require "judoscale/store"
+require "judoscale/metrics_store"
 
 module Judoscale
   SidekiqQueueStub = Struct.new(:name, :latency, :size, keyword_init: true)
@@ -16,7 +16,7 @@ module Judoscale
     end
 
     describe "#collect!" do
-      let(:store) { Store.instance }
+      let(:store) { MetricsStore.instance }
 
       after {
         subject.clear_queues

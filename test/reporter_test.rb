@@ -3,7 +3,7 @@
 require "test_helper"
 require "judoscale/reporter"
 require "judoscale/config"
-require "judoscale/store"
+require "judoscale/metrics_store"
 
 module Judoscale
   describe Reporter do
@@ -24,7 +24,7 @@ module Judoscale
 
       def run_reporter_start_thread
         stub_reporter_loop {
-          reporter_thread = Reporter.instance.start!(Config.instance, Store.instance)
+          reporter_thread = Reporter.instance.start!(Config.instance, MetricsStore.instance)
           reporter_thread.join
         }
       end
@@ -60,10 +60,10 @@ module Judoscale
     end
 
     describe "#report!" do
-      after { Store.instance.clear }
+      after { MetricsStore.instance.clear }
 
       it "reports stored metrics to the API" do
-        store = Store.instance
+        store = MetricsStore.instance
 
         expected_query = {dyno: "web.1", pid: Process.pid}
         expected_body = "1000000001,11,,qt\n1000000002,22,high,qt\n"
@@ -79,7 +79,7 @@ module Judoscale
       end
 
       it "logs reporter failures" do
-        store = Store.instance
+        store = MetricsStore.instance
         stub_request(:post, %r{http://example.com/api/test-token/adapter/v1/metrics})
           .to_return(body: "oops", status: 503)
 

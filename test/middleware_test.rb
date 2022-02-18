@@ -17,7 +17,7 @@ module Judoscale
     describe "#call" do
       after {
         Reporter.instance.stop!
-        Store.instance.clear
+        MetricsStore.instance.clear
       }
 
       let(:app) { MockApp.new }
@@ -49,12 +49,12 @@ module Judoscale
           let(:five_seconds_ago_in_unix_millis) { (Time.now.to_f - 5) * 1000 }
 
           before { env["HTTP_X_REQUEST_START"] = five_seconds_ago_in_unix_millis.to_i.to_s }
-          after { Store.instance.clear }
+          after { MetricsStore.instance.clear }
 
           it "collects the request queue time" do
             middleware.call(env)
 
-            report = Store.instance.pop_report
+            report = MetricsStore.instance.pop_report
             _(report.measurements.length).must_equal 1
             _(report.measurements.first).must_be_instance_of Measurement
             _(report.measurements.first.value).must_be_within_delta 5000, 1
@@ -84,7 +84,7 @@ module Judoscale
             it "does not collect the request queue time" do
               middleware.call(env)
 
-              report = Store.instance.pop_report
+              report = MetricsStore.instance.pop_report
               _(report.measurements.length).must_equal 0
             end
           end
@@ -95,7 +95,7 @@ module Judoscale
             it "collects the request network time as a separate measurement" do
               middleware.call(env)
 
-              report = Store.instance.pop_report
+              report = MetricsStore.instance.pop_report
               _(report.measurements.length).must_equal 2
               _(report.measurements.last).must_be_instance_of Measurement
               _(report.measurements.last.value).must_be_within_delta 50, 1

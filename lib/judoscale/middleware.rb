@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "judoscale/store"
+require "judoscale/metrics_store"
 require "judoscale/reporter"
 require "judoscale/config"
 require "judoscale/logger"
@@ -23,7 +23,7 @@ module Judoscale
         network_time = request_metrics.network_time
       end
 
-      store = Store.instance
+      store = MetricsStore.instance
       Reporter.start(config, store)
 
       if queue_time

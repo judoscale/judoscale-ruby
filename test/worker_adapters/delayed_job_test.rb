@@ -3,7 +3,7 @@
 require "test_helper"
 require "delayed_job_active_record"
 require "judoscale/worker_adapters/delayed_job"
-require "judoscale/store"
+require "judoscale/metrics_store"
 
 class Delayable
   def perform
@@ -19,7 +19,7 @@ module Judoscale
     end
 
     describe "#collect!" do
-      let(:store) { Store.instance }
+      let(:store) { MetricsStore.instance }
 
       after {
         ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs")

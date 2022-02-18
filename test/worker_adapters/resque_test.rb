@@ -3,7 +3,7 @@
 require "test_helper"
 require "resque"
 require "judoscale/worker_adapters/resque"
-require "judoscale/store"
+require "judoscale/metrics_store"
 
 module Judoscale
   describe WorkerAdapters::Resque do
@@ -14,7 +14,7 @@ module Judoscale
     end
 
     describe "#collect!" do
-      let(:store) { Store.instance }
+      let(:store) { MetricsStore.instance }
 
       after {
         subject.clear_queues
