@@ -4,7 +4,7 @@ require "judoscale/version"
 
 module Judoscale
   class Registration < Struct.new(:worker_adapters)
-    def to_params
+    def as_json
       {
         pid: Process.pid,
         ruby_version: RUBY_VERSION,
