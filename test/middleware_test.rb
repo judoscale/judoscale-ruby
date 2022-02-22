@@ -54,11 +54,11 @@ module Judoscale
           it "collects the request queue time" do
             middleware.call(env)
 
-            report = MetricsStore.instance.pop_report
-            _(report.metrics.length).must_equal 1
-            _(report.metrics.first).must_be_instance_of Metric
-            _(report.metrics.first.value).must_be_within_delta 5000, 1
-            _(report.metrics.first.identifier).must_equal :qt
+            metrics = MetricsStore.instance.flush
+            _(metrics.length).must_equal 1
+            _(metrics.first).must_be_instance_of Metric
+            _(metrics.first.value).must_be_within_delta 5000, 1
+            _(metrics.first.identifier).must_equal :qt
           end
 
           it "records the queue time in the environment passed on" do
@@ -84,8 +84,8 @@ module Judoscale
             it "does not collect the request queue time" do
               middleware.call(env)
 
-              report = MetricsStore.instance.pop_report
-              _(report.metrics.length).must_equal 0
+              metrics = MetricsStore.instance.flush
+              _(metrics.length).must_equal 0
             end
           end
 
@@ -95,11 +95,11 @@ module Judoscale
             it "collects the request network time as a separate metric" do
               middleware.call(env)
 
-              report = MetricsStore.instance.pop_report
-              _(report.metrics.length).must_equal 2
-              _(report.metrics.last).must_be_instance_of Metric
-              _(report.metrics.last.value).must_be_within_delta 50, 1
-              _(report.metrics.last.identifier).must_equal :nt
+              metrics = MetricsStore.instance.flush
+              _(metrics.length).must_equal 2
+              _(metrics.last).must_be_instance_of Metric
+              _(metrics.last.value).must_be_within_delta 50, 1
+              _(metrics.last.identifier).must_equal :nt
             end
 
             it "records the network time in the environment passed on" do
