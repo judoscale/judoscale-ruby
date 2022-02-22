@@ -3,7 +3,7 @@
 require "test_helper"
 require "sidekiq/api"
 require "judoscale/worker_adapters/sidekiq"
-require "judoscale/store"
+require "judoscale/metrics_store"
 
 module Judoscale
   SidekiqQueueStub = Struct.new(:name, :latency, :size, keyword_init: true)
@@ -16,7 +16,7 @@ module Judoscale
     end
 
     describe "#collect!" do
-      let(:store) { Store.instance }
+      let(:store) { MetricsStore.instance }
 
       after {
         subject.clear_queues
@@ -33,19 +33,19 @@ module Judoscale
           subject.collect! store
         }
 
-        _(store.measurements.size).must_equal 4
-        _(store.measurements[0].value).must_equal 11000
-        _(store.measurements[0].queue_name).must_equal "default"
-        _(store.measurements[0].metric).must_equal :qt
-        _(store.measurements[1].value).must_equal 1
-        _(store.measurements[1].queue_name).must_equal "default"
-        _(store.measurements[1].metric).must_equal :qd
-        _(store.measurements[2].value).must_equal 22223
-        _(store.measurements[2].queue_name).must_equal "high"
-        _(store.measurements[2].metric).must_equal :qt
-        _(store.measurements[3].value).must_equal 2
-        _(store.measurements[3].queue_name).must_equal "high"
-        _(store.measurements[3].metric).must_equal :qd
+        _(store.metrics.size).must_equal 4
+        _(store.metrics[0].value).must_equal 11000
+        _(store.metrics[0].queue_name).must_equal "default"
+        _(store.metrics[0].identifier).must_equal :qt
+        _(store.metrics[1].value).must_equal 1
+        _(store.metrics[1].queue_name).must_equal "default"
+        _(store.metrics[1].identifier).must_equal :qd
+        _(store.metrics[2].value).must_equal 22223
+        _(store.metrics[2].queue_name).must_equal "high"
+        _(store.metrics[2].identifier).must_equal :qt
+        _(store.metrics[3].value).must_equal 2
+        _(store.metrics[3].queue_name).must_equal "high"
+        _(store.metrics[3].identifier).must_equal :qd
       end
 
       it "always collects for the default queue" do
@@ -58,13 +58,13 @@ module Judoscale
           }
         }
 
-        _(store.measurements.size).must_equal 2
-        _(store.measurements[0].queue_name).must_equal "default"
-        _(store.measurements[0].value).must_equal 0
-        _(store.measurements[0].metric).must_equal :qt
-        _(store.measurements[1].queue_name).must_equal "default"
-        _(store.measurements[1].value).must_equal 0
-        _(store.measurements[1].metric).must_equal :qd
+        _(store.metrics.size).must_equal 2
+        _(store.metrics[0].queue_name).must_equal "default"
+        _(store.metrics[0].value).must_equal 0
+        _(store.metrics[0].identifier).must_equal :qt
+        _(store.metrics[1].queue_name).must_equal "default"
+        _(store.metrics[1].value).must_equal 0
+        _(store.metrics[1].identifier).must_equal :qd
       end
 
       it "always collects for known queues" do
@@ -88,8 +88,8 @@ module Judoscale
           }
         }
 
-        _(store.measurements.size).must_equal 4
-        _(store.measurements.map(&:queue_name)).must_equal %w[default default low low]
+        _(store.metrics.size).must_equal 4
+        _(store.metrics.map(&:queue_name)).must_equal %w[default default low low]
       end
 
       it "logs debug information for each queue being collected" do
@@ -123,13 +123,13 @@ module Judoscale
             }
           }
 
-          _(store.measurements.size).must_equal 6
-          _(store.measurements[2].value).must_equal 2
-          _(store.measurements[2].queue_name).must_equal "default"
-          _(store.measurements[2].metric).must_equal :busy
-          _(store.measurements[5].value).must_equal 1
-          _(store.measurements[5].queue_name).must_equal "high"
-          _(store.measurements[5].metric).must_equal :busy
+          _(store.metrics.size).must_equal 6
+          _(store.metrics[2].value).must_equal 2
+          _(store.metrics[2].queue_name).must_equal "default"
+          _(store.metrics[2].identifier).must_equal :busy
+          _(store.metrics[5].value).must_equal 1
+          _(store.metrics[5].queue_name).must_equal "high"
+          _(store.metrics[5].identifier).must_equal :busy
         end
       end
 
@@ -159,9 +159,9 @@ module Judoscale
           subject.collect! store
         }
 
-        _(store.measurements.size).must_equal 2
-        _(store.measurements[0].queue_name).must_equal "default"
-        _(store.measurements[1].queue_name).must_equal "default"
+        _(store.metrics.size).must_equal 2
+        _(store.metrics[0].queue_name).must_equal "default"
+        _(store.metrics[1].queue_name).must_equal "default"
       end
 
       it "filters queues to collect metrics from based on the configured queue filter proc, overriding the default UUID filter" do
@@ -174,11 +174,11 @@ module Judoscale
             subject.collect! store
           }
 
-          _(store.measurements.size).must_equal 4
-          _(store.measurements[0].queue_name).must_equal "low"
-          _(store.measurements[1].queue_name).must_equal "low"
-          _(store.measurements[2].queue_name).must_be :start_with?, "low-"
-          _(store.measurements[3].queue_name).must_be :start_with?, "low-"
+          _(store.metrics.size).must_equal 4
+          _(store.metrics[0].queue_name).must_equal "low"
+          _(store.metrics[1].queue_name).must_equal "low"
+          _(store.metrics[2].queue_name).must_be :start_with?, "low-"
+          _(store.metrics[3].queue_name).must_be :start_with?, "low-"
         end
       end
 
@@ -193,7 +193,7 @@ module Judoscale
             }
           }
 
-          _(store.measurements.map(&:queue_name)).must_equal %w[low low ultra ultra]
+          _(store.metrics.map(&:queue_name)).must_equal %w[low low ultra ultra]
         end
       end
 
@@ -205,7 +205,7 @@ module Judoscale
             subject.collect! store
           }
 
-          _(store.measurements.map(&:queue_name)).must_equal %w[low low high high]
+          _(store.metrics.map(&:queue_name)).must_equal %w[low low high high]
           _(log_string).must_match %r{Sidekiq metrics reporting only 2 queues max, skipping the rest \(1\)}
         end
       end

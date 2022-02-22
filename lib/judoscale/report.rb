@@ -2,10 +2,10 @@
 
 module Judoscale
   class Report
-    attr_reader :measurements
+    attr_reader :metrics
 
     def initialize
-      @measurements = []
+      @metrics = []
     end
 
     def to_params(config)
@@ -17,12 +17,12 @@ module Judoscale
 
     def to_csv
       (+"").tap do |result|
-        @measurements.each do |measurement|
+        @metrics.each do |metric|
           result << [
-            measurement.time.to_i,
-            measurement.value,
-            measurement.queue_name,
-            measurement.metric
+            metric.time.to_i,
+            metric.value,
+            metric.queue_name,
+            metric.identifier
           ].join(",")
 
           result << "\n"

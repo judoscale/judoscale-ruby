@@ -3,7 +3,7 @@
 require "test_helper"
 require "delayed_job_active_record"
 require "judoscale/worker_adapters/delayed_job"
-require "judoscale/store"
+require "judoscale/metrics_store"
 
 class Delayable
   def perform
@@ -19,7 +19,7 @@ module Judoscale
     end
 
     describe "#collect!" do
-      let(:store) { Store.instance }
+      let(:store) { MetricsStore.instance }
 
       after {
         ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs")
@@ -34,13 +34,13 @@ module Judoscale
 
         subject.collect! store
 
-        _(store.measurements.size).must_equal 2
-        _(store.measurements[0].queue_name).must_equal "default"
-        _(store.measurements[0].value).must_be_within_delta 150, 10
-        _(store.measurements[0].metric).must_equal :qt
-        _(store.measurements[1].queue_name).must_equal "high"
-        _(store.measurements[1].value).must_be_within_delta 0, 5
-        _(store.measurements[1].metric).must_equal :qt
+        _(store.metrics.size).must_equal 2
+        _(store.metrics[0].queue_name).must_equal "default"
+        _(store.metrics[0].value).must_be_within_delta 150, 10
+        _(store.metrics[0].identifier).must_equal :qt
+        _(store.metrics[1].queue_name).must_equal "high"
+        _(store.metrics[1].value).must_be_within_delta 0, 5
+        _(store.metrics[1].identifier).must_equal :qt
       end
 
       it "reports for known queues that have no enqueued jobs" do
@@ -48,14 +48,14 @@ module Judoscale
 
         subject.collect! store
 
-        _(store.measurements.size).must_equal 1
+        _(store.metrics.size).must_equal 1
 
         ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs")
         subject.collect! store
 
-        _(store.measurements.size).must_equal 2
-        _(store.measurements[0].queue_name).must_equal "default"
-        _(store.measurements[1].queue_name).must_equal "default"
+        _(store.metrics.size).must_equal 2
+        _(store.metrics[0].queue_name).must_equal "default"
+        _(store.metrics[1].queue_name).must_equal "default"
       end
 
       it "ignores future jobs" do
@@ -63,17 +63,17 @@ module Judoscale
 
         subject.collect! store
 
-        _(store.measurements.size).must_equal 1
-        _(store.measurements[0].queue_name).must_equal "default"
-        _(store.measurements[0].value).must_equal 0
+        _(store.metrics.size).must_equal 1
+        _(store.metrics[0].queue_name).must_equal "default"
+        _(store.metrics[0].value).must_equal 0
       end
 
       it "always collects for the default queue" do
         subject.collect! store
 
-        _(store.measurements.size).must_equal 1
-        _(store.measurements[0].queue_name).must_equal "default"
-        _(store.measurements[0].value).must_equal 0
+        _(store.metrics.size).must_equal 1
+        _(store.metrics[0].queue_name).must_equal "default"
+        _(store.metrics[0].value).must_equal 0
       end
 
       it "collects metrics for jobs without a queue name" do
@@ -81,9 +81,9 @@ module Judoscale
 
         subject.collect! store
 
-        _(store.measurements.size).must_equal 1
-        _(store.measurements[0].queue_name).must_equal "default"
-        _(store.measurements[0].value).must_be_within_delta 0, 5
+        _(store.metrics.size).must_equal 1
+        _(store.metrics[0].queue_name).must_equal "default"
+        _(store.metrics[0].value).must_be_within_delta 0, 5
       end
 
       it "logs debug information for each queue being collected" do
@@ -108,13 +108,13 @@ module Judoscale
 
           subject.collect! store
 
-          _(store.measurements.size).must_equal 4
-          _(store.measurements[1].value).must_equal 2
-          _(store.measurements[1].queue_name).must_equal "default"
-          _(store.measurements[1].metric).must_equal :busy
-          _(store.measurements[3].value).must_equal 1
-          _(store.measurements[3].queue_name).must_equal "high"
-          _(store.measurements[3].metric).must_equal :busy
+          _(store.metrics.size).must_equal 4
+          _(store.metrics[1].value).must_equal 2
+          _(store.metrics[1].queue_name).must_equal "default"
+          _(store.metrics[1].identifier).must_equal :busy
+          _(store.metrics[3].value).must_equal 1
+          _(store.metrics[3].queue_name).must_equal "high"
+          _(store.metrics[3].identifier).must_equal :busy
         end
       end
 
@@ -138,8 +138,8 @@ module Judoscale
 
         subject.collect! store
 
-        _(store.measurements.size).must_equal 1
-        _(store.measurements[0].queue_name).must_equal "default"
+        _(store.metrics.size).must_equal 1
+        _(store.metrics[0].queue_name).must_equal "default"
       end
 
       it "filters queues to collect metrics from based on the configured queue filter proc, overriding the default UUID filter" do
@@ -150,9 +150,9 @@ module Judoscale
 
           subject.collect! store
 
-          _(store.measurements.size).must_equal 2
-          _(store.measurements[0].queue_name).must_equal "low"
-          _(store.measurements[1].queue_name).must_be :start_with?, "low-"
+          _(store.metrics.size).must_equal 2
+          _(store.metrics[0].queue_name).must_equal "low"
+          _(store.metrics[1].queue_name).must_be :start_with?, "low-"
         end
       end
 
@@ -162,7 +162,7 @@ module Judoscale
 
           subject.collect! store
 
-          _(store.measurements.map(&:queue_name)).must_equal %w[low ultra]
+          _(store.metrics.map(&:queue_name)).must_equal %w[low ultra]
         end
       end
 
@@ -172,7 +172,7 @@ module Judoscale
 
           subject.collect! store
 
-          _(store.measurements.map(&:queue_name)).must_equal %w[low high]
+          _(store.metrics.map(&:queue_name)).must_equal %w[low high]
           _(log_string).must_match %r{DelayedJob metrics reporting only 2 queues max, skipping the rest \(1\)}
         end
       end

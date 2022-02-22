@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "judoscale/autoscale_api"
+require "judoscale/adapter_api"
 
-describe Judoscale::AutoscaleApi, vcr: {record: :once} do
-  let(:measurements_csv) { "#{Time.now.to_i},11\n#{Time.now.to_i},33\n" }
+describe Judoscale::AdapterApi, vcr: {record: :once} do
+  let(:metrics_csv) { "#{Time.now.to_i},11\n#{Time.now.to_i},33\n" }
   let(:config) { Struct.new(:api_base_url).new("http://example.com") }
 
   describe "#report_metrics!" do
@@ -14,27 +14,27 @@ describe Judoscale::AutoscaleApi, vcr: {record: :once} do
         dyno: "web.1",
         pid: "1232"
       }
-      autoscale_api = Judoscale::AutoscaleApi.new(config)
-      result = autoscale_api.report_metrics!(report_params, measurements_csv)
+      adapter_api = Judoscale::AdapterApi.new(config)
+      result = adapter_api.report_metrics!(report_params, metrics_csv)
 
-      _(result).must_be_instance_of Judoscale::AutoscaleApi::SuccessResponse
+      _(result).must_be_instance_of Judoscale::AdapterApi::SuccessResponse
     end
 
     it "returns a failure response if we post unexpected params" do
       config.api_base_url = "http://judoscale.dev/api/bad-app-token"
-      autoscale_api = Judoscale::AutoscaleApi.new(config)
-      result = autoscale_api.report_metrics!({}, measurements_csv)
+      adapter_api = Judoscale::AdapterApi.new(config)
+      result = adapter_api.report_metrics!({}, metrics_csv)
 
-      _(result).must_be_instance_of Judoscale::AutoscaleApi::FailureResponse
+      _(result).must_be_instance_of Judoscale::AdapterApi::FailureResponse
       _(result.failure_message).must_equal "400 - Bad Request"
     end
 
     it "returns a failure response if the service is unavailable" do
       config.api_base_url = "http://does-not-exist.dev"
-      autoscale_api = Judoscale::AutoscaleApi.new(config)
-      result = autoscale_api.report_metrics!([], measurements_csv)
+      adapter_api = Judoscale::AdapterApi.new(config)
+      result = adapter_api.report_metrics!([], metrics_csv)
 
-      _(result).must_be_instance_of Judoscale::AutoscaleApi::FailureResponse
+      _(result).must_be_instance_of Judoscale::AdapterApi::FailureResponse
       _(result.failure_message).must_equal "503 - Service Unavailable"
     end
 
@@ -45,10 +45,10 @@ describe Judoscale::AutoscaleApi, vcr: {record: :once} do
         pid: "1232"
       }
 
-      autoscale_api = Judoscale::AutoscaleApi.new(config)
-      result = autoscale_api.report_metrics!(report_params, measurements_csv)
+      adapter_api = Judoscale::AdapterApi.new(config)
+      result = adapter_api.report_metrics!(report_params, metrics_csv)
 
-      _(result).must_be_instance_of Judoscale::AutoscaleApi::SuccessResponse
+      _(result).must_be_instance_of Judoscale::AdapterApi::SuccessResponse
     end
   end
 
@@ -58,10 +58,10 @@ describe Judoscale::AutoscaleApi, vcr: {record: :once} do
       registration_params = {
         pid: "1232"
       }
-      autoscale_api = Judoscale::AutoscaleApi.new(config)
-      result = autoscale_api.register_reporter!(registration_params)
+      adapter_api = Judoscale::AdapterApi.new(config)
+      result = adapter_api.register_reporter!(registration_params)
 
-      _(result).must_be_instance_of Judoscale::AutoscaleApi::SuccessResponse
+      _(result).must_be_instance_of Judoscale::AdapterApi::SuccessResponse
     end
   end
 end

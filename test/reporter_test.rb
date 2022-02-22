@@ -3,7 +3,7 @@
 require "test_helper"
 require "judoscale/reporter"
 require "judoscale/config"
-require "judoscale/store"
+require "judoscale/metrics_store"
 
 module Judoscale
   describe Reporter do
@@ -24,7 +24,7 @@ module Judoscale
 
       def run_reporter_start_thread
         stub_reporter_loop {
-          reporter_thread = Reporter.instance.start!(Config.instance, Store.instance)
+          reporter_thread = Reporter.instance.start!(Config.instance, MetricsStore.instance)
           reporter_thread.join
         }
       end
@@ -60,18 +60,18 @@ module Judoscale
     end
 
     describe "#report!" do
-      after { Store.instance.clear }
+      after { MetricsStore.instance.clear }
 
       it "reports stored metrics to the API" do
-        store = Store.instance
+        store = MetricsStore.instance
 
         expected_query = {dyno: "web.1", pid: Process.pid}
         expected_body = "1000000001,11,,qt\n1000000002,22,high,qt\n"
-        stub = stub_request(:post, "http://example.com/api/test-token/v2/reports")
+        stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics")
           .with(query: expected_query, body: expected_body)
 
-        store.push :qt, 11, Time.at(1_000_000_001) # web measurement
-        store.push :qt, 22, Time.at(1_000_000_002), "high" # worker measurement
+        store.push :qt, 11, Time.at(1_000_000_001) # web metric
+        store.push :qt, 22, Time.at(1_000_000_002), "high" # worker metric
 
         Reporter.instance.send :report!, Config.instance, store
 
@@ -79,11 +79,11 @@ module Judoscale
       end
 
       it "logs reporter failures" do
-        store = Store.instance
-        stub_request(:post, %r{http://example.com/api/test-token/v2/reports})
+        store = MetricsStore.instance
+        stub_request(:post, %r{http://example.com/api/test-token/adapter/v1/metrics})
           .to_return(body: "oops", status: 503)
 
-        store.push :qt, 1, Time.at(1_000_000_001) # need some measurement to trigger reporting
+        store.push :qt, 1, Time.at(1_000_000_001) # need some metric to trigger reporting
 
         log_io = StringIO.new
         stub_logger = ::Logger.new(log_io)
@@ -108,7 +108,7 @@ module Judoscale
           }
         }
         response = {}.to_json
-        stub = stub_request(:post, "http://example.com/api/test-token/registrations")
+        stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/registrations")
           .with(body: expected_body)
           .to_return(body: response)
 

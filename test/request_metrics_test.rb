@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "judoscale/request"
+require "judoscale/request_metrics"
 require "judoscale/config"
 
 module Judoscale
-  describe Request do
-    let(:request) { Request.new(env, config) }
+  describe RequestMetrics do
+    let(:request) { RequestMetrics.new(env, config) }
     let(:env) { {} }
     let(:config) { Config.instance }
 

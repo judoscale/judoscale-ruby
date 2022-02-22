@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "judoscale/store"
+require "judoscale/metrics_store"
 require "judoscale/reporter"
 require "judoscale/config"
 require "judoscale/logger"
-require "judoscale/request"
+require "judoscale/request_metrics"
 
 module Judoscale
   class Middleware
@@ -16,14 +16,14 @@ module Judoscale
 
     def call(env)
       config = Config.instance
-      request = Request.new(env, config)
+      request_metrics = RequestMetrics.new(env, config)
 
-      unless request.ignore?
-        queue_time = request.queue_time
-        network_time = request.network_time
+      unless request_metrics.ignore?
+        queue_time = request_metrics.queue_time
+        network_time = request_metrics.network_time
       end
 
-      store = Store.instance
+      store = MetricsStore.instance
       Reporter.start(config, store)
 
       if queue_time
@@ -36,7 +36,7 @@ module Judoscale
           store.push :nt, network_time
         end
 
-        logger.debug "Request queue_time=#{queue_time}ms network_time=#{network_time}ms request_id=#{request.id} size=#{request.size}"
+        logger.debug "Request queue_time=#{queue_time}ms network_time=#{network_time}ms request_id=#{request_metrics.request_id} size=#{request_metrics.size}"
       end
 
       @app.call(env)
