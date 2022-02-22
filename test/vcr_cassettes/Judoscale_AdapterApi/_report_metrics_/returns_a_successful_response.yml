@@ -2,12 +2,10 @@
 http_interactions:
 - request:
     method: post
-    uri: http://judoscale.dev/api/test-app-token/adapter/v1/metrics?dyno=web.1&pid=1232
+    uri: http://judoscale.dev/api/test-app-token/adapter/v1/metrics
     body:
       encoding: UTF-8
-      string: |
-        1498939882,11
-        1498939882,33
+      string: '{"dyno":"web.1","metrics":[[1645534290,11,"qt"],[1645534290,33,"qt"]]}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3

@@ -65,10 +65,8 @@ module Judoscale
       it "reports stored metrics to the API" do
         store = MetricsStore.instance
 
-        expected_query = {dyno: "web.1", pid: Process.pid}
-        expected_body = "1000000001,11,,qt\n1000000002,22,high,qt\n"
-        stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics")
-          .with(query: expected_query, body: expected_body)
+        expected_body = {dyno: "web.1", metrics: [[1000000001, 11, "qt", nil], [1000000002, 22, "qt", "high"]]}
+        stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics").with(body: expected_body)
 
         store.push :qt, 11, Time.at(1_000_000_001) # web metric
         store.push :qt, 22, Time.at(1_000_000_002), "high" # worker metric

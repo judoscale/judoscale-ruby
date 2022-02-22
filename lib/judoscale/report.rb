@@ -2,32 +2,25 @@
 
 module Judoscale
   class Report
-    attr_reader :metrics
+    attr_reader :config, :metrics
 
-    def initialize(metrics = [])
+    def initialize(config, metrics = [])
+      @config = config
       @metrics = metrics
     end
 
-    def to_params(config)
+    def to_params
       {
         dyno: config.dyno,
-        pid: Process.pid
-      }
-    end
-
-    def to_csv
-      (+"").tap do |result|
-        @metrics.each do |metric|
-          result << [
+        metrics: metrics.map do |metric|
+          [
             metric.time.to_i,
             metric.value,
-            metric.queue_name,
-            metric.identifier
-          ].join(",")
-
-          result << "\n"
+            metric.identifier,
+            metric.queue_name
+          ]
         end
-      end
+      }
     end
   end
 end
