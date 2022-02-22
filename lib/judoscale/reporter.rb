@@ -63,12 +63,9 @@ module Judoscale
     private
 
     def report!(config, store)
-      report = Report.new(store.flush)
-
+      report = Report.new(config, store.flush)
       logger.info "Reporting #{report.metrics.size} metrics"
-
-      params = report.to_params(config)
-      result = AdapterApi.new(config).report_metrics!(params, report.to_csv)
+      result = AdapterApi.new(config).report_metrics!(report.to_params)
 
       case result
       when AdapterApi::SuccessResponse

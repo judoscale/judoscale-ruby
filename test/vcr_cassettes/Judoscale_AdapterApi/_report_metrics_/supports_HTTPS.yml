@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: https://judoscale-production.herokuapp.com/api/test-token/adapter/v1/metrics?dyno=web.1&pid=1232
+    uri: https://judoscale-production.herokuapp.com/api/test-token/adapter/v1/metrics
     body:
       encoding: UTF-8
       string: 'does not matter'

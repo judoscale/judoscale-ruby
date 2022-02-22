@@ -15,9 +15,8 @@ module Judoscale
       @config = config
     end
 
-    def report_metrics!(report_params, timings_csv)
-      query = URI.encode_www_form(report_params)
-      post_csv "/adapter/v1/metrics?#{query}", timings_csv
+    def report_metrics!(report_params)
+      post_json "/adapter/v1/metrics", report_params
     end
 
     def register_reporter!(registration_params)
@@ -29,11 +28,6 @@ module Judoscale
     def post_json(path, data)
       headers = {"Content-Type" => "application/json"}
       post_raw path: path, body: JSON.dump(data), headers: headers
-    end
-
-    def post_csv(path, data)
-      headers = {"Content-Type" => "text/csv"}
-      post_raw path: path, body: data, headers: headers
     end
 
     def post_raw(options)
