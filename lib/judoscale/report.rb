@@ -9,7 +9,7 @@ module Judoscale
       @metrics = metrics
     end
 
-    def to_params
+    def as_json
       {
         dyno: config.dyno,
         metrics: metrics.map do |metric|

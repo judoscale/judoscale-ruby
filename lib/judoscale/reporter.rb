@@ -65,7 +65,7 @@ module Judoscale
     def report!(config, store)
       report = Report.new(config, store.flush)
       logger.info "Reporting #{report.metrics.size} metrics"
-      result = AdapterApi.new(config).report_metrics!(report.to_params)
+      result = AdapterApi.new(config).report_metrics!(report.as_json)
 
       case result
       when AdapterApi::SuccessResponse
@@ -76,8 +76,8 @@ module Judoscale
     end
 
     def register!(config, worker_adapters)
-      params = Registration.new(worker_adapters).to_params
-      result = AdapterApi.new(config).register_reporter!(params)
+      registration = Registration.new(worker_adapters)
+      result = AdapterApi.new(config).register_reporter!(registration.as_json)
 
       case result
       when AdapterApi::SuccessResponse

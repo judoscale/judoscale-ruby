@@ -15,12 +15,12 @@ module Judoscale
       @config = config
     end
 
-    def report_metrics!(report_params)
-      post_json "/adapter/v1/metrics", report_params
+    def report_metrics!(report_json)
+      post_json "/adapter/v1/metrics", report_json
     end
 
-    def register_reporter!(registration_params)
-      post_json "/adapter/v1/registrations", registration: registration_params
+    def register_reporter!(registration_json)
+      post_json "/adapter/v1/registrations", registration: registration_json
     end
 
     private
