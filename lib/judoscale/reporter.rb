@@ -18,7 +18,7 @@ module Judoscale
     def start!(config, store)
       @started = true
       worker_adapters = WorkerAdapters.load_adapters(config.worker_adapters).select(&:enabled?)
-      dyno_num = config.dyno.to_s.split(".").last.to_i
+      dyno_num = config.dyno_num
 
       if !config.api_base_url
         logger.info "Reporter not started: JUDOSCALE_URL is not set"
