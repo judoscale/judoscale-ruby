@@ -3,7 +3,6 @@
 require "test_helper"
 require "judoscale/reporter"
 require "judoscale/config"
-require "judoscale/metrics_store"
 
 module Judoscale
   class TestCollector
@@ -64,34 +63,31 @@ module Judoscale
     end
 
     describe "#report!" do
-      after { MetricsStore.instance.clear }
-
       it "reports stored metrics to the API" do
-        store = MetricsStore.instance
-
         expected_body = {dyno: "web.1", metrics: [[1000000001, 11, "qt", nil], [1000000002, 22, "qt", "high"]]}
         stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics").with(body: expected_body)
 
-        store.push :qt, 11, Time.at(1_000_000_001) # web metric
-        store.push :qt, 22, Time.at(1_000_000_002), "high" # worker metric
+        metrics = [
+          Metric.new(:qt, Time.at(1_000_000_001), 11), # web metric
+          Metric.new(:qt, Time.at(1_000_000_002), 22, "high") # worker metric
+        ]
 
-        Reporter.instance.send :report!, Config.instance, store.flush
+        Reporter.instance.send :report!, Config.instance, metrics
 
         assert_requested stub
       end
 
       it "logs reporter failures" do
-        store = MetricsStore.instance
         stub_request(:post, %r{http://example.com/api/test-token/adapter/v1/metrics})
           .to_return(body: "oops", status: 503)
 
-        store.push :qt, 1, Time.at(1_000_000_001) # need some metric to trigger reporting
+        metrics = [Metric.new(:qt, Time.at(1_000_000_001), 1)] # need some metric to trigger reporting
 
         log_io = StringIO.new
         stub_logger = ::Logger.new(log_io)
 
         Reporter.instance.stub(:logger, stub_logger) {
-          Reporter.instance.send :report!, Config.instance, store.flush
+          Reporter.instance.send :report!, Config.instance, metrics
         }
 
         _(log_io.string).must_include "ERROR -- : Reporter failed: 503 - "
