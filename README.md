@@ -23,7 +23,7 @@ The agent will only communicate with Judoscale if a `JUDOSCALE_URL` ENV variable
 
 ## Non-Rails Rack apps
 
-You'll need to `require 'judoscale/middleware'` and insert the `Judoscale::Middleware` manually. Insert it before `Rack::Runtime` to ensure accuracy of request queue timings.
+You'll need to `require 'judoscale/request_middleware'` and insert the `Judoscale::RequestMiddleware` manually. Insert it before `Rack::Runtime` to ensure accuracy of request queue timings.
 
 ## What data is collected?
 

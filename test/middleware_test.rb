@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "judoscale/middleware"
+require "judoscale/request_middleware"
 
 module Judoscale
   class MockApp
@@ -13,7 +13,7 @@ module Judoscale
     end
   end
 
-  describe Middleware do
+  describe RequestMiddleware do
     describe "#call" do
       after {
         Reporter.instance.stop!
@@ -28,7 +28,7 @@ module Judoscale
           "rack.input" => StringIO.new("hello")
         }
       }
-      let(:middleware) { Middleware.new(app) }
+      let(:middleware) { RequestMiddleware.new(app) }
 
       describe "with the API URL configured" do
         before {

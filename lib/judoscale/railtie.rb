@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require "judoscale/middleware"
+require "judoscale/request_middleware"
 require "judoscale/logger"
 
 module Judoscale
   class Railtie < Rails::Railtie
     include Logger
 
-    initializer "judoscale.middleware" do |app|
-      logger.info "Preparing middleware"
-      app.middleware.insert_before Rack::Runtime, Middleware
+    initializer "judoscale.request_middleware" do |app|
+      logger.info "Preparing request middleware"
+      app.middleware.insert_before Rack::Runtime, RequestMiddleware
     end
   end
 end
