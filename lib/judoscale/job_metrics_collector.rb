@@ -10,7 +10,7 @@ module Judoscale
     def collect
       store = []
       worker_adapter.collect!(store)
-      store.map! { |args| Metric.new(*args) }
+      store.map! { |(identifier, value, time, queue_name)| Metric.new(identifier, time, value, name) }
       store
     end
   end
