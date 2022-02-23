@@ -5,7 +5,7 @@ require "judoscale/reporter"
 require "judoscale/config"
 
 module Judoscale
-  class TestCollector
+  class TestMetricsCollector < MetricsCollector
     def collect
     end
   end
@@ -28,7 +28,7 @@ module Judoscale
 
       def run_reporter_start_thread(collectors: [])
         stub_reporter_loop {
-          reporter_thread = Reporter.instance.start!(Config.instance, [], collectors)
+          reporter_thread = Reporter.instance.start!(Config.instance, collectors)
           reporter_thread.join
         }
       end
@@ -51,10 +51,10 @@ module Judoscale
       end
 
       it "logs exceptions when collecting information" do
-        collector = TestCollector.new
+        metrics_collector = TestMetricsCollector.new
 
-        collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
-          run_reporter_start_thread(collectors: [collector])
+        metrics_collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
+          run_reporter_start_thread(collectors: [metrics_collector])
         }
 
         _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
@@ -102,7 +102,7 @@ module Judoscale
             ruby_version: RUBY_VERSION,
             rails_version: "5.0.fake",
             gem_version: Judoscale::VERSION,
-            worker_adapters: ""
+            collectors: ""
           }
         }
         response = {}.to_json

@@ -3,15 +3,15 @@
 require "judoscale/version"
 
 module Judoscale
-  class Registration < Struct.new(:worker_adapters)
+  class Registration < Struct.new(:collectors)
     def as_json
       {
         pid: Process.pid,
         ruby_version: RUBY_VERSION,
         rails_version: defined?(Rails) && Rails.version,
         gem_version: VERSION,
-        # example: { worker_adapters: 'Sidekiq,Que' }
-        worker_adapters: worker_adapters.map { |o| o.class.adapter_name }.join(",")
+        # example: { collectors: 'Web,Sidekiq' }
+        collectors: collectors.map(&:collector_name).join(",")
       }
     end
   end
