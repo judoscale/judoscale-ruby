@@ -7,7 +7,7 @@ require "judoscale/logger"
 require "judoscale/request_metrics"
 
 module Judoscale
-  class Middleware
+  class RequestMiddleware
     include Logger
 
     def initialize(app)
