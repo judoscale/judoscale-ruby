@@ -15,20 +15,20 @@ module Judoscale
 
     def self.start(config)
       unless instance.started?
-        collectors = [WebMetricsCollector.new]
+        metrics_collectors = [WebMetricsCollector.new]
         # It's redundant to report worker metrics from every web dyno, so only report from web.1
         if config.dyno_num == 1
           worker_adapters = WorkerAdapters.load_adapters(config.worker_adapters).select(&:enabled?)
           worker_adapters.each do |worker_adapter|
-            collectors.push JobMetricsCollector.new(worker_adapter)
+            metrics_collectors.push JobMetricsCollector.new(worker_adapter)
           end
         end
 
-        instance.start!(config, collectors)
+        instance.start!(config, metrics_collectors)
       end
     end
 
-    def start!(config, collectors)
+    def start!(config, metrics_collectors)
       @started = true
 
       if !config.api_base_url
@@ -38,14 +38,14 @@ module Judoscale
 
       @_thread = Thread.new do
         loop do
-          register!(config, collectors) unless registered?
+          register!(config, metrics_collectors) unless registered?
 
           # Stagger reporting to spread out reports from many processes
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
           sleep config.report_interval_seconds * multiplier
 
-          metrics = collectors.flat_map do |collector|
-            log_exceptions { collector.collect }
+          metrics = metrics_collectors.flat_map do |metric_collector|
+            log_exceptions { metric_collector.collect }
           end
 
           log_exceptions { report!(config, metrics) }
@@ -83,15 +83,15 @@ module Judoscale
       end
     end
 
-    def register!(config, collectors)
-      registration = Registration.new(collectors)
+    def register!(config, metrics_collectors)
+      registration = Registration.new(metrics_collectors)
       result = AdapterApi.new(config).register_reporter!(registration.as_json)
 
       case result
       when AdapterApi::SuccessResponse
         @registered = true
-        collectors_msg = collectors.map(&:collector_name).join(", ")
-        logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Collectors: [#{collectors_msg}]"
+        collectors_msg = metrics_collectors.map(&:collector_name).join(", ")
+        logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Metrics collectors: [#{collectors_msg}]"
       when AdapterApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"
       end
