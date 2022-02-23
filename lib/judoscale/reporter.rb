@@ -4,6 +4,7 @@ require "singleton"
 require "judoscale/logger"
 require "judoscale/adapter_api"
 require "judoscale/registration"
+require "judoscale/job_metrics_collector"
 require "judoscale/web_metrics_collector"
 require "judoscale/worker_adapters"
 
@@ -18,7 +19,11 @@ module Judoscale
 
         collectors = [WebMetricsCollector.new]
         # It's redundant to report worker metrics from every web dyno, so only report from web.1
-        collectors.concat(worker_adapters) if config.dyno_num == 1
+        if config.dyno_num == 1
+          worker_adapters.each do |worker_adapter|
+            collectors.push JobMetricsCollector.new(worker_adapter)
+          end
+        end
 
         instance.start!(config, worker_adapters, collectors)
       end

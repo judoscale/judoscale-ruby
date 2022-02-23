@@ -6,6 +6,11 @@ require "judoscale/config"
 require "judoscale/metrics_store"
 
 module Judoscale
+  class TestCollector
+    def collect
+    end
+  end
+
   describe Reporter do
     before {
       Judoscale.configure do |config|
@@ -22,9 +27,9 @@ module Judoscale
         Reporter.instance.stop!
       }
 
-      def run_reporter_start_thread(worker_adapters: [])
+      def run_reporter_start_thread(collectors: [])
         stub_reporter_loop {
-          reporter_thread = Reporter.instance.start!(Config.instance, worker_adapters, [WebMetricsCollector.new, *worker_adapters])
+          reporter_thread = Reporter.instance.start!(Config.instance, [], collectors)
           reporter_thread.join
         }
       end
@@ -46,12 +51,11 @@ module Judoscale
         _(log_string).must_include "lib/judoscale/reporter.rb"
       end
 
-      it "logs exceptions when collecting adapter information" do
-        enabled_adapter = WorkerAdapters.load_adapters(Config.instance.worker_adapters).find(&:enabled?)
-        _(enabled_adapter).wont_be :nil?
+      it "logs exceptions when collecting information" do
+        collector = TestCollector.new
 
-        enabled_adapter.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
-          run_reporter_start_thread(worker_adapters: [enabled_adapter])
+        collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
+          run_reporter_start_thread(collectors: [collector])
         }
 
         _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
