@@ -4,6 +4,7 @@ require "singleton"
 require "judoscale/logger"
 require "judoscale/adapter_api"
 require "judoscale/registration"
+require "judoscale/web_metrics_collector"
 require "judoscale/worker_adapters"
 
 module Judoscale
@@ -11,14 +12,20 @@ module Judoscale
     include Singleton
     include Logger
 
-    def self.start(config, store)
-      instance.start!(config, store) unless instance.started?
+    def self.start(config)
+      unless instance.started?
+        worker_adapters = WorkerAdapters.load_adapters(config.worker_adapters).select(&:enabled?)
+
+        collectors = [WebMetricsCollector.new]
+        # It's redundant to report worker metrics from every web dyno, so only report from web.1
+        collectors.concat(worker_adapters) if config.dyno_num == 1
+
+        instance.start!(config, worker_adapters, collectors)
+      end
     end
 
-    def start!(config, store)
+    def start!(config, worker_adapters, collectors)
       @started = true
-      worker_adapters = WorkerAdapters.load_adapters(config.worker_adapters).select(&:enabled?)
-      dyno_num = config.dyno_num
 
       if !config.api_base_url
         logger.info "Reporter not started: JUDOSCALE_URL is not set"
@@ -33,14 +40,11 @@ module Judoscale
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
           sleep config.report_interval_seconds * multiplier
 
-          # It's redundant to report worker metrics from every web dyno, so only report from web.1
-          if dyno_num == 1
-            worker_adapters.map do |adapter|
-              log_exceptions { adapter.collect!(store) }
-            end
+          metrics = collectors.flat_map do |collector|
+            log_exceptions { collector.collect }
           end
 
-          log_exceptions { report!(config, store) }
+          log_exceptions { report!(config, metrics) }
         end
       end
     end
@@ -62,8 +66,8 @@ module Judoscale
 
     private
 
-    def report!(config, store)
-      report = Report.new(config, store.flush)
+    def report!(config, metrics)
+      report = Report.new(config, metrics)
       logger.info "Reporting #{report.metrics.size} metrics"
       result = AdapterApi.new(config).report_metrics!(report.as_json)
 
@@ -76,6 +80,7 @@ module Judoscale
     end
 
     def register!(config, worker_adapters)
+      # TODO: registration with collectors
       registration = Registration.new(worker_adapters)
       result = AdapterApi.new(config).register_reporter!(registration.as_json)
 

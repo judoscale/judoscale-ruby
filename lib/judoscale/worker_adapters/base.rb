@@ -44,6 +44,13 @@ module Judoscale
         false
       end
 
+      def collect
+        store = []
+        collect!(store)
+        store.map! { |args| Metric.new(*args) }
+        store
+      end
+
       def collect!(store)
       end
 

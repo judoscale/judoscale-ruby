@@ -22,9 +22,9 @@ module Judoscale
         Reporter.instance.stop!
       }
 
-      def run_reporter_start_thread
+      def run_reporter_start_thread(worker_adapters: [])
         stub_reporter_loop {
-          reporter_thread = Reporter.instance.start!(Config.instance, MetricsStore.instance)
+          reporter_thread = Reporter.instance.start!(Config.instance, worker_adapters, [WebMetricsCollector.new, *worker_adapters])
           reporter_thread.join
         }
       end
@@ -50,8 +50,8 @@ module Judoscale
         enabled_adapter = WorkerAdapters.load_adapters(Config.instance.worker_adapters).find(&:enabled?)
         _(enabled_adapter).wont_be :nil?
 
-        enabled_adapter.stub(:collect!, ->(*) { raise "ADAPTER BOOM!" }) {
-          run_reporter_start_thread
+        enabled_adapter.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
+          run_reporter_start_thread(worker_adapters: [enabled_adapter])
         }
 
         _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
@@ -71,7 +71,7 @@ module Judoscale
         store.push :qt, 11, Time.at(1_000_000_001) # web metric
         store.push :qt, 22, Time.at(1_000_000_002), "high" # worker metric
 
-        Reporter.instance.send :report!, Config.instance, store
+        Reporter.instance.send :report!, Config.instance, store.flush
 
         assert_requested stub
       end
@@ -87,7 +87,7 @@ module Judoscale
         stub_logger = ::Logger.new(log_io)
 
         Reporter.instance.stub(:logger, stub_logger) {
-          Reporter.instance.send :report!, Config.instance, store
+          Reporter.instance.send :report!, Config.instance, store.flush
         }
 
         _(log_io.string).must_include "ERROR -- : Reporter failed: 503 - "

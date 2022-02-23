@@ -23,10 +23,11 @@ module Judoscale
         network_time = request_metrics.network_time
       end
 
-      store = MetricsStore.instance
-      Reporter.start(config, store)
+      Reporter.start(config)
 
       if queue_time
+        store = MetricsStore.instance
+
         # NOTE: Expose queue time to the app
         env["judoscale.queue_time"] = queue_time
         store.push :qt, queue_time
