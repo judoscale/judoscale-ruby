@@ -18,6 +18,49 @@ module Judoscale
       end
     }
 
+    describe ".start" do
+      it "initializes the reporter with a web metrics collector and all enabled job collectors when on the first dyno" do
+        reporter_mock = Minitest::Mock.new
+        reporter_mock.expect :started?, false
+        reporter_mock.expect :start!, true do |config, metrics_collectors|
+          _(metrics_collectors.map(&:collector_name)).must_equal %w[Web Sidekiq DelayedJob Que Resque]
+        end
+
+        Reporter.stub(:instance, reporter_mock) {
+          Reporter.start(Config.instance)
+        }
+
+        assert_mock reporter_mock
+      end
+
+      it "initializes the reporter only with web metrics collector on other dynos to avoid redundant worker metrics" do
+        Judoscale.configure { |config| config.dyno = "web.2" }
+
+        reporter_mock = Minitest::Mock.new
+        reporter_mock.expect :started?, false
+        reporter_mock.expect :start!, true do |config, metrics_collectors|
+          _(metrics_collectors.map(&:collector_name)).must_equal %w[Web]
+        end
+
+        Reporter.stub(:instance, reporter_mock) {
+          Reporter.start(Config.instance)
+        }
+
+        assert_mock reporter_mock
+      end
+
+      it "does not initialize the reporter more than once" do
+        reporter_mock = Minitest::Mock.new
+        reporter_mock.expect :started?, true
+
+        Reporter.stub(:instance, reporter_mock) {
+          Reporter.start(Config.instance)
+        }
+
+        assert_mock reporter_mock
+      end
+    end
+
     describe "#start!" do
       before {
         stub_request(:post, %r{registrations}).to_return(body: "{}")
