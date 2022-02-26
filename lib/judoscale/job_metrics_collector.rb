@@ -4,6 +4,18 @@ require "judoscale/metrics_collector"
 
 module Judoscale
   class JobMetricsCollector < MetricsCollector
+    class TempStore
+      attr_reader :metrics
+
+      def initialize
+        @metrics = []
+      end
+
+      def push(identifier, value, time, queue_name)
+        @metrics << Metric.new(identifier, time, value, queue_name)
+      end
+    end
+
     attr_reader :worker_adapter
 
     # TODO: the worker adapters will be refactored into job collectors, for now this allows us to
@@ -20,10 +32,9 @@ module Judoscale
     end
 
     def collect
-      store = []
+      store = TempStore.new
       worker_adapter.collect!(store)
-      store.map! { |(identifier, value, time, queue_name)| Metric.new(identifier, time, value, name) }
-      store
+      store.metrics
     end
   end
 end
