@@ -4,6 +4,8 @@ require "singleton"
 require "judoscale/logger"
 require "judoscale/adapter_api"
 require "judoscale/registration"
+require "judoscale/job_metrics_collector"
+require "judoscale/web_metrics_collector"
 require "judoscale/worker_adapters"
 
 module Judoscale
@@ -11,14 +13,23 @@ module Judoscale
     include Singleton
     include Logger
 
-    def self.start(config, store)
-      instance.start!(config, store) unless instance.started?
+    def self.start(config)
+      unless instance.started?
+        metrics_collectors = [WebMetricsCollector.new]
+        # It's redundant to report worker metrics from every web dyno, so only report from web.1
+        if config.dyno_num == 1
+          worker_adapters = WorkerAdapters.load_adapters(config.worker_adapters).select(&:enabled?)
+          worker_adapters.each do |worker_adapter|
+            metrics_collectors.push JobMetricsCollector.new(worker_adapter)
+          end
+        end
+
+        instance.start!(config, metrics_collectors)
+      end
     end
 
-    def start!(config, store)
+    def start!(config, metrics_collectors)
       @started = true
-      worker_adapters = WorkerAdapters.load_adapters(config.worker_adapters).select(&:enabled?)
-      dyno_num = config.dyno.to_s.split(".").last.to_i
 
       if !config.api_base_url
         logger.info "Reporter not started: JUDOSCALE_URL is not set"
@@ -27,20 +38,17 @@ module Judoscale
 
       @_thread = Thread.new do
         loop do
-          register!(config, worker_adapters) unless registered?
+          register!(config, metrics_collectors) unless registered?
 
           # Stagger reporting to spread out reports from many processes
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
           sleep config.report_interval_seconds * multiplier
 
-          # It's redundant to report worker metrics from every web dyno, so only report from web.1
-          if dyno_num == 1
-            worker_adapters.map do |adapter|
-              log_exceptions { adapter.collect!(store) }
-            end
+          metrics = metrics_collectors.flat_map do |metric_collector|
+            log_exceptions { metric_collector.collect }
           end
 
-          log_exceptions { report!(config, store) }
+          log_exceptions { report!(config, metrics) }
         end
       end
     end
@@ -62,8 +70,8 @@ module Judoscale
 
     private
 
-    def report!(config, store)
-      report = Report.new(config, store.flush)
+    def report!(config, metrics)
+      report = Report.new(config, metrics)
       logger.info "Reporting #{report.metrics.size} metrics"
       result = AdapterApi.new(config).report_metrics!(report.as_json)
 
@@ -75,15 +83,15 @@ module Judoscale
       end
     end
 
-    def register!(config, worker_adapters)
-      registration = Registration.new(worker_adapters)
+    def register!(config, metrics_collectors)
+      registration = Registration.new(metrics_collectors)
       result = AdapterApi.new(config).register_reporter!(registration.as_json)
 
       case result
       when AdapterApi::SuccessResponse
         @registered = true
-        worker_adapters_msg = worker_adapters.map { |a| a.class.name }.join(", ")
-        logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Worker adapters: [#{worker_adapters_msg}]"
+        collectors_msg = metrics_collectors.map(&:collector_name).join(", ")
+        logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Metrics collectors: [#{collectors_msg}]"
       when AdapterApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"
       end

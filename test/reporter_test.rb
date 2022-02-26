@@ -3,9 +3,13 @@
 require "test_helper"
 require "judoscale/reporter"
 require "judoscale/config"
-require "judoscale/metrics_store"
 
 module Judoscale
+  class TestMetricsCollector < MetricsCollector
+    def collect
+    end
+  end
+
   describe Reporter do
     before {
       Judoscale.configure do |config|
@@ -13,6 +17,49 @@ module Judoscale
         config.api_base_url = "http://example.com/api/test-token"
       end
     }
+
+    describe ".start" do
+      it "initializes the reporter with a web metrics collector and all enabled job collectors when on the first dyno" do
+        reporter_mock = Minitest::Mock.new
+        reporter_mock.expect :started?, false
+        reporter_mock.expect :start!, true do |config, metrics_collectors|
+          _(metrics_collectors.map(&:collector_name)).must_equal %w[Web Sidekiq DelayedJob Que Resque]
+        end
+
+        Reporter.stub(:instance, reporter_mock) {
+          Reporter.start(Config.instance)
+        }
+
+        assert_mock reporter_mock
+      end
+
+      it "initializes the reporter only with web metrics collector on other dynos to avoid redundant worker metrics" do
+        Judoscale.configure { |config| config.dyno = "web.2" }
+
+        reporter_mock = Minitest::Mock.new
+        reporter_mock.expect :started?, false
+        reporter_mock.expect :start!, true do |config, metrics_collectors|
+          _(metrics_collectors.map(&:collector_name)).must_equal %w[Web]
+        end
+
+        Reporter.stub(:instance, reporter_mock) {
+          Reporter.start(Config.instance)
+        }
+
+        assert_mock reporter_mock
+      end
+
+      it "does not initialize the reporter more than once" do
+        reporter_mock = Minitest::Mock.new
+        reporter_mock.expect :started?, true
+
+        Reporter.stub(:instance, reporter_mock) {
+          Reporter.start(Config.instance)
+        }
+
+        assert_mock reporter_mock
+      end
+    end
 
     describe "#start!" do
       before {
@@ -22,9 +69,9 @@ module Judoscale
         Reporter.instance.stop!
       }
 
-      def run_reporter_start_thread
+      def run_reporter_start_thread(collectors: [])
         stub_reporter_loop {
-          reporter_thread = Reporter.instance.start!(Config.instance, MetricsStore.instance)
+          reporter_thread = Reporter.instance.start!(Config.instance, collectors)
           reporter_thread.join
         }
       end
@@ -46,12 +93,11 @@ module Judoscale
         _(log_string).must_include "lib/judoscale/reporter.rb"
       end
 
-      it "logs exceptions when collecting adapter information" do
-        enabled_adapter = WorkerAdapters.load_adapters(Config.instance.worker_adapters).find(&:enabled?)
-        _(enabled_adapter).wont_be :nil?
+      it "logs exceptions when collecting information" do
+        metrics_collector = TestMetricsCollector.new
 
-        enabled_adapter.stub(:collect!, ->(*) { raise "ADAPTER BOOM!" }) {
-          run_reporter_start_thread
+        metrics_collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
+          run_reporter_start_thread(collectors: [metrics_collector])
         }
 
         _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
@@ -60,34 +106,31 @@ module Judoscale
     end
 
     describe "#report!" do
-      after { MetricsStore.instance.clear }
-
       it "reports stored metrics to the API" do
-        store = MetricsStore.instance
-
         expected_body = {dyno: "web.1", metrics: [[1000000001, 11, "qt", nil], [1000000002, 22, "qt", "high"]]}
         stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics").with(body: expected_body)
 
-        store.push :qt, 11, Time.at(1_000_000_001) # web metric
-        store.push :qt, 22, Time.at(1_000_000_002), "high" # worker metric
+        metrics = [
+          Metric.new(:qt, Time.at(1_000_000_001), 11), # web metric
+          Metric.new(:qt, Time.at(1_000_000_002), 22, "high") # worker metric
+        ]
 
-        Reporter.instance.send :report!, Config.instance, store
+        Reporter.instance.send :report!, Config.instance, metrics
 
         assert_requested stub
       end
 
       it "logs reporter failures" do
-        store = MetricsStore.instance
         stub_request(:post, %r{http://example.com/api/test-token/adapter/v1/metrics})
           .to_return(body: "oops", status: 503)
 
-        store.push :qt, 1, Time.at(1_000_000_001) # need some metric to trigger reporting
+        metrics = [Metric.new(:qt, Time.at(1_000_000_001), 1)] # need some metric to trigger reporting
 
         log_io = StringIO.new
         stub_logger = ::Logger.new(log_io)
 
         Reporter.instance.stub(:logger, stub_logger) {
-          Reporter.instance.send :report!, Config.instance, store
+          Reporter.instance.send :report!, Config.instance, metrics
         }
 
         _(log_io.string).must_include "ERROR -- : Reporter failed: 503 - "
@@ -102,7 +145,7 @@ module Judoscale
             ruby_version: RUBY_VERSION,
             rails_version: "5.0.fake",
             gem_version: Judoscale::VERSION,
-            worker_adapters: ""
+            collectors: ""
           }
         }
         response = {}.to_json

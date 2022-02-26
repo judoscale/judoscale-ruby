@@ -56,6 +56,10 @@ module Judoscale
       "#{@dyno}##{Process.pid}"
     end
 
+    def dyno_num
+      dyno.to_s.split(".").last.to_i
+    end
+
     def ignore_large_requests?
       @max_request_size_bytes
     end
