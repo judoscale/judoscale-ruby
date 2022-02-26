@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    judoscale (0.10.2)
+    judoscale-ruby (0.10.2)
 
 GEM
   remote: https://rubygems.org/
@@ -124,7 +124,7 @@ DEPENDENCIES
   activesupport
   delayed_job
   delayed_job_active_record
-  judoscale!
+  judoscale-ruby!
   minitest
   minitest-vcr
   pry-byebug
