@@ -1,14 +1,14 @@
 PATH
   remote: ../../judoscale-rails
   specs:
-    judoscale-rails (0.10.2)
+    judoscale-rails (0.1.0.alpha)
       judoscale-ruby
       railties
 
 PATH
   remote: ../../judoscale-ruby
   specs:
-    judoscale-ruby (0.10.2)
+    judoscale-ruby (0.1.0.alpha)
 
 GEM
   remote: https://rubygems.org/
