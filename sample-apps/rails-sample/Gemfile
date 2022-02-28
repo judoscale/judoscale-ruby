@@ -18,9 +18,8 @@ gem "puma", "~> 5.0"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 
-# TODO: require from local file system to test unpushed changes
-# TODO: rename gem and repo to "judoscale-rails"
-gem "judoscale", path: "../../../"
+gem "judoscale-ruby", path: "../../judoscale-ruby"
+gem "judoscale-rails", path: "../../judoscale-rails"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

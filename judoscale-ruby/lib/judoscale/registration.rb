@@ -8,7 +8,7 @@ module Judoscale
       {
         pid: Process.pid,
         ruby_version: RUBY_VERSION,
-        rails_version: defined?(Rails) && Rails.version,
+        rails_version: defined?(::Rails) && ::Rails.version,
         gem_version: VERSION,
         # example: { collectors: 'Web,Sidekiq' }
         collectors: collectors.map(&:collector_name).join(",")

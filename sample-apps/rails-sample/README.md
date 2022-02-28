@@ -1,6 +1,6 @@
-# Sample app for judoscale(-rails) gem
+# Sample app for judoscale-rails gem
 
-This is a minimal Rails app to test the judoscale (soon to be judoscale-rails) gem.
+This is a minimal Rails app to test the judoscale-rails gem.
 
 ## Prerequisites
 
