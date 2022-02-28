@@ -15,7 +15,7 @@ jobs:
         gemfile:
           - Gemfile
         ruby:
-          - '2.6'
+          # - '2.6'
           - '2.7'
           - '3.0'
     runs-on: ubuntu-latest
