@@ -6,9 +6,6 @@ require "judoscale-rails"
 require "minitest/autorun"
 require "minitest/spec"
 
-module Judoscale::Test
-end
-
 ENV["RACK_ENV"] ||= "test"
 require "rails"
 require "action_controller"
@@ -24,5 +21,3 @@ class TestRailsApp < Rails::Application
   end
   initialize!
 end
-
-Minitest::Test.include(Judoscale::Test)
