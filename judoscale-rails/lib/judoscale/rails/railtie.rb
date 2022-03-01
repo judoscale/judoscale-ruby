@@ -11,7 +11,7 @@ module Judoscale
       include Judoscale::Logger
 
       initializer "judoscale.logger" do |app|
-        Config.instance.logger = app.config.logger
+        Config.instance.logger = ::Rails.logger
       end
 
       initializer "judoscale.request_middleware" do |app|
