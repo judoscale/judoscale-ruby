@@ -18,6 +18,8 @@ gem "puma", "~> 5.0"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 
+# Need to reference both, otherwise it'd use the `judoscale-rails` gemspec to try to find `judoscale-ruby`,
+# but we want to test against the local dev version of it, not a released gem, so we need to specify it too.
 gem "judoscale-ruby", path: "../../judoscale-ruby"
 gem "judoscale-rails", path: "../../judoscale-rails"
 
