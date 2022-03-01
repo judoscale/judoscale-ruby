@@ -5,4 +5,3 @@ gemspec
 gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "minitest"
 gem "rake"
-gem "standard"

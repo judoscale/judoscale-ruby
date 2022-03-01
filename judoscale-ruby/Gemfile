@@ -11,7 +11,6 @@ gem "que"
 gem "resque"
 gem "activesupport"
 gem "sqlite3", platforms: :ruby
-gem "standard"
 gem "minitest"
 gem "minitest-vcr"
 gem "vcr", ">= 3.0"
