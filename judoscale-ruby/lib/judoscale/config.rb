@@ -40,7 +40,7 @@ module Judoscale
       @max_request_size_bytes = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval_seconds = 10
       self.log_level = ENV["JUDOSCALE_LOG_LEVEL"]
-      @logger = defined?(::Rails) ? ::Rails.logger : ::Logger.new($stdout)
+      @logger = ::Logger.new($stdout)
       @worker_adapters = DEFAULT_WORKER_ADAPTERS
 
       DEFAULT_WORKER_ADAPTERS.each do |adapter|

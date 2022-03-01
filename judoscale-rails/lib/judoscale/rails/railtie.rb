@@ -2,12 +2,17 @@
 
 require "rails/railtie"
 require "judoscale/request_middleware"
+require "judoscale/config"
 require "judoscale/logger"
 
 module Judoscale
   module Rails
     class Railtie < ::Rails::Railtie
       include Judoscale::Logger
+
+      initializer "judoscale.logger" do |app|
+        Config.instance.logger = app.config.logger
+      end
 
       initializer "judoscale.request_middleware" do |app|
         logger.info "Preparing request middleware"

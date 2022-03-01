@@ -11,7 +11,7 @@ module Judoscale
         _(config.api_base_url).must_equal "https://example.com"
         _(config.dyno).must_equal "web.1"
         _(config.log_level).must_be_nil
-        _(config.logger).must_equal Rails.logger
+        _(config.logger).must_be_instance_of ::Logger
         _(config.max_request_size_bytes).must_equal 100_000
         _(config.report_interval_seconds).must_equal 10
         _(config.worker_adapters).must_equal %i[sidekiq delayed_job que resque]
