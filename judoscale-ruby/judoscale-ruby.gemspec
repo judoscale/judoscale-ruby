@@ -5,7 +5,7 @@ require "judoscale/version"
 Gem::Specification.new do |spec|
   spec.name = "judoscale-ruby"
   spec.version = Judoscale::VERSION
-  spec.authors = ["Adam McCrea"]
+  spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
   spec.email = ["adam@adamlogic.com"]
 
   spec.summary = "This gem works with the Judoscale Heroku add-on to automatically scale your web and worker dynos."
