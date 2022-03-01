@@ -15,7 +15,7 @@ require "fileutils"
 FileUtils.cd(library) do
   require "bundler/setup"
   require library
-end
 
-require "irb"
-IRB.start(__FILE__)
+  require "irb"
+  IRB.start(__FILE__)
+end
