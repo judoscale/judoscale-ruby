@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "rails/railtie"
 require "judoscale/request_middleware"
 require "judoscale/logger"
 
