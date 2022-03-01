@@ -1,4 +1,4 @@
-name: Test Ruby
+name: judoscale-ruby tests
 defaults:
   run:
     working-directory: judoscale-ruby

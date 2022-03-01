@@ -1,4 +1,4 @@
-name: Test Rails
+name: judoscale-rails tests
 defaults:
   run:
     working-directory: judoscale-rails
