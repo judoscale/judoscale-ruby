@@ -12,7 +12,10 @@ end
 # Load shared test helpers from judoscale-ruby.
 Dir[File.expand_path("../../judoscale-ruby/test/support/*.rb", __dir__)].sort.each { |file| require file }
 
+ENV["RACK_ENV"] ||= "test"
 require "rails"
+require "action_controller"
+
 class TestRailsApp < Rails::Application
   config.secret_key_base = "test-secret"
   config.eager_load = false
