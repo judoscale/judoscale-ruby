@@ -7,6 +7,14 @@ module Judoscale
   describe WebMetricsCollector do
     let(:store) { MetricsStore.instance }
 
+    describe ".collect?" do
+      it "always collects metrics data" do
+        config = Minitest::Mock.new
+
+        _(WebMetricsCollector.collect?(config)).must_equal true
+      end
+    end
+
     describe "#collect" do
       it "flushes the metrics previously collected from the store" do
         collector = WebMetricsCollector.new

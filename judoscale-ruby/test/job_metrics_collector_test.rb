@@ -4,22 +4,20 @@ require "test_helper"
 require "judoscale/job_metrics_collector"
 
 module Judoscale
-  class JobTestWorkerAdapter
-    def collect!(store)
-      1.upto(3) { |i| store.push :qt, i, Time.now, "some-queue" }
-    end
-  end
-
   describe JobMetricsCollector do
-    describe "#collect" do
-      it "wraps a worker adapter to collect metrics from" do
-        collector = JobMetricsCollector.new(JobTestWorkerAdapter.new)
-        collected_metrics = collector.collect
+    describe ".collect?" do
+      it "collects only from the first dynos in the formation, to avoid redundant collection from multiple dynos" do
+        %w[web.1 worker.1 custom_type.1].each do |dyno|
+          Judoscale.configure { |config| config.dyno = dyno }
 
-        _(collected_metrics.size).must_equal 3
-        _(collected_metrics.map(&:value)).must_equal [1, 2, 3]
-        _(collected_metrics[0].identifier).must_equal :qt
-        _(collected_metrics[0].queue_name).must_equal "some-queue"
+          _(JobMetricsCollector.collect?(Judoscale::Config.instance)).must_equal true
+        end
+
+        %w[web.2 worker.15 custom_type.101].each do |dyno|
+          Judoscale.configure { |config| config.dyno = dyno }
+
+          _(JobMetricsCollector.collect?(Judoscale::Config.instance)).must_equal false
+        end
       end
     end
   end

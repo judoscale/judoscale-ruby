@@ -5,9 +5,10 @@ require "judoscale/reporter"
 require "judoscale/config"
 
 module Judoscale
-  class TestMetricsCollector < MetricsCollector
-    def collect
-    end
+  class TestJobMetricsCollector < JobMetricsCollector
+  end
+
+  class TestWebMetricsCollector < WebMetricsCollector
   end
 
   describe Reporter do
@@ -19,11 +20,23 @@ module Judoscale
     }
 
     describe ".start" do
-      it "initializes the reporter with a web metrics collector and all enabled job collectors when on the first dyno" do
+      before {
+        Judoscale.add_adapter :test_web, {}, metrics_collector: TestWebMetricsCollector
+        Judoscale.add_adapter :test_job, {}, metrics_collector: TestJobMetricsCollector
+      }
+
+      after {
+        Judoscale.remove_adapter :test_web
+        Judoscale.remove_adapter :test_job
+      }
+
+      it "initializes the reporter with all registered web and job metrics collectors when on the first dyno" do
         reporter_mock = Minitest::Mock.new
         reporter_mock.expect :started?, false
         reporter_mock.expect :start!, true do |config, metrics_collectors|
-          _(metrics_collectors.map(&:collector_name)).must_equal %w[Web Sidekiq DelayedJob Que Resque]
+          _(metrics_collectors.size).must_equal 2
+          _(metrics_collectors[0]).must_be_instance_of TestWebMetricsCollector
+          _(metrics_collectors[1]).must_be_instance_of TestJobMetricsCollector
         end
 
         Reporter.stub(:instance, reporter_mock) {
@@ -33,13 +46,14 @@ module Judoscale
         assert_mock reporter_mock
       end
 
-      it "initializes the reporter only with web metrics collector on other dynos to avoid redundant worker metrics" do
+      it "initializes the reporter only with registered web metrics collectors on other dynos to avoid redundant worker metrics" do
         Judoscale.configure { |config| config.dyno = "web.2" }
 
         reporter_mock = Minitest::Mock.new
         reporter_mock.expect :started?, false
         reporter_mock.expect :start!, true do |config, metrics_collectors|
-          _(metrics_collectors.map(&:collector_name)).must_equal %w[Web]
+          _(metrics_collectors.size).must_equal 1
+          _(metrics_collectors[0]).must_be_instance_of TestWebMetricsCollector
         end
 
         Reporter.stub(:instance, reporter_mock) {
@@ -94,7 +108,7 @@ module Judoscale
       end
 
       it "logs exceptions when collecting information" do
-        metrics_collector = TestMetricsCollector.new
+        metrics_collector = TestWebMetricsCollector.new
 
         metrics_collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
           run_reporter_start_thread(collectors: [metrics_collector])
