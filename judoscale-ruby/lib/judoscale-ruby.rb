@@ -19,7 +19,7 @@ module Judoscale
 
   Adapter = Struct.new(:identifier, :registration_info) do
     def as_json
-      {"judoscale-#{identifier}": registration_info}
+      {identifier => registration_info}
     end
   end
 
@@ -27,7 +27,7 @@ module Judoscale
     @adapters << Adapter.new(identifier, registration_info)
   end
 
-  register_adapter :ruby, {
+  register_adapter :"judoscale-ruby", {
     adapter_version: VERSION,
     language_version: RUBY_VERSION
   }
