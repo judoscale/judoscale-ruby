@@ -3,15 +3,17 @@
 require "judoscale/version"
 
 module Judoscale
-  class Registration < Struct.new(:collectors)
+  class Registration < Struct.new(:config)
     def as_json
       {
+        dyno: config.dyno,
         pid: Process.pid,
-        ruby_version: RUBY_VERSION,
-        rails_version: defined?(::Rails) && ::Rails.version,
-        gem_version: VERSION,
         # example: { collectors: 'Web,Sidekiq' }
-        collectors: collectors.map(&:collector_name).join(",")
+        # collectors: collectors.map(&:collector_name).join(","),
+        # TODO: adapters instead.
+        adapters: config.adapters.each_with_object({}) { |adapter, hash|
+          hash.merge!(adapter.adapter_registration)
+        }
       }
     end
   end

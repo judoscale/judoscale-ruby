@@ -141,11 +141,11 @@ module Judoscale
       it "registers the reporter with contextual info" do
         expected_body = {
           registration: {
+            dyno: "web.1",
             pid: Process.pid,
-            ruby_version: RUBY_VERSION,
-            rails_version: "5.0.fake",
-            gem_version: Judoscale::VERSION,
-            collectors: ""
+            adapters: {
+              "judoscale-ruby": { adapter_version: Judoscale::VERSION, language_version: RUBY_VERSION }
+            }
           }
         }
         response = {}.to_json
@@ -153,7 +153,7 @@ module Judoscale
           .with(body: expected_body)
           .to_return(body: response)
 
-        Reporter.instance.send :register!, Config.instance, []
+        Reporter.instance.send :register!, Config.instance
 
         assert_requested stub
       end
