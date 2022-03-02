@@ -143,6 +143,7 @@ module Judoscale
           registration: {
             dyno: "web.1",
             pid: Process.pid,
+            config: Config.instance.as_json,
             adapters: {
               "judoscale-ruby": {adapter_version: Judoscale::VERSION, language_version: RUBY_VERSION}
             }

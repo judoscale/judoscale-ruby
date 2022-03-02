@@ -21,6 +21,15 @@ module Judoscale
         @queue_filter = DEFAULT_QUEUE_FILTER
         @track_busy_jobs = false
       end
+
+      def as_json
+        {
+          max_queues: max_queues,
+          queues: queues,
+          queue_filter: queue_filter != DEFAULT_QUEUE_FILTER,
+          track_busy_jobs: track_busy_jobs
+        }
+      end
     end
 
     include Singleton
@@ -50,6 +59,19 @@ module Judoscale
 
     def log_level=(new_level)
       @log_level = new_level ? ::Logger::Severity.const_get(new_level.to_s.upcase) : nil
+    end
+
+    def as_json
+      adapters_json = worker_adapters.each_with_object({}) do |adapter, hash|
+        hash[adapter] = instance_variable_get(:"@#{adapter}").as_json
+      end
+
+      {
+        log_level: log_level,
+        logger: logger.class.name,
+        report_interval_seconds: report_interval_seconds,
+        max_request_size_bytes: max_request_size_bytes
+      }.merge!(adapters_json)
     end
 
     def to_s

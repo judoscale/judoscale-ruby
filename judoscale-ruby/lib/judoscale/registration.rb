@@ -8,9 +8,7 @@ module Judoscale
       {
         dyno: config.dyno,
         pid: Process.pid,
-        # example: { collectors: 'Web,Sidekiq' }
-        # collectors: collectors.map(&:collector_name).join(","),
-        # TODO: adapters instead.
+        config: config.as_json,
         adapters: config.adapters.each_with_object({}) { |adapter, hash|
           hash.merge!(adapter.as_json)
         }

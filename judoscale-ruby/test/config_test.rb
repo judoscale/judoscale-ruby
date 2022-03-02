@@ -73,5 +73,38 @@ module Judoscale
       _(config.delayed_job.enabled).must_equal false
       _(config.que.enabled).must_equal false
     end
+
+    it "dumps the configuration options as json" do
+      _(Config.instance.as_json).must_equal({
+        log_level: nil,
+        logger: "Logger",
+        max_request_size_bytes: 100_000,
+        report_interval_seconds: 10,
+        sidekiq: {
+          max_queues: 20,
+          queues: [],
+          queue_filter: false,
+          track_busy_jobs: false
+        },
+        que: {
+          max_queues: 20,
+          queues: [],
+          queue_filter: false,
+          track_busy_jobs: false
+        },
+        delayed_job: {
+          max_queues: 20,
+          queues: [],
+          queue_filter: false,
+          track_busy_jobs: false
+        },
+        resque: {
+          max_queues: 20,
+          queues: [],
+          queue_filter: false,
+          track_busy_jobs: false
+        }
+      })
+    end
   end
 end
