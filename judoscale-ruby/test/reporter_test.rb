@@ -144,7 +144,7 @@ module Judoscale
             dyno: "web.1",
             pid: Process.pid,
             adapters: {
-              "judoscale-ruby": { adapter_version: Judoscale::VERSION, language_version: RUBY_VERSION }
+              "judoscale-ruby": {adapter_version: Judoscale::VERSION, language_version: RUBY_VERSION}
             }
           }
         }

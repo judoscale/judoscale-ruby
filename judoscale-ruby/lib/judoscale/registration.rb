@@ -12,7 +12,7 @@ module Judoscale
         # collectors: collectors.map(&:collector_name).join(","),
         # TODO: adapters instead.
         adapters: config.adapters.each_with_object({}) { |adapter, hash|
-          hash.merge!(adapter.adapter_registration)
+          hash.merge!(adapter.as_json)
         }
       }
     end

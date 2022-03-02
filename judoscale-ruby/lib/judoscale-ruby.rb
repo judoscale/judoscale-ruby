@@ -17,22 +17,20 @@ module Judoscale
     attr_reader :adapters
   end
 
-  def self.register_adapter(adapter)
-    @adapters << adapter
-  end
-
-  module Ruby
-    def self.adapter_registration
-      {
-        "judoscale-ruby": {
-          adapter_version: VERSION,
-          language_version: RUBY_VERSION
-        }
-      }
+  Adapter = Struct.new(:identifier, :registration_info) do
+    def as_json
+      {"judoscale-#{identifier}": registration_info}
     end
   end
 
-  register_adapter Ruby
+  def self.register_adapter(identifier, registration_info)
+    @adapters << Adapter.new(identifier, registration_info)
+  end
+
+  register_adapter :ruby, {
+    adapter_version: VERSION,
+    language_version: RUBY_VERSION
+  }
 end
 
 require "judoscale/config"

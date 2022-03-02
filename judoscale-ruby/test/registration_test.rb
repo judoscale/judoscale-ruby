@@ -2,15 +2,11 @@
 
 require "test_helper"
 
-module Judoscale
-  describe Judoscale::Ruby do
-    it "registers itself as an adapter" do
-      _(::Judoscale.adapters).must_include Judoscale::Ruby
-    end
+describe Judoscale do
+  it "registers itself as an adapter with information to be registered with the Judoscale API" do
+    _(::Judoscale.adapters.map(&:identifier)).must_include :ruby
 
-    it "dumps adapter information to register with Judoscale API" do
-      registration = ::Judoscale::Registration.new(Judoscale::Config.instance)
-      _(registration.as_json[:adapters]).must_include(:"judoscale-ruby")
-    end
+    registration = ::Judoscale::Registration.new(Judoscale::Config.instance)
+    _(registration.as_json[:adapters]).must_include(:"judoscale-ruby")
   end
 end
