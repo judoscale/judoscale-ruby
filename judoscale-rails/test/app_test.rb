@@ -6,6 +6,7 @@ module Judoscale
     include Rack::Test::Methods
 
     def app
+      # This refers to TestRailsApp created in test_helper.rb
       ::Rails.application
     end
 
