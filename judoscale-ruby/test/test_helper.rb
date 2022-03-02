@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "judoscale"
+require "judoscale-ruby"
 
 require "minitest/autorun"
 require "minitest/spec"
@@ -21,10 +21,6 @@ require "delayed_job"
 require "delayed_job_active_record"
 
 module Rails
-  def self.logger
-    @logger ||= ::Logger.new(LogHelpers.log_io)
-  end
-
   def self.version
     "5.0.fake"
   end

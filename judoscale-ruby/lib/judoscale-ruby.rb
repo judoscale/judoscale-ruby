@@ -15,4 +15,3 @@ end
 
 require "judoscale/config"
 require "judoscale/version"
-require "judoscale/railtie" if defined?(Rails::Railtie) && Rails::Railtie.respond_to?(:initializer)

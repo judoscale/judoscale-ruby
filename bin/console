@@ -1,7 +1,21 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-require "bundler/setup"
-require "judoscale"
+# Loads an IRB console/session within `judoscale-ruby` context by default.
+# Pass a different library to load the console within its context.
+#
+# Examples:
+#   bin/console
+#   bin/console judoscale-rails
 
-require "pry"
-Pry.start
+library = ARGV.shift || "judoscale-ruby"
+puts "Console: #{library}"
+
+require "fileutils"
+FileUtils.cd(library) do
+  require "bundler/setup"
+  require library
+
+  require "irb"
+  IRB.start(__FILE__)
+end

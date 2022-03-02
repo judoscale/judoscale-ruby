@@ -17,6 +17,11 @@ module ConfigHelpers
     swap_config adapter_config, options, example
   end
 
+  def before_setup
+    super
+    Judoscale::Config.instance.logger = LogHelpers.logger
+  end
+
   # Reset config instance after each test to ensure changes don't leak to other tests.
   def after_teardown
     Judoscale::Config.instance.reset

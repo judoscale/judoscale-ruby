@@ -1,8 +1,9 @@
 module LogHelpers
   @log_io = StringIO.new
+  @logger = ::Logger.new(@log_io)
 
   class << self
-    attr_reader :log_io
+    attr_reader :log_io, :logger
   end
 
   def log_string
