@@ -84,13 +84,14 @@ module Judoscale
     end
 
     def register!(config)
-      registration = Registration.new(config)
+      adapters = Judoscale.adapters
+      registration = Registration.new(adapters, config)
       result = AdapterApi.new(config).register_reporter!(registration.as_json)
 
       case result
       when AdapterApi::SuccessResponse
         @registered = true
-        adapters_msg = config.adapters.map(&:identifier).join(", ")
+        adapters_msg = adapters.map(&:identifier).join(", ")
         logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Adapters: [#{adapters_msg}]"
       when AdapterApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"

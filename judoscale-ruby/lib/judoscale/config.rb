@@ -86,10 +86,6 @@ module Judoscale
       @max_request_size_bytes
     end
 
-    def adapters
-      Judoscale.adapters
-    end
-
     def worker_adapters
       DEFAULT_WORKER_ADAPTERS.select { |adapter|
         instance_variable_get(:"@#{adapter}").enabled
