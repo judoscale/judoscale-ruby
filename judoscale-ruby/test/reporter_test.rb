@@ -111,8 +111,8 @@ module Judoscale
         stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics").with(body: expected_body)
 
         metrics = [
-          Metric.new(:qt, Time.at(1_000_000_001), 11), # web metric
-          Metric.new(:qt, Time.at(1_000_000_002), 22, "high") # worker metric
+          Metric.new(:qt, 11, Time.at(1_000_000_001)), # web metric
+          Metric.new(:qt, 22, Time.at(1_000_000_002), "high") # worker metric
         ]
 
         Reporter.instance.send :report!, Config.instance, metrics
@@ -124,7 +124,7 @@ module Judoscale
         stub_request(:post, %r{http://example.com/api/test-token/adapter/v1/metrics})
           .to_return(body: "oops", status: 503)
 
-        metrics = [Metric.new(:qt, Time.at(1_000_000_001), 1)] # need some metric to trigger reporting
+        metrics = [Metric.new(:qt, 1, Time.at(1_000_000_001))] # need some metric to trigger reporting
 
         log_io = StringIO.new
         stub_logger = ::Logger.new(log_io)
