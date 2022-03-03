@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "judoscale/report"
 
 describe Judoscale do
   it "adds itself as an adapter with information to be reported to the Judoscale API" do
