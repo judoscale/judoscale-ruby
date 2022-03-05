@@ -62,7 +62,7 @@ module Judoscale
         queues = [SidekiqQueueStub.new(name: "low", latency: 11, size: 1)]
         queue_default = SidekiqQueueStub.new(name: "default", latency: 0, size: 0)
 
-        metrics = ::Sidekiq::Queue.stub(:all, queues) {
+        ::Sidekiq::Queue.stub(:all, queues) {
           ::Sidekiq::Queue.stub(:new, queue_default) {
             subject.collect
           }

@@ -6,6 +6,9 @@ require "judoscale/config"
 
 module Judoscale
   class TestJobMetricsCollector < JobMetricsCollector
+    def self.adapter_name
+      "Sidekiq" # TODO: Remove once we make this dynamic and/or shared somehow.
+    end
   end
 
   class TestWebMetricsCollector < WebMetricsCollector
