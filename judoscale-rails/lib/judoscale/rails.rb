@@ -5,7 +5,7 @@ require "judoscale/rails/version"
 require "judoscale/rails/railtie"
 require "rails/version"
 
-Judoscale.register_adapter :"judoscale-rails", {
+Judoscale.add_adapter :"judoscale-rails", {
   adapter_version: Judoscale::Rails::VERSION,
   framework_version: ::Rails.version
 }
