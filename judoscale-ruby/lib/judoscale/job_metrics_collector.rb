@@ -12,7 +12,7 @@ module Judoscale
       end
 
       def push(identifier, value, time, queue_name)
-        @metrics << Metric.new(identifier, time, value, queue_name)
+        @metrics << Metric.new(identifier, value, time, queue_name)
       end
     end
 

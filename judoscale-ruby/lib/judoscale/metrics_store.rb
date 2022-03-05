@@ -20,7 +20,7 @@ module Judoscale
       # There could be an issue with the reporter, and continuing to collect will consume linear memory.
       return if @flushed_at && @flushed_at < Time.now - 120
 
-      @metrics << Metric.new(identifier, time, value, queue_name)
+      @metrics << Metric.new(identifier, value, time, queue_name)
     end
 
     def flush
