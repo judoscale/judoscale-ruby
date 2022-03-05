@@ -62,9 +62,6 @@ module Judoscale
     end
 
     describe "#start!" do
-      before {
-        stub_request(:post, %r{registrations}).to_return(body: "{}")
-      }
       after {
         Reporter.instance.stop!
       }
@@ -106,14 +103,15 @@ module Judoscale
     end
 
     describe "#report!" do
-      it "reports stored metrics to the API" do
-        expected_body = {dyno: "web.1", metrics: [[1000000001, 11, "qt", nil], [1000000002, 22, "qt", "high"]]}
-        stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics").with(body: expected_body)
-
+      it "reports collected metrics to the API" do
         metrics = [
           Metric.new(:qt, 11, Time.at(1_000_000_001)), # web metric
           Metric.new(:qt, 22, Time.at(1_000_000_002), "high") # worker metric
         ]
+
+        expected_body = Report.new(Judoscale.adapters, Config.instance, metrics).as_json
+        stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics")
+          .with(body: JSON.generate(expected_body))
 
         Reporter.instance.send :report!, Config.instance, metrics
 
@@ -134,29 +132,6 @@ module Judoscale
         }
 
         _(log_io.string).must_include "ERROR -- : Reporter failed: 503 - "
-      end
-    end
-
-    describe "#register!" do
-      it "registers the reporter with contextual info" do
-        expected_body = {
-          registration: {
-            dyno: "web.1",
-            pid: Process.pid,
-            config: Config.instance.as_json,
-            adapters: {
-              "judoscale-ruby": {adapter_version: Judoscale::VERSION, language_version: RUBY_VERSION}
-            }
-          }
-        }
-        response = {}.to_json
-        stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/registrations")
-          .with(body: expected_body)
-          .to_return(body: response)
-
-        Reporter.instance.send :register!, Config.instance
-
-        assert_requested stub
       end
     end
   end
