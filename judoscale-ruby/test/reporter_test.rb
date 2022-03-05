@@ -81,6 +81,16 @@ module Judoscale
         }
       end
 
+      it "sends an initial report without collecting metrics upfront" do
+        expected_body = Report.new(Judoscale.adapters, Config.instance, []).as_json
+        stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics")
+          .with(body: JSON.generate(expected_body))
+
+        run_reporter_start_thread
+
+        assert_requested stub, times: 2
+      end
+
       it "logs exceptions when reporting collected information" do
         Reporter.instance.stub(:report!, ->(*) { raise "REPORT BOOM!" }) {
           run_reporter_start_thread

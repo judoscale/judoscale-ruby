@@ -39,6 +39,9 @@ module Judoscale
       logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Adapters: [#{adapters_msg}]"
 
       @_thread = Thread.new do
+        # Send an initial report to notify the Judoscale API, without collecting any metrics upfront.
+        log_exceptions { report!(config, []) }
+
         loop do
           # Stagger reporting to spread out reports from many processes
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
