@@ -9,8 +9,8 @@ module Judoscale
       _(adapter).wont_be_nil
       _(adapter.metrics_collector).must_equal Judoscale::WebMetricsCollector
 
-      registration = ::Judoscale::Registration.new(Judoscale.adapters, Judoscale::Config.instance)
-      _(registration.as_json[:adapters]).must_include(:"judoscale-rails")
+      report = ::Judoscale::Report.new(Judoscale.adapters, Judoscale::Config.instance, [])
+      _(report.as_json[:adapters]).must_include(:"judoscale-rails")
     end
   end
 end
