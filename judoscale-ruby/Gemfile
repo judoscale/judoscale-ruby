@@ -11,6 +11,4 @@ gem "resque"
 gem "activesupport"
 gem "sqlite3", platforms: :ruby
 gem "minitest"
-gem "minitest-vcr"
-gem "vcr", ">= 3.0"
 gem "webmock"
