@@ -7,6 +7,7 @@ require "judoscale/config"
 module Judoscale
   class TestMetricsCollector < MetricsCollector
     def collect
+      [Metric.new(:qt, 1, Time.now)]
     end
   end
 
@@ -81,14 +82,17 @@ module Judoscale
         }
       end
 
-      it "sends an initial report without collecting metrics upfront" do
-        expected_body = Report.new(Judoscale.adapters, Config.instance, []).as_json
+      it "sends a report with collected metrics" do
+        metrics_collector = TestMetricsCollector.new
+        metrics = metrics_collector.collect
+
+        expected_body = Report.new(Judoscale.adapters, Config.instance, metrics).as_json
         stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics")
           .with(body: JSON.generate(expected_body))
 
-        run_reporter_start_thread
+        run_reporter_start_thread(collectors: [metrics_collector])
 
-        assert_requested stub, times: 2
+        assert_requested stub
       end
 
       it "logs exceptions when reporting collected information" do
