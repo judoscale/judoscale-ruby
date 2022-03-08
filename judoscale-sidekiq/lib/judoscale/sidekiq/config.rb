@@ -11,6 +11,12 @@ module Judoscale
         super
         @sidekiq = Judoscale::Config::WorkerAdapterConfig.new(:sidekiq)
       end
+
+      def as_json
+        json = super
+        json[:sidekiq] = sidekiq.as_json
+        json
+      end
     end
   end
 

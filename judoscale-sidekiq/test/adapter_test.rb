@@ -23,9 +23,14 @@ module Judoscale
 
       Judoscale.configure do |config|
         config.sidekiq.queues = %w(test drive)
+        config.sidekiq.track_busy_jobs = true
       end
 
       _(config.sidekiq.queues).must_equal %w(test drive)
+      _(config.sidekiq.track_busy_jobs).must_equal true
+
+      report = ::Judoscale::Report.new(Judoscale.adapters, Judoscale::Config.instance, [])
+      _(report.as_json[:config]).must_include(:sidekiq)
     end
   end
 end
