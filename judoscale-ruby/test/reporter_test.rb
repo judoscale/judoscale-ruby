@@ -6,8 +6,8 @@ require "judoscale/config"
 
 module Judoscale
   class TestJobMetricsCollector < JobMetricsCollector
-    def self.adapter_name
-      "Resque" # TODO: Remove once we make this dynamic and/or shared somehow.
+    def self.adapter_identifier
+      :resque
     end
   end
 

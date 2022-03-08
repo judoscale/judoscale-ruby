@@ -13,13 +13,12 @@ module Judoscale
       config.dyno_num == 1
     end
 
-    # TODO: how to make these shared?
     def self.adapter_name
-      raise "Override in individual metrics collectors (temporarily)."
+      @_adapter_name ||= adapter_identifier.to_s.capitalize.gsub(/(?:_)(.)/i) { $1.upcase }
     end
 
     def self.adapter_identifier
-      @_adapter_identifer ||= adapter_name.scan(/[A-Z][a-z]+/).join("_").downcase
+      raise "Implement `self.adapter_identifier` in individual job metrics collectors."
     end
 
     def self.adapter_config

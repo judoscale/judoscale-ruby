@@ -6,8 +6,8 @@ require "judoscale/metric"
 module Judoscale
   module Sidekiq
     class MetricsCollector < Judoscale::JobMetricsCollector
-      def self.adapter_name
-        @_adapter_name ||= "Sidekiq"
+      def self.adapter_identifier
+        :sidekiq
       end
 
       def collect
