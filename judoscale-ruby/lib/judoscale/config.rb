@@ -5,7 +5,7 @@ require "logger"
 
 module Judoscale
   class Config
-    DEFAULT_WORKER_ADAPTERS = %i[sidekiq delayed_job que resque]
+    DEFAULT_WORKER_ADAPTERS = %i[delayed_job que resque]
 
     class WorkerAdapterConfig
       UUID_REGEXP = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
@@ -13,8 +13,8 @@ module Judoscale
 
       attr_accessor :enabled, :max_queues, :queues, :queue_filter, :track_busy_jobs
 
-      def initialize(adapter_name)
-        @adapter_name = adapter_name
+      def initialize(adapter_identifier)
+        @adapter_identifier = adapter_identifier
         @enabled = true
         @max_queues = 20
         @queues = []

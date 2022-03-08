@@ -2,6 +2,7 @@
 
 require "judoscale-ruby"
 require "judoscale/sidekiq/version"
+require "judoscale/sidekiq/config"
 require "judoscale/sidekiq/metrics_collector"
 require "sidekiq/api"
 
