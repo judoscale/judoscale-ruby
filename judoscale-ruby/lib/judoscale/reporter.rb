@@ -14,14 +14,11 @@ module Judoscale
 
     def self.start(config)
       unless instance.started?
-        metrics_collectors = [WebMetricsCollector.new]
-        # It's redundant to report worker metrics from every web dyno, so only report from web.1
-        if config.dyno_num == 1
-          worker_adapters = WorkerAdapters.load_adapters(config.worker_adapters).select(&:enabled?)
-          worker_adapters.each do |worker_adapter|
-            metrics_collectors.push JobMetricsCollector.new(worker_adapter)
-          end
-        end
+        adapters = Judoscale.adapters
+        metrics_collectors = adapters.map(&:metrics_collector)
+        metrics_collectors.compact!
+        metrics_collectors.select! { |ac| ac.collect?(config) }
+        metrics_collectors.map!(&:new)
 
         instance.start!(config, metrics_collectors)
       end

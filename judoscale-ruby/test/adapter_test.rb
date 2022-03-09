@@ -4,7 +4,9 @@ require "test_helper"
 
 describe Judoscale do
   it "adds itself as an adapter with information to be reported to the Judoscale API" do
-    _(::Judoscale.adapters.map(&:identifier)).must_include :"judoscale-ruby"
+    adapter = Judoscale.adapters.detect { |adapter| adapter.identifier == :"judoscale-ruby" }
+    _(adapter).wont_be_nil
+    _(adapter.metrics_collector).must_be_nil
 
     report = ::Judoscale::Report.new(Judoscale.adapters, Judoscale::Config.instance, [])
     _(report.as_json[:adapters]).must_include(:"judoscale-ruby")

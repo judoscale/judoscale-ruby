@@ -17,14 +17,18 @@ module Judoscale
     attr_reader :adapters
   end
 
-  Adapter = Struct.new(:identifier, :adapter_info) do
+  Adapter = Struct.new(:identifier, :adapter_info, :metrics_collector) do
     def as_json
       {identifier => adapter_info}
     end
   end
 
-  def self.add_adapter(identifier, adapter_info)
-    @adapters << Adapter.new(identifier, adapter_info)
+  def self.add_adapter(identifier, adapter_info, metrics_collector: nil)
+    @adapters << Adapter.new(identifier, adapter_info, metrics_collector)
+  end
+
+  def self.remove_adapter(identifier)
+    @adapters.delete_if { |adapter| adapter.identifier == identifier }
   end
 
   add_adapter :"judoscale-ruby", {
