@@ -8,7 +8,7 @@ describe Judoscale do
     _(adapter).wont_be_nil
     _(adapter.metrics_collector).must_be_nil
 
-    registration = ::Judoscale::Registration.new(Judoscale.adapters, Judoscale::Config.instance)
-    _(registration.as_json[:adapters]).must_include(:"judoscale-ruby")
+    report = ::Judoscale::Report.new(Judoscale.adapters, Judoscale::Config.instance, [])
+    _(report.as_json[:adapters]).must_include(:"judoscale-ruby")
   end
 end
