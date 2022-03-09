@@ -38,7 +38,7 @@ module Judoscale
 
       @_thread = Thread.new do
         loop do
-          register!(config, metrics_collectors) unless registered?
+          register!(config) unless registered?
 
           # Stagger reporting to spread out reports from many processes
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
@@ -83,15 +83,16 @@ module Judoscale
       end
     end
 
-    def register!(config, metrics_collectors)
-      registration = Registration.new(metrics_collectors)
+    def register!(config)
+      adapters = Judoscale.adapters
+      registration = Registration.new(adapters, config)
       result = AdapterApi.new(config).register_reporter!(registration.as_json)
 
       case result
       when AdapterApi::SuccessResponse
         @registered = true
-        collectors_msg = metrics_collectors.map(&:collector_name).join(", ")
-        logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Metrics collectors: [#{collectors_msg}]"
+        adapters_msg = adapters.map(&:identifier).join(", ")
+        logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Adapters: [#{adapters_msg}]"
       when AdapterApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"
       end
