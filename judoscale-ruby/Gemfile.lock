@@ -31,13 +31,7 @@ GEM
     hashdiff (1.0.1)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
-    minispec-metadata (2.0.0)
-      minitest
     minitest (5.15.0)
-    minitest-vcr (1.4.0)
-      minispec-metadata (~> 2.0)
-      minitest (>= 4.7.5)
-      vcr (>= 2.9)
     mono_logger (1.1.1)
     multi_json (1.15.0)
     mustermann (1.1.1)
@@ -72,7 +66,6 @@ GEM
     tilt (2.0.10)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    vcr (6.0.0)
     vegas (0.1.11)
       rack (>= 1.0.0)
     webmock (3.14.0)
@@ -92,13 +85,11 @@ DEPENDENCIES
   delayed_job_active_record
   judoscale-ruby!
   minitest
-  minitest-vcr
   que
   rake (>= 12.3.3)
   resque
   sidekiq (>= 5.0)
   sqlite3
-  vcr (>= 3.0)
   webmock
 
 BUNDLED WITH
