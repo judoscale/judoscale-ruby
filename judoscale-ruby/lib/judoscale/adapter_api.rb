@@ -19,10 +19,6 @@ module Judoscale
       post_json "/adapter/v1/metrics", report_json
     end
 
-    def register_reporter!(registration_json)
-      post_json "/adapter/v1/registrations", registration: registration_json
-    end
-
     private
 
     def post_json(path, data)

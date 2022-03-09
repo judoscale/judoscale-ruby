@@ -3,7 +3,6 @@
 require "singleton"
 require "judoscale/logger"
 require "judoscale/adapter_api"
-require "judoscale/registration"
 require "judoscale/job_metrics_collector"
 require "judoscale/web_metrics_collector"
 require "judoscale/worker_adapters"
@@ -36,25 +35,22 @@ module Judoscale
         return
       end
 
+      adapters_msg = Judoscale.adapters.map(&:identifier).join(", ")
+      logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Adapters: [#{adapters_msg}]"
+
       @_thread = Thread.new do
         loop do
-          register!(config) unless registered?
-
-          # Stagger reporting to spread out reports from many processes
-          multiplier = 1 - (rand / 4) # between 0.75 and 1.0
-          sleep config.report_interval_seconds * multiplier
-
           metrics = metrics_collectors.flat_map do |metric_collector|
             log_exceptions { metric_collector.collect }
           end
 
           log_exceptions { report!(config, metrics) }
+
+          # Stagger reporting to spread out reports from many processes
+          multiplier = 1 - (rand / 4) # between 0.75 and 1.0
+          sleep config.report_interval_seconds * multiplier
         end
       end
-    end
-
-    def registered?
-      @registered
     end
 
     def started?
@@ -64,14 +60,13 @@ module Judoscale
     def stop!
       @_thread&.terminate
       @_thread = nil
-      @registered = false
       @started = false
     end
 
     private
 
     def report!(config, metrics)
-      report = Report.new(config, metrics)
+      report = Report.new(Judoscale.adapters, config, metrics)
       logger.info "Reporting #{report.metrics.size} metrics"
       result = AdapterApi.new(config).report_metrics!(report.as_json)
 
@@ -80,21 +75,6 @@ module Judoscale
         logger.debug "Reported successfully"
       when AdapterApi::FailureResponse
         logger.error "Reporter failed: #{result.failure_message}"
-      end
-    end
-
-    def register!(config)
-      adapters = Judoscale.adapters
-      registration = Registration.new(adapters, config)
-      result = AdapterApi.new(config).register_reporter!(registration.as_json)
-
-      case result
-      when AdapterApi::SuccessResponse
-        @registered = true
-        adapters_msg = adapters.map(&:identifier).join(", ")
-        logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Adapters: [#{adapters_msg}]"
-      when AdapterApi::FailureResponse
-        logger.error "Reporter failed to register: #{result.failure_message}"
       end
     end
 

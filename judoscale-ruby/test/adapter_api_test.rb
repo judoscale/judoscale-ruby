@@ -42,17 +42,4 @@ describe Judoscale::AdapterApi, vcr: {record: :once} do
       _(result).must_be_instance_of Judoscale::AdapterApi::SuccessResponse
     end
   end
-
-  describe "#register_reporter!" do
-    it "returns a successful response" do
-      config.api_base_url = "http://judoscale.dev/api/test-app-token"
-      registration_params = {
-        pid: "1232"
-      }
-      adapter_api = Judoscale::AdapterApi.new(config)
-      result = adapter_api.register_reporter!(registration_params)
-
-      _(result).must_be_instance_of Judoscale::AdapterApi::SuccessResponse
-    end
-  end
 end
