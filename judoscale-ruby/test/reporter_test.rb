@@ -100,7 +100,7 @@ module Judoscale
         Reporter.instance.stop!
       }
 
-      def run_reporter_start_thread(collectors: [])
+      def run_reporter_start_thread(collectors: [TestWebMetricsCollector.new])
         stub_reporter_loop {
           reporter_thread = Reporter.instance.start!(Config.instance, collectors)
           reporter_thread.join
@@ -146,6 +146,24 @@ module Judoscale
 
         _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
         _(log_string).must_include "lib/judoscale/reporter.rb"
+      end
+
+      it "does not run the reporter thread when the API url is not configured" do
+        Judoscale.configure { |config| config.api_base_url = nil }
+
+        Thread.stub(:new, ->(*) { raise "SHOULD NOT BE CALLED" }) {
+          Reporter.instance.start!(Config.instance, [TestWebMetricsCollector.new])
+        }
+
+        _(log_string).must_include "Reporter not started: JUDOSCALE_URL is not set"
+      end
+
+      it "does not run the reporter thread when there are no metrics collectors" do
+        Thread.stub(:new, ->(*) { raise "SHOULD NOT BE CALLED" }) {
+          Reporter.instance.start!(Config.instance, [])
+        }
+
+        _(log_string).must_include "Reporter not started: no metrics need to be collected on this dyno"
       end
     end
 
