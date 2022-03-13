@@ -49,7 +49,7 @@ module Judoscale
         assert_mock reporter_mock
       end
 
-      it "initializes the reporter only with registered web metrics collectors on other dynos to avoid redundant worker metrics" do
+      it "initializes the reporter only with registered web metrics collectors on subsequent dynos to avoid redundant worker metrics" do
         Judoscale.configure { |config| config.dyno = "web.2" }
 
         reporter_mock = Minitest::Mock.new
@@ -57,6 +57,23 @@ module Judoscale
         reporter_mock.expect :start!, true do |config, metrics_collectors|
           _(metrics_collectors.size).must_equal 1
           _(metrics_collectors[0]).must_be_instance_of TestWebMetricsCollector
+        end
+
+        Reporter.stub(:instance, reporter_mock) {
+          Reporter.start(Config.instance)
+        }
+
+        assert_mock reporter_mock
+      end
+
+      it "initializes the reporter only with registered job metrics collectors on the first non-web dyno to avoid unnecessary web collection attempts" do
+        Judoscale.configure { |config| config.dyno = "worker.1" }
+
+        reporter_mock = Minitest::Mock.new
+        reporter_mock.expect :started?, false
+        reporter_mock.expect :start!, true do |config, metrics_collectors|
+          _(metrics_collectors.size).must_equal 1
+          _(metrics_collectors[0]).must_be_instance_of TestJobMetricsCollector
         end
 
         Reporter.stub(:instance, reporter_mock) {
