@@ -5,9 +5,9 @@ require "logger"
 
 module Judoscale
   class Config
-    DEFAULT_WORKER_ADAPTERS = %i[delayed_job que resque]
+    DEFAULT_JOB_ADAPTERS = %i[delayed_job que resque]
 
-    class WorkerAdapterConfig
+    class JobAdapterConfig
       UUID_REGEXP = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
       DEFAULT_QUEUE_FILTER = ->(queue_name) { !UUID_REGEXP.match?(queue_name) }
 
@@ -35,7 +35,7 @@ module Judoscale
     include Singleton
 
     attr_accessor :api_base_url, :dyno, :report_interval_seconds, :max_request_size_bytes,
-      :logger, *DEFAULT_WORKER_ADAPTERS
+      :logger, *DEFAULT_JOB_ADAPTERS
     attr_reader :log_level
 
     def initialize
@@ -51,8 +51,8 @@ module Judoscale
       self.log_level = ENV["JUDOSCALE_LOG_LEVEL"]
       @logger = ::Logger.new($stdout)
 
-      DEFAULT_WORKER_ADAPTERS.each do |adapter|
-        instance_variable_set(:"@#{adapter}", WorkerAdapterConfig.new(adapter))
+      DEFAULT_JOB_ADAPTERS.each do |adapter|
+        instance_variable_set(:"@#{adapter}", JobAdapterConfig.new(adapter))
       end
     end
 
@@ -61,7 +61,7 @@ module Judoscale
     end
 
     def as_json
-      adapters_json = worker_adapters.each_with_object({}) do |adapter, hash|
+      adapters_json = job_adapters.each_with_object({}) do |adapter, hash|
         hash[adapter] = instance_variable_get(:"@#{adapter}").as_json
       end
 
@@ -85,8 +85,8 @@ module Judoscale
       @max_request_size_bytes
     end
 
-    def worker_adapters
-      DEFAULT_WORKER_ADAPTERS.select { |adapter|
+    def job_adapters
+      DEFAULT_JOB_ADAPTERS.select { |adapter|
         instance_variable_get(:"@#{adapter}").enabled
       }
     end

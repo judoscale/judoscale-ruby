@@ -9,7 +9,7 @@ module Judoscale
 
       def reset
         super
-        @sidekiq = Judoscale::Config::WorkerAdapterConfig.new(:sidekiq)
+        @sidekiq = Judoscale::Config::JobAdapterConfig.new(:sidekiq)
       end
 
       def as_json

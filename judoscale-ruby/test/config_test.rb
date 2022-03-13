@@ -14,9 +14,9 @@ module Judoscale
         _(config.logger).must_be_instance_of ::Logger
         _(config.max_request_size_bytes).must_equal 100_000
         _(config.report_interval_seconds).must_equal 10
-        _(config.worker_adapters).must_equal %i[delayed_job que resque]
+        _(config.job_adapters).must_equal %i[delayed_job que resque]
 
-        config.worker_adapters.each do |adapter_name|
+        config.job_adapters.each do |adapter_name|
           adapter_config = config.public_send(adapter_name)
           _(adapter_config.enabled).must_equal true
           _(adapter_config.max_queues).must_equal 20
@@ -62,7 +62,7 @@ module Judoscale
       _(config.logger).must_equal test_logger
       _(config.max_request_size_bytes).must_equal 50_000
       _(config.report_interval_seconds).must_equal 20
-      _(config.worker_adapters).must_equal %i[delayed_job resque]
+      _(config.job_adapters).must_equal %i[delayed_job resque]
       _(config.resque.enabled).must_equal true
       _(config.delayed_job.max_queues).must_equal 20
       _(config.delayed_job.track_busy_jobs).must_equal false
