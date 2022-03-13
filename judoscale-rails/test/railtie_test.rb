@@ -11,5 +11,9 @@ module Judoscale
     it "inserts the request middleware into the application middleware" do
       _(::Rails.application.config.middleware).must_include Judoscale::RequestMiddleware
     end
+
+    it "boots up a reporter automatically after the app/config is initialized" do
+      _(::Judoscale::Reporter.instance).must_be :started?
+    end
   end
 end

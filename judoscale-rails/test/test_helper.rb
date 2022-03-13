@@ -6,11 +6,9 @@ require "judoscale-rails"
 require "minitest/autorun"
 require "minitest/spec"
 
-ENV["RACK_ENV"] ||= "test"
-require "rails"
-require "action_controller"
-
 ENV["DYNO"] ||= "web.1"
+ENV["RACK_ENV"] ||= "test"
+require "action_controller"
 
 class TestRailsApp < Rails::Application
   config.secret_key_base = "test-secret"
