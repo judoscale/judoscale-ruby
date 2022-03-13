@@ -71,8 +71,8 @@ module Judoscale
     end
 
     def as_json
-      adapters_json = self.class.adapter_configs.keys.each_with_object({}) do |adapter, hash|
-        hash[adapter] = instance_variable_get(:"@#{adapter}").as_json
+      adapter_configs_json = self.class.adapter_configs.each_key.with_object({}) do |identifier, hash|
+        hash[identifier] = public_send(identifier).as_json
       end
 
       {
@@ -80,7 +80,7 @@ module Judoscale
         logger: logger.class.name,
         report_interval_seconds: report_interval_seconds,
         max_request_size_bytes: max_request_size_bytes
-      }.merge!(adapters_json)
+      }.merge!(adapter_configs_json)
     end
 
     def to_s
