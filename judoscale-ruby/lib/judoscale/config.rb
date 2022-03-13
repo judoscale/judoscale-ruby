@@ -50,7 +50,6 @@ module Judoscale
       @report_interval_seconds = 10
       self.log_level = ENV["JUDOSCALE_LOG_LEVEL"]
       @logger = ::Logger.new($stdout)
-      @worker_adapters = DEFAULT_WORKER_ADAPTERS
 
       DEFAULT_WORKER_ADAPTERS.each do |adapter|
         instance_variable_set(:"@#{adapter}", WorkerAdapterConfig.new(adapter))
