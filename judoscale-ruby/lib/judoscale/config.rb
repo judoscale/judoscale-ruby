@@ -94,11 +94,5 @@ module Judoscale
     def ignore_large_requests?
       @max_request_size_bytes
     end
-
-    def job_adapters
-      self.class.adapter_configs.keys.select { |adapter|
-        instance_variable_get(:"@#{adapter}").enabled
-      }
-    end
   end
 end
