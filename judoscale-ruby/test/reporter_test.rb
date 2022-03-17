@@ -170,7 +170,7 @@ module Judoscale
       end
 
       it "logs when the reporter starts successfully" do
-        stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics")
+        stub_request(:post, "http://example.com/api/test-token/v1/metrics")
         run_reporter_start_thread
 
         _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [judoscale-ruby]"
