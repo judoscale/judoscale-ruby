@@ -11,7 +11,6 @@ module Judoscale
     end
 
     after {
-      Reporter.instance.stop!
       MetricsStore.instance.clear
     }
 

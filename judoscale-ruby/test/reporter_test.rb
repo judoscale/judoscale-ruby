@@ -49,7 +49,7 @@ module Judoscale
         assert_mock reporter_mock
       end
 
-      it "initializes the reporter only with registered web metrics collectors on other dynos to avoid redundant worker metrics" do
+      it "initializes the reporter only with registered web metrics collectors on subsequent dynos to avoid redundant worker metrics" do
         Judoscale.configure { |config| config.dyno = "web.2" }
 
         reporter_mock = Minitest::Mock.new
@@ -57,6 +57,23 @@ module Judoscale
         reporter_mock.expect :start!, true do |config, metrics_collectors|
           _(metrics_collectors.size).must_equal 1
           _(metrics_collectors[0]).must_be_instance_of TestWebMetricsCollector
+        end
+
+        Reporter.stub(:instance, reporter_mock) {
+          Reporter.start(Config.instance)
+        }
+
+        assert_mock reporter_mock
+      end
+
+      it "initializes the reporter only with registered job metrics collectors on the first non-web dyno to avoid unnecessary web collection attempts" do
+        Judoscale.configure { |config| config.dyno = "worker.1" }
+
+        reporter_mock = Minitest::Mock.new
+        reporter_mock.expect :started?, false
+        reporter_mock.expect :start!, true do |config, metrics_collectors|
+          _(metrics_collectors.size).must_equal 1
+          _(metrics_collectors[0]).must_be_instance_of TestJobMetricsCollector
         end
 
         Reporter.stub(:instance, reporter_mock) {
@@ -83,7 +100,7 @@ module Judoscale
         Reporter.instance.stop!
       }
 
-      def run_reporter_start_thread(collectors: [])
+      def run_reporter_start_thread(collectors: [TestWebMetricsCollector.new])
         stub_reporter_loop {
           reporter_thread = Reporter.instance.start!(Config.instance, collectors)
           reporter_thread.join
@@ -129,6 +146,31 @@ module Judoscale
 
         _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
         _(log_string).must_include "lib/judoscale/reporter.rb"
+      end
+
+      it "does not run the reporter thread when the API url is not configured" do
+        Judoscale.configure { |config| config.api_base_url = nil }
+
+        Thread.stub(:new, ->(*) { raise "SHOULD NOT BE CALLED" }) {
+          Reporter.instance.start!(Config.instance, [TestWebMetricsCollector.new])
+        }
+
+        _(log_string).must_include "Reporter not started: JUDOSCALE_URL is not set"
+      end
+
+      it "does not run the reporter thread when there are no metrics collectors" do
+        Thread.stub(:new, ->(*) { raise "SHOULD NOT BE CALLED" }) {
+          Reporter.instance.start!(Config.instance, [])
+        }
+
+        _(log_string).must_include "Reporter not started: no metrics need to be collected on this dyno"
+      end
+
+      it "logs when the reporter starts successfully" do
+        stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics")
+        run_reporter_start_thread
+
+        _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [judoscale-ruby]"
       end
     end
 

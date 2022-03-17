@@ -8,10 +8,18 @@ module Judoscale
     let(:store) { MetricsStore.instance }
 
     describe ".collect?" do
-      it "always collects metrics data" do
-        config = Minitest::Mock.new
+      it "collects only from web dynos in the formation, to avoid unnecessary collection on workers" do
+        %w[web.1 web.15 web.101].each do |dyno|
+          Judoscale.configure { |config| config.dyno = dyno }
 
-        _(WebMetricsCollector.collect?(config)).must_equal true
+          _(WebMetricsCollector.collect?(Judoscale::Config.instance)).must_equal true
+        end
+
+        %w[worker.1 secondary.15 periodic.101].each do |dyno|
+          Judoscale.configure { |config| config.dyno = dyno }
+
+          _(WebMetricsCollector.collect?(Judoscale::Config.instance)).must_equal false
+        end
       end
     end
 

@@ -5,6 +5,10 @@ require "judoscale/metrics_store"
 
 module Judoscale
   class WebMetricsCollector < MetricsCollector
+    def self.collect?(config)
+      config.dyno.start_with?("web.")
+    end
+
     def collect
       MetricsStore.instance.flush
     end

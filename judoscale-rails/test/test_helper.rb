@@ -6,8 +6,8 @@ require "judoscale-rails"
 require "minitest/autorun"
 require "minitest/spec"
 
+ENV["DYNO"] ||= "web.1"
 ENV["RACK_ENV"] ||= "test"
-require "rails"
 require "action_controller"
 
 class TestRailsApp < Rails::Application

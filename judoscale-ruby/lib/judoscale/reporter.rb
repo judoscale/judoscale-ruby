@@ -25,10 +25,15 @@ module Judoscale
     end
 
     def start!(config, metrics_collectors)
-      @started = true
+      @pid = Process.pid
 
       if !config.api_base_url
         logger.info "Reporter not started: JUDOSCALE_URL is not set"
+        return
+      end
+
+      if metrics_collectors.empty?
+        logger.info "Reporter not started: no metrics need to be collected on this dyno"
         return
       end
 
@@ -51,13 +56,13 @@ module Judoscale
     end
 
     def started?
-      @started
+      @pid == Process.pid
     end
 
     def stop!
       @_thread&.terminate
       @_thread = nil
-      @started = false
+      @pid = nil
     end
 
     private
