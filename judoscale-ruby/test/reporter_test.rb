@@ -123,7 +123,7 @@ module Judoscale
         metrics = metrics_collector.collect
 
         expected_body = Report.new(Judoscale.adapters, Config.instance, metrics).as_json
-        stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics")
+        stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
           .with(body: JSON.generate(expected_body))
 
         run_reporter_start_thread(collectors: [metrics_collector])
@@ -185,7 +185,7 @@ module Judoscale
         ]
 
         expected_body = Report.new(Judoscale.adapters, Config.instance, metrics).as_json
-        stub = stub_request(:post, "http://example.com/api/test-token/adapter/v1/metrics")
+        stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
           .with(body: JSON.generate(expected_body))
 
         Reporter.instance.send :report!, Config.instance, metrics
@@ -194,7 +194,7 @@ module Judoscale
       end
 
       it "logs reporter failures" do
-        stub_request(:post, %r{http://example.com/api/test-token/adapter/v1/metrics})
+        stub_request(:post, %r{http://example.com/api/test-token/v1/metrics})
           .to_return(body: "oops", status: 503)
 
         metrics = [Metric.new(:qt, 1, Time.at(1_000_000_001))] # need some metric to trigger reporting

@@ -16,7 +16,7 @@ module Judoscale
     end
 
     def report_metrics!(report_json)
-      post_json "/adapter/v1/metrics", report_json
+      post_json "/v1/metrics", report_json
     end
 
     private
