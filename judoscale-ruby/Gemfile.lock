@@ -20,7 +20,6 @@ GEM
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     concurrent-ruby (1.1.9)
-    connection_pool (2.2.5)
     crack (0.4.5)
       rexml
     delayed_job (4.1.9)
@@ -53,10 +52,6 @@ GEM
       vegas (~> 0.1.2)
     rexml (3.2.5)
     ruby2_keywords (0.0.5)
-    sidekiq (6.3.1)
-      connection_pool (>= 2.2.2)
-      rack (~> 2.0)
-      redis (>= 4.2.0)
     sinatra (2.1.0)
       mustermann (~> 1.0)
       rack (~> 2.2)
@@ -88,7 +83,6 @@ DEPENDENCIES
   que
   rake (>= 12.3.3)
   resque
-  sidekiq (>= 5.0)
   sqlite3
   webmock
 

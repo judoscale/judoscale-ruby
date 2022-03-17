@@ -6,6 +6,9 @@ require "judoscale/config"
 
 module Judoscale
   class TestJobMetricsCollector < JobMetricsCollector
+    def self.adapter_identifier
+      :resque
+    end
   end
 
   class TestWebMetricsCollector < WebMetricsCollector

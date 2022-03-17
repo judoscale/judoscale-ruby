@@ -1,23 +1,17 @@
 # frozen_string_literal: true
 
-require "judoscale/worker_adapters/base"
+require "judoscale/job_metrics_collector"
+require "judoscale/metric"
 
 module Judoscale
-  module WorkerAdapters
-    class Sidekiq < Base
-      def enabled?
-        require "sidekiq/api"
-
-        log_msg = +"Sidekiq enabled"
-        log_msg << " with busy job tracking support" if track_busy_jobs?
-        logger.info log_msg
-
-        true
-      rescue LoadError
-        false
+  module Sidekiq
+    class MetricsCollector < Judoscale::JobMetricsCollector
+      def self.adapter_identifier
+        :sidekiq
       end
 
-      def collect!(store)
+      def collect
+        store = []
         log_msg = +""
         queues_by_name = ::Sidekiq::Queue.all.each_with_object({}) do |queue, obj|
           obj[queue.name] = queue
@@ -37,18 +31,19 @@ module Judoscale
           latency_ms = (queue.latency * 1000).ceil
           depth = queue.size
 
-          store.push :qt, latency_ms, Time.now, queue_name
-          store.push :qd, depth, Time.now, queue_name
+          store.push Metric.new(:qt, latency_ms, Time.now, queue_name)
+          store.push Metric.new(:qd, depth, Time.now, queue_name)
           log_msg << "sidekiq-qt.#{queue_name}=#{latency_ms}ms sidekiq-qd.#{queue_name}=#{depth} "
 
           if track_busy_jobs?
             busy_count = busy_counts[queue_name]
-            store.push :busy, busy_count, Time.now, queue_name
+            store.push Metric.new(:busy, busy_count, Time.now, queue_name)
             log_msg << "sidekiq-busy.#{queue_name}=#{busy_count} "
           end
         end
 
         logger.debug log_msg
+        store
       end
     end
   end

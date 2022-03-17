@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "judoscale/report"
 
 module Judoscale
   describe Rails do
