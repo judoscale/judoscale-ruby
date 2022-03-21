@@ -18,10 +18,13 @@ gem "puma", "~> 5.0"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 
-# Need to reference both, otherwise it'd use the `judoscale-rails` gemspec to try to find `judoscale-ruby`,
-# but we want to test against the local dev version of it, not a released gem, so we need to specify it too.
+gem "sidekiq", "~> 6.4"
+
+# Need to reference all locally, otherwise it'd use the the gemspecs to try to find each gem,
+# but we want to test against the local dev versions of them, not the released gems.
 gem "judoscale-ruby", path: "../../judoscale-ruby"
 gem "judoscale-rails", path: "../../judoscale-rails"
+gem "judoscale-sidekiq", path: "../../judoscale-sidekiq"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
