@@ -26,6 +26,6 @@ Run `./bin/dev` to run the app in development mode. This will...
 
 Open https://judoscale-adapter-mock.requestcatcher.com in a browser. The sample app is configured to use this endpoint as a mock for the Judoscale Adapter API. This page will monitor all API requests sent from the adapter.
 
-With the app running, open http://localhost:5000 to start the reporter (TODO: reporter should be started when the app starts).
+Run the app. As soon as it boots up, an initial request to the API is sent, and can be inspected via request catcher.
 
-Continue to reload http://localhost:5000 to collect and report more request metrics.
+Access http://localhost:5000 and continue to reload it to collect and report more request metrics.
