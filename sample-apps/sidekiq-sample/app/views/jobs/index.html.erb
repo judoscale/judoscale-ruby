@@ -1,0 +1,26 @@
+<h1>Sidekiq Queues</h1>
+
+<% if notice %><p style="color:green"><%= notice %><% end %>
+<% if alert %><p style="color:red"><%= alert %><% end %>
+
+<ul>
+  <% @queues.each do |name, size| %>
+    <li><%= name %>: <%= size %></li>
+  <% end %>
+</ul>
+
+<h2>Enqueue Jobs</h2>
+
+<%= form_with scope: :job, url: jobs_path, method: :post do |f| %>
+  <div>
+    <%= f.label :queue_name %>
+    <%= f.select :queue_name, @available_queues, required: true %>
+  </div>
+  <div>
+    <%= f.label :enqueue_count %>
+    <%= f.number_field :enqueue_count, min: 1, max: 100, required: true %>
+  </div>
+  <div>
+    <%= f.button "Enqueue Jobs" %>
+  </div>
+<% end %>

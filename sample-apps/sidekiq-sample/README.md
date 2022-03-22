@@ -1,12 +1,13 @@
-# Sample app for judoscale-rails gem
+# Sample app for judoscale-sidekiq gem
 
-This is a minimal Rails app to test the judoscale-rails gem.
+This is a minimal Rails app to test the judoscale-sidekiq gem.
 
 ## Prerequisites
 
 - Ruby
 - Node
 - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+- Redis
 
 ## Set up the app
 
@@ -21,11 +22,12 @@ Run `./bin/dev` to run the app in development mode. This will...
 - Use `heroku local` and a `Procfile` to start the following processes:
   - A [tiny proxy server](https://github.com/judoscale/judoscale-adapter-proxy-server) that adds the `X-Request-Start` request header so we can test request queue time reporting.
   - The Rails server.
+  - The Sidekiq server to process jobs.
 
 ## How to use this sample app
 
 Open https://judoscale-adapter-mock.requestcatcher.com in a browser. The sample app is configured to use this endpoint as a mock for the Judoscale Adapter API. This page will monitor all API requests sent from the adapter.
 
-Run the app. As soon as it boots up, an initial request to the API is sent, and can be inspected via request catcher.
+Run the app. Both the Rails and Sidekiq processes will send an initial request to the API once the app boots up. These can be inspected via request catcher.
 
-Access http://localhost:5000 and continue to reload it to collect and report more request metrics.
+Open http://localhost:5000 to see how many jobs are waiting on each of the available queues, and to enqueue sample jobs on those queues that will be processed by the Sidekiq server slowly.
