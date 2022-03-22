@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "judoscale/config"
+require "judoscale/version"
+
 module Judoscale
   # Allows configuring Judoscale through a block, usually defined during application initialization.
   #
@@ -36,6 +39,3 @@ module Judoscale
     language_version: RUBY_VERSION
   }
 end
-
-require "judoscale/config"
-require "judoscale/version"
