@@ -6,7 +6,7 @@ require "judoscale/metrics_store"
 module Judoscale
   class WebMetricsCollector < MetricsCollector
     def self.collect?(config)
-      config.dyno.start_with?("web.")
+      config.dyno.to_s.start_with?("web.")
     end
 
     def collect
