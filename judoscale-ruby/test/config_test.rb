@@ -9,7 +9,7 @@ module Judoscale
       use_env "DYNO" => "web.1", "JUDOSCALE_URL" => "https://example.com" do
         config = Config.instance
         _(config.api_base_url).must_equal "https://example.com"
-        _(config.dyno).must_equal "web.1"
+        _(config.dyno.to_s).must_equal "web.1"
         _(config.log_level).must_be_nil
         _(config.logger).must_be_instance_of ::Logger
         _(config.max_request_size_bytes).must_equal 100_000
@@ -39,7 +39,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://custom.example.com"
-        _(config.dyno).must_equal "web.2"
+        _(config.dyno.to_s).must_equal "web.2"
         _(config.log_level).must_equal ::Logger::Severity::DEBUG
       end
     end
@@ -61,7 +61,7 @@ module Judoscale
 
       config = Config.instance
       _(config.api_base_url).must_equal "https://block.example.com"
-      _(config.dyno).must_equal "web.3"
+      _(config.dyno.to_s).must_equal "web.3"
       _(config.log_level).must_equal ::Logger::Severity::INFO
       _(config.logger).must_equal test_logger
       _(config.max_request_size_bytes).must_equal 50_000

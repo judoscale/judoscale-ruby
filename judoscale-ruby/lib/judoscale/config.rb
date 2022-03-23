@@ -5,6 +5,19 @@ require "logger"
 
 module Judoscale
   class Config
+    class Dyno
+      attr_reader :name, :num
+
+      def initialize(dyno_string)
+        @name, @num = dyno_string.to_s.split(".")
+        @num = @num.to_i
+      end
+
+      def to_s
+        "#{name}.#{num}"
+      end
+    end
+
     class JobAdapterConfig
       UUID_REGEXP = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
       DEFAULT_QUEUE_FILTER = ->(queue_name) { !UUID_REGEXP.match?(queue_name) }
@@ -45,8 +58,8 @@ module Judoscale
     add_adapter_config :que, JobAdapterConfig
     add_adapter_config :resque, JobAdapterConfig
 
-    attr_accessor :api_base_url, :dyno, :report_interval_seconds, :max_request_size_bytes, :logger
-    attr_reader :log_level
+    attr_accessor :api_base_url, :report_interval_seconds, :max_request_size_bytes, :logger
+    attr_reader :dyno, :log_level
 
     def initialize
       reset
@@ -55,7 +68,7 @@ module Judoscale
     def reset
       # Allow the API URL to be configured - needed for testing.
       @api_base_url = ENV["JUDOSCALE_URL"]
-      @dyno = ENV["DYNO"]
+      self.dyno = ENV["DYNO"]
       @max_request_size_bytes = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval_seconds = 10
       self.log_level = ENV["JUDOSCALE_LOG_LEVEL"]
@@ -64,6 +77,10 @@ module Judoscale
       self.class.adapter_configs.each do |identifier, config_class|
         instance_variable_set(:"@#{identifier}", config_class.new)
       end
+    end
+
+    def dyno=(dyno_string)
+      @dyno = Dyno.new(dyno_string)
     end
 
     def log_level=(new_level)
@@ -85,10 +102,6 @@ module Judoscale
 
     def to_s
       "#{@dyno}##{Process.pid}"
-    end
-
-    def dyno_num
-      dyno.to_s.split(".").last.to_i
     end
 
     def ignore_large_requests?
