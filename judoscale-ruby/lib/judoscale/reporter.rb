@@ -12,19 +12,18 @@ module Judoscale
     include Singleton
     include Logger
 
-    def self.start(config = Config.instance)
+    def self.start(config = Config.instance, adapters = Judoscale.adapters)
       unless instance.started?
-        adapters = Judoscale.adapters
         metrics_collectors = adapters.map(&:metrics_collector)
         metrics_collectors.compact!
         metrics_collectors.select! { |ac| ac.collect?(config) }
         metrics_collectors.map!(&:new)
 
-        instance.start!(config, metrics_collectors)
+        instance.start!(config, metrics_collectors, adapters)
       end
     end
 
-    def start!(config, metrics_collectors)
+    def start!(config, metrics_collectors, adapters)
       @pid = Process.pid
 
       if !config.api_base_url
@@ -37,7 +36,7 @@ module Judoscale
         return
       end
 
-      adapters_msg = Judoscale.adapters.map(&:identifier).join(", ")
+      adapters_msg = adapters.map(&:identifier).join(", ")
       logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Adapters: [#{adapters_msg}]"
 
       @_thread = Thread.new do

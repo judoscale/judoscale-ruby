@@ -100,7 +100,7 @@ module Judoscale
 
       def run_reporter_start_thread(collectors: [Test::TestWebMetricsCollector.new])
         stub_reporter_loop {
-          reporter_thread = Reporter.instance.start!(Config.instance, collectors)
+          reporter_thread = Reporter.instance.start!(Config.instance, collectors, Judoscale.adapters)
           reporter_thread.join
         }
       end
@@ -150,7 +150,7 @@ module Judoscale
         Judoscale.configure { |config| config.api_base_url = nil }
 
         Thread.stub(:new, ->(*) { raise "SHOULD NOT BE CALLED" }) {
-          Reporter.instance.start!(Config.instance, [Test::TestWebMetricsCollector.new])
+          Reporter.instance.start!(Config.instance, [Test::TestWebMetricsCollector.new], Judoscale.adapters)
         }
 
         _(log_string).must_include "Reporter not started: JUDOSCALE_URL is not set"
@@ -158,7 +158,7 @@ module Judoscale
 
       it "does not run the reporter thread when there are no metrics collectors" do
         Thread.stub(:new, ->(*) { raise "SHOULD NOT BE CALLED" }) {
-          Reporter.instance.start!(Config.instance, [])
+          Reporter.instance.start!(Config.instance, [], Judoscale.adapters)
         }
 
         _(log_string).must_include "Reporter not started: no metrics need to be collected on this dyno"
