@@ -24,7 +24,7 @@ module Judoscale
         end
 
         Reporter.stub(:instance, reporter_mock) {
-          Reporter.start(Config.instance)
+          Reporter.start
         }
 
         assert_mock reporter_mock
@@ -41,7 +41,7 @@ module Judoscale
         end
 
         Reporter.stub(:instance, reporter_mock) {
-          Reporter.start(Config.instance)
+          Reporter.start
         }
 
         assert_mock reporter_mock
@@ -75,7 +75,7 @@ module Judoscale
         end
 
         Reporter.stub(:instance, reporter_mock) {
-          Reporter.start(Config.instance)
+          Reporter.start
         }
 
         assert_mock reporter_mock
@@ -86,7 +86,7 @@ module Judoscale
         reporter_mock.expect :started?, true
 
         Reporter.stub(:instance, reporter_mock) {
-          Reporter.start(Config.instance)
+          Reporter.start
         }
 
         assert_mock reporter_mock

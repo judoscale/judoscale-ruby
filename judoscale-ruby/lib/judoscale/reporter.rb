@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "singleton"
+require "judoscale/config"
 require "judoscale/logger"
 require "judoscale/adapter_api"
 require "judoscale/job_metrics_collector"
@@ -11,7 +12,7 @@ module Judoscale
     include Singleton
     include Logger
 
-    def self.start(config)
+    def self.start(config = Config.instance)
       unless instance.started?
         adapters = Judoscale.adapters
         metrics_collectors = adapters.map(&:metrics_collector)

@@ -4,7 +4,7 @@ module Judoscale
   class RequestMetrics
     attr_reader :request_id, :size, :network_time
 
-    def initialize(env, config)
+    def initialize(env, config = Config.instance)
       @config = config
       @request_id = env["HTTP_X_REQUEST_ID"]
       @size = env["rack.input"].respond_to?(:size) ? env["rack.input"].size : 0
