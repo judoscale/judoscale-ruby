@@ -10,7 +10,7 @@ module Judoscale
 
     # It's redundant to report these metrics from every dyno, so only report from the first one.
     def self.collect?(config)
-      config.dyno_num == 1
+      config.dyno.num == 1
     end
 
     def self.adapter_name
