@@ -62,10 +62,20 @@ module Judoscale
         end
       end
 
-      it "logs at the original logger level to ensure debug messages are always logged when enabled" do
+      it "respects the level set by the original logger when the log level config is not overridden" do
         original_logger.level = ::Logger::Severity::INFO
+
         logger.debug "some message"
-        _(messages).must_include "INFO -- : [Judoscale] [DEBUG] some message"
+        _(messages).wont_include "INFO -- : [Judoscale] [DEBUG] some message"
+      end
+
+      it "logs at the original logger level to ensure debug messages are always logged when the log level is overridden" do
+        original_logger.level = ::Logger::Severity::INFO
+
+        use_config log_level: :debug do
+          logger.debug "some message"
+          _(messages).must_include "INFO -- : [Judoscale] [DEBUG] some message"
+        end
       end
     end
   end

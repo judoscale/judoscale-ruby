@@ -19,14 +19,20 @@ module Judoscale
 
       define_method(severity_name.downcase) do |*messages|
         if log?(severity_level)
-          logger.add(severity_level, tag(messages))
+          logger.add(severity_level) { tag(messages) }
         end
       end
     end
 
     def debug(*messages)
-      if log?(::Logger::Severity::DEBUG)
-        logger.add(logger.level, tag(messages, debug: true))
+      severity_level = ::Logger::Severity::DEBUG
+
+      if log?(severity_level)
+        if log_level.nil?
+          logger.add(severity_level) { tag(messages, debug: true) }
+        else
+          logger.add(logger.level) { tag(messages, debug: true) }
+        end
       end
     end
 
