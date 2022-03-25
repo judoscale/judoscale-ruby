@@ -15,7 +15,7 @@ module Judoscale
       Judoscale.configure { |config| config.logger = original_logger }
     }
 
-    %w[ERROR WARN INFO].each do |level|
+    %w[ERROR WARN INFO DEBUG].each do |level|
       method_name = level.downcase
 
       describe "##{method_name}" do
@@ -30,51 +30,35 @@ module Judoscale
         end
 
         it "respects the configured log_level" do
-          use_config log_level: :unknown do
+          use_config log_level: :fatal do
             logger.public_send method_name, "some message"
             _(messages).wont_include "some message"
           end
         end
 
-        it "respects the level set by the original logger" do
-          original_logger.level = ::Logger::Severity::UNKNOWN
+        it "respects the level set by the original logger when the log level config is not overridden" do
+          original_logger.level = ::Logger::Severity::FATAL
+
           logger.public_send method_name, "some message"
           _(messages).wont_include "some message"
         end
-      end
-    end
 
-    describe "#debug" do
-      it "delegates to the original logger, prepending Judoscale and [DEBUG]" do
-        logger.debug "some message"
-        _(messages).must_include "DEBUG -- : [Judoscale] [DEBUG] some message"
-      end
+        it "logs at the given level without tagging the level when both the configured log level and the underlying logger level permit" do
+          original_logger.level = ::Logger::Severity::DEBUG
 
-      it "allows logging multiple messages in separate lines, all prepending Judoscale and [DEBUG]" do
-        logger.debug "some msg", "msg context", "more msg context"
-        _(messages).must_include "DEBUG -- : [Judoscale] [DEBUG] some msg\n[Judoscale] [DEBUG] msg context\n[Judoscale] [DEBUG] more msg context"
-      end
-
-      it "respects the configured log_level" do
-        use_config log_level: :info do
-          logger.debug "some message"
-          _(messages).wont_include "some message"
+          use_config log_level: level do
+            logger.public_send method_name, "some message"
+            _(messages).must_include "#{level} -- : [Judoscale] some message"
+          end
         end
-      end
 
-      it "respects the level set by the original logger when the log level config is not overridden" do
-        original_logger.level = ::Logger::Severity::INFO
+        it "logs at the underlying logger level tagging with the given level when the configured log level is lower, to ensure messages are always logged" do
+          original_logger.level = ::Logger::Severity::FATAL
 
-        logger.debug "some message"
-        _(messages).wont_include "INFO -- : [Judoscale] [DEBUG] some message"
-      end
-
-      it "logs at the original logger level to ensure debug messages are always logged when the log level is overridden" do
-        original_logger.level = ::Logger::Severity::INFO
-
-        use_config log_level: :debug do
-          logger.debug "some message"
-          _(messages).must_include "INFO -- : [Judoscale] [DEBUG] some message"
+          use_config log_level: level do
+            logger.public_send method_name, "some message"
+            _(messages).must_include "FATAL -- : [Judoscale] [#{level}] some message"
+          end
         end
       end
     end

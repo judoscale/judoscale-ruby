@@ -14,36 +14,27 @@ module Judoscale
     TAG = "[Judoscale]"
     DEBUG_TAG = " [DEBUG]"
 
-    %w[ERROR WARN INFO].each do |severity_name|
+    %w[ERROR WARN INFO DEBUG].each do |severity_name|
       severity_level = ::Logger::Severity.const_get(severity_name)
 
       define_method(severity_name.downcase) do |*messages|
-        if log?(severity_level)
-          logger.add(severity_level) { tag(messages) }
-        end
-      end
-    end
-
-    def debug(*messages)
-      severity_level = ::Logger::Severity::DEBUG
-
-      if log?(severity_level)
         if log_level.nil?
-          logger.add(severity_level) { tag(messages, debug: true) }
-        else
-          logger.add(logger.level) { tag(messages, debug: true) }
+          logger.add(severity_level) { tag(messages) }
+        elsif severity_level >= log_level
+          if severity_level >= logger.level
+            logger.add(severity_level) { tag(messages) }
+          else
+            logger.add(logger.level) { tag(messages, tag_level: severity_name) }
+          end
         end
       end
     end
 
     private
 
-    def log?(severity_level)
-      log_level.nil? || severity_level >= log_level
-    end
-
-    def tag(msgs, debug: false)
-      msgs.map { |msg| "#{TAG}#{DEBUG_TAG if debug} #{msg}" }.join("\n")
+    def tag(msgs, tag_level: nil)
+      tag_level = " [#{tag_level}]" if tag_level
+      msgs.map { |msg| "#{TAG}#{tag_level} #{msg}" }.join("\n")
     end
   end
 end
