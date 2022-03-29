@@ -56,7 +56,6 @@ module Judoscale
 
     add_adapter_config :delayed_job, JobAdapterConfig
     add_adapter_config :que, JobAdapterConfig
-    add_adapter_config :resque, JobAdapterConfig
 
     attr_accessor :api_base_url, :report_interval_seconds, :max_request_size_bytes, :logger
     attr_reader :dyno, :log_level

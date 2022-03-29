@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
-require "judoscale/worker_adapters/base"
+require "judoscale/job_metrics_collector"
+require "judoscale/metric"
 
 module Judoscale
-  module WorkerAdapters
-    class Resque < Base
-      def enabled?
-        require "resque"
-        logger.info "Resque enabled"
-        true
-      rescue LoadError
-        false
+  module Resque
+    class MetricsCollector < Judoscale::JobMetricsCollector
+      def self.adapter_identifier
+        :resque
       end
 
-      def collect!(store)
+      def collect
+        store = []
         log_msg = +""
         current_queues = ::Resque.queues
         # Ensure we continue to collect metrics for known queue names, even when nothing is
@@ -23,11 +21,12 @@ module Judoscale
         queues.each do |queue|
           next if queue.nil? || queue.empty?
           depth = ::Resque.size(queue)
-          store.push :qd, depth, Time.now, queue
+          store.push Metric.new(:qd, depth, Time.now, queue)
           log_msg << "resque-qd.#{queue}=#{depth} "
         end
 
         logger.debug log_msg
+        store
       end
     end
   end

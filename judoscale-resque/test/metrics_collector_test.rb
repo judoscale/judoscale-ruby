@@ -1,59 +1,51 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "resque"
-require "judoscale/worker_adapters/resque"
-require "judoscale/metrics_store"
+require "judoscale/resque/metrics_collector"
+require "securerandom"
 
 module Judoscale
-  describe WorkerAdapters::Resque do
-    subject { WorkerAdapters::Resque.instance }
+  describe Resque::MetricsCollector do
+    subject { Resque::MetricsCollector.new }
 
-    describe "#enabled?" do
-      specify { _(subject).must_be :enabled? }
-    end
-
-    describe "#collect!" do
-      let(:store) { MetricsStore.instance }
-
+    describe "#collect" do
       after {
         subject.clear_queues
-        store.clear
       }
 
       it "collects latency for each queue" do
         queues = ["default", "high"]
         sizes = {"default" => 1, "high" => 2}
 
-        ::Resque.stub(:queues, queues) {
+        metrics = ::Resque.stub(:queues, queues) {
           ::Resque.stub(:size, ->(queue_name) { sizes.fetch(queue_name) }) {
-            subject.collect! store
+            subject.collect
           }
         }
 
-        _(store.metrics.size).must_equal 2
-        _(store.metrics[0].queue_name).must_equal "default"
-        _(store.metrics[0].value).must_equal 1
-        _(store.metrics[0].identifier).must_equal :qd
-        _(store.metrics[1].queue_name).must_equal "high"
-        _(store.metrics[1].value).must_equal 2
-        _(store.metrics[1].identifier).must_equal :qd
+        _(metrics.size).must_equal 2
+        _(metrics[0].queue_name).must_equal "default"
+        _(metrics[0].value).must_equal 1
+        _(metrics[0].identifier).must_equal :qd
+        _(metrics[1].queue_name).must_equal "high"
+        _(metrics[1].value).must_equal 2
+        _(metrics[1].identifier).must_equal :qd
       end
 
       it "always collects for the default queue" do
         queues = []
         size = 0
 
-        ::Resque.stub(:queues, queues) {
+        metrics = ::Resque.stub(:queues, queues) {
           ::Resque.stub(:size, size) {
-            subject.collect! store
+            subject.collect
           }
         }
 
-        _(store.metrics.size).must_equal 1
-        _(store.metrics[0].queue_name).must_equal "default"
-        _(store.metrics[0].value).must_equal 0
-        _(store.metrics[0].identifier).must_equal :qd
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
+        _(metrics[0].value).must_equal 0
+        _(metrics[0].identifier).must_equal :qd
       end
 
       it "always collects for known queues" do
@@ -62,21 +54,20 @@ module Judoscale
 
         ::Resque.stub(:queues, queues) {
           ::Resque.stub(:size, size) {
-            subject.collect! store
+            subject.collect
           }
         }
 
-        store.clear
         queues = []
 
-        ::Resque.stub(:queues, queues) {
+        metrics = ::Resque.stub(:queues, queues) {
           ::Resque.stub(:size, size) {
-            subject.collect! store
+            subject.collect
           }
         }
 
-        _(store.metrics.size).must_equal 2
-        _(store.metrics.map(&:queue_name)).must_equal %w[default low]
+        _(metrics.size).must_equal 2
+        _(metrics.map(&:queue_name)).must_equal %w[default low]
       end
 
       it "logs debug information for each queue being collected" do
@@ -86,7 +77,7 @@ module Judoscale
 
           ::Resque.stub(:queues, queues) {
             ::Resque.stub(:size, size) {
-              subject.collect! store
+              subject.collect
             }
           }
 
@@ -98,14 +89,14 @@ module Judoscale
         queues = %W[low-#{SecureRandom.uuid} default #{SecureRandom.uuid}-high]
         size = 2
 
-        ::Resque.stub(:queues, queues) {
+        metrics = ::Resque.stub(:queues, queues) {
           ::Resque.stub(:size, size) {
-            subject.collect! store
+            subject.collect
           }
         }
 
-        _(store.metrics.size).must_equal 1
-        _(store.metrics[0].queue_name).must_equal "default"
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
       end
 
       it "filters queues to collect metrics from based on the configured queue filter proc, overriding the default UUID filter" do
@@ -113,15 +104,15 @@ module Judoscale
           queues = %W[low default high low-#{SecureRandom.uuid}]
           size = 2
 
-          ::Resque.stub(:queues, queues) {
+          metrics = ::Resque.stub(:queues, queues) {
             ::Resque.stub(:size, size) {
-              subject.collect! store
+              subject.collect
             }
           }
 
-          _(store.metrics.size).must_equal 2
-          _(store.metrics[0].queue_name).must_equal "low"
-          _(store.metrics[1].queue_name).must_be :start_with?, "low-"
+          _(metrics.size).must_equal 2
+          _(metrics[0].queue_name).must_equal "low"
+          _(metrics[1].queue_name).must_be :start_with?, "low-"
         end
       end
 
@@ -130,13 +121,13 @@ module Judoscale
           queues = %w[low default high]
           size = 2
 
-          ::Resque.stub(:queues, queues) {
+          metrics = ::Resque.stub(:queues, queues) {
             ::Resque.stub(:size, size) {
-              subject.collect! store
+              subject.collect
             }
           }
 
-          _(store.metrics.map(&:queue_name)).must_equal %w[low ultra]
+          _(metrics.map(&:queue_name)).must_equal %w[low ultra]
         end
       end
 
@@ -145,13 +136,13 @@ module Judoscale
           queues = %w[low default high]
           size = 2
 
-          ::Resque.stub(:queues, queues) {
+          metrics = ::Resque.stub(:queues, queues) {
             ::Resque.stub(:size, size) {
-              subject.collect! store
+              subject.collect
             }
           }
 
-          _(store.metrics.map(&:queue_name)).must_equal %w[low high]
+          _(metrics.map(&:queue_name)).must_equal %w[low high]
           _(log_string).must_match %r{Resque metrics reporting only 2 queues max, skipping the rest \(1\)}
         end
       end
