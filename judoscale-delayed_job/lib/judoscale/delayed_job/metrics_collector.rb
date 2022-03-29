@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require "judoscale/job_metrics_collector"
+require "judoscale/job_metrics_collector/active_record_helper"
 require "judoscale/metric"
-require "judoscale/worker_adapters/active_record_helper"
 
 module Judoscale
   module DelayedJob
     class MetricsCollector < Judoscale::JobMetricsCollector
-      include Judoscale::WorkerAdapters::ActiveRecordHelper
+      include ActiveRecordHelper
 
       def self.adapter_identifier
         :delayed_job

@@ -36,7 +36,7 @@ module Judoscale
     def queues
       # Track the known queues so we can continue reporting on queues that don't
       # have enqueued jobs at the time of reporting.
-      # Assume a "default" queue on all worker adapters so we always report *something*,
+      # Assume a "default" queue on all job metrics collectors so we always report *something*,
       # even when nothing is enqueued.
       @queues ||= Set.new(["default"])
     end
