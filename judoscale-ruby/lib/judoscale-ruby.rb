@@ -30,10 +30,6 @@ module Judoscale
     @adapters << Adapter.new(identifier, adapter_info, metrics_collector)
   end
 
-  def self.remove_adapter(identifier)
-    @adapters.delete_if { |adapter| adapter.identifier == identifier }
-  end
-
   add_adapter :"judoscale-ruby", {
     adapter_version: VERSION,
     language_version: RUBY_VERSION
