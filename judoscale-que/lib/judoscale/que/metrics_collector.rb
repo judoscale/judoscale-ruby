@@ -1,21 +1,20 @@
 # frozen_string_literal: true
 
-require "judoscale/worker_adapters/base"
+require "judoscale/job_metrics_collector"
+require "judoscale/metric"
 require "judoscale/worker_adapters/active_record_helper"
 
 module Judoscale
-  module WorkerAdapters
-    class Que < Base
-      include ActiveRecordHelper
+  module Que
+    class MetricsCollector < Judoscale::JobMetricsCollector
+      include Judoscale::WorkerAdapters::ActiveRecordHelper
 
-      def enabled?
-        if defined?(::Que)
-          logger.info "Que enabled (#{default_timezone})"
-          true
-        end
+      def self.adapter_identifier
+        :que
       end
 
-      def collect!(store)
+      def collect
+        store = []
         log_msg = +""
         t = Time.now.utc
         sql = <<~SQL
@@ -36,11 +35,12 @@ module Judoscale
           latency_ms = run_at ? ((t - run_at) * 1000).ceil : 0
           latency_ms = 0 if latency_ms < 0
 
-          store.push :qt, latency_ms, t, queue
+          store.push Metric.new(:qt, latency_ms, t, queue)
           log_msg << "que-qt.#{queue}=#{latency_ms}ms "
         end
 
         logger.debug log_msg unless log_msg.empty?
+        store
       end
     end
   end
