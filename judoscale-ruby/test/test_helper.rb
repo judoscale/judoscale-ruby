@@ -7,23 +7,6 @@ require "minitest/autorun"
 require "minitest/spec"
 require "webmock/minitest"
 
-require "active_record"
-
-ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
-
-ActiveRecord::Schema.define do
-  # standard:disable all
-  create_table "que_jobs" do |t|
-    t.integer "priority", limit: 2, default: 100, null: false
-    t.datetime "run_at", null: false
-    t.integer "error_count", default: 0, null: false
-    t.text "queue", default: "default", null: false
-    t.datetime "finished_at"
-    t.datetime "expired_at"
-  end
-   # standard:enable all
-end
-
 require "judoscale/job_metrics_collector"
 require "judoscale/web_metrics_collector"
 

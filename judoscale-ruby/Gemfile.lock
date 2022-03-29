@@ -6,38 +6,19 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (6.1.4.4)
-      activesupport (= 6.1.4.4)
-    activerecord (6.1.4.4)
-      activemodel (= 6.1.4.4)
-      activesupport (= 6.1.4.4)
-    activesupport (6.1.4.4)
-      concurrent-ruby (~> 1.0, >= 1.0.2)
-      i18n (>= 1.6, < 2)
-      minitest (>= 5.1)
-      tzinfo (~> 2.0)
-      zeitwerk (~> 2.3)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
-    concurrent-ruby (1.1.9)
     crack (0.4.5)
       rexml
     hashdiff (1.0.1)
-    i18n (1.8.11)
-      concurrent-ruby (~> 1.0)
     minitest (5.15.0)
     public_suffix (4.0.6)
-    que (0.14.3)
     rake (13.0.6)
     rexml (3.2.5)
-    sqlite3 (1.4.2)
-    tzinfo (2.0.4)
-      concurrent-ruby (~> 1.0)
     webmock (3.14.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    zeitwerk (2.5.3)
 
 PLATFORMS
   arm64-darwin-20
@@ -46,13 +27,9 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activerecord
-  activesupport
   judoscale-ruby!
   minitest
-  que
   rake (>= 12.3.3)
-  sqlite3
   webmock
 
 BUNDLED WITH

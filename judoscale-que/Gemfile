@@ -1,0 +1,9 @@
+source "https://rubygems.org"
+
+gemspec
+
+gem "judoscale-ruby", path: "../judoscale-ruby"
+gem "activerecord", "~> 6.1"
+gem "sqlite3", platforms: :ruby
+gem "minitest"
+gem "rake"

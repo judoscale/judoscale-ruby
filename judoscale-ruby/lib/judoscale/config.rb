@@ -54,8 +54,6 @@ module Judoscale
       attr_reader identifier
     end
 
-    add_adapter_config :que, JobAdapterConfig
-
     attr_accessor :api_base_url, :report_interval_seconds, :max_request_size_bytes, :logger
     attr_reader :dyno, :log_level
 
