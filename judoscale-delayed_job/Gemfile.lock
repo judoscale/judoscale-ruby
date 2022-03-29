@@ -13,16 +13,17 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (7.0.2.3)
-      activesupport (= 7.0.2.3)
-    activerecord (7.0.2.3)
-      activemodel (= 7.0.2.3)
-      activesupport (= 7.0.2.3)
-    activesupport (7.0.2.3)
+    activemodel (6.1.5)
+      activesupport (= 6.1.5)
+    activerecord (6.1.5)
+      activemodel (= 6.1.5)
+      activesupport (= 6.1.5)
+    activesupport (6.1.5)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
     concurrent-ruby (1.1.10)
     delayed_job (4.1.10)
       activesupport (>= 3.0, < 8.0)
@@ -36,6 +37,7 @@ GEM
     sqlite3 (1.4.2)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
+    zeitwerk (2.5.4)
 
 PLATFORMS
   arm64-darwin-20
@@ -44,6 +46,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  activerecord (~> 6.1)
   judoscale-delayed_job!
   judoscale-ruby!
   minitest
