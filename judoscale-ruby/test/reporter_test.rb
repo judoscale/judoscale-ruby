@@ -64,6 +64,23 @@ module Judoscale
         assert_mock reporter_mock
       end
 
+      it "respects explicitly disabled job adapters / metrics collectors via config when initializing the reporter" do
+        Judoscale.configure { |config| config.test_job_config.enabled = false }
+
+        reporter_mock = Minitest::Mock.new
+        reporter_mock.expect :started?, false
+        reporter_mock.expect :start!, true do |config, metrics_collectors|
+          _(metrics_collectors.size).must_equal 1
+          _(metrics_collectors[0]).must_be_instance_of Test::TestWebMetricsCollector
+        end
+
+        Reporter.stub(:instance, reporter_mock) {
+          Reporter.start(Config.instance)
+        }
+
+        assert_mock reporter_mock
+      end
+
       it "does not initialize the reporter more than once" do
         reporter_mock = Minitest::Mock.new
         reporter_mock.expect :started?, true
