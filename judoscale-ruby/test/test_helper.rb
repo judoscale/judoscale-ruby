@@ -40,7 +40,31 @@ ActiveRecord::Schema.define do
    # standard:enable all
 end
 
-module Judoscale::Test
+require "judoscale/job_metrics_collector"
+require "judoscale/web_metrics_collector"
+
+module Judoscale
+  module Test
+    class TestJobMetricsCollector < Judoscale::JobMetricsCollector
+      def self.adapter_identifier
+        :test_job_config
+      end
+
+      def collect
+        []
+      end
+    end
+
+    class TestWebMetricsCollector < Judoscale::WebMetricsCollector
+      def collect
+        [Metric.new(:qt, 1, Time.now)]
+      end
+    end
+  end
+
+  add_adapter :test_web, {}, metrics_collector: Test::TestWebMetricsCollector
+  add_adapter :test_job, {}, metrics_collector: Test::TestJobMetricsCollector
+  Config.add_adapter_config :test_job_config, Config::JobAdapterConfig
 end
 
 Dir[File.expand_path("./support/*.rb", __dir__)].sort.each { |file| require file }
