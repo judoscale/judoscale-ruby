@@ -1,0 +1,57 @@
+PATH
+  remote: ../judoscale-ruby
+  specs:
+    judoscale-ruby (0.1.0.alpha)
+
+PATH
+  remote: .
+  specs:
+    judoscale-delayed_job (0.1.0.alpha)
+      delayed_job_active_record (>= 4.0)
+      judoscale-ruby
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (6.1.5)
+      activesupport (= 6.1.5)
+    activerecord (6.1.5)
+      activemodel (= 6.1.5)
+      activesupport (= 6.1.5)
+    activesupport (6.1.5)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
+    concurrent-ruby (1.1.10)
+    delayed_job (4.1.10)
+      activesupport (>= 3.0, < 8.0)
+    delayed_job_active_record (4.1.7)
+      activerecord (>= 3.0, < 8.0)
+      delayed_job (>= 3.0, < 5)
+    i18n (1.10.0)
+      concurrent-ruby (~> 1.0)
+    minitest (5.15.0)
+    rake (13.0.6)
+    sqlite3 (1.4.2)
+    tzinfo (2.0.4)
+      concurrent-ruby (~> 1.0)
+    zeitwerk (2.5.4)
+
+PLATFORMS
+  arm64-darwin-20
+  arm64-darwin-21
+  x86_64-darwin-21
+  x86_64-linux
+
+DEPENDENCIES
+  activerecord (~> 6.1)
+  judoscale-delayed_job!
+  judoscale-ruby!
+  minitest
+  rake
+  sqlite3
+
+BUNDLED WITH
+   2.3.8
