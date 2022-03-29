@@ -5,18 +5,6 @@ require "judoscale/reporter"
 require "judoscale/config"
 
 module Judoscale
-  class TestJobMetricsCollector < JobMetricsCollector
-    def self.adapter_identifier
-      :que
-    end
-  end
-
-  class TestWebMetricsCollector < WebMetricsCollector
-    def collect
-      [Metric.new(:qt, 1, Time.now)]
-    end
-  end
-
   describe Reporter do
     before {
       Judoscale.configure do |config|
@@ -26,23 +14,13 @@ module Judoscale
     }
 
     describe ".start" do
-      before {
-        Judoscale.add_adapter :test_web, {}, metrics_collector: TestWebMetricsCollector
-        Judoscale.add_adapter :test_job, {}, metrics_collector: TestJobMetricsCollector
-      }
-
-      after {
-        Judoscale.remove_adapter :test_web
-        Judoscale.remove_adapter :test_job
-      }
-
       it "initializes the reporter with all registered web and job metrics collectors when on the first dyno" do
         reporter_mock = Minitest::Mock.new
         reporter_mock.expect :started?, false
         reporter_mock.expect :start!, true do |config, metrics_collectors|
           _(metrics_collectors.size).must_equal 2
-          _(metrics_collectors[0]).must_be_instance_of TestWebMetricsCollector
-          _(metrics_collectors[1]).must_be_instance_of TestJobMetricsCollector
+          _(metrics_collectors[0]).must_be_instance_of Test::TestWebMetricsCollector
+          _(metrics_collectors[1]).must_be_instance_of Test::TestJobMetricsCollector
         end
 
         Reporter.stub(:instance, reporter_mock) {
@@ -59,7 +37,7 @@ module Judoscale
         reporter_mock.expect :started?, false
         reporter_mock.expect :start!, true do |config, metrics_collectors|
           _(metrics_collectors.size).must_equal 1
-          _(metrics_collectors[0]).must_be_instance_of TestWebMetricsCollector
+          _(metrics_collectors[0]).must_be_instance_of Test::TestWebMetricsCollector
         end
 
         Reporter.stub(:instance, reporter_mock) {
@@ -76,7 +54,7 @@ module Judoscale
         reporter_mock.expect :started?, false
         reporter_mock.expect :start!, true do |config, metrics_collectors|
           _(metrics_collectors.size).must_equal 1
-          _(metrics_collectors[0]).must_be_instance_of TestJobMetricsCollector
+          _(metrics_collectors[0]).must_be_instance_of Test::TestJobMetricsCollector
         end
 
         Reporter.stub(:instance, reporter_mock) {
@@ -103,7 +81,7 @@ module Judoscale
         Reporter.instance.stop!
       }
 
-      def run_reporter_start_thread(collectors: [TestWebMetricsCollector.new])
+      def run_reporter_start_thread(collectors: [Test::TestWebMetricsCollector.new])
         stub_reporter_loop {
           reporter_thread = Reporter.instance.start!(Config.instance, collectors)
           reporter_thread.join
@@ -119,7 +97,7 @@ module Judoscale
       end
 
       it "sends a report with collected metrics" do
-        metrics_collector = TestWebMetricsCollector.new
+        metrics_collector = Test::TestWebMetricsCollector.new
         metrics = metrics_collector.collect
 
         expected_body = Report.new(Judoscale.adapters, Config.instance, metrics).as_json
@@ -141,7 +119,7 @@ module Judoscale
       end
 
       it "logs exceptions when collecting information" do
-        metrics_collector = TestWebMetricsCollector.new
+        metrics_collector = Test::TestWebMetricsCollector.new
 
         metrics_collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
           run_reporter_start_thread(collectors: [metrics_collector])
@@ -155,7 +133,7 @@ module Judoscale
         Judoscale.configure { |config| config.api_base_url = nil }
 
         Thread.stub(:new, ->(*) { raise "SHOULD NOT BE CALLED" }) {
-          Reporter.instance.start!(Config.instance, [TestWebMetricsCollector.new])
+          Reporter.instance.start!(Config.instance, [Test::TestWebMetricsCollector.new])
         }
 
         _(log_string).must_include "Reporter not started: JUDOSCALE_URL is not set"
@@ -173,7 +151,7 @@ module Judoscale
         stub_request(:post, "http://example.com/api/test-token/v1/metrics")
         run_reporter_start_thread
 
-        _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [judoscale-ruby]"
+        _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [judoscale-ruby, test_web, test_job]"
       end
     end
 
