@@ -5,7 +5,6 @@ require "judoscale/logger"
 require "judoscale/adapter_api"
 require "judoscale/job_metrics_collector"
 require "judoscale/web_metrics_collector"
-require "judoscale/worker_adapters"
 
 module Judoscale
   class Reporter

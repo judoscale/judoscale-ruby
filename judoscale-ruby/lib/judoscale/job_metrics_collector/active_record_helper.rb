@@ -1,5 +1,5 @@
 module Judoscale
-  module WorkerAdapters
+  class JobMetricsCollector
     module ActiveRecordHelper
       private
 
