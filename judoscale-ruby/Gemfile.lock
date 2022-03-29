@@ -22,11 +22,6 @@ GEM
     concurrent-ruby (1.1.9)
     crack (0.4.5)
       rexml
-    delayed_job (4.1.9)
-      activesupport (>= 3.0, < 6.2)
-    delayed_job_active_record (4.1.6)
-      activerecord (>= 3.0, < 6.2)
-      delayed_job (>= 3.0, < 5)
     hashdiff (1.0.1)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
@@ -51,9 +46,8 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  activerecord
   activesupport
-  delayed_job
-  delayed_job_active_record
   judoscale-ruby!
   minitest
   que

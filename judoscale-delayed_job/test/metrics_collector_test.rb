@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "delayed_job_active_record"
-require "judoscale/worker_adapters/delayed_job"
-require "judoscale/metrics_store"
+require "judoscale/delayed_job/metrics_collector"
 
 class Delayable
   def perform
@@ -11,20 +9,13 @@ class Delayable
 end
 
 module Judoscale
-  describe WorkerAdapters::DelayedJob do
-    subject { WorkerAdapters::DelayedJob.instance }
+  describe DelayedJob::MetricsCollector do
+    subject { DelayedJob::MetricsCollector.new }
 
-    describe "#enabled?" do
-      specify { _(subject).must_be :enabled? }
-    end
-
-    describe "#collect!" do
-      let(:store) { MetricsStore.instance }
-
+    describe "#collect" do
       after {
         ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs")
         subject.clear_queues
-        store.clear
       }
 
       it "collects latency for each queue" do
@@ -32,65 +23,65 @@ module Judoscale
         sleep 0.15
         Delayable.new.delay(queue: "high").perform
 
-        subject.collect! store
+        metrics = subject.collect
 
-        _(store.metrics.size).must_equal 2
-        _(store.metrics[0].queue_name).must_equal "default"
-        _(store.metrics[0].value).must_be_within_delta 150, 10
-        _(store.metrics[0].identifier).must_equal :qt
-        _(store.metrics[1].queue_name).must_equal "high"
-        _(store.metrics[1].value).must_be_within_delta 0, 5
-        _(store.metrics[1].identifier).must_equal :qt
+        _(metrics.size).must_equal 2
+        _(metrics[0].queue_name).must_equal "default"
+        _(metrics[0].value).must_be_within_delta 150, 10
+        _(metrics[0].identifier).must_equal :qt
+        _(metrics[1].queue_name).must_equal "high"
+        _(metrics[1].value).must_be_within_delta 0, 5
+        _(metrics[1].identifier).must_equal :qt
       end
 
       it "reports for known queues that have no enqueued jobs" do
         Delayable.new.delay(queue: "default").perform
 
-        subject.collect! store
+        metrics = subject.collect
 
-        _(store.metrics.size).must_equal 1
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
 
         ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs")
-        subject.collect! store
+        metrics = subject.collect
 
-        _(store.metrics.size).must_equal 2
-        _(store.metrics[0].queue_name).must_equal "default"
-        _(store.metrics[1].queue_name).must_equal "default"
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
       end
 
       it "ignores future jobs" do
         Delayable.new.delay(queue: "default", run_at: Time.now + 10).perform
 
-        subject.collect! store
+        metrics = subject.collect
 
-        _(store.metrics.size).must_equal 1
-        _(store.metrics[0].queue_name).must_equal "default"
-        _(store.metrics[0].value).must_equal 0
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
+        _(metrics[0].value).must_equal 0
       end
 
       it "always collects for the default queue" do
-        subject.collect! store
+        metrics = subject.collect
 
-        _(store.metrics.size).must_equal 1
-        _(store.metrics[0].queue_name).must_equal "default"
-        _(store.metrics[0].value).must_equal 0
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
+        _(metrics[0].value).must_equal 0
       end
 
       it "collects metrics for jobs without a queue name" do
         Delayable.new.delay.perform
 
-        subject.collect! store
+        metrics = subject.collect
 
-        _(store.metrics.size).must_equal 1
-        _(store.metrics[0].queue_name).must_equal "default"
-        _(store.metrics[0].value).must_be_within_delta 0, 5
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
+        _(metrics[0].value).must_be_within_delta 0, 5
       end
 
       it "logs debug information for each queue being collected" do
         use_config log_level: :debug do
           Delayable.new.delay(queue: "default").perform
 
-          subject.collect! store
+          subject.collect
 
           _(log_string).must_match %r{dj-qt.default=\d+ms}
           _(log_string).wont_match %r{dj-busy}
@@ -106,15 +97,15 @@ module Judoscale
             Delayed::Worker.new.tap { |w| w.name = "dj_worker_#{index}" }.send(:reserve_job)
           }
 
-          subject.collect! store
+          metrics = subject.collect
 
-          _(store.metrics.size).must_equal 4
-          _(store.metrics[1].value).must_equal 2
-          _(store.metrics[1].queue_name).must_equal "default"
-          _(store.metrics[1].identifier).must_equal :busy
-          _(store.metrics[3].value).must_equal 1
-          _(store.metrics[3].queue_name).must_equal "high"
-          _(store.metrics[3].identifier).must_equal :busy
+          _(metrics.size).must_equal 4
+          _(metrics[1].value).must_equal 2
+          _(metrics[1].queue_name).must_equal "default"
+          _(metrics[1].identifier).must_equal :busy
+          _(metrics[3].value).must_equal 1
+          _(metrics[3].queue_name).must_equal "high"
+          _(metrics[3].identifier).must_equal :busy
         end
       end
 
@@ -124,7 +115,7 @@ module Judoscale
             Delayable.new.delay(queue: "default").perform
             Delayed::Worker.new.send(:reserve_job)
 
-            subject.collect! store
+            subject.collect
 
             _(log_string).must_match %r{dj-qt.default=.+ dj-busy.default=1}
           end
@@ -136,10 +127,10 @@ module Judoscale
           Delayable.new.delay(queue: queue).perform
         }
 
-        subject.collect! store
+        metrics = subject.collect
 
-        _(store.metrics.size).must_equal 1
-        _(store.metrics[0].queue_name).must_equal "default"
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
       end
 
       it "filters queues to collect metrics from based on the configured queue filter proc, overriding the default UUID filter" do
@@ -148,11 +139,11 @@ module Judoscale
             Delayable.new.delay(queue: queue).perform
           }
 
-          subject.collect! store
+          metrics = subject.collect
 
-          _(store.metrics.size).must_equal 2
-          _(store.metrics[0].queue_name).must_equal "low"
-          _(store.metrics[1].queue_name).must_be :start_with?, "low-"
+          _(metrics.size).must_equal 2
+          _(metrics[0].queue_name).must_equal "low"
+          _(metrics[1].queue_name).must_be :start_with?, "low-"
         end
       end
 
@@ -160,9 +151,9 @@ module Judoscale
         use_adapter_config :delayed_job, queues: %w[low ultra], queue_filter: ->(queue_name) { queue_name != "low" } do
           %w[low default high].each { |queue| Delayable.new.delay(queue: queue).perform }
 
-          subject.collect! store
+          metrics = subject.collect
 
-          _(store.metrics.map(&:queue_name)).must_equal %w[low ultra]
+          _(metrics.map(&:queue_name)).must_equal %w[low ultra]
         end
       end
 
@@ -170,9 +161,9 @@ module Judoscale
         use_adapter_config :delayed_job, max_queues: 2 do
           %w[low default high].each { |queue| Delayable.new.delay(queue: queue).perform }
 
-          subject.collect! store
+          metrics = subject.collect
 
-          _(store.metrics.map(&:queue_name)).must_equal %w[low high]
+          _(metrics.map(&:queue_name)).must_equal %w[low high]
           _(log_string).must_match %r{DelayedJob metrics reporting only 2 queues max, skipping the rest \(1\)}
         end
       end
