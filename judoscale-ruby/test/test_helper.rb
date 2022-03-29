@@ -11,12 +11,6 @@ require "active_record"
 require "delayed_job"
 require "delayed_job_active_record"
 
-module Rails
-  def self.version
-    "5.0.fake"
-  end
-end
-
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
 
 ActiveRecord::Schema.define do
