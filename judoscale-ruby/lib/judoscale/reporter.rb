@@ -13,23 +13,20 @@ module Judoscale
     include Logger
 
     def self.start(config = Config.instance, adapters = Judoscale.adapters)
-      unless instance.started?
-        metrics_collectors = adapters.map(&:metrics_collector)
-        metrics_collectors.compact!
-        metrics_collectors.select! { |ac| ac.collect?(config) }
-        metrics_collectors.map!(&:new)
-
-        instance.start!(config, metrics_collectors, adapters)
-      end
+      instance.start!(config, adapters) unless instance.started?
     end
 
-    def start!(config, metrics_collectors, adapters)
+    def start!(config, adapters)
       @pid = Process.pid
 
       if !config.api_base_url
         logger.info "Reporter not started: JUDOSCALE_URL is not set"
         return
       end
+
+      metrics_collectors = adapters.map(&:metrics_collector)
+      metrics_collectors.compact!
+      metrics_collectors.select! { |mc| mc.collect?(config) }
 
       if metrics_collectors.empty?
         logger.info "Reporter not started: no metrics need to be collected on this dyno"
@@ -39,19 +36,29 @@ module Judoscale
       adapters_msg = adapters.map(&:identifier).join(", ")
       logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Adapters: [#{adapters_msg}]"
 
+      metrics_collectors.map!(&:new)
+
+      run_loop(config, metrics_collectors)
+    end
+
+    def run_loop(config, metrics_collectors)
       @_thread = Thread.new do
         loop do
-          metrics = metrics_collectors.flat_map do |metric_collector|
-            log_exceptions { metric_collector.collect }
-          end
-
-          log_exceptions { report!(config, metrics) }
+          run_metrics_collection(config, metrics_collectors)
 
           # Stagger reporting to spread out reports from many processes
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
           sleep config.report_interval_seconds * multiplier
         end
       end
+    end
+
+    def run_metrics_collection(config, metrics_collectors)
+      metrics = metrics_collectors.flat_map do |metric_collector|
+        log_exceptions { metric_collector.collect }
+      end
+
+      log_exceptions { report!(config, metrics) }
     end
 
     def started?
