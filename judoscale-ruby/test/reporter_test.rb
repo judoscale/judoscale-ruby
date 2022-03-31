@@ -147,6 +147,15 @@ module Judoscale
 
         _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [judoscale-ruby, test_web, test_job]"
       end
+
+      it "logs only enabled adapters" do
+        Judoscale.configure { |config| config.test_job_config.enabled = false }
+
+        stub_request(:post, "http://example.com/api/test-token/v1/metrics")
+        run_reporter_start_thread
+
+        _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [judoscale-ruby, test_web]"
+      end
     end
 
     describe "#run_metrics_collection" do

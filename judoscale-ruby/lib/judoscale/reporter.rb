@@ -24,16 +24,18 @@ module Judoscale
         return
       end
 
-      metrics_collectors = adapters.map(&:metrics_collector)
+      enabled_adapters = adapters.select { |adapter|
+        adapter.metrics_collector.nil? || adapter.metrics_collector.collect?(config)
+      }
+      metrics_collectors = enabled_adapters.map(&:metrics_collector)
       metrics_collectors.compact!
-      metrics_collectors.select! { |mc| mc.collect?(config) }
 
       if metrics_collectors.empty?
         logger.info "Reporter not started: no metrics need to be collected on this dyno"
         return
       end
 
-      adapters_msg = adapters.map(&:identifier).join(", ")
+      adapters_msg = enabled_adapters.map(&:identifier).join(", ")
       logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Adapters: [#{adapters_msg}]"
 
       metrics_collectors.map!(&:new)
