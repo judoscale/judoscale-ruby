@@ -3,6 +3,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...main)
 
+- Make logging more consistent if it has been configured: ([#60](https://github.com/judoscale/judoscale-ruby/pull/60))
+  - Without a configured log level, we'll just let the underlying logger (e.g. `Rails.logger` in the context of Rails) handle it.
+  - With a configured log level, we:
+    - skip if that level doesn't allow logging. (e.g. configured to INFO skips DEBUG logs by default)
+    - let the underlying logger handle it if it allows the log level. (e.g. configured to INFO and logger has level INFO or DEBUG)
+    - prefix our level to the message and use the underlying logger level if it doesn't allow ours, to ensure messages are logged. (e.g. configured to DEBUG and logger has level INFO, which wouldn't allow DEBUG messages)
+- Add sample app for `judoscale-sidekiq`. ([#56](https://github.com/judoscale/judoscale-ruby/pull/56))
+- Add sample app for `judoscale-rails`. ([#41](https://github.com/judoscale/judoscale-ruby/pull/41))
+- Split into multiple libraries/adapters: (including several internal refactorings & renamings to the core code to enable better separation and registration of the different libraries/adapters)
+  - `judoscale-ruby` is the base Ruby library containing the core implementation used by all other libraries, and is responsible for running the metrics collection and reporting to Judoscale. ([#47](https://github.com/judoscale/judoscale-ruby/pull/47))
+  - `judoscale-rails` integrates with Rails to initialize the reporter on app boot to send metrics to Judoscale, and register a middleware to collect web request metrics for reporting. ([#47](https://github.com/judoscale/judoscale-ruby/pull/47))
+  - `judoscale-sidekiq` integrates with Sidekiq to collect queue metrics. ([#52](https://github.com/judoscale/judoscale-ruby/pull/52))
+  - `judoscale-resque` integrates with Resque to collect queue metrics. ([#61](https://github.com/judoscale/judoscale-ruby/pull/61))
+  - `judoscale-delayed_job` integrates with Delayed Job to collect queue metrics. ([#64](https://github.com/judoscale/judoscale-ruby/pull/64))
+  - `judoscale-que` integrates with Que to collect queue metrics.([#65](https://github.com/judoscale/judoscale-ruby/pull/65))
+- Tests no longer use VCR, requiring only Webmock. ([#53](https://github.com/judoscale/judoscale-ruby/pull/53))
+- Include contextual metadata with each report, remove the registration API when starting the reporter. ([#50](https://github.com/judoscale/judoscale-ruby/pull/50))
+- Report metrics using a JSON payload instead of CSV + query params. ([#42](https://github.com/judoscale/judoscale-ruby/pull/42))
 - Drop `worker_adapters` config list in favor of setting it for each individual adapter `<adapter>.enabled = true|false`. This allows to manually disable reporting for any automatically enabled adapter. ([#38](https://github.com/judoscale/judoscale-ruby/issues/38))
 - Combine `debug` and `quiet` config options into a single `log_level` which controls how our logging should behave. ([#37](https://github.com/judoscale/judoscale-ruby/issues/37))
 - Rename some configs: `<adapter>.track_long_running_jobs` => `<adapter>.track_busy_jobs`, `report_interval` => `report_interval_seconds`, `max_request_size` => `max_request_size_bytes`. ([#36](https://github.com/judoscale/judoscale-ruby/issues/36))
