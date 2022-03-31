@@ -150,6 +150,31 @@ module Judoscale
     end
 
     describe "#run_metrics_collection" do
+      it "collects and report metrics to the API" do
+        web_metrics_collector = Test::TestWebMetricsCollector.new
+        job_metrics_collector = Test::TestJobMetricsCollector.new
+        all_metrics = web_metrics_collector.collect + job_metrics_collector.collect
+
+        expected_body = Report.new(Judoscale.adapters, Config.instance, all_metrics).as_json
+        stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
+          .with(body: JSON.generate(expected_body))
+
+        Reporter.instance.run_metrics_collection Config.instance, [web_metrics_collector, job_metrics_collector]
+
+        assert_requested stub
+      end
+
+      it "logs reporting failures" do
+        metrics_collector = Test::TestWebMetricsCollector.new
+
+        stub_request(:post, %r{http://example.com/api/test-token/v1/metrics})
+          .to_return(body: "oops", status: 503)
+
+        Reporter.instance.run_metrics_collection Config.instance, [metrics_collector]
+
+        _(log_string).must_include "ERROR -- : [Judoscale] Reporter failed: 503 - "
+      end
+
       it "logs exceptions when reporting collected information" do
         Reporter.instance.stub(:report!, ->(*) { raise "REPORT BOOM!" }) {
           Reporter.instance.run_metrics_collection(Config.instance, [Test::TestWebMetricsCollector.new])
@@ -168,39 +193,6 @@ module Judoscale
 
         _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
         _(log_string).must_include "lib/judoscale/reporter.rb"
-      end
-    end
-
-    describe "#report!" do
-      it "reports collected metrics to the API" do
-        metrics = [
-          Metric.new(:qt, 11, Time.at(1_000_000_001)), # web metric
-          Metric.new(:qt, 22, Time.at(1_000_000_002), "high") # worker metric
-        ]
-
-        expected_body = Report.new(Judoscale.adapters, Config.instance, metrics).as_json
-        stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
-          .with(body: JSON.generate(expected_body))
-
-        Reporter.instance.send :report!, Config.instance, metrics
-
-        assert_requested stub
-      end
-
-      it "logs reporter failures" do
-        stub_request(:post, %r{http://example.com/api/test-token/v1/metrics})
-          .to_return(body: "oops", status: 503)
-
-        metrics = [Metric.new(:qt, 1, Time.at(1_000_000_001))] # need some metric to trigger reporting
-
-        log_io = StringIO.new
-        stub_logger = ::Logger.new(log_io)
-
-        Reporter.instance.stub(:logger, stub_logger) {
-          Reporter.instance.send :report!, Config.instance, metrics
-        }
-
-        _(log_io.string).must_include "ERROR -- : Reporter failed: 503 - "
       end
     end
   end
