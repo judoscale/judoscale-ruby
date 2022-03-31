@@ -176,7 +176,7 @@ module Judoscale
       end
 
       it "logs exceptions when reporting collected information" do
-        Reporter.instance.stub(:report!, ->(*) { raise "REPORT BOOM!" }) {
+        Reporter.instance.stub(:report, ->(*) { raise "REPORT BOOM!" }) {
           Reporter.instance.run_metrics_collection(Config.instance, [Test::TestWebMetricsCollector.new])
         }
 

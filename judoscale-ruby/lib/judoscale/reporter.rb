@@ -58,7 +58,7 @@ module Judoscale
         log_exceptions { metric_collector.collect }
       end
 
-      log_exceptions { report!(config, metrics) }
+      log_exceptions { report(config, metrics) }
     end
 
     def started?
@@ -73,10 +73,10 @@ module Judoscale
 
     private
 
-    def report!(config, metrics)
+    def report(config, metrics)
       report = Report.new(Judoscale.adapters, config, metrics)
       logger.info "Reporting #{report.metrics.size} metrics"
-      result = AdapterApi.new(config).report_metrics!(report.as_json)
+      result = AdapterApi.new(config).report_metrics(report.as_json)
 
       case result
       when AdapterApi::SuccessResponse
