@@ -57,7 +57,7 @@ module Judoscale
 
     def run_metrics_collection(config, metrics_collectors)
       metrics = metrics_collectors.flat_map do |metric_collector|
-        log_exceptions { metric_collector.collect }
+        log_exceptions { metric_collector.collect } || []
       end
 
       log_exceptions { report(config, metrics) }
@@ -95,6 +95,7 @@ module Judoscale
       # Note: Exceptions in threads other than the main thread will fail silently and terminate it.
       # https://ruby-doc.org/core-3.1.0/Thread.html#class-Thread-label-Exception+handling
       logger.error "Reporter error: #{ex.inspect}", *ex.backtrace
+      nil
     end
   end
 end

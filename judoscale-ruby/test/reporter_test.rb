@@ -193,15 +193,22 @@ module Judoscale
         _(log_string).must_include "lib/judoscale/reporter.rb"
       end
 
-      it "logs exceptions when collecting information" do
-        metrics_collector = Test::TestWebMetricsCollector.new
+      it "logs exceptions when collecting information, while still reporting other metrics successfully" do
+        web_metrics_collector = Test::TestWebMetricsCollector.new
+        job_metrics_collector = Test::TestJobMetricsCollector.new
+        web_metrics = web_metrics_collector.collect
 
-        metrics_collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
-          Reporter.instance.run_metrics_collection(Config.instance, [metrics_collector])
+        expected_body = Report.new(Judoscale.adapters, Config.instance, web_metrics).as_json
+        stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
+          .with(body: JSON.generate(expected_body))
+
+        job_metrics_collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
+          Reporter.instance.run_metrics_collection(Config.instance, [web_metrics_collector, job_metrics_collector])
         }
 
         _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
         _(log_string).must_include "lib/judoscale/reporter.rb"
+        assert_requested stub
       end
     end
   end
