@@ -14,68 +14,13 @@ module Judoscale
     }
 
     describe ".start" do
-      it "initializes the reporter with all registered web and job metrics collectors when on the first dyno" do
+      it "initializes the reporter with the current configuration and loaded adapters" do
         reporter_mock = Minitest::Mock.new
         reporter_mock.expect :started?, false
-        reporter_mock.expect :start!, true do |config, metrics_collectors|
-          _(metrics_collectors.size).must_equal 2
-          _(metrics_collectors[0]).must_be_instance_of Test::TestWebMetricsCollector
-          _(metrics_collectors[1]).must_be_instance_of Test::TestJobMetricsCollector
-        end
+        reporter_mock.expect :start!, true, [Config.instance, Judoscale.adapters]
 
         Reporter.stub(:instance, reporter_mock) {
-          Reporter.start(Config.instance)
-        }
-
-        assert_mock reporter_mock
-      end
-
-      it "initializes the reporter only with registered web metrics collectors on subsequent dynos to avoid redundant worker metrics" do
-        Judoscale.configure { |config| config.dyno = "web.2" }
-
-        reporter_mock = Minitest::Mock.new
-        reporter_mock.expect :started?, false
-        reporter_mock.expect :start!, true do |config, metrics_collectors|
-          _(metrics_collectors.size).must_equal 1
-          _(metrics_collectors[0]).must_be_instance_of Test::TestWebMetricsCollector
-        end
-
-        Reporter.stub(:instance, reporter_mock) {
-          Reporter.start(Config.instance)
-        }
-
-        assert_mock reporter_mock
-      end
-
-      it "initializes the reporter only with registered job metrics collectors on the first non-web dyno to avoid unnecessary web collection attempts" do
-        Judoscale.configure { |config| config.dyno = "worker.1" }
-
-        reporter_mock = Minitest::Mock.new
-        reporter_mock.expect :started?, false
-        reporter_mock.expect :start!, true do |config, metrics_collectors|
-          _(metrics_collectors.size).must_equal 1
-          _(metrics_collectors[0]).must_be_instance_of Test::TestJobMetricsCollector
-        end
-
-        Reporter.stub(:instance, reporter_mock) {
-          Reporter.start(Config.instance)
-        }
-
-        assert_mock reporter_mock
-      end
-
-      it "respects explicitly disabled job adapters / metrics collectors via config when initializing the reporter" do
-        Judoscale.configure { |config| config.test_job_config.enabled = false }
-
-        reporter_mock = Minitest::Mock.new
-        reporter_mock.expect :started?, false
-        reporter_mock.expect :start!, true do |config, metrics_collectors|
-          _(metrics_collectors.size).must_equal 1
-          _(metrics_collectors[0]).must_be_instance_of Test::TestWebMetricsCollector
-        end
-
-        Reporter.stub(:instance, reporter_mock) {
-          Reporter.start(Config.instance)
+          Reporter.start
         }
 
         assert_mock reporter_mock
@@ -86,7 +31,7 @@ module Judoscale
         reporter_mock.expect :started?, true
 
         Reporter.stub(:instance, reporter_mock) {
-          Reporter.start(Config.instance)
+          Reporter.start
         }
 
         assert_mock reporter_mock
@@ -98,9 +43,9 @@ module Judoscale
         Reporter.instance.stop!
       }
 
-      def run_reporter_start_thread(collectors: [Test::TestWebMetricsCollector.new])
+      def run_reporter_start_thread
         stub_reporter_loop {
-          reporter_thread = Reporter.instance.start!(Config.instance, collectors)
+          reporter_thread = Reporter.instance.start!(Config.instance, Judoscale.adapters)
           reporter_thread.join
         }
       end
@@ -113,52 +58,84 @@ module Judoscale
         }
       end
 
-      it "sends a report with collected metrics" do
-        metrics_collector = Test::TestWebMetricsCollector.new
-        metrics = metrics_collector.collect
+      it "sends a report with collected metrics in the reporter thread loop" do
+        web_metrics = Test::TestWebMetricsCollector.new.collect
+        job_metrics = Test::TestJobMetricsCollector.new.collect
+        all_metrics = web_metrics + job_metrics
 
-        expected_body = Report.new(Judoscale.adapters, Config.instance, metrics).as_json
+        expected_body = Report.new(Judoscale.adapters, Config.instance, all_metrics).as_json
         stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
           .with(body: JSON.generate(expected_body))
 
-        run_reporter_start_thread(collectors: [metrics_collector])
+        run_reporter_start_thread
 
         assert_requested stub
       end
 
-      it "logs exceptions when reporting collected information" do
-        Reporter.instance.stub(:report!, ->(*) { raise "REPORT BOOM!" }) {
-          run_reporter_start_thread
-        }
+      it "initializes the reporter with all registered web and job metrics collectors when on the first dyno" do
+        run_loop_stub = proc do |config, metrics_collectors|
+          _(metrics_collectors.size).must_equal 2
+          _(metrics_collectors[0]).must_be_instance_of Test::TestWebMetricsCollector
+          _(metrics_collectors[1]).must_be_instance_of Test::TestJobMetricsCollector
+        end
 
-        _(log_string).must_include "Reporter error: #<RuntimeError: REPORT BOOM!>"
-        _(log_string).must_include "lib/judoscale/reporter.rb"
+        Reporter.instance.stub(:run_loop, run_loop_stub) {
+          Reporter.instance.start!(Config.instance, Judoscale.adapters)
+        }
       end
 
-      it "logs exceptions when collecting information" do
-        metrics_collector = Test::TestWebMetricsCollector.new
+      it "initializes the reporter only with registered web metrics collectors on subsequent dynos to avoid redundant worker metrics" do
+        Judoscale.configure { |config| config.dyno = "web.2" }
 
-        metrics_collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
-          run_reporter_start_thread(collectors: [metrics_collector])
+        run_loop_stub = proc do |config, metrics_collectors|
+          _(metrics_collectors.size).must_equal 1
+          _(metrics_collectors[0]).must_be_instance_of Test::TestWebMetricsCollector
+        end
+
+        Reporter.instance.stub(:run_loop, run_loop_stub) {
+          Reporter.instance.start!(Config.instance, Judoscale.adapters)
         }
+      end
 
-        _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
-        _(log_string).must_include "lib/judoscale/reporter.rb"
+      it "initializes the reporter only with registered job metrics collectors on the first non-web dyno to avoid unnecessary web collection attempts" do
+        Judoscale.configure { |config| config.dyno = "worker.1" }
+
+        run_loop_stub = proc do |config, metrics_collectors|
+          _(metrics_collectors.size).must_equal 1
+          _(metrics_collectors[0]).must_be_instance_of Test::TestJobMetricsCollector
+        end
+
+        Reporter.instance.stub(:run_loop, run_loop_stub) {
+          Reporter.instance.start!(Config.instance, Judoscale.adapters)
+        }
+      end
+
+      it "respects explicitly disabled job adapters / metrics collectors via config when initializing the reporter" do
+        Judoscale.configure { |config| config.test_job_config.enabled = false }
+
+        run_loop_stub = proc do |config, metrics_collectors|
+          _(metrics_collectors.size).must_equal 1
+          _(metrics_collectors[0]).must_be_instance_of Test::TestWebMetricsCollector
+        end
+
+        Reporter.instance.stub(:run_loop, run_loop_stub) {
+          Reporter.instance.start!(Config.instance, Judoscale.adapters)
+        }
       end
 
       it "does not run the reporter thread when the API url is not configured" do
         Judoscale.configure { |config| config.api_base_url = nil }
 
-        Thread.stub(:new, ->(*) { raise "SHOULD NOT BE CALLED" }) {
-          Reporter.instance.start!(Config.instance, [Test::TestWebMetricsCollector.new])
+        Reporter.instance.stub(:run_loop, ->(*) { raise "SHOULD NOT BE CALLED" }) {
+          Reporter.instance.start!(Config.instance, Judoscale.adapters)
         }
 
         _(log_string).must_include "Reporter not started: JUDOSCALE_URL is not set"
       end
 
       it "does not run the reporter thread when there are no metrics collectors" do
-        Thread.stub(:new, ->(*) { raise "SHOULD NOT BE CALLED" }) {
-          Reporter.instance.start!(Config.instance, [])
+        Reporter.instance.stub(:run_loop, ->(*) { raise "SHOULD NOT BE CALLED" }) {
+          Reporter.instance.start!(Config.instance, Judoscale.adapters.select { |a| a.metrics_collector.nil? })
         }
 
         _(log_string).must_include "Reporter not started: no metrics need to be collected on this dyno"
@@ -170,38 +147,61 @@ module Judoscale
 
         _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [judoscale-ruby, test_web, test_job]"
       end
+
+      it "logs only enabled adapters" do
+        Judoscale.configure { |config| config.test_job_config.enabled = false }
+
+        stub_request(:post, "http://example.com/api/test-token/v1/metrics")
+        run_reporter_start_thread
+
+        _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [judoscale-ruby, test_web]"
+      end
     end
 
-    describe "#report!" do
-      it "reports collected metrics to the API" do
-        metrics = [
-          Metric.new(:qt, 11, Time.at(1_000_000_001)), # web metric
-          Metric.new(:qt, 22, Time.at(1_000_000_002), "high") # worker metric
-        ]
+    describe "#run_metrics_collection" do
+      it "collects and report metrics to the API" do
+        web_metrics_collector = Test::TestWebMetricsCollector.new
+        job_metrics_collector = Test::TestJobMetricsCollector.new
+        all_metrics = web_metrics_collector.collect + job_metrics_collector.collect
 
-        expected_body = Report.new(Judoscale.adapters, Config.instance, metrics).as_json
+        expected_body = Report.new(Judoscale.adapters, Config.instance, all_metrics).as_json
         stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
           .with(body: JSON.generate(expected_body))
 
-        Reporter.instance.send :report!, Config.instance, metrics
+        Reporter.instance.run_metrics_collection Config.instance, [web_metrics_collector, job_metrics_collector]
 
         assert_requested stub
       end
 
-      it "logs reporter failures" do
+      it "logs reporting failures" do
+        metrics_collector = Test::TestWebMetricsCollector.new
+
         stub_request(:post, %r{http://example.com/api/test-token/v1/metrics})
           .to_return(body: "oops", status: 503)
 
-        metrics = [Metric.new(:qt, 1, Time.at(1_000_000_001))] # need some metric to trigger reporting
+        Reporter.instance.run_metrics_collection Config.instance, [metrics_collector]
 
-        log_io = StringIO.new
-        stub_logger = ::Logger.new(log_io)
+        _(log_string).must_include "ERROR -- : [Judoscale] Reporter failed: 503 - "
+      end
 
-        Reporter.instance.stub(:logger, stub_logger) {
-          Reporter.instance.send :report!, Config.instance, metrics
+      it "logs exceptions when reporting collected information" do
+        Reporter.instance.stub(:report, ->(*) { raise "REPORT BOOM!" }) {
+          Reporter.instance.run_metrics_collection(Config.instance, [Test::TestWebMetricsCollector.new])
         }
 
-        _(log_io.string).must_include "ERROR -- : Reporter failed: 503 - "
+        _(log_string).must_include "Reporter error: #<RuntimeError: REPORT BOOM!>"
+        _(log_string).must_include "lib/judoscale/reporter.rb"
+      end
+
+      it "logs exceptions when collecting information" do
+        metrics_collector = Test::TestWebMetricsCollector.new
+
+        metrics_collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
+          Reporter.instance.run_metrics_collection(Config.instance, [metrics_collector])
+        }
+
+        _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
+        _(log_string).must_include "lib/judoscale/reporter.rb"
       end
     end
   end

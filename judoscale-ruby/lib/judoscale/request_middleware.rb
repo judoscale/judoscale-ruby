@@ -2,7 +2,6 @@
 
 require "judoscale/metrics_store"
 require "judoscale/reporter"
-require "judoscale/config"
 require "judoscale/logger"
 require "judoscale/request_metrics"
 
@@ -15,15 +14,14 @@ module Judoscale
     end
 
     def call(env)
-      config = Config.instance
-      request_metrics = RequestMetrics.new(env, config)
+      request_metrics = RequestMetrics.new(env)
 
       unless request_metrics.ignore?
         queue_time = request_metrics.queue_time
         network_time = request_metrics.network_time
       end
 
-      Reporter.start(config)
+      Reporter.start
 
       if queue_time
         store = MetricsStore.instance

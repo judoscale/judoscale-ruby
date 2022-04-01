@@ -18,7 +18,7 @@ module Judoscale
       end
 
       def collect
-        []
+        [Metric.new(:qt, 2, Time.now, "test-queue")]
       end
     end
 

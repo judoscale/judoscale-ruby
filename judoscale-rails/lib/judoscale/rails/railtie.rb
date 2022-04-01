@@ -22,7 +22,7 @@ module Judoscale
       end
 
       config.after_initialize do
-        Reporter.start(Config.instance)
+        Reporter.start
       end
     end
   end

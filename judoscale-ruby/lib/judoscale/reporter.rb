@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "singleton"
+require "judoscale/config"
 require "judoscale/logger"
 require "judoscale/adapter_api"
 require "judoscale/job_metrics_collector"
@@ -11,19 +12,11 @@ module Judoscale
     include Singleton
     include Logger
 
-    def self.start(config)
-      unless instance.started?
-        adapters = Judoscale.adapters
-        metrics_collectors = adapters.map(&:metrics_collector)
-        metrics_collectors.compact!
-        metrics_collectors.select! { |ac| ac.collect?(config) }
-        metrics_collectors.map!(&:new)
-
-        instance.start!(config, metrics_collectors)
-      end
+    def self.start(config = Config.instance, adapters = Judoscale.adapters)
+      instance.start!(config, adapters) unless instance.started?
     end
 
-    def start!(config, metrics_collectors)
+    def start!(config, adapters)
       @pid = Process.pid
 
       if !config.api_base_url
@@ -31,27 +24,43 @@ module Judoscale
         return
       end
 
-      if metrics_collectors.empty?
+      enabled_adapters = adapters.select { |adapter|
+        adapter.metrics_collector.nil? || adapter.metrics_collector.collect?(config)
+      }
+      metrics_collectors_classes = enabled_adapters.map(&:metrics_collector)
+      metrics_collectors_classes.compact!
+
+      if metrics_collectors_classes.empty?
         logger.info "Reporter not started: no metrics need to be collected on this dyno"
         return
       end
 
-      adapters_msg = Judoscale.adapters.map(&:identifier).join(", ")
+      adapters_msg = enabled_adapters.map(&:identifier).join(", ")
       logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Adapters: [#{adapters_msg}]"
 
+      metrics_collectors = metrics_collectors_classes.map(&:new)
+
+      run_loop(config, metrics_collectors)
+    end
+
+    def run_loop(config, metrics_collectors)
       @_thread = Thread.new do
         loop do
-          metrics = metrics_collectors.flat_map do |metric_collector|
-            log_exceptions { metric_collector.collect }
-          end
-
-          log_exceptions { report!(config, metrics) }
+          run_metrics_collection(config, metrics_collectors)
 
           # Stagger reporting to spread out reports from many processes
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
           sleep config.report_interval_seconds * multiplier
         end
       end
+    end
+
+    def run_metrics_collection(config, metrics_collectors)
+      metrics = metrics_collectors.flat_map do |metric_collector|
+        log_exceptions { metric_collector.collect }
+      end
+
+      log_exceptions { report(config, metrics) }
     end
 
     def started?
@@ -66,10 +75,10 @@ module Judoscale
 
     private
 
-    def report!(config, metrics)
+    def report(config, metrics)
       report = Report.new(Judoscale.adapters, config, metrics)
       logger.info "Reporting #{report.metrics.size} metrics"
-      result = AdapterApi.new(config).report_metrics!(report.as_json)
+      result = AdapterApi.new(config).report_metrics(report.as_json)
 
       case result
       when AdapterApi::SuccessResponse
