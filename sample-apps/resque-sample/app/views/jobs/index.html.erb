@@ -15,11 +15,15 @@
 <% if notice %><p style="color:green"><%= notice %><% end %>
 <% if alert %><p style="color:red"><%= alert %><% end %>
 
-<ul>
-  <% @queues.each do |name, size| %>
-    <li><%= name %>: <%= size %></li>
-  <% end %>
-</ul>
+<% if @queues.any? %>
+  <ul>
+    <% @queues.each do |name, size| %>
+      <li><%= name %>: <%= size %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No queues found.</p>
+<% end %>
 
 <h3>Enqueue Jobs</h3>
 
