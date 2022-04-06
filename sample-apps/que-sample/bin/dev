@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Heroku sets the DYNO environment variable on every dyno.
+
+DYNO=web.1 heroku local
