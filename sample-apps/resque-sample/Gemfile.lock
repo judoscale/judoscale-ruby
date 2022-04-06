@@ -6,6 +6,13 @@ PATH
       railties
 
 PATH
+  remote: ../../judoscale-resque
+  specs:
+    judoscale-resque (0.1.0.alpha)
+      judoscale-ruby
+      resque (>= 2.0)
+
+PATH
   remote: ../../judoscale-ruby
   specs:
     judoscale-ruby (0.1.0.alpha)
@@ -42,6 +49,10 @@ GEM
       nokogiri (>= 1.5.9)
     method_source (1.0.0)
     minitest (5.15.0)
+    mono_logger (1.1.1)
+    multi_json (1.15.0)
+    mustermann (1.1.1)
+      ruby2_keywords (~> 0.0.1)
     nio4r (2.5.8)
     nokogiri (1.13.3-arm64-darwin)
       racc (~> 1.4)
@@ -51,6 +62,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.6.0)
     rack (2.2.3)
+    rack-protection (2.2.0)
+      rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails-dom-testing (2.0.3)
@@ -66,8 +79,23 @@ GEM
       thor (~> 1.0)
       zeitwerk (~> 2.5)
     rake (13.0.6)
+    redis (4.6.0)
+    redis-namespace (1.8.2)
+      redis (>= 3.0.4)
+    resque (2.2.1)
+      mono_logger (~> 1.0)
+      multi_json (~> 1.0)
+      redis-namespace (~> 1.6)
+      sinatra (>= 0.9.2)
+    ruby2_keywords (0.0.5)
+    sinatra (2.2.0)
+      mustermann (~> 1.0)
+      rack (~> 2.2)
+      rack-protection (= 2.2.0)
+      tilt (~> 2.0)
     sqlite3 (1.4.2)
     thor (1.2.1)
+    tilt (2.0.10)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     zeitwerk (2.5.4)
@@ -81,10 +109,12 @@ DEPENDENCIES
   actionpack (~> 7.0.1)
   actionview (~> 7.0.1)
   judoscale-rails!
+  judoscale-resque!
   judoscale-ruby!
   puma (~> 5.0)
   railties (~> 7.0.1)
+  resque
   sqlite3 (~> 1.4)
 
 BUNDLED WITH
-   2.3.9
+   2.3.8
