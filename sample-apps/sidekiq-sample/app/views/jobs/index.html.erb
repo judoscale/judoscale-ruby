@@ -1,4 +1,16 @@
-<h1>Sidekiq Queues</h1>
+<h1>Judoscale: Sidekiq Sample</h1>
+
+<p>
+  Judoscale is reporting metrics to <a href="https://judoscale-adapter-mock.requestcatcher.com" target="_blank" rel="noreferrer">https://judoscale-adapter-mock.requestcatcher.com</a>.
+</p>
+<p>
+  Open that page to watch as metrics are being reported, and reload this page multiple times to collect and report web metrics.
+</p>
+<p>
+  Enqueue test jobs using the form below. They will be slowly processed by Sidekiq, while Judoscale collects and reports available queue metrics.
+</p>
+
+<h2>Sidekiq Queues</h2>
 
 <% if notice %><p style="color:green"><%= notice %><% end %>
 <% if alert %><p style="color:red"><%= alert %><% end %>
@@ -9,7 +21,7 @@
   <% end %>
 </ul>
 
-<h2>Enqueue Jobs</h2>
+<h3>Enqueue Jobs</h3>
 
 <%= form_with scope: :job, url: jobs_path, method: :post do |f| %>
   <div>
