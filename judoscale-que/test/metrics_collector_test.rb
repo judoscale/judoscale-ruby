@@ -8,8 +8,8 @@ module Judoscale
   describe Que::MetricsCollector do
     def enqueue(queue, run_at)
       ActiveRecord::Base.connection.insert <<~SQL
-        INSERT INTO que_jobs (queue, run_at)
-        VALUES ('#{queue}', '#{run_at.iso8601(6)}')
+        INSERT INTO que_jobs (job_class, queue, run_at)
+        VALUES ('TestJob', '#{queue}', '#{run_at.iso8601(6)}')
       SQL
     end
 
