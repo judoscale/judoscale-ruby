@@ -79,7 +79,6 @@ GEM
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.2.0)
-    sqlite3 (1.4.2)
     thor (1.2.1)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
@@ -99,7 +98,6 @@ DEPENDENCIES
   puma (~> 5.0)
   railties (~> 7.0.1)
   sidekiq (~> 6.4)
-  sqlite3 (~> 1.4)
 
 BUNDLED WITH
    2.3.8
