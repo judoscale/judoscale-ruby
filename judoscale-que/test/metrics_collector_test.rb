@@ -29,10 +29,10 @@ module Judoscale
 
         _(metrics.size).must_equal 2
         _(metrics[0].queue_name).must_equal "default"
-        _(metrics[0].value).must_be_within_delta 11000, 5
+        _(metrics[0].value).must_be_within_delta 11000, 10
         _(metrics[0].identifier).must_equal :qt
         _(metrics[1].queue_name).must_equal "high"
-        _(metrics[1].value).must_be_within_delta 22222, 5
+        _(metrics[1].value).must_be_within_delta 22222, 10
         _(metrics[1].identifier).must_equal :qt
       end
 
