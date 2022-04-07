@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LogHelpers
   @log_io = StringIO.new
   @logger = ::Logger.new(@log_io)

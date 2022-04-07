@@ -20,10 +20,14 @@ module Judoscale
       end
 
       it "stops tracking metrics after 2 minutes, assuming there was an issue with reporting, to avoid memory growing indefinitely" do
-        store.push :qt, 1, Time.now
+        now = Time.now
+
+        freeze_time now do
+          store.push :qt, 1, Time.now
+        end
         _(store.metrics.size).must_equal 1
 
-        Time.stub(:now, Time.now + 121) do
+        freeze_time now + 121 do
           store.push :qt, 1, Time.now
         end
         _(store.metrics.size).must_equal 1

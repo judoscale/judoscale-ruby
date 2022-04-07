@@ -9,7 +9,7 @@ module Judoscale
     def enqueue(queue, run_at)
       ActiveRecord::Base.connection.insert <<~SQL
         INSERT INTO que_jobs (job_class, queue, run_at)
-        VALUES ('TestJob', '#{queue}', '#{run_at.iso8601(6)}')
+        VALUES ('TestJob', '#{queue}', '#{run_at.utc.iso8601(6)}')
       SQL
     end
 
@@ -22,17 +22,19 @@ module Judoscale
       }
 
       it "collects latency for each queue" do
-        enqueue("default", Time.now - 11)
-        enqueue("high", Time.now - 22.2222)
+        metrics = freeze_time do
+          enqueue("default", Time.now - 11)
+          enqueue("high", Time.now - 22.2222)
 
-        metrics = subject.collect
+          subject.collect
+        end
 
         _(metrics.size).must_equal 2
         _(metrics[0].queue_name).must_equal "default"
-        _(metrics[0].value).must_be_within_delta 11000, 10
+        _(metrics[0].value).must_be_within_delta 11000, 1
         _(metrics[0].identifier).must_equal :qt
         _(metrics[1].queue_name).must_equal "high"
-        _(metrics[1].value).must_be_within_delta 22222, 10
+        _(metrics[1].value).must_be_within_delta 22222, 1
         _(metrics[1].identifier).must_equal :qt
       end
 
