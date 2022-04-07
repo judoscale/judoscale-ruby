@@ -4,6 +4,6 @@ gemspec
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "activerecord", "~> 6.1"
-gem "sqlite3", platforms: :ruby
+gem "pg"
 gem "minitest"
 gem "rake"
