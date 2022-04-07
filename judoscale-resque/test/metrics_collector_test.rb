@@ -32,8 +32,16 @@ module Judoscale
         _(metrics[1].identifier).must_equal :qd
       end
 
-      it "always collects for the default queue" do
+      it "always collects for known queues" do
         queues = []
+
+        metrics = ::Resque.stub(:queues, queues) {
+          subject.collect
+        }
+
+        _(metrics).must_be :empty?
+
+        queues = ["default"]
         size = 0
 
         metrics = ::Resque.stub(:queues, queues) {
@@ -44,19 +52,6 @@ module Judoscale
 
         _(metrics.size).must_equal 1
         _(metrics[0].queue_name).must_equal "default"
-        _(metrics[0].value).must_equal 0
-        _(metrics[0].identifier).must_equal :qd
-      end
-
-      it "always collects for known queues" do
-        queues = ["low"]
-        size = 0
-
-        ::Resque.stub(:queues, queues) {
-          ::Resque.stub(:size, size) {
-            subject.collect
-          }
-        }
 
         queues = []
 
@@ -66,8 +61,8 @@ module Judoscale
           }
         }
 
-        _(metrics.size).must_equal 2
-        _(metrics.map(&:queue_name)).must_equal %w[default low]
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
       end
 
       it "logs debug information for each queue being collected" do

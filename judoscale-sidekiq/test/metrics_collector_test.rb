@@ -39,38 +39,27 @@ module Judoscale
         _(metrics[3].identifier).must_equal :qd
       end
 
-      it "always collects for the default queue" do
+      it "always collects for known queues" do
         queues = []
-        queue_default = SidekiqQueueStub.new(name: "default", latency: 0, size: 0)
 
         metrics = ::Sidekiq::Queue.stub(:all, queues) {
-          ::Sidekiq::Queue.stub(:new, queue_default) {
-            subject.collect
-          }
+          subject.collect
+        }
+
+        _(metrics).must_be :empty?
+
+        queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
+
+        metrics = ::Sidekiq::Queue.stub(:all, queues) {
+          subject.collect
         }
 
         _(metrics.size).must_equal 2
-        _(metrics[0].queue_name).must_equal "default"
-        _(metrics[0].value).must_equal 0
-        _(metrics[0].identifier).must_equal :qt
-        _(metrics[1].queue_name).must_equal "default"
-        _(metrics[1].value).must_equal 0
-        _(metrics[1].identifier).must_equal :qd
-      end
-
-      it "always collects for known queues" do
-        queues = [SidekiqQueueStub.new(name: "low", latency: 11, size: 1)]
-        queue_default = SidekiqQueueStub.new(name: "default", latency: 0, size: 0)
-
-        ::Sidekiq::Queue.stub(:all, queues) {
-          ::Sidekiq::Queue.stub(:new, queue_default) {
-            subject.collect
-          }
-        }
+        _(metrics.map(&:queue_name)).must_equal %w[default default]
 
         queues = []
-        queue_low = SidekiqQueueStub.new(name: "low", latency: 0, size: 0)
-        new_queues = {"low" => queue_low, "default" => queue_default}
+        queue_default = SidekiqQueueStub.new(name: "default", latency: 0, size: 0)
+        new_queues = {"default" => queue_default}
 
         metrics = ::Sidekiq::Queue.stub(:all, queues) {
           ::Sidekiq::Queue.stub(:new, ->(queue_name) { new_queues.fetch(queue_name) }) {
@@ -78,8 +67,8 @@ module Judoscale
           }
         }
 
-        _(metrics.size).must_equal 4
-        _(metrics.map(&:queue_name)).must_equal %w[default default low low]
+        _(metrics.size).must_equal 2
+        _(metrics.map(&:queue_name)).must_equal %w[default default]
       end
 
       it "logs debug information for each queue being collected" do
