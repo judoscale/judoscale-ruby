@@ -8,20 +8,18 @@ require "minitest/spec"
 
 require "active_record"
 
-ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
+DATABASE_NAME = "judoscale_que_test"
+DATABASE_USERNAME = "postgres"
+ENV["DATABASE_URL"] ||= "postgres://#{DATABASE_USERNAME}:@localhost/#{DATABASE_NAME}"
 
-ActiveRecord::Schema.define do
-  # standard:disable all
-  create_table "que_jobs" do |t|
-    t.integer "priority", limit: 2, default: 100, null: false
-    t.datetime "run_at", null: false
-    t.integer "error_count", default: 0, null: false
-    t.text "queue", default: "default", null: false
-    t.datetime "finished_at"
-    t.datetime "expired_at"
-  end
-   # standard:enable all
-end
+ActiveRecord::Tasks::DatabaseTasks.create_all
+Minitest.after_run {
+  ActiveRecord::Tasks::DatabaseTasks.drop_all
+}
+ActiveRecord::Base.establish_connection
+
+Que.connection = ActiveRecord
+Que::Migrations.migrate!(version: Que::Migrations::CURRENT_VERSION)
 
 module Judoscale::Test
 end
