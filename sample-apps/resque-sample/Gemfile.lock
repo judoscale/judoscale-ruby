@@ -93,7 +93,6 @@ GEM
       rack (~> 2.2)
       rack-protection (= 2.2.0)
       tilt (~> 2.0)
-    sqlite3 (1.4.2)
     thor (1.2.1)
     tilt (2.0.10)
     tzinfo (2.0.4)
@@ -114,7 +113,6 @@ DEPENDENCIES
   puma (~> 5.0)
   railties (~> 7.0.1)
   resque
-  sqlite3 (~> 1.4)
 
 BUNDLED WITH
    2.3.8

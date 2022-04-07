@@ -66,7 +66,6 @@ GEM
       thor (~> 1.0)
       zeitwerk (~> 2.5)
     rake (13.0.6)
-    sqlite3 (1.4.2)
     thor (1.2.1)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
@@ -84,7 +83,6 @@ DEPENDENCIES
   judoscale-ruby!
   puma (~> 5.0)
   railties (~> 7.0.1)
-  sqlite3 (~> 1.4)
 
 BUNDLED WITH
    2.3.9
