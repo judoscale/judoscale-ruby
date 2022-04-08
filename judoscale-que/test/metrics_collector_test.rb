@@ -13,11 +13,15 @@ module Judoscale
       SQL
     end
 
+    def clear_enqueued_jobs
+      ActiveRecord::Base.connection.execute("DELETE FROM que_jobs")
+    end
+
     subject { Que::MetricsCollector.new }
 
     describe "#collect" do
       after {
-        ActiveRecord::Base.connection.execute("DELETE FROM que_jobs")
+        clear_enqueued_jobs
         subject.clear_queues
       }
 
@@ -36,6 +40,24 @@ module Judoscale
         _(metrics[1].queue_name).must_equal "high"
         _(metrics[1].value).must_be_within_delta 22222, 1
         _(metrics[1].identifier).must_equal :qt
+      end
+
+      it "always collects for known queues" do
+        metrics = subject.collect
+
+        _(metrics).must_be :empty?
+
+        enqueue("default", Time.now)
+        metrics = subject.collect
+
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
+
+        clear_enqueued_jobs
+        metrics = subject.collect
+
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
       end
 
       it "logs debug information for each queue being collected" do

@@ -12,9 +12,13 @@ module Judoscale
   describe DelayedJob::MetricsCollector do
     subject { DelayedJob::MetricsCollector.new }
 
+    def clear_enqueued_jobs
+      ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs")
+    end
+
     describe "#collect" do
       after {
-        ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs")
+        clear_enqueued_jobs
         subject.clear_queues
       }
 
@@ -40,7 +44,11 @@ module Judoscale
         _(metrics[1].identifier).must_equal :qt
       end
 
-      it "reports for known queues that have no enqueued jobs" do
+      it "always collects for known queues" do
+        metrics = subject.collect
+
+        _(metrics).must_be :empty?
+
         Delayable.new.delay(queue: "default").perform
 
         metrics = subject.collect
@@ -48,7 +56,7 @@ module Judoscale
         _(metrics.size).must_equal 1
         _(metrics[0].queue_name).must_equal "default"
 
-        ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs")
+        clear_enqueued_jobs
         metrics = subject.collect
 
         _(metrics.size).must_equal 1
@@ -58,14 +66,6 @@ module Judoscale
       it "ignores future jobs" do
         Delayable.new.delay(queue: "default", run_at: Time.now.utc + 10).perform
 
-        metrics = subject.collect
-
-        _(metrics.size).must_equal 1
-        _(metrics[0].queue_name).must_equal "default"
-        _(metrics[0].value).must_equal 0
-      end
-
-      it "always collects for the default queue" do
         metrics = subject.collect
 
         _(metrics.size).must_equal 1
