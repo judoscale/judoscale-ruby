@@ -23,6 +23,11 @@ module Judoscale
           WHERE finished_at IS NULL
           AND expired_at IS NULL
           AND error_count = 0
+          AND id NOT IN (
+            SELECT (classid::bigint << 32) + objid::bigint AS id
+            FROM pg_locks
+            WHERE locktype = 'advisory'
+          )
           GROUP BY 1
         SQL
 

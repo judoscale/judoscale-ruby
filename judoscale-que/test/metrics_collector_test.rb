@@ -60,6 +60,21 @@ module Judoscale
         _(metrics[0].queue_name).must_equal "default"
       end
 
+      it "skips collecting metrics for jobs locked for execution" do
+        que_job_id = enqueue("default", Time.now)
+
+        ActiveRecord::Base.connection.execute("SELECT pg_advisory_lock(#{que_job_id})")
+        metrics = subject.collect
+
+        _(metrics).must_be :empty?
+
+        ActiveRecord::Base.connection.execute("SELECT pg_advisory_unlock(#{que_job_id})")
+        metrics = subject.collect
+
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
+      end
+
       it "logs debug information for each queue being collected" do
         use_config log_level: :debug do
           enqueue("default", Time.now)
