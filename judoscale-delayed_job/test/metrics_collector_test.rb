@@ -19,18 +19,24 @@ module Judoscale
       }
 
       it "collects latency for each queue" do
-        Delayable.new.delay(queue: "default").perform
-        sleep 0.15
-        Delayable.new.delay(queue: "high").perform
+        now = Time.now.utc
 
-        metrics = subject.collect
+        freeze_time now - 0.15 do
+          Delayable.new.delay(queue: "default").perform
+        end
+
+        metrics = freeze_time now do
+          Delayable.new.delay(queue: "high").perform
+
+          subject.collect
+        end
 
         _(metrics.size).must_equal 2
         _(metrics[0].queue_name).must_equal "default"
-        _(metrics[0].value).must_be_within_delta 150, 10
+        _(metrics[0].value).must_be_within_delta 150, 1
         _(metrics[0].identifier).must_equal :qt
         _(metrics[1].queue_name).must_equal "high"
-        _(metrics[1].value).must_be_within_delta 0, 5
+        _(metrics[1].value).must_be_within_delta 0, 1
         _(metrics[1].identifier).must_equal :qt
       end
 
@@ -50,7 +56,7 @@ module Judoscale
       end
 
       it "ignores future jobs" do
-        Delayable.new.delay(queue: "default", run_at: Time.now + 10).perform
+        Delayable.new.delay(queue: "default", run_at: Time.now.utc + 10).perform
 
         metrics = subject.collect
 
@@ -68,13 +74,15 @@ module Judoscale
       end
 
       it "collects metrics for jobs without a queue name" do
-        Delayable.new.delay.perform
+        metrics = freeze_time do
+          Delayable.new.delay.perform
 
-        metrics = subject.collect
+          subject.collect
+        end
 
         _(metrics.size).must_equal 1
         _(metrics[0].queue_name).must_equal "default"
-        _(metrics[0].value).must_be_within_delta 0, 5
+        _(metrics[0].value).must_be_within_delta 0, 1
       end
 
       it "logs debug information for each queue being collected" do

@@ -15,7 +15,7 @@ module Judoscale
     }
 
     it "tracks request metrics for each request" do
-      header "X-Request-Start", (Time.now.to_i - 10).to_s
+      header "X-Request-Start", (Time.now.utc.to_i - 10).to_s
 
       1.upto(3) { |i|
         get "/"

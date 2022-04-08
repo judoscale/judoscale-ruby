@@ -46,26 +46,31 @@ module Judoscale
         end
 
         describe "when the request includes HTTP_X_REQUEST_START" do
-          let(:five_seconds_ago_in_unix_millis) { (Time.now.to_f - 5) * 1000 }
+          let(:now) { Time.now.utc }
+          let(:five_seconds_ago_in_unix_millis) { (now.to_f - 5) * 1000 }
 
           before { env["HTTP_X_REQUEST_START"] = five_seconds_ago_in_unix_millis.to_i.to_s }
           after { MetricsStore.instance.clear }
 
           it "collects the request queue time" do
-            middleware.call(env)
+            freeze_time now do
+              middleware.call(env)
+            end
 
             metrics = MetricsStore.instance.flush
             _(metrics.length).must_equal 1
             _(metrics.first).must_be_instance_of Metric
-            _(metrics.first.value).must_be_within_delta 5000, 1
+            _(metrics.first.value).must_equal 5000
             _(metrics.first.identifier).must_equal :qt
           end
 
           it "records the queue time in the environment passed on" do
-            middleware.call(env)
+            freeze_time now do
+              middleware.call(env)
+            end
 
             _(app.env).must_include("judoscale.queue_time")
-            _(app.env["judoscale.queue_time"]).must_be_within_delta 5000, 1
+            _(app.env["judoscale.queue_time"]).must_equal 5000
           end
 
           it "logs debug information about the request and queue time" do
@@ -98,7 +103,7 @@ module Judoscale
               metrics = MetricsStore.instance.flush
               _(metrics.length).must_equal 2
               _(metrics.last).must_be_instance_of Metric
-              _(metrics.last.value).must_be_within_delta 50, 1
+              _(metrics.last.value).must_equal 50
               _(metrics.last.identifier).must_equal :nt
             end
 
@@ -106,7 +111,7 @@ module Judoscale
               middleware.call(env)
 
               _(app.env).must_include("judoscale.network_time")
-              _(app.env["judoscale.network_time"]).must_be_within_delta 50, 1
+              _(app.env["judoscale.network_time"]).must_equal 50
             end
           end
         end
