@@ -14,11 +14,15 @@ jobs:
       matrix:
         gemfile:
           - Gemfile
+          - Gemfile-activerecord-6-1
         ruby:
           - '2.6'
           - '2.7'
           - '3.0'
           - '3.1'
+        exclude:
+          - gemfile: Gemfile
+            ruby: '2.6'
     runs-on: ubuntu-latest
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
       BUNDLE_GEMFILE: ${{ github.workspace }}/judoscale-delayed_job/${{ matrix.gemfile }}

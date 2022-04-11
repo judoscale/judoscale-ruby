@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gemspec
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
-gem "activerecord", "~> 6.1"
+gem "activerecord"
 gem "pg"
 gem "minitest"
 gem "rake"
