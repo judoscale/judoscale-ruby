@@ -1,0 +1,8 @@
+source "https://rubygems.org"
+
+gemspec
+
+gem "judoscale-ruby", path: "../judoscale-ruby"
+gem "sidekiq", "~> 5.0"
+gem "minitest"
+gem "rake"
