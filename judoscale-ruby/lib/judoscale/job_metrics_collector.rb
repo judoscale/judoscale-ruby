@@ -86,6 +86,17 @@ module Judoscale
       end
     end
 
+    # Sample log line for each collection, assuming `sidekiq` as the identifier:
+    #   `sidekiq-qt.default=10ms sidekiq-qd.default=3 sidekiq-busy.default=1`
+    def log_collection(identifier, metrics)
+      return if metrics.empty?
+
+      messages = metrics.map { |metric|
+        "#{identifier}-#{metric.identifier}.#{metric.queue_name}=#{metric.value}#{"ms" if metric.identifier == :qt}"
+      }
+      logger.debug messages.join(" ")
+    end
+
     def track_busy_jobs?
       adapter_config.track_busy_jobs
     end

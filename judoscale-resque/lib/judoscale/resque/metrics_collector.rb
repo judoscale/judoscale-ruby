@@ -12,7 +12,6 @@ module Judoscale
 
       def collect
         metrics = []
-        log_msg = +""
         current_queues = ::Resque.queues
         # Ensure we continue to collect metrics for known queue names, even when nothing is
         # enqueued at the time. Without this, it will appears that the agent is no longer reporting.
@@ -22,10 +21,9 @@ module Judoscale
           next if queue.nil? || queue.empty?
           depth = ::Resque.size(queue)
           metrics.push Metric.new(:qd, depth, Time.now, queue)
-          log_msg << "resque-qd.#{queue}=#{depth} "
         end
 
-        logger.debug log_msg
+        log_collection(:resque, metrics)
         metrics
       end
     end
