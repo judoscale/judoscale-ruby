@@ -28,7 +28,7 @@ module Judoscale
       end
 
       def collect
-        store = []
+        metrics = []
         log_msg = +""
         t = Time.now.utc
 
@@ -41,12 +41,12 @@ module Judoscale
           latency_ms = run_at ? ((t - run_at) * 1000).ceil : 0
           latency_ms = 0 if latency_ms < 0
 
-          store.push Metric.new(:qt, latency_ms, t, queue)
+          metrics.push Metric.new(:qt, latency_ms, t, queue)
           log_msg << "que-qt.#{queue}=#{latency_ms}ms "
         end
 
         logger.debug log_msg unless log_msg.empty?
-        store
+        metrics
       end
     end
   end

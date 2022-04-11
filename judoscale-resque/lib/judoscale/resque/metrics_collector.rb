@@ -11,7 +11,7 @@ module Judoscale
       end
 
       def collect
-        store = []
+        metrics = []
         log_msg = +""
         current_queues = ::Resque.queues
         # Ensure we continue to collect metrics for known queue names, even when nothing is
@@ -21,12 +21,12 @@ module Judoscale
         queues.each do |queue|
           next if queue.nil? || queue.empty?
           depth = ::Resque.size(queue)
-          store.push Metric.new(:qd, depth, Time.now, queue)
+          metrics.push Metric.new(:qd, depth, Time.now, queue)
           log_msg << "resque-qd.#{queue}=#{depth} "
         end
 
         logger.debug log_msg
-        store
+        metrics
       end
     end
   end
