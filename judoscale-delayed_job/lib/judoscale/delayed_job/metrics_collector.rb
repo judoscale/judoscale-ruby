@@ -9,7 +9,7 @@ module Judoscale
     class MetricsCollector < Judoscale::JobMetricsCollector
       include ActiveRecordHelper
 
-      METRICS_SQL = <<~SQL
+      METRICS_SQL = ActiveRecordHelper.cleanse_sql(<<~SQL)
         SELECT COALESCE(queue, 'default'), min(run_at)
         FROM delayed_jobs
         WHERE locked_at IS NULL
@@ -17,7 +17,7 @@ module Judoscale
         GROUP BY queue
       SQL
 
-      BUSY_METRICS_SQL = <<~SQL
+      BUSY_METRICS_SQL = ActiveRecordHelper.cleanse_sql(<<~SQL)
         SELECT COALESCE(queue, 'default'), count(*)
         FROM delayed_jobs
         WHERE locked_at IS NOT NULL

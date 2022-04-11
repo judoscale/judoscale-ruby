@@ -9,7 +9,7 @@ module Judoscale
     class MetricsCollector < Judoscale::JobMetricsCollector
       include ActiveRecordHelper
 
-      METRICS_SQL = <<~SQL
+      METRICS_SQL = ActiveRecordHelper.cleanse_sql(<<~SQL)
         SELECT queue, min(run_at)
         FROM que_jobs
         WHERE finished_at IS NULL
