@@ -1,10 +1,15 @@
+# frozen_string_literal: true
+
 module Judoscale
   class JobMetricsCollector
     module ActiveRecordHelper
       # Cleanup any whitespace characters (including new lines) from the SQL for simpler logging.
       # Reference: ActiveSupport's `squish!` method. https://api.rubyonrails.org/classes/String.html#method-i-squish
       def self.cleanse_sql(sql)
-        sql.gsub(/[[:space:]]+/, " ").strip
+        sql = sql.dup
+        sql.gsub!(/[[:space:]]+/, " ")
+        sql.strip!
+        sql
       end
 
       private
