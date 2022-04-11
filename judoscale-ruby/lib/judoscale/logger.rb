@@ -11,8 +11,7 @@ module Judoscale
   end
 
   class LoggerProxy < Struct.new(:logger, :log_level)
-    TAG = "[Judoscale]"
-    DEBUG_TAG = " [DEBUG]"
+    TAG = "Judoscale"
 
     %w[ERROR WARN INFO DEBUG].each do |severity_name|
       severity_level = ::Logger::Severity.const_get(severity_name)
@@ -33,8 +32,9 @@ module Judoscale
     private
 
     def tag(msgs, tag_level: nil)
-      tag_level = " [#{tag_level}]" if tag_level
-      msgs.map { |msg| "#{TAG}#{tag_level} #{msg}" }.join("\n")
+      tag = +"[#{TAG}]"
+      tag << " [#{tag_level}]" if tag_level
+      msgs.map { |msg| "#{tag} #{msg}" }.join("\n")
     end
   end
 end
