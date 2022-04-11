@@ -1,0 +1,10 @@
+source "https://rubygems.org"
+
+gemspec
+
+gem "judoscale-ruby", path: "../judoscale-ruby"
+gem "que", "~> 2.0.0.beta1"
+gem "activerecord"
+gem "pg"
+gem "minitest"
+gem "rake"

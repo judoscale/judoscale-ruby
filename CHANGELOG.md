@@ -3,14 +3,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...main)
 
+- Enforce and test against supported versions officially across all job adapters:
+  - Sidekiq: 5, 6
+  - Resque: 2
+  - Que: 1
+  - DJ: 4
+- Prevent Que adapter from collecting metrics of jobs locked for execution. [Original issue reference](https://github.com/adamlogic/rails_autoscale_agent/issues/42) ([#85](https://github.com/judoscale/judoscale-ruby/pull/85))
+- Remove the collection of a "default" queue across all job adapters. ([#84](https://github.com/judoscale/judoscale-ruby/pull/84))
 - Make logging more consistent if it has been configured: ([#60](https://github.com/judoscale/judoscale-ruby/pull/60))
   - Without a configured log level, we'll just let the underlying logger (e.g. `Rails.logger` in the context of Rails) handle it.
   - With a configured log level, we:
     - skip if that level doesn't allow logging. (e.g. configured to INFO skips DEBUG logs by default)
     - let the underlying logger handle it if it allows the log level. (e.g. configured to INFO and logger has level INFO or DEBUG)
     - prefix our level to the message and use the underlying logger level if it doesn't allow ours, to ensure messages are logged. (e.g. configured to DEBUG and logger has level INFO, which wouldn't allow DEBUG messages)
-- Add sample app for `judoscale-sidekiq`. ([#56](https://github.com/judoscale/judoscale-ruby/pull/56))
-- Add sample app for `judoscale-rails`. ([#41](https://github.com/judoscale/judoscale-ruby/pull/41))
+- Add sample apps:
+  - `judoscale-rails` ([#41](https://github.com/judoscale/judoscale-ruby/pull/41))
+  - `judoscale-sidekiq` ([#56](https://github.com/judoscale/judoscale-ruby/pull/56))
+  - `judoscale-resque` ([#74](https://github.com/judoscale/judoscale-ruby/pull/74))
+  - `judoscale-delayed_job` ([#75](https://github.com/judoscale/judoscale-ruby/pull/75))
+  - `judoscale-que` ([#76](https://github.com/judoscale/judoscale-ruby/pull/76))
 - Split into multiple libraries/adapters: (including several internal refactorings & renamings to the core code to enable better separation and registration of the different libraries/adapters)
   - `judoscale-ruby` is the base Ruby library containing the core implementation used by all other libraries, and is responsible for running the metrics collection and reporting to Judoscale. ([#47](https://github.com/judoscale/judoscale-ruby/pull/47))
   - `judoscale-rails` integrates with Rails to initialize the reporter on app boot to send metrics to Judoscale, and register a middleware to collect web request metrics for reporting. ([#47](https://github.com/judoscale/judoscale-ruby/pull/47))

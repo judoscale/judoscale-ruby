@@ -8,7 +8,7 @@ PATH
   specs:
     judoscale-que (0.1.0.alpha)
       judoscale-ruby
-      que
+      que (>= 1.0)
 
 GEM
   remote: https://rubygems.org/
