@@ -9,6 +9,20 @@ module Judoscale
     class MetricsCollector < Judoscale::JobMetricsCollector
       include ActiveRecordHelper
 
+      METRICS_SQL = <<~SQL
+        SELECT queue, min(run_at)
+        FROM que_jobs
+        WHERE finished_at IS NULL
+        AND expired_at IS NULL
+        AND error_count = 0
+        AND id NOT IN (
+          SELECT (classid::bigint << 32) + objid::bigint AS id
+          FROM pg_locks
+          WHERE locktype = 'advisory'
+        )
+        GROUP BY 1
+      SQL
+
       def self.adapter_identifier
         :que
       end
@@ -17,21 +31,8 @@ module Judoscale
         store = []
         log_msg = +""
         t = Time.now.utc
-        sql = <<~SQL
-          SELECT queue, min(run_at)
-          FROM que_jobs
-          WHERE finished_at IS NULL
-          AND expired_at IS NULL
-          AND error_count = 0
-          AND id NOT IN (
-            SELECT (classid::bigint << 32) + objid::bigint AS id
-            FROM pg_locks
-            WHERE locktype = 'advisory'
-          )
-          GROUP BY 1
-        SQL
 
-        run_at_by_queue = select_rows_silently(sql).to_h
+        run_at_by_queue = select_rows_silently(METRICS_SQL).to_h
         self.queues |= run_at_by_queue.keys
 
         queues.each do |queue|

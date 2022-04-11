@@ -9,6 +9,23 @@ module Judoscale
     class MetricsCollector < Judoscale::JobMetricsCollector
       include ActiveRecordHelper
 
+      METRICS_SQL = <<~SQL
+        SELECT COALESCE(queue, 'default'), min(run_at)
+        FROM delayed_jobs
+        WHERE locked_at IS NULL
+        AND failed_at IS NULL
+        GROUP BY queue
+      SQL
+
+      BUSY_METRICS_SQL = <<~SQL
+        SELECT COALESCE(queue, 'default'), count(*)
+        FROM delayed_jobs
+        WHERE locked_at IS NOT NULL
+        AND locked_by IS NOT NULL
+        AND failed_at IS NULL
+        GROUP BY 1
+      SQL
+
       def self.adapter_identifier
         :delayed_job
       end
@@ -17,28 +34,12 @@ module Judoscale
         store = []
         log_msg = +""
         t = Time.now.utc
-        sql = <<~SQL
-          SELECT COALESCE(queue, 'default'), min(run_at)
-          FROM delayed_jobs
-          WHERE locked_at IS NULL
-          AND failed_at IS NULL
-          GROUP BY queue
-        SQL
 
-        run_at_by_queue = select_rows_silently(sql).to_h
+        run_at_by_queue = select_rows_silently(METRICS_SQL).to_h
         self.queues |= run_at_by_queue.keys
 
         if track_busy_jobs?
-          sql = <<~SQL
-            SELECT COALESCE(queue, 'default'), count(*)
-            FROM delayed_jobs
-            WHERE locked_at IS NOT NULL
-            AND locked_by IS NOT NULL
-            AND failed_at IS NULL
-            GROUP BY 1
-          SQL
-
-          busy_count_by_queue = select_rows_silently(sql).to_h
+          busy_count_by_queue = select_rows_silently(BUSY_METRICS_SQL).to_h
           self.queues |= busy_count_by_queue.keys
         end
 
