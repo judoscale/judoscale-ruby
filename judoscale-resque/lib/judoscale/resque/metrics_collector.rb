@@ -23,7 +23,7 @@ module Judoscale
           metrics.push Metric.new(:qd, depth, Time.now, queue)
         end
 
-        log_collection(:resque, metrics)
+        log_collection(metrics)
         metrics
       end
     end

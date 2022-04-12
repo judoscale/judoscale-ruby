@@ -43,7 +43,7 @@ module Judoscale
           metrics.push Metric.new(:qt, latency_ms, t, queue)
         end
 
-        log_collection(:que, metrics)
+        log_collection(metrics)
         metrics
       end
     end
