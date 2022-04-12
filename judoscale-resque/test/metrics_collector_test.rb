@@ -5,6 +5,12 @@ require "judoscale/resque/metrics_collector"
 require "securerandom"
 
 module Judoscale
+  ResqueWorkerStub = Struct.new(:job) do
+    def idle?
+      job.nil?
+    end
+  end
+
   describe Resque::MetricsCollector do
     subject { Resque::MetricsCollector.new }
 
@@ -85,11 +91,12 @@ module Judoscale
         use_adapter_config :resque, track_busy_jobs: true do
           queues = ["default", "high"]
           size = 2
+
           workers = [
-            ::Resque::Worker.new("default", "a-queue").tap { |worker| worker.working_on ::Resque::Job.new("default", nil) },
-            ::Resque::Worker.new("default", "b-queue").tap { |worker| worker.working_on ::Resque::Job.new("default", nil) },
-            ::Resque::Worker.new("high", "a-queue").tap { |worker| worker.working_on ::Resque::Job.new("high", nil) },
-            ::Resque::Worker.new("high", "b-queue") # idle, shouldn't be tracked
+            ResqueWorkerStub.new({"queue" => "default"}),
+            ResqueWorkerStub.new({"queue" => "default"}),
+            ResqueWorkerStub.new({"queue" => "high"}),
+            ResqueWorkerStub.new # idle, shouldn't be tracked
           ]
 
           metrics = ::Resque.stub(:queues, queues) {
@@ -115,7 +122,7 @@ module Judoscale
           use_adapter_config :resque, track_busy_jobs: true do
             queues = ["default"]
             size = 2
-            workers = [::Resque::Worker.new(*queues).tap { |worker| worker.working_on ::Resque::Job.new("default", nil) }]
+            workers = [ResqueWorkerStub.new({"queue" => "default"})]
 
             ::Resque.stub(:queues, queues) {
               ::Resque.stub(:size, size) {
