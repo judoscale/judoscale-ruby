@@ -7,35 +7,38 @@
 [![Build Status: judoscale-resque](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-resque-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-sidekiq](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-sidekiq-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 
-This gem works together with the [Judoscale](https://judoscale.com) Heroku add-on to automatically scale your web and worker dynos as needed. It gathers a minimal set of metrics for each request (and job queue), and periodically posts this data asynchronously to the Judoscale service.
+This gem works together with the [Judoscale](https://judoscale.com) Heroku add-on to scale your web and worker dynos automatically. It gathers a minimal set of metrics for each request (and job queue), and periodically posts this data asynchronously to the Judoscale service.
 
 ## Requirements
 
 - Rack-based app
 - Ruby 2.6 or newer
 
-## Getting Started
+## Getting started on Rails
 
 Add this line to your application's Gemfile and run `bundle`:
 
 ```ruby
-gem 'judoscale'
+gem 'judoscale-rails'
 ```
 
-This inserts the agent into your Rack middleware stack.
+This inserts the Judoscale Rack middleware and starts the asynchronous reporter.
 
-The agent will only communicate with Judoscale if a `JUDOSCALE_URL` ENV variable is present, which happens automatically when you install the Heroku add-on. The middleware does nothing if `JUDOSCALE_URL` is not present, such as in development or a staging app.
+The reporter will only communicate with Judoscale if a `JUDOSCALE_URL` ENV variable is present, which happens automatically on Heroku when you install the Judoscale add-on. The reporter does nothing if `JUDOSCALE_URL` is not present, such as in development or a staging app.
 
-## Non-Rails Rack apps
+## Getting started for non-Rails Rack apps
 
 You'll need to `require 'judoscale/request_middleware'` and insert the `Judoscale::RequestMiddleware` manually. Insert it before `Rack::Runtime` to ensure accuracy of request queue timings.
 
+`Judoscale::RequestMiddleware` will start the reporter when it processes the first request.
+
 ## What data is collected?
 
-The middleware agent runs in its own thread so your web requests are not impacted. The following data is submitted periodically to the Judoscale API:
+The reporter runs in its own thread so your web requests are not impacted. The following data is submitted periodically to the Judoscale API:
 
 - Ruby version
 - Rails version
+- Job library version (Sidekiq, etc.)
 - Gem version
 - Dyno name (example: web.1)
 - PID
@@ -45,7 +48,7 @@ Judoscale aggregates and stores this information to power the autoscaling algori
 
 ## Configuration
 
-Most Judoscale configurations are handled via the settings page on your Judoscale dashboard, but there a few ways you can directly change the behavior of the agent by creating an initializer in your app like the following:
+Most Judoscale configurations are handled via the settings page on your Judoscale dashboard, but there a few ways you can directly change the behavior of the adapter by creating an initializer in your app like the following:
 
 ```ruby
 # config/initializers/judoscale.rb
@@ -60,28 +63,16 @@ end
 
 ## Worker adapters
 
-Judoscale supports autoscaling worker dynos. Out of the box, four job backends are supported: Sidekiq, Resque, Delayed Job, and Que. The agent will automatically enable the appropriate worker adapter based on what you have installed in your app.
-
-In some scenarios you might want to override this behavior. Let's say you have both Sidekiq and Resque installed 🤷‍♂️, but you only want Judoscale to collect metrics for Sidekiq. You can override that via configuration:
+Judoscale supports autoscaling worker dynos. Out of the box, four job backends are supported: Sidekiq, Resque, Delayed Job, and Que. You will need to install an additional gem depending on your job backend:
 
 ```ruby
-# config/initializers/judoscale.rb
-Judoscale.configure do |config|
-  config.resque.enabled = false
-end
+gem 'judoscale-sidekiq'
+gem 'judoscale-resque'
+gem 'judoscale-delayed_job'
+gem 'judoscale-que'
 ```
 
-You can also disable collection of worker metrics altogether:
-
-```ruby
-# config/initializers/judoscale.rb
-Judoscale.configure do |config|
-  config.resque.enabled = false
-  config.sidekiq.enabled = false
-end
-```
-
-Each worker adapter have its own set of configurations as well:
+Each worker adapter has its own set of configurations. These configurations are all optional. (Replace "sidekiq" in the examples below for other worker adapters.)
 
 ```ruby
 # config/initializers/judoscale.rb
@@ -90,7 +81,8 @@ Judoscale.configure do |config|
   # you'll need to configure this setting for the specific worker adapter or reduce your number of queues.
   config.sidekiq.max_queues = 30
 
-  # Specify a list of queues to collect metrics from. Anything not explicitly listed will be excluded.
+  # Specify a list of queues to collect metrics from. This overrides the default behavior which
+  # automatically detects the queues. If specified, anything not explicitly listed will be excluded.
   # When setting the list of queues, `queue_filter` is ignored, but `max_queues` is still respected.
   config.sidekiq.queues = %w[low default high]
 
@@ -98,9 +90,12 @@ Judoscale.configure do |config|
   # Return a falsy value (`nil`/`false`) to exclude the queue, any other value will include it.
   config.sidekiq.queue_filter = ->(queue_name) { /custom/.match?(queue_name) }
 
-  # Enables reporting for active workers.
+  # Enables reporting for active (busy) workers.
   # See [Handling Long-Running Background Jobs](https://judoscale.com/docs/long-running-jobs/) in the Judoscale docs for more.
   config.sidekiq.track_busy_jobs = true
+
+  # Disable reporting for this worker adapter
+  config.sidekiq.enabled = false
 end
 ```
 

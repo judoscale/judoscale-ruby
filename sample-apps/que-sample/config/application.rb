@@ -33,5 +33,9 @@ module QueSample
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Use SQL schema format as required by Que:
+    # https://github.com/que-rb/que#additional-rails-specific-setup.
+    config.active_record.schema_format = :sql
   end
 end

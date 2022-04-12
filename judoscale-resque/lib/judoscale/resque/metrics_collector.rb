@@ -37,7 +37,7 @@ module Judoscale
           end
         end
 
-        log_collection(:resque, metrics)
+        log_collection(metrics)
         metrics
       end
     end
