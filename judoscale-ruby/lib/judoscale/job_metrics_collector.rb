@@ -86,11 +86,12 @@ module Judoscale
       end
     end
 
-    # Sample log line for each collection, assuming `sidekiq` as the identifier:
+    # Sample log line for each collection, assuming `sidekiq` as the adapter identifier:
     #   `sidekiq-qt.default=10ms sidekiq-qd.default=3 sidekiq-busy.default=1`
-    def log_collection(identifier, metrics)
+    def log_collection(metrics)
       return if metrics.empty?
 
+      identifier = self.class.adapter_identifier
       messages = metrics.map { |metric|
         "#{identifier}-#{metric.identifier}.#{metric.queue_name}=#{metric.value}#{"ms" if metric.identifier == :qt}"
       }

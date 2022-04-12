@@ -39,7 +39,7 @@ module Judoscale
           end
         end
 
-        log_collection(:sidekiq, metrics)
+        log_collection(metrics)
         metrics
       end
     end

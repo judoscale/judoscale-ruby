@@ -57,7 +57,7 @@ module Judoscale
           end
         end
 
-        log_collection(:dj, metrics)
+        log_collection(metrics)
         metrics
       end
     end
