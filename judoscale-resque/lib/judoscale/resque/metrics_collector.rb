@@ -13,14 +13,28 @@ module Judoscale
       def collect
         metrics = []
         current_queues = ::Resque.queues
-        # Ensure we continue to collect metrics for known queue names, even when nothing is
-        # enqueued at the time. Without this, it will appears that the agent is no longer reporting.
+
+        if track_busy_jobs?
+          busy_counts = Hash.new { |h, k| h[k] = 0 }
+
+          ::Resque.working.each do |worker|
+            if !worker.idle? && (job = worker.job)
+              busy_counts[job["queue"]] += 1
+            end
+          end
+        end
+
         self.queues |= current_queues
 
         queues.each do |queue|
           next if queue.nil? || queue.empty?
           depth = ::Resque.size(queue)
           metrics.push Metric.new(:qd, depth, Time.now, queue)
+
+          if track_busy_jobs?
+            busy_count = busy_counts[queue]
+            metrics.push Metric.new(:busy, busy_count, Time.now, queue)
+          end
         end
 
         log_collection(:resque, metrics)

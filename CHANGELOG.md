@@ -3,6 +3,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...main)
 
+- Add busy job tracking support for Resque: ([#92](https://github.com/judoscale/judoscale-ruby/pull/92))
 - Make logging more consistent if it has been configured: ([#60](https://github.com/judoscale/judoscale-ruby/pull/60))
   - Without a configured log level, we'll just let the underlying logger (e.g. `Rails.logger` in the context of Rails) handle it.
   - With a configured log level, we:

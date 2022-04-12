@@ -77,6 +77,56 @@ module Judoscale
           }
 
           _(log_string).must_match %r{resque-qd.default=2}
+          _(log_string).wont_match %r{resque-busy}
+        end
+      end
+
+      it "tracks busy jobs when the configuration is enabled, ignoring idle workers" do
+        use_adapter_config :resque, track_busy_jobs: true do
+          queues = ["default", "high"]
+          size = 2
+          workers = [
+            ::Resque::Worker.new("default", "a-queue").tap { |worker| worker.working_on ::Resque::Job.new("default", nil) },
+            ::Resque::Worker.new("default", "b-queue").tap { |worker| worker.working_on ::Resque::Job.new("default", nil) },
+            ::Resque::Worker.new("high", "a-queue").tap { |worker| worker.working_on ::Resque::Job.new("high", nil) },
+            ::Resque::Worker.new("high", "b-queue") # idle, shouldn't be tracked
+          ]
+
+          metrics = ::Resque.stub(:queues, queues) {
+            ::Resque.stub(:size, size) {
+              ::Resque.stub(:working, workers) {
+                subject.collect
+              }
+            }
+          }
+
+          _(metrics.size).must_equal 4
+          _(metrics[1].value).must_equal 2
+          _(metrics[1].queue_name).must_equal "default"
+          _(metrics[1].identifier).must_equal :busy
+          _(metrics[3].value).must_equal 1
+          _(metrics[3].queue_name).must_equal "high"
+          _(metrics[3].identifier).must_equal :busy
+        end
+      end
+
+      it "logs debug information about busy jobs being collected" do
+        use_config log_level: :debug do
+          use_adapter_config :resque, track_busy_jobs: true do
+            queues = ["default"]
+            size = 2
+            workers = [::Resque::Worker.new(*queues).tap { |worker| worker.working_on ::Resque::Job.new("default", nil) }]
+
+            ::Resque.stub(:queues, queues) {
+              ::Resque.stub(:size, size) {
+                ::Resque.stub(:working, workers) {
+                  subject.collect
+                }
+              }
+            }
+
+            _(log_string).must_match %r{resque-qd.default=2 resque-busy.default=1}
+          end
         end
       end
 
