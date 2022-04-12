@@ -91,8 +91,8 @@ module Judoscale
 
           subject.collect
 
-          _(log_string).must_match %r{dj-qt.default=\d+ms}
-          _(log_string).wont_match %r{dj-busy}
+          _(log_string).must_match %r{delayed_job-qt.default=\d+ms}
+          _(log_string).wont_match %r{delayed_job-busy}
         end
       end
 
@@ -125,7 +125,7 @@ module Judoscale
 
             subject.collect
 
-            _(log_string).must_match %r{dj-qt.default=.+ dj-busy.default=1}
+            _(log_string).must_match %r{delayed_job-qt.default=.+ delayed_job-busy.default=1}
           end
         end
       end

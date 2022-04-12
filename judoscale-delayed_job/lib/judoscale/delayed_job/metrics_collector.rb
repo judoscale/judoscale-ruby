@@ -57,7 +57,7 @@ module Judoscale
           end
         end
 
-        log_collection(:dj, metrics)
+        log_collection(:delayed_job, metrics)
         metrics
       end
     end
