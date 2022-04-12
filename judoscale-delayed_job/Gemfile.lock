@@ -1,12 +1,12 @@
 PATH
   remote: ../judoscale-ruby
   specs:
-    judoscale-ruby (0.1.0.alpha)
+    judoscale-ruby (1.0.0.rc1)
 
 PATH
   remote: .
   specs:
-    judoscale-delayed_job (0.1.0.alpha)
+    judoscale-delayed_job (1.0.0.rc1)
       delayed_job_active_record (>= 4.0)
       judoscale-ruby
 
@@ -52,4 +52,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   2.3.8
+   2.3.9

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    judoscale-ruby (0.1.0.alpha)
+    judoscale-ruby (1.0.0.rc1)
 
 GEM
   remote: https://rubygems.org/
@@ -33,4 +33,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.3.4
+   2.3.9
