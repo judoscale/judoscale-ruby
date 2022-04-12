@@ -11,8 +11,7 @@ module Judoscale
       end
 
       def collect
-        store = []
-        log_msg = +""
+        metrics = []
         queues_by_name = ::Sidekiq::Queue.all.each_with_object({}) do |queue, obj|
           obj[queue.name] = queue
         end
@@ -31,19 +30,17 @@ module Judoscale
           latency_ms = (queue.latency * 1000).ceil
           depth = queue.size
 
-          store.push Metric.new(:qt, latency_ms, Time.now, queue_name)
-          store.push Metric.new(:qd, depth, Time.now, queue_name)
-          log_msg << "sidekiq-qt.#{queue_name}=#{latency_ms}ms sidekiq-qd.#{queue_name}=#{depth} "
+          metrics.push Metric.new(:qt, latency_ms, Time.now, queue_name)
+          metrics.push Metric.new(:qd, depth, Time.now, queue_name)
 
           if track_busy_jobs?
             busy_count = busy_counts[queue_name]
-            store.push Metric.new(:busy, busy_count, Time.now, queue_name)
-            log_msg << "sidekiq-busy.#{queue_name}=#{busy_count} "
+            metrics.push Metric.new(:busy, busy_count, Time.now, queue_name)
           end
         end
 
-        logger.debug log_msg
-        store
+        log_collection(:sidekiq, metrics)
+        metrics
       end
     end
   end
