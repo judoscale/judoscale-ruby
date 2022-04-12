@@ -96,7 +96,7 @@ module Judoscale
         end
       end
 
-      it "tracks long running jobs when the configuration is enabled" do
+      it "tracks busy jobs when the configuration is enabled" do
         use_adapter_config :delayed_job, track_busy_jobs: true do
           %w[default default high].each_with_index { |queue, index|
             Delayable.new.delay(queue: queue).perform
@@ -117,7 +117,7 @@ module Judoscale
         end
       end
 
-      it "logs debug information about long running jobs being collected" do
+      it "logs debug information about busy jobs being collected" do
         use_config log_level: :debug do
           use_adapter_config :delayed_job, track_busy_jobs: true do
             Delayable.new.delay(queue: "default").perform

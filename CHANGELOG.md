@@ -3,6 +3,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...main)
 
+- Add busy job tracking support for Resque: ([#92](https://github.com/judoscale/judoscale-ruby/pull/92))
 - Enforce and test against supported versions officially across all job adapters:
   - Sidekiq: 5, 6
   - Resque: 2
