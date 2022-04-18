@@ -3,6 +3,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v1.0.0.rc1...main)
 
+- Add busy job tracking support for Que: ([#97](https://github.com/judoscale/judoscale-ruby/pull/97))
+
 ## [1.0.0.rc1](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...v1.0.0.rc1)
 
 - Add busy job tracking support for Resque: ([#92](https://github.com/judoscale/judoscale-ruby/pull/92))
