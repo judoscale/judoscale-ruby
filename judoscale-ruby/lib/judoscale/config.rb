@@ -49,13 +49,13 @@ module Judoscale
 
     include Singleton
 
-    @adapter_configs = {}
+    @adapter_configs = []
     class << self
       attr_reader :adapter_configs
     end
 
     def self.expose_adapter_config(config_instance)
-      @adapter_configs[config_instance.identifier] = config_instance
+      adapter_configs << config_instance
 
       define_method(config_instance.identifier) do
         config_instance
@@ -78,7 +78,7 @@ module Judoscale
       self.log_level = ENV["JUDOSCALE_LOG_LEVEL"]
       @logger = ::Logger.new($stdout)
 
-      self.class.adapter_configs.each_value(&:reset)
+      self.class.adapter_configs.each(&:reset)
     end
 
     def dyno=(dyno_string)
@@ -90,8 +90,8 @@ module Judoscale
     end
 
     def as_json
-      adapter_configs_json = self.class.adapter_configs.each_with_object({}) do |(identifier, config_instance), hash|
-        hash[identifier] = config_instance.as_json
+      adapter_configs_json = self.class.adapter_configs.each_with_object({}) do |config_instance, hash|
+        hash[config_instance.identifier] = config_instance.as_json
       end
 
       {
