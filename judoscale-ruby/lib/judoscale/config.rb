@@ -54,7 +54,7 @@ module Judoscale
       attr_reader :adapter_configs
     end
 
-    def self.expose_config(config_instance)
+    def self.expose_adapter_config(config_instance)
       @adapter_configs[config_instance.identifier] = config_instance
 
       define_method(config_instance.identifier) do

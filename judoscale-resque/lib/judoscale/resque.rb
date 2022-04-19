@@ -9,6 +9,5 @@ require "resque"
 Judoscale.add_adapter :"judoscale-resque", {
   adapter_version: Judoscale::Resque::VERSION,
   framework_version: ::Resque::VERSION
-}, metrics_collector: Judoscale::Resque::MetricsCollector
-
-Judoscale::Config.expose_config Judoscale::Config::JobAdapterConfig.new(:resque)
+}, metrics_collector: Judoscale::Resque::MetricsCollector,
+  expose_config: Judoscale::Config::JobAdapterConfig.new(:resque)
