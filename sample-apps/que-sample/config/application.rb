@@ -37,5 +37,10 @@ module QueSample
     # Use SQL schema format as required by Que:
     # https://github.com/que-rb/que#additional-rails-specific-setup.
     config.active_record.schema_format = :sql
+
+    # Log to STDOUT (so this sample app can be deployed to Heroku)
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 end

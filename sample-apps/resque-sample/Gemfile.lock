@@ -1,21 +1,21 @@
 PATH
   remote: ../../judoscale-rails
   specs:
-    judoscale-rails (0.1.0.alpha)
+    judoscale-rails (1.0.0.rc1)
       judoscale-ruby
       railties
 
 PATH
   remote: ../../judoscale-resque
   specs:
-    judoscale-resque (0.1.0.alpha)
+    judoscale-resque (1.0.0.rc1)
       judoscale-ruby
       resque (>= 2.0)
 
 PATH
   remote: ../../judoscale-ruby
   specs:
-    judoscale-ruby (0.1.0.alpha)
+    judoscale-ruby (1.0.0.rc1)
 
 GEM
   remote: https://rubygems.org/
@@ -57,6 +57,8 @@ GEM
     nokogiri (1.13.3-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.13.3-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.13.3-x86_64-linux)
       racc (~> 1.4)
     puma (5.6.4)
       nio4r (~> 2.0)
@@ -103,6 +105,7 @@ PLATFORMS
   arm64-darwin-20
   arm64-darwin-21
   x86_64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   actionpack (~> 7.0.1)
@@ -115,4 +118,4 @@ DEPENDENCIES
   resque
 
 BUNDLED WITH
-   2.3.8
+   2.3.9

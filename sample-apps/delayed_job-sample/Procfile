@@ -1,3 +1,4 @@
+release: bundle exec rails db:migrate
 proxy: npx judoscale-adapter-proxy-server
 rails: rails server
 dj: DYNO=worker.1 QUEUES=default,low,high bundle exec rake jobs:work

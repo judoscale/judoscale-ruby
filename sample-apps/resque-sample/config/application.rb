@@ -33,5 +33,10 @@ module ResqueSample
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Log to STDOUT (so this sample app can be deployed to Heroku)
+    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger.formatter = config.log_formatter
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 end
