@@ -17,6 +17,18 @@ module Judoscale
       ActiveRecord::Base.connection.execute("DELETE FROM que_jobs")
     end
 
+    def lock_enqueued_jobs(*enqueued_job_ids)
+      enqueued_job_ids.each do |job_id|
+        ActiveRecord::Base.connection.execute("SELECT pg_advisory_lock(#{job_id})")
+      end
+
+      yield
+    ensure
+      enqueued_job_ids.each do |job_id|
+        ActiveRecord::Base.connection.execute("SELECT pg_advisory_unlock(#{job_id})")
+      end
+    end
+
     subject { Que::MetricsCollector.new }
 
     describe "#collect" do
@@ -63,12 +75,12 @@ module Judoscale
       it "skips collecting metrics for jobs locked for execution" do
         que_job_id = enqueue("default", Time.now)
 
-        ActiveRecord::Base.connection.execute("SELECT pg_advisory_lock(#{que_job_id})")
-        metrics = subject.collect
+        metrics = lock_enqueued_jobs(que_job_id) do
+          subject.collect
+        end
 
         _(metrics).must_be :empty?
 
-        ActiveRecord::Base.connection.execute("SELECT pg_advisory_unlock(#{que_job_id})")
         metrics = subject.collect
 
         _(metrics.size).must_equal 1
@@ -82,6 +94,43 @@ module Judoscale
           subject.collect
 
           _(log_string).must_match %r{que-qt.default=\d+ms}
+          _(log_string).wont_match %r{que-busy.default}
+        end
+      end
+
+      it "tracks busy jobs when the configuration is enabled" do
+        use_adapter_config :que, track_busy_jobs: true do
+          que_job_ids = [
+            enqueue("default", Time.now),
+            enqueue("default", Time.now),
+            enqueue("high", Time.now)
+          ]
+
+          metrics = lock_enqueued_jobs(*que_job_ids) do
+            subject.collect
+          end
+
+          _(metrics.size).must_equal 4
+          _(metrics[1].value).must_equal 2
+          _(metrics[1].queue_name).must_equal "default"
+          _(metrics[1].identifier).must_equal :busy
+          _(metrics[3].value).must_equal 1
+          _(metrics[3].queue_name).must_equal "high"
+          _(metrics[3].identifier).must_equal :busy
+        end
+      end
+
+      it "logs debug information about busy jobs being collected" do
+        use_config log_level: :debug do
+          use_adapter_config :que, track_busy_jobs: true do
+            que_job_id = enqueue("default", Time.now)
+
+            lock_enqueued_jobs(que_job_id) do
+              subject.collect
+            end
+
+            _(log_string).must_match %r{que-qt.default=0ms que-busy.default=1}
+          end
         end
       end
 
