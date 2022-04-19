@@ -11,4 +11,4 @@ Judoscale.add_adapter :"judoscale-que", {
   framework_version: ::Que::VERSION
 }, metrics_collector: Judoscale::Que::MetricsCollector
 
-Judoscale::Config.add_adapter_config Judoscale::Config::JobAdapterConfig.new(:que)
+Judoscale::Config.expose_config Judoscale::Config::JobAdapterConfig.new(:que)
