@@ -15,9 +15,7 @@ module Judoscale
         dyno: config.dyno,
         pid: Process.pid,
         config: config.as_json,
-        adapters: adapters.each_with_object({}) { |adapter, hash|
-          hash.merge!(adapter.as_json)
-        },
+        adapters: adapters.reduce({}) { |hash, adapter| hash.merge!(adapter.as_json) },
         metrics: metrics.map { |metric|
           [
             metric.time.to_i,

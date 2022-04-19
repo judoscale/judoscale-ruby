@@ -39,10 +39,12 @@ module Judoscale
 
       def as_json
         {
-          max_queues: max_queues,
-          queues: queues,
-          queue_filter: queue_filter != DEFAULT_QUEUE_FILTER,
-          track_busy_jobs: track_busy_jobs
+          identifier => {
+            max_queues: max_queues,
+            queues: queues,
+            queue_filter: queue_filter != DEFAULT_QUEUE_FILTER,
+            track_busy_jobs: track_busy_jobs
+          }
         }
       end
     end
@@ -90,9 +92,7 @@ module Judoscale
     end
 
     def as_json
-      adapter_configs_json = self.class.adapter_configs.each_with_object({}) do |config_instance, hash|
-        hash[config_instance.identifier] = config_instance.as_json
-      end
+      adapter_configs_json = self.class.adapter_configs.reduce({}) { |hash, config| hash.merge!(config.as_json) }
 
       {
         log_level: log_level,
