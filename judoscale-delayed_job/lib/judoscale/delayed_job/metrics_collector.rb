@@ -26,8 +26,8 @@ module Judoscale
         GROUP BY 1
       SQL
 
-      def self.adapter_identifier
-        :delayed_job
+      def self.adapter_config
+        Judoscale::Config.instance.delayed_job
       end
 
       def collect

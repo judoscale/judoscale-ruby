@@ -6,8 +6,8 @@ require "judoscale/metric"
 module Judoscale
   module Resque
     class MetricsCollector < Judoscale::JobMetricsCollector
-      def self.adapter_identifier
-        :resque
+      def self.adapter_config
+        Judoscale::Config.instance.resque
       end
 
       def collect

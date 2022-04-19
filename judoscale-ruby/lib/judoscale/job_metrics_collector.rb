@@ -18,11 +18,11 @@ module Judoscale
     end
 
     def self.adapter_identifier
-      raise "Implement `self.adapter_identifier` in individual job metrics collectors."
+      adapter_config.identifier
     end
 
     def self.adapter_config
-      Config.instance.public_send(adapter_identifier)
+      raise "Implement `self.adapter_config` in individual job metrics collectors."
     end
 
     def initialize

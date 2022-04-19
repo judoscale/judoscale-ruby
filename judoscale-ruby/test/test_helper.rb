@@ -13,8 +13,8 @@ require "judoscale/web_metrics_collector"
 module Judoscale
   module Test
     class TestJobMetricsCollector < Judoscale::JobMetricsCollector
-      def self.adapter_identifier
-        :test_job_config
+      def self.adapter_config
+        Judoscale::Config.instance.test_job_config
       end
 
       def collect
