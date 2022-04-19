@@ -11,4 +11,4 @@ Judoscale.add_adapter :"judoscale-resque", {
   framework_version: ::Resque::VERSION
 }, metrics_collector: Judoscale::Resque::MetricsCollector
 
-Judoscale::Config.add_adapter_config :resque, Judoscale::Config::JobAdapterConfig
+Judoscale::Config.add_adapter_config Judoscale::Config::JobAdapterConfig.new(:resque)

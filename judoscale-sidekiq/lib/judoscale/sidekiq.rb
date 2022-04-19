@@ -11,4 +11,4 @@ Judoscale.add_adapter :"judoscale-sidekiq", {
   framework_version: ::Sidekiq::VERSION
 }, metrics_collector: Judoscale::Sidekiq::MetricsCollector
 
-Judoscale::Config.add_adapter_config :sidekiq, Judoscale::Config::JobAdapterConfig
+Judoscale::Config.add_adapter_config Judoscale::Config::JobAdapterConfig.new(:sidekiq)

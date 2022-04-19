@@ -22,9 +22,14 @@ module Judoscale
       UUID_REGEXP = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
       DEFAULT_QUEUE_FILTER = ->(queue_name) { !UUID_REGEXP.match?(queue_name) }
 
-      attr_accessor :enabled, :max_queues, :queues, :queue_filter, :track_busy_jobs
+      attr_accessor :identifier, :enabled, :max_queues, :queues, :queue_filter, :track_busy_jobs
 
-      def initialize
+      def initialize(identifier)
+        @identifier = identifier
+        reset
+      end
+
+      def reset
         @enabled = true
         @max_queues = 20
         @queues = []
@@ -49,9 +54,12 @@ module Judoscale
       attr_reader :adapter_configs
     end
 
-    def self.add_adapter_config(identifier, config_class)
-      @adapter_configs[identifier] = config_class
-      attr_reader identifier
+    def self.add_adapter_config(config_instance)
+      @adapter_configs[config_instance.identifier] = config_instance
+
+      define_method(config_instance.identifier) do
+        config_instance
+      end
     end
 
     attr_accessor :api_base_url, :report_interval_seconds, :max_request_size_bytes, :logger
@@ -70,9 +78,7 @@ module Judoscale
       self.log_level = ENV["JUDOSCALE_LOG_LEVEL"]
       @logger = ::Logger.new($stdout)
 
-      self.class.adapter_configs.each do |identifier, config_class|
-        instance_variable_set(:"@#{identifier}", config_class.new)
-      end
+      self.class.adapter_configs.each_value(&:reset)
     end
 
     def dyno=(dyno_string)
@@ -84,8 +90,8 @@ module Judoscale
     end
 
     def as_json
-      adapter_configs_json = self.class.adapter_configs.each_key.with_object({}) do |identifier, hash|
-        hash[identifier] = public_send(identifier).as_json
+      adapter_configs_json = self.class.adapter_configs.each_with_object({}) do |(identifier, config_instance), hash|
+        hash[identifier] = config_instance.as_json
       end
 
       {

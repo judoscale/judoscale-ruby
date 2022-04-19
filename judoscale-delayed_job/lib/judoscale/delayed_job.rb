@@ -11,4 +11,4 @@ Judoscale.add_adapter :"judoscale-delayed_job", {
   framework_version: Gem.loaded_specs["delayed_job_active_record"].version.to_s # DJ doesn't have a `VERSION` constant
 }, metrics_collector: Judoscale::DelayedJob::MetricsCollector
 
-Judoscale::Config.add_adapter_config :delayed_job, Judoscale::Config::JobAdapterConfig
+Judoscale::Config.add_adapter_config Judoscale::Config::JobAdapterConfig.new(:delayed_job)

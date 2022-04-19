@@ -31,7 +31,7 @@ module Judoscale
 
   add_adapter :test_web, {}, metrics_collector: Test::TestWebMetricsCollector
   add_adapter :test_job, {}, metrics_collector: Test::TestJobMetricsCollector
-  Config.add_adapter_config :test_job_config, Config::JobAdapterConfig
+  Config.add_adapter_config Config::JobAdapterConfig.new(:test_job_config)
 end
 
 Dir[File.expand_path("./support/*.rb", __dir__)].sort.each { |file| require file }
