@@ -6,8 +6,10 @@ require "judoscale/resque/version"
 require "judoscale/resque/metrics_collector"
 require "resque"
 
-Judoscale.add_adapter :"judoscale-resque", {
-  adapter_version: Judoscale::Resque::VERSION,
-  framework_version: ::Resque::VERSION
-}, metrics_collector: Judoscale::Resque::MetricsCollector,
+Judoscale.add_adapter :"judoscale-resque",
+  {
+    adapter_version: Judoscale::Resque::VERSION,
+    framework_version: ::Resque::VERSION
+  },
+  metrics_collector: Judoscale::Resque::MetricsCollector,
   expose_config: Judoscale::Config::JobAdapterConfig.new(:resque)
