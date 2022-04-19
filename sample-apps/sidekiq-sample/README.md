@@ -31,3 +31,27 @@ Open https://judoscale-adapter-mock.requestcatcher.com in a browser. The sample 
 Run the app. Both the Rails and Sidekiq processes will send an initial request to the API once the app boots up. These can be inspected via request catcher.
 
 Open http://localhost:5000 to see how many jobs are waiting on each of the available queues, and to enqueue sample jobs on those queues that will be processed by the Sidekiq server slowly.
+
+
+## Deploy this app to Heroku
+
+From this directory, run the following to create a new git repo and push it to Heroku:
+
+```sh
+git init
+git add .
+git commit -m "prep for Heroku"
+heroku create
+git push heroku main
+heroku addons:create heroku-redis
+```
+
+Heroku Redis takes a few minutes to provision. Run `heroku logs -t` to watch when the app restarts.
+
+To install Judoscale:
+
+```sh
+# scale up a worker dyno before doing this so Judoscale picks it up
+heroku ps:scale sidekiq=1
+heroku addons:create judoscale:trial
+```

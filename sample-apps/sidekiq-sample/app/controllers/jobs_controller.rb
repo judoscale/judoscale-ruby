@@ -1,3 +1,5 @@
+require 'sidekiq/api'
+
 class JobsController < ApplicationController
   QUEUES = %w(default low high)
 

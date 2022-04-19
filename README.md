@@ -4,7 +4,6 @@
 [![Build Status: judoscale-rails](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-rails-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-delayed_job](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-delayed_job-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-que](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-que-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
-[![Build Status: judoscale-resque](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-resque-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-sidekiq](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-sidekiq-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 
 This gem works together with the [Judoscale](https://judoscale.com) Heroku add-on to scale your web and worker dynos automatically. It gathers a minimal set of metrics for each request (and job queue), and periodically posts this data asynchronously to the Judoscale service.
@@ -63,13 +62,19 @@ end
 
 ## Worker adapters
 
-Judoscale supports autoscaling worker dynos. Out of the box, four job backends are supported: Sidekiq, Resque, Delayed Job, and Que. You will need to install an additional gem depending on your job backend:
+Judoscale supports autoscaling worker dynos. Out of the box, three job backends are supported: Sidekiq, Delayed Job, and Que. You will need to install an additional gem depending on your job backend:
 
 ```ruby
 gem 'judoscale-sidekiq'
-gem 'judoscale-resque'
 gem 'judoscale-delayed_job'
 gem 'judoscale-que'
+```
+
+If you're also including `gem 'judoscale-rails'`, the reporter will start automatically. If you're using one of these job backends without Rails, you'll need to start the reporter manually when your application boots:
+
+```ruby
+require "judoscale/reporter"
+Judoscale::Reporter.start
 ```
 
 Each worker adapter has its own set of configurations. These configurations are all optional. (Replace "sidekiq" in the examples below for other worker adapters.)
