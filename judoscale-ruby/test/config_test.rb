@@ -15,9 +15,7 @@ module Judoscale
         _(config.max_request_size_bytes).must_equal 100_000
         _(config.report_interval_seconds).must_equal 10
 
-        enabled_adapter_configs = Config.adapter_configs.keys.select { |identifier|
-          config.public_send(identifier).enabled
-        }
+        enabled_adapter_configs = Config.adapter_configs.select(&:enabled).map(&:identifier)
         _(enabled_adapter_configs).must_equal %i[test_job_config]
 
         enabled_adapter_configs.each do |adapter_name|
@@ -70,9 +68,7 @@ module Judoscale
       _(config.test_job_config.max_queues).must_equal 100
       _(config.test_job_config.track_busy_jobs).must_equal true
 
-      enabled_adapter_configs = Config.adapter_configs.keys.select { |identifier|
-        config.public_send(identifier).enabled
-      }
+      enabled_adapter_configs = Config.adapter_configs.select(&:enabled).map(&:identifier)
       _(enabled_adapter_configs).must_be :empty?
     end
 

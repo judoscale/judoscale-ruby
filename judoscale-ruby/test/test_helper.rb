@@ -13,8 +13,8 @@ require "judoscale/web_metrics_collector"
 module Judoscale
   module Test
     class TestJobMetricsCollector < Judoscale::JobMetricsCollector
-      def self.adapter_identifier
-        :test_job_config
+      def self.adapter_config
+        Judoscale::Config.instance.test_job_config
       end
 
       def collect
@@ -30,8 +30,8 @@ module Judoscale
   end
 
   add_adapter :test_web, {}, metrics_collector: Test::TestWebMetricsCollector
-  add_adapter :test_job, {}, metrics_collector: Test::TestJobMetricsCollector
-  Config.add_adapter_config :test_job_config, Config::JobAdapterConfig
+  add_adapter :test_job, {}, metrics_collector: Test::TestJobMetricsCollector,
+    expose_config: Config::JobAdapterConfig.new(:test_job_config)
 end
 
 Dir[File.expand_path("./support/*.rb", __dir__)].sort.each { |file| require file }

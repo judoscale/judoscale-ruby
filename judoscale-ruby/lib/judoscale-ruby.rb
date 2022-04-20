@@ -26,7 +26,8 @@ module Judoscale
     end
   end
 
-  def self.add_adapter(identifier, adapter_info, metrics_collector: nil)
+  def self.add_adapter(identifier, adapter_info, metrics_collector: nil, expose_config: nil)
+    Config.expose_adapter_config(expose_config) if expose_config
     @adapters << Adapter.new(identifier, adapter_info, metrics_collector)
   end
 

@@ -34,8 +34,8 @@ module Judoscale
         GROUP BY 1
       SQL
 
-      def self.adapter_identifier
-        :que
+      def self.adapter_config
+        Judoscale::Config.instance.que
       end
 
       def collect

@@ -22,9 +22,14 @@ module Judoscale
       UUID_REGEXP = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
       DEFAULT_QUEUE_FILTER = ->(queue_name) { !UUID_REGEXP.match?(queue_name) }
 
-      attr_accessor :enabled, :max_queues, :queues, :queue_filter, :track_busy_jobs
+      attr_accessor :identifier, :enabled, :max_queues, :queues, :queue_filter, :track_busy_jobs
 
-      def initialize
+      def initialize(identifier)
+        @identifier = identifier
+        reset
+      end
+
+      def reset
         @enabled = true
         @max_queues = 20
         @queues = []
@@ -34,24 +39,29 @@ module Judoscale
 
       def as_json
         {
-          max_queues: max_queues,
-          queues: queues,
-          queue_filter: queue_filter != DEFAULT_QUEUE_FILTER,
-          track_busy_jobs: track_busy_jobs
+          identifier => {
+            max_queues: max_queues,
+            queues: queues,
+            queue_filter: queue_filter != DEFAULT_QUEUE_FILTER,
+            track_busy_jobs: track_busy_jobs
+          }
         }
       end
     end
 
     include Singleton
 
-    @adapter_configs = {}
+    @adapter_configs = []
     class << self
       attr_reader :adapter_configs
     end
 
-    def self.add_adapter_config(identifier, config_class)
-      @adapter_configs[identifier] = config_class
-      attr_reader identifier
+    def self.expose_adapter_config(config_instance)
+      adapter_configs << config_instance
+
+      define_method(config_instance.identifier) do
+        config_instance
+      end
     end
 
     attr_accessor :api_base_url, :report_interval_seconds, :max_request_size_bytes, :logger
@@ -70,9 +80,7 @@ module Judoscale
       self.log_level = ENV["JUDOSCALE_LOG_LEVEL"]
       @logger = ::Logger.new($stdout)
 
-      self.class.adapter_configs.each do |identifier, config_class|
-        instance_variable_set(:"@#{identifier}", config_class.new)
-      end
+      self.class.adapter_configs.each(&:reset)
     end
 
     def dyno=(dyno_string)
@@ -84,9 +92,7 @@ module Judoscale
     end
 
     def as_json
-      adapter_configs_json = self.class.adapter_configs.each_key.with_object({}) do |identifier, hash|
-        hash[identifier] = public_send(identifier).as_json
-      end
+      adapter_configs_json = self.class.adapter_configs.reduce({}) { |hash, config| hash.merge!(config.as_json) }
 
       {
         log_level: log_level,
