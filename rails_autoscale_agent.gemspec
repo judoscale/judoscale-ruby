@@ -18,6 +18,13 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.5.0'
 
+  spec.add_dependency "judoscale-ruby"
+  spec.add_dependency "judoscale-rails"
+  spec.add_development_dependency "judoscale-sidekiq"
+  spec.add_development_dependency "judoscale-resque"
+  spec.add_development_dependency "judoscale-delayed_job"
+  spec.add_development_dependency "judoscale-que"
+
   spec.metadata = {
     "homepage_uri" => "https://railsautoscale.com",
     "bug_tracker_uri" => "https://github.com/adamlogic/rails_autoscale_agent/issues",

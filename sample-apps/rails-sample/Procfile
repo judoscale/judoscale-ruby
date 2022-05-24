@@ -1,0 +1,2 @@
+proxy: npx judoscale-adapter-proxy-server
+rails: rails server

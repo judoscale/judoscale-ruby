@@ -6,7 +6,7 @@ require 'logger'
 module RailsAutoscaleAgent
   module Logger
     def logger
-      @logger ||= LoggerProxy.new(Config.instance.logger)
+      @logger ||= ::Logger.new(STDOUT)
     end
   end
 

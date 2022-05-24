@@ -1,4 +1,4 @@
-# Rails Autoscale Agent
+#info Rails Autoscale Agent
 
 [![Build Status](https://travis-ci.org/adamlogic/rails_autoscale_agent.svg?branch=master)](https://travis-ci.org/adamlogic/rails_autoscale_agent)
 
