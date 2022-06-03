@@ -17,8 +17,8 @@
 
 <% if @queues.any? %>
   <ul>
-    <% @queues.each do |name, size| %>
-      <li><%= name %>: <%= size %></li>
+    <% @queues.each do |name, stats| %>
+      <li><%= name %>: <%= stats.map { |k, v| "#{k}: #{v}" }.join " | " %></li>
     <% end %>
   </ul>
 <% else %>

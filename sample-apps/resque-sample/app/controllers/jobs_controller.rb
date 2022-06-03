@@ -4,7 +4,7 @@ class JobsController < ApplicationController
   def index
     @available_queues = QUEUES.dup
     @queues = ::Resque.queues.sort_by { |q, _| @available_queues.index(q) }.each_with_object({}) do |queue, hash|
-      hash[queue] = Resque.size(queue)
+      hash[queue] = { size: Resque.size(queue), latency: Resque.latency(queue) }
     end
   end
 

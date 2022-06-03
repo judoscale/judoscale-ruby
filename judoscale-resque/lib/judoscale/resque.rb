@@ -5,6 +5,7 @@ require "judoscale/config"
 require "judoscale/resque/version"
 require "judoscale/resque/metrics_collector"
 require "resque"
+require "judoscale/resque/latency_extension"
 
 Judoscale.add_adapter :"judoscale-resque",
   {
