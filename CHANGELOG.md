@@ -5,6 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Refactor how the config is exposed and accessed from job adapters / collectors to simplify and remove some indirection. ([#99](https://github.com/judoscale/judoscale-ruby/pull/99))
 - Add busy job tracking support for Que: ([#97](https://github.com/judoscale/judoscale-ruby/pull/97))
+- Add queue latency support to Resque via an extension, since it doesn't support it natively. ([#100](https://github.com/judoscale/judoscale-ruby/pull/100))
 
 ## [1.0.0.rc1](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...v1.0.0.rc1)
 

@@ -29,7 +29,10 @@ module Judoscale
         queues.each do |queue|
           next if queue.nil? || queue.empty?
           depth = ::Resque.size(queue)
+          latency = (::Resque.latency(queue) * 1000).ceil
+
           metrics.push Metric.new(:qd, depth, Time.now, queue)
+          metrics.push Metric.new(:qt, latency, Time.now, queue)
 
           if track_busy_jobs?
             busy_count = busy_counts[queue]
