@@ -1,13 +1,13 @@
 PATH
-  remote: ../judoscale-ruby
+  remote: ../rails-autoscale-core
   specs:
-    judoscale-ruby (1.0.0.rc1)
+    rails-autoscale-core (1.0.0.rc1)
 
 PATH
   remote: .
   specs:
-    judoscale-sidekiq (1.0.0.rc1)
-      judoscale-ruby
+    rails-autoscale-sidekiq (1.0.0.rc1)
+      rails-autoscale-core
       sidekiq (>= 5.0)
 
 GEM
@@ -15,13 +15,13 @@ GEM
   specs:
     connection_pool (2.2.5)
     minitest (5.15.0)
-    rack (2.2.3)
+    rack (2.2.4)
     rake (13.0.6)
-    redis (4.6.0)
-    sidekiq (6.4.1)
+    redis (4.7.1)
+    sidekiq (6.5.4)
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
-      redis (>= 4.2.0)
+      redis (>= 4.5.0)
 
 PLATFORMS
   arm64-darwin-20
@@ -30,9 +30,9 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  judoscale-ruby!
-  judoscale-sidekiq!
   minitest
+  rails-autoscale-core!
+  rails-autoscale-sidekiq!
   rake
 
 BUNDLED WITH

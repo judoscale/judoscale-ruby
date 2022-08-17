@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "rails_autoscale/rails/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "rails-autoscale-rails"
+  spec.name = "rails-autoscale-web"
   spec.version = RailsAutoscale::Rails::VERSION
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
   spec.email = ["adam@adamlogic.com"]

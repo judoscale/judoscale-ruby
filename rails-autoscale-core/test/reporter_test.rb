@@ -190,7 +190,7 @@ module RailsAutoscale
         }
 
         _(log_string).must_include "Reporter error: #<RuntimeError: REPORT BOOM!>"
-        _(log_string).must_include "lib/judoscale/reporter.rb"
+        _(log_string).must_include "lib/rails_autoscale/reporter.rb"
       end
 
       it "logs exceptions when collecting information, while still reporting other metrics successfully" do
@@ -207,7 +207,7 @@ module RailsAutoscale
         }
 
         _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
-        _(log_string).must_include "lib/judoscale/reporter.rb"
+        _(log_string).must_include "lib/rails_autoscale/reporter.rb"
         assert_requested stub
       end
     end
