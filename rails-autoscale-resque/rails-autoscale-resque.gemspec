@@ -9,13 +9,13 @@ Gem::Specification.new do |spec|
   spec.email = ["adam@adamlogic.com"]
 
   spec.summary = "This gem provides Resque integration with the Rails Autoscale autoscaling add-on for Heroku."
-  spec.homepage = "https://RailsAutoscale.com"
+  spec.homepage = "https://railsautoscale.com"
   spec.license = "MIT"
 
   spec.metadata = {
-    "homepage_uri" => "https://RailsAutoscale.com",
+    "homepage_uri" => "https://railsautoscale.com",
     "bug_tracker_uri" => "https://github.com/rails-autoscale/rails-autoscale-gems/issues",
-    "documentation_uri" => "https://RailsAutoscale.com/docs",
+    "documentation_uri" => "https://railsautoscale.com/docs",
     "changelog_uri" => "https://github.com/rails-autoscale/rails-autoscale-gems/blob/main/CHANGELOG.md",
     "source_code_uri" => "https://github.com/rails-autoscale/rails-autoscale-gems"
   }

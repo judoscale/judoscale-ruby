@@ -76,7 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support for [long-running jobs](https://RailsAutoscale.com/docs/long-running-jobs/) in Sidekiq and Delayed Job.
+- Add support for [long-running jobs](https://railsautoscale.com/docs/long-running-jobs/) in Sidekiq and Delayed Job.
 - Handle x-request-start measured in seconds (instead of milliseconds) to support nginx buildpack ([cd092f3](https://github.com/adamlogic/rails_autoscale_agent/commit/cd092f38718abf5ffaea866bcae7831d4c910ffd))
 - Override worker adapter config via env var ([75dd06b](https://github.com/adamlogic/rails_autoscale_agent/commit/75dd06b2a7ff4eeab829eec24d503dc067c8fe32))
 
