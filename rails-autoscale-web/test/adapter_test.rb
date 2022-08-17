@@ -4,7 +4,7 @@ require "test_helper"
 require "rails_autoscale/report"
 
 module RailsAutoscale
-  describe Rails do
+  describe Web do
     it "adds itself as an adapter with information to be reported to the Rails Autoscale API" do
       adapter = RailsAutoscale.adapters.detect { |adapter| adapter.identifier == :"rails-autoscale-web" }
       _(adapter).wont_be_nil

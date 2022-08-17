@@ -3,7 +3,7 @@
 require "test_helper"
 
 module RailsAutoscale
-  describe RailsAutoscale::Rails::Railtie do
+  describe RailsAutoscale::Web::Railtie do
     it "uses the Rails.logger when initialized though Rails" do
       _(::RailsAutoscale::Config.instance.logger).must_equal ::Rails.logger
     end

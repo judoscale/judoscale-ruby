@@ -1,10 +1,10 @@
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "rails_autoscale/rails/version"
+require "rails_autoscale/web/version"
 
 Gem::Specification.new do |spec|
   spec.name = "rails-autoscale-web"
-  spec.version = RailsAutoscale::Rails::VERSION
+  spec.version = RailsAutoscale::Web::VERSION
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
   spec.email = ["adam@adamlogic.com"]
 

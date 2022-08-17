@@ -8,7 +8,7 @@ require "rails_autoscale/logger"
 require "rails_autoscale/reporter"
 
 module RailsAutoscale
-  module Rails
+  module Web
     class Railtie < ::Rails::Railtie
       include RailsAutoscale::Logger
 
