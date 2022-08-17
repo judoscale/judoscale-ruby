@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Adam McCrea"]
   spec.email         = ["adam@adamlogic.com"]
 
-  spec.summary       = "This gem works with the Rails Autoscale Heroku add-on to automatically scale your web and worker dynos."
+  spec.summary       = "[DEPRECATED] Please use the rails-autoscale-web gem"
   spec.homepage      = "https://railsautoscale.com"
   spec.license       = "MIT"
 
@@ -17,12 +17,17 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.required_ruby_version = '>= 2.5.0'
+  spec.post_install_message  = <<~MSG
+    DEPRECATION WARNING: rails_autoscale_agent is no longer maintained.
+    Please install rails-autoscale-web instead.
+    See https://github.com/rails-autoscale/rails-autoscale-gems for more.
+  MSG
 
   spec.metadata = {
     "homepage_uri" => "https://railsautoscale.com",
-    "bug_tracker_uri" => "https://github.com/adamlogic/rails_autoscale_agent/issues",
+    "bug_tracker_uri" => "https://github.com/rails-autoscale/rails-autoscale-gems/issues",
     "documentation_uri" => "https://railsautoscale.com/docs",
-    "changelog_uri" => "https://github.com/adamlogic/rails_autoscale_agent/blob/master/CHANGELOG.md",
-    "source_code_uri" => "https://github.com/adamlogic/rails_autoscale_agent",
+    "changelog_uri" => "https://github.com/rails-autoscale/rails-autoscale-gems/blob/master/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/rails-autoscale/rails-autoscale-gems",
   }
 end

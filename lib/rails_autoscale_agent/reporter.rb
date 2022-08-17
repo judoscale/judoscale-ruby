@@ -78,6 +78,7 @@ module RailsAutoscaleAgent
         config.max_request_size = result.data['max_request_size'] if result.data['max_request_size']
         worker_adapters_msg = worker_adapters.map { |a| a.class.name }.join(', ')
         logger.info "Reporter starting, will report every #{config.report_interval} seconds or so. Worker adapters: [#{worker_adapters_msg}]"
+        logger.warn "[DEPRECATION WARNING] rails_autoscale_agent is no longer maintained. Please switch to rails-autoscale-web as soon as possible."
       when AutoscaleApi::FailureResponse
         logger.error "Reporter failed to register: #{result.failure_message}"
       end
