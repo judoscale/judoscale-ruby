@@ -73,11 +73,11 @@ module RailsAutoscale
 
     def reset
       # Allow the API URL to be configured - needed for testing.
-      @api_base_url = ENV["RAILS_AUTOSCALE_URL"]
+      @api_base_url = ENV["RAILS_AUTOSCALE_URL"] || ENV["JUDOSCALE_URL"]
       self.dyno = ENV["DYNO"]
       @max_request_size_bytes = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval_seconds = 10
-      self.log_level = ENV["RAILS_AUTOSCALE_LOG_LEVEL"]
+      self.log_level = ENV["RAILS_AUTOSCALE_LOG_LEVEL"] || ENV["JUDOSCALE_LOG_LEVEL"]
       @logger = ::Logger.new($stdout)
 
       self.class.adapter_configs.each(&:reset)

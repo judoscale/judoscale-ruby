@@ -36,3 +36,5 @@ module RailsAutoscale
     language_version: RUBY_VERSION
   }
 end
+
+Judoscale = RailsAutoscale

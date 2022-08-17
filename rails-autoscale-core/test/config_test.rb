@@ -86,5 +86,27 @@ module RailsAutoscale
         }
       })
     end
+
+    it "supports Judoscale env vars" do
+      env = {
+        "JUDOSCALE_URL" => "https://custom.example.com",
+        "JUDOSCALE_LOG_LEVEL" => "debug"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.api_base_url).must_equal "https://custom.example.com"
+        _(config.log_level).must_equal ::Logger::Severity::DEBUG
+      end
+    end
+
+    it "support configuring via Judoscale.configure" do
+      Judoscale.configure do |config|
+        config.report_interval_seconds = 20
+
+        config = Config.instance
+        _(config.report_interval_seconds).must_equal 20
+      end
+    end
   end
 end
