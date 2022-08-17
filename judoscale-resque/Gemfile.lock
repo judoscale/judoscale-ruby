@@ -1,0 +1,54 @@
+PATH
+  remote: ../judoscale-ruby
+  specs:
+    judoscale-ruby (1.0.0.rc1)
+
+PATH
+  remote: .
+  specs:
+    judoscale-resque (1.0.0.rc1)
+      judoscale-ruby
+      resque (>= 2.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    minitest (5.15.0)
+    mono_logger (1.1.1)
+    multi_json (1.15.0)
+    mustermann (1.1.1)
+      ruby2_keywords (~> 0.0.1)
+    rack (2.2.3)
+    rack-protection (2.2.0)
+      rack
+    rake (13.0.6)
+    redis (4.6.0)
+    redis-namespace (1.8.2)
+      redis (>= 3.0.4)
+    resque (2.2.1)
+      mono_logger (~> 1.0)
+      multi_json (~> 1.0)
+      redis-namespace (~> 1.6)
+      sinatra (>= 0.9.2)
+    ruby2_keywords (0.0.5)
+    sinatra (2.2.0)
+      mustermann (~> 1.0)
+      rack (~> 2.2)
+      rack-protection (= 2.2.0)
+      tilt (~> 2.0)
+    tilt (2.0.10)
+
+PLATFORMS
+  arm64-darwin-20
+  arm64-darwin-21
+  x86_64-darwin-21
+  x86_64-linux
+
+DEPENDENCIES
+  judoscale-resque!
+  judoscale-ruby!
+  minitest
+  rake
+
+BUNDLED WITH
+   2.3.9

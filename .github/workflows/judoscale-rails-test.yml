@@ -1,0 +1,35 @@
+name: judoscale-rails tests
+defaults:
+  run:
+    working-directory: judoscale-rails
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        gemfile:
+          - Gemfile
+          - Gemfile-rails-6-1
+        ruby:
+          - '2.6'
+          - '2.7'
+          - '3.0'
+          - '3.1'
+        exclude:
+          - gemfile: Gemfile
+            ruby: '2.6'
+    runs-on: ubuntu-latest
+    env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
+      BUNDLE_GEMFILE: ${{ github.workspace }}/judoscale-rails/${{ matrix.gemfile }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true # runs bundle install and caches installed gems automatically
+      - run: bundle exec rake

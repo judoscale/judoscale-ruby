@@ -1,10 +1,10 @@
 /.bundle/
 /.yardoc
-/Gemfile.lock
 /_yardoc/
 /coverage/
 /doc/
-/pkg/
+**/pkg/
 /spec/reports/
 /tmp/
 /log/
+/judoscale-*/Gemfile-*.lock

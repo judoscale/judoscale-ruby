@@ -3,4 +3,9 @@ set -euo pipefail
 IFS=$'\n\t'
 set -vx
 
-bundle install
+for folder in ./judoscale-*; do
+    echo "-> $folder"
+    cd $folder
+    bundle install --quiet
+    cd ..
+done
