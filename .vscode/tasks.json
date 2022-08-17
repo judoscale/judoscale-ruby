@@ -4,55 +4,14 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "test: all",
-      "group": "test",
-      "command": "bundle",
-      "args": ["exec", "rake test"],
+      "label": "test",
+      "type": "shell",
+      "command": "bundle exec rake test",
+      "options": {
+        "cwd": "${fileDirname}"
+      },
       "runOptions": {
         "reevaluateOnRerun": false
-      },
-      "problemMatcher": {
-        "owner": "ruby",
-        "fileLocation": ["relative", "${workspaceRoot}"],
-        "severity": "error",
-        "pattern": [
-          {
-            "regexp": "^\\s{7}(.*)$",
-            "message": 1
-          },
-          {
-            "regexp": "^\\s+#\\s(\\./.*):(\\d+):(in.*)$",
-            "file": 1,
-            "line": 2,
-            "code": 3
-          }
-        ]
-      }
-    },
-    {
-      "label": "test: file",
-      "group": "test",
-      "command": "bundle",
-      "args": ["exec", "rake test TEST=${relativeFile}"],
-      "runOptions": {
-        "reevaluateOnRerun": false
-      },
-      "problemMatcher": {
-        "owner": "ruby",
-        "fileLocation": ["relative", "${workspaceRoot}"],
-        "severity": "error",
-        "pattern": [
-          {
-            "regexp": "^\\s{7}(.*)$",
-            "message": 1
-          },
-          {
-            "regexp": "^\\s+#\\s(\\./.*):(\\d+):(in.*)$",
-            "file": 1,
-            "line": 2,
-            "code": 3
-          }
-        ]
       }
     }
   ]
