@@ -1,6 +1,6 @@
-# Sample app for judoscale-resque gem
+# Sample app for rails-autoscale-resque gem
 
-This is a minimal Rails app to test the judoscale-resque gem.
+This is a minimal Rails app to test the rails-autoscale-resque gem.
 
 ## Prerequisites
 
@@ -20,13 +20,13 @@ Run `./bin/setup` install necessary dependencies. This will...
 Run `./bin/dev` to run the app in development mode. This will...
 
 - Use `heroku local` and a `Procfile` to start the following processes:
-  - A [tiny proxy server](https://github.com/judoscale/rails-autoscale-adapter-proxy-server) that adds the `X-Request-Start` request header so we can test request queue time reporting.
+  - A [tiny proxy server](https://github.com/judoscale/judoscale-adapter-proxy-server) that adds the `X-Request-Start` request header so we can test request queue time reporting.
   - The Rails server.
   - The Resque server to process jobs.
 
 ## How to use this sample app
 
-Open https://judoscale-adapter-mock.requestcatcher.com in a browser. The sample app is configured to use this endpoint as a mock for the Judoscale Adapter API. This page will monitor all API requests sent from the adapter.
+Open https://judoscale-adapter-mock.requestcatcher.com in a browser. The sample app is configured to use this endpoint as a mock for the Rails Autoscale Adapter API. This page will monitor all API requests sent from the adapter.
 
 Run the app. Both the Rails and Resque processes will send an initial request to the API once the app boots up. These can be inspected via request catcher.
 
@@ -52,5 +52,5 @@ To install Rails Autoscale:
 ```sh
 # scale up a worker dyno before doing this so Rails Autoscale picks it up
 heroku ps:scale resque=1
-heroku addons:create judoscale:trial
+heroku addons:create rails-autoscale:trial
 ```

@@ -1,20 +1,20 @@
 PATH
-  remote: ../../judoscale-rails
+  remote: ../../rails-autoscale-web
   specs:
-    judoscale-rails (1.0.0.rc1)
-      judoscale-ruby
+    rails-autoscale-web (1.0.0.rc1)
+      rails-autoscale-core
       railties
 
 PATH
-  remote: ../../judoscale-ruby
+  remote: ../../rails-autoscale-core
   specs:
-    judoscale-ruby (1.0.0.rc1)
+    rails-autoscale-core (1.0.0.rc1)
 
 PATH
-  remote: ../../judoscale-sidekiq
+  remote: ../../rails-autoscale-sidekiq
   specs:
-    judoscale-sidekiq (1.0.0.rc1)
-      judoscale-ruby
+    rails-autoscale-sidekiq (1.0.0.rc1)
+      rails-autoscale-core
       sidekiq (>= 5.0)
 
 GEM
@@ -95,9 +95,9 @@ PLATFORMS
 DEPENDENCIES
   actionpack (~> 7.0.1)
   actionview (~> 7.0.1)
-  judoscale-rails!
-  judoscale-ruby!
-  judoscale-sidekiq!
+  rails-autoscale-web!
+  rails-autoscale-core!
+  rails-autoscale-sidekiq!
   puma (~> 5.0)
   railties (~> 7.0.1)
   sidekiq (~> 6.4)

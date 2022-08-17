@@ -130,7 +130,7 @@ module RailsAutoscale
           Reporter.instance.start!(Config.instance, RailsAutoscale.adapters)
         }
 
-        _(log_string).must_include "Reporter not started: JUDOSCALE_URL is not set"
+        _(log_string).must_include "Reporter not started: RAILS_AUTOSCALE_URL is not set"
       end
 
       it "does not run the reporter thread when there are no metrics collectors" do

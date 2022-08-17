@@ -20,7 +20,7 @@ module RailsAutoscale
       @pid = Process.pid
 
       if !config.api_base_url
-        logger.info "Reporter not started: JUDOSCALE_URL is not set"
+        logger.info "Reporter not started: RAILS_AUTOSCALE_URL is not set"
         return
       end
 

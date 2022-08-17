@@ -6,7 +6,7 @@ require "rails_autoscale/config"
 module RailsAutoscale
   describe Config do
     it "initializes the config from default heroku ENV vars and other sensible defaults" do
-      use_env "DYNO" => "web.1", "JUDOSCALE_URL" => "https://example.com" do
+      use_env "DYNO" => "web.1", "RAILS_AUTOSCALE_URL" => "https://example.com" do
         config = Config.instance
         _(config.api_base_url).must_equal "https://example.com"
         _(config.dyno.to_s).must_equal "web.1"
@@ -30,8 +30,8 @@ module RailsAutoscale
     it "allows ENV vars config overrides for the debug and URL" do
       env = {
         "DYNO" => "web.2",
-        "JUDOSCALE_URL" => "https://custom.example.com",
-        "JUDOSCALE_LOG_LEVEL" => "debug"
+        "RAILS_AUTOSCALE_URL" => "https://custom.example.com",
+        "RAILS_AUTOSCALE_LOG_LEVEL" => "debug"
       }
 
       use_env env do

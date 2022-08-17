@@ -7,7 +7,7 @@ default: &default
 
 development:
   <<: *default
-  database: judoscale_que_sample_development
+  database: rails_autoscale_que_sample_development
   username: postgres
   #password:
   #host: localhost
