@@ -51,6 +51,11 @@ GEM
     delayed_job_active_record (4.1.7)
       activerecord (>= 3.0, < 8.0)
       delayed_job (>= 3.0, < 5)
+    delayed_job_web (1.4.4)
+      activerecord (> 3.0.0)
+      delayed_job (> 2.0.3)
+      rack-protection (>= 1.5.5)
+      sinatra (>= 1.4.4)
     erubi (1.10.0)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
@@ -59,6 +64,8 @@ GEM
       nokogiri (>= 1.5.9)
     method_source (1.0.0)
     minitest (5.15.0)
+    mustermann (1.1.1)
+      ruby2_keywords (~> 0.0.1)
     nio4r (2.5.8)
     nokogiri (1.13.3-arm64-darwin)
       racc (~> 1.4)
@@ -71,6 +78,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.6.0)
     rack (2.2.3)
+    rack-protection (2.2.0)
+      rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails-dom-testing (2.0.3)
@@ -86,7 +95,14 @@ GEM
       thor (~> 1.0)
       zeitwerk (~> 2.5)
     rake (13.0.6)
+    ruby2_keywords (0.0.5)
+    sinatra (2.2.0)
+      mustermann (~> 1.0)
+      rack (~> 2.2)
+      rack-protection (= 2.2.0)
+      tilt (~> 2.0)
     thor (1.2.1)
+    tilt (2.0.10)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     zeitwerk (2.5.4)
@@ -102,6 +118,7 @@ DEPENDENCIES
   actionview (~> 7.0.1)
   activerecord (~> 7.0.1)
   delayed_job_active_record
+  delayed_job_web
   judoscale-delayed_job!
   judoscale-rails!
   judoscale-ruby!
