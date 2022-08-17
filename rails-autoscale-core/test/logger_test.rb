@@ -24,6 +24,14 @@ module RailsAutoscale
           _(messages).must_include "#{level} -- : [RailsAutoscale] some message"
         end
 
+        it "prepends Judoscale if JUDOSCALE_URL is set" do
+          use_env({"JUDOSCALE_URL" => "https://test"}) do
+            RailsAutoscale.configure { |config| config.logger = original_logger }
+            logger.public_send method_name, "some message"
+            _(messages).must_include "#{level} -- : [Judoscale] some message"
+          end
+        end
+
         it "allows logging multiple messages in separate lines, all prepending RailsAutoscale" do
           logger.public_send method_name, "some msg", "msg context", "more msg context"
           _(messages).must_include "#{level} -- : [RailsAutoscale] some msg\n[RailsAutoscale] msg context\n[RailsAutoscale] more msg context"

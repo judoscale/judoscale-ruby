@@ -64,7 +64,7 @@ module RailsAutoscale
       end
     end
 
-    attr_accessor :api_base_url, :report_interval_seconds, :max_request_size_bytes, :logger
+    attr_accessor :api_base_url, :report_interval_seconds, :max_request_size_bytes, :logger, :log_tag
     attr_reader :dyno, :log_level
 
     def initialize
@@ -74,6 +74,7 @@ module RailsAutoscale
     def reset
       # Allow the API URL to be configured - needed for testing.
       @api_base_url = ENV["RAILS_AUTOSCALE_URL"] || ENV["JUDOSCALE_URL"]
+      @log_tag = ENV["JUDOSCALE_URL"] ? "Judoscale" : "RailsAutoscale"
       self.dyno = ENV["DYNO"]
       @max_request_size_bytes = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval_seconds = 10

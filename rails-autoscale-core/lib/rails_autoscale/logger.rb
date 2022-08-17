@@ -11,8 +11,6 @@ module RailsAutoscale
   end
 
   class LoggerProxy < Struct.new(:logger, :log_level)
-    TAG = "RailsAutoscale"
-
     %w[ERROR WARN INFO DEBUG].each do |severity_name|
       severity_level = ::Logger::Severity.const_get(severity_name)
 
@@ -32,7 +30,7 @@ module RailsAutoscale
     private
 
     def tag(msgs, tag_level: nil)
-      tag = +"[#{TAG}]"
+      tag = +"[#{Config.instance.log_tag}]"
       tag << " [#{tag_level}]" if tag_level
       msgs.map { |msg| "#{tag} #{msg}" }.join("\n")
     end
