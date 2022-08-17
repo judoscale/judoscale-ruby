@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Judoscale
+module RailsAutoscale
   class MetricsCollector
     def self.collect?(config)
       true

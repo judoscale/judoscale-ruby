@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Judoscale
+module RailsAutoscale
   class Metric < Struct.new(:identifier, :value, :time, :queue_name)
     # No queue_name is assumed to be a web request metric
     # Metrics: qt = queue time (default), qd = queue depth, busy

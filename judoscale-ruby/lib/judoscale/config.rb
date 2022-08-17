@@ -3,7 +3,7 @@
 require "singleton"
 require "logger"
 
-module Judoscale
+module RailsAutoscale
   class Config
     class Dyno
       attr_reader :name, :num

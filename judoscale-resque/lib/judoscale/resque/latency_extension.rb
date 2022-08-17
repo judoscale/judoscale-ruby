@@ -1,4 +1,4 @@
-module Judoscale
+module RailsAutoscale
   module Resque
     module LatencyExtension
       # Store the time when jobs are pushed to the queue in order to calculate latency.
@@ -20,4 +20,4 @@ module Judoscale
   end
 end
 
-::Resque.extend(Judoscale::Resque::LatencyExtension)
+::Resque.extend(RailsAutoscale::Resque::LatencyExtension)

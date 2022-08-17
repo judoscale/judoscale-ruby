@@ -2,21 +2,21 @@
 
 require "rails"
 require "rails/railtie"
-require "judoscale/request_middleware"
-require "judoscale/config"
-require "judoscale/logger"
-require "judoscale/reporter"
+require "rails_autoscale/request_middleware"
+require "rails_autoscale/config"
+require "rails_autoscale/logger"
+require "rails_autoscale/reporter"
 
-module Judoscale
+module RailsAutoscale
   module Rails
     class Railtie < ::Rails::Railtie
-      include Judoscale::Logger
+      include RailsAutoscale::Logger
 
-      initializer "judoscale.logger" do |app|
+      initializer "RailsAutoscale.logger" do |app|
         Config.instance.logger = ::Rails.logger
       end
 
-      initializer "judoscale.request_middleware" do |app|
+      initializer "RailsAutoscale.request_middleware" do |app|
         logger.info "Preparing request middleware"
         app.middleware.insert_before Rack::Runtime, RequestMiddleware
       end

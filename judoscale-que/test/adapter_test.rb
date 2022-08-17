@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "judoscale/report"
+require "rails_autoscale/report"
 
-module Judoscale
+module RailsAutoscale
   describe Que do
-    it "adds itself as an adapter with information to be reported to the Judoscale API" do
-      adapter = Judoscale.adapters.detect { |adapter| adapter.identifier == :"judoscale-que" }
+    it "adds itself as an adapter with information to be reported to the Rails Autoscale API" do
+      adapter = RailsAutoscale.adapters.detect { |adapter| adapter.identifier == :"rails-autoscale-que" }
       _(adapter).wont_be_nil
-      _(adapter.metrics_collector).must_equal Judoscale::Que::MetricsCollector
+      _(adapter.metrics_collector).must_equal RailsAutoscale::Que::MetricsCollector
 
-      report = ::Judoscale::Report.new(Judoscale.adapters, Judoscale::Config.instance, [])
-      _(report.as_json[:adapters]).must_include(:"judoscale-que")
+      report = ::RailsAutoscale::Report.new(RailsAutoscale.adapters, RailsAutoscale::Config.instance, [])
+      _(report.as_json[:adapters]).must_include(:"rails-autoscale-que")
     end
 
     it "sets up a config property for the library" do
@@ -21,7 +21,7 @@ module Judoscale
       _(config.que.queues).must_equal []
       _(config.que.track_busy_jobs).must_equal false
 
-      Judoscale.configure do |config|
+      RailsAutoscale.configure do |config|
         config.que.queues = %w[test drive]
         config.que.track_busy_jobs = true
       end
@@ -29,7 +29,7 @@ module Judoscale
       _(config.que.queues).must_equal %w[test drive]
       _(config.que.track_busy_jobs).must_equal true
 
-      report = ::Judoscale::Report.new(Judoscale.adapters, Judoscale::Config.instance, [])
+      report = ::RailsAutoscale::Report.new(RailsAutoscale.adapters, RailsAutoscale::Config.instance, [])
       _(report.as_json[:config]).must_include(:que)
     end
   end

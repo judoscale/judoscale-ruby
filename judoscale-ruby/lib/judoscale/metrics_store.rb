@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "singleton"
-require "judoscale/metric"
-require "judoscale/report"
+require "rails_autoscale/metric"
+require "rails_autoscale/report"
 
-module Judoscale
+module RailsAutoscale
   class MetricsStore
     include Singleton
 

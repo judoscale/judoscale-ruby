@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-require "judoscale/rails"
+require "rails_autoscale/rails"

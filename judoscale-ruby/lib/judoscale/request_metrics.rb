@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Judoscale
+module RailsAutoscale
   class RequestMetrics
     attr_reader :request_id, :size, :network_time
 

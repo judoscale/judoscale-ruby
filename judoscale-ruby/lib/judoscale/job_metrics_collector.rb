@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require "set"
-require "judoscale/metrics_collector"
-require "judoscale/logger"
+require "rails_autoscale/metrics_collector"
+require "rails_autoscale/logger"
 
-module Judoscale
+module RailsAutoscale
   class JobMetricsCollector < MetricsCollector
-    include Judoscale::Logger
+    include RailsAutoscale::Logger
 
     # It's redundant to report these metrics from every dyno, so only report from the first one.
     def self.collect?(config)

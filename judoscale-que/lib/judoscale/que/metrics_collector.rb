@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "judoscale/job_metrics_collector"
-require "judoscale/job_metrics_collector/active_record_helper"
-require "judoscale/metric"
+require "rails_autoscale/job_metrics_collector"
+require "rails_autoscale/job_metrics_collector/active_record_helper"
+require "rails_autoscale/metric"
 
-module Judoscale
+module RailsAutoscale
   module Que
-    class MetricsCollector < Judoscale::JobMetricsCollector
+    class MetricsCollector < RailsAutoscale::JobMetricsCollector
       include ActiveRecordHelper
 
       METRICS_SQL = ActiveRecordHelper.cleanse_sql(<<~SQL)
@@ -35,7 +35,7 @@ module Judoscale
       SQL
 
       def self.adapter_config
-        Judoscale::Config.instance.que
+        RailsAutoscale::Config.instance.que
       end
 
       def collect

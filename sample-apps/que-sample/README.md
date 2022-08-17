@@ -20,7 +20,7 @@ Run `./bin/setup` install necessary dependencies. This will...
 Run `./bin/dev` to run the app in development mode. This will...
 
 - Use `heroku local` and a `Procfile` to start the following processes:
-  - A [tiny proxy server](https://github.com/judoscale/judoscale-adapter-proxy-server) that adds the `X-Request-Start` request header so we can test request queue time reporting.
+  - A [tiny proxy server](https://github.com/judoscale/rails-autoscale-adapter-proxy-server) that adds the `X-Request-Start` request header so we can test request queue time reporting.
   - The Rails server.
   - The Que server to process jobs.
 
@@ -44,10 +44,10 @@ heroku create
 git push heroku main
 ```
 
-To install Judoscale:
+To install Rails Autoscale:
 
 ```sh
-# scale up a worker dyno before doing this so Judoscale picks it up
+# scale up a worker dyno before doing this so Rails Autoscale picks it up
 heroku ps:scale que=1
 heroku addons:create judoscale
 ```

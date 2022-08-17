@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "judoscale-delayed_job"
+require "rails-autoscale-delayed_job"
 
 require "minitest/autorun"
 require "minitest/spec"
@@ -36,9 +36,9 @@ ActiveRecord::Schema.define do
   # standard:enable all
 end
 
-module Judoscale::Test
+module RailsAutoscale::Test
 end
 
-Dir[File.expand_path("../../judoscale-ruby/test/support/*.rb", __dir__)].sort.each { |file| require file }
+Dir[File.expand_path("../../rails-autoscale-core/test/support/*.rb", __dir__)].sort.each { |file| require file }
 
-Minitest::Test.include(Judoscale::Test)
+Minitest::Test.include(RailsAutoscale::Test)

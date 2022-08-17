@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "judoscale/metrics_collector"
-require "judoscale/metrics_store"
+require "rails_autoscale/metrics_collector"
+require "rails_autoscale/metrics_store"
 
-module Judoscale
+module RailsAutoscale
   class WebMetricsCollector < MetricsCollector
     def self.collect?(config)
       config.dyno.name == "web"

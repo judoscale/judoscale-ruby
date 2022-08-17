@@ -1,12 +1,12 @@
-# Judoscale
+# Rails Autoscale
 
-[![Build Status: judoscale-ruby](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-ruby-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
-[![Build Status: judoscale-rails](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-rails-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
-[![Build Status: judoscale-delayed_job](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-delayed_job-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
-[![Build Status: judoscale-que](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-que-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
-[![Build Status: judoscale-sidekiq](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-sidekiq-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: rails-autoscale-core](https://github.com/rails-autoscale/rails-autoscale-gems/actions/workflows/rails-autoscale-core-test.yml/badge.svg)](https://github.com/rails-autoscale/rails-autoscale-gems/actions)
+[![Build Status: rails-autoscale-web](https://github.com/rails-autoscale/rails-autoscale-gems/actions/workflows/rails-autoscale-web-test.yml/badge.svg)](https://github.com/rails-autoscale/rails-autoscale-gems/actions)
+[![Build Status: rails-autoscale-delayed_job](https://github.com/rails-autoscale/rails-autoscale-gems/actions/workflows/rails-autoscale-delayed_job-test.yml/badge.svg)](https://github.com/rails-autoscale/rails-autoscale-gems/actions)
+[![Build Status: rails-autoscale-que](https://github.com/rails-autoscale/rails-autoscale-gems/actions/workflows/rails-autoscale-que-test.yml/badge.svg)](https://github.com/rails-autoscale/rails-autoscale-gems/actions)
+[![Build Status: rails-autoscale-sidekiq](https://github.com/rails-autoscale/rails-autoscale-gems/actions/workflows/rails-autoscale-sidekiq-test.yml/badge.svg)](https://github.com/rails-autoscale/rails-autoscale-gems/actions)
 
-This gem works together with the [Judoscale](https://judoscale.com) Heroku add-on to scale your web and worker dynos automatically. It gathers a minimal set of metrics for each request (and job queue), and periodically posts this data asynchronously to the Judoscale service.
+This gem works together with the [Rails Autoscale](https://railsautoscale.com) Heroku add-on to scale your web and worker dynos automatically. It gathers a minimal set of metrics for each request (and job queue), and periodically posts this data asynchronously to the Rails Autoscale service.
 
 ## Requirements
 
@@ -18,22 +18,22 @@ This gem works together with the [Judoscale](https://judoscale.com) Heroku add-o
 Add this line to your application's Gemfile and run `bundle`:
 
 ```ruby
-gem 'judoscale-rails'
+gem 'rails-autoscale-web'
 ```
 
-This inserts the Judoscale Rack middleware and starts the asynchronous reporter.
+This inserts the Rails Autoscale Rack middleware and starts the asynchronous reporter.
 
-The reporter will only communicate with Judoscale if a `JUDOSCALE_URL` ENV variable is present, which happens automatically on Heroku when you install the Judoscale add-on. The reporter does nothing if `JUDOSCALE_URL` is not present, such as in development or a staging app.
+The reporter will only communicate with Rails Autoscale if a `RAILS_AUTOSCALE_URL` ENV variable is present, which happens automatically on Heroku when you install the Rails Autoscale add-on. The reporter does nothing if `RAILS_AUTOSCALE_URL` is not present, such as in development or a staging app.
 
 ## Getting started for non-Rails Rack apps
 
-You'll need to `require 'judoscale/request_middleware'` and insert the `Judoscale::RequestMiddleware` manually. Insert it before `Rack::Runtime` to ensure accuracy of request queue timings.
+You'll need to `require 'rails_autoscale/request_middleware'` and insert the `RailsAutoscale::RequestMiddleware` manually. Insert it before `Rack::Runtime` to ensure accuracy of request queue timings.
 
-`Judoscale::RequestMiddleware` will start the reporter when it processes the first request.
+`RailsAutoscale::RequestMiddleware` will start the reporter when it processes the first request.
 
 ## What data is collected?
 
-The reporter runs in its own thread so your web requests are not impacted. The following data is submitted periodically to the Judoscale API:
+The reporter runs in its own thread so your web requests are not impacted. The following data is submitted periodically to the Rails Autoscale API:
 
 - Ruby version
 - Rails version
@@ -43,18 +43,18 @@ The reporter runs in its own thread so your web requests are not impacted. The f
 - PID
 - Collection of queue time metrics (time and milliseconds)
 
-Judoscale aggregates and stores this information to power the autoscaling algorithm and dashboard visualizations.
+Rails Autoscale aggregates and stores this information to power the autoscaling algorithm and dashboard visualizations.
 
 ## Configuration
 
-Most Judoscale configurations are handled via the settings page on your Judoscale dashboard, but there a few ways you can directly change the behavior of the adapter by creating an initializer in your app like the following:
+Most Rails Autoscale configurations are handled via the settings page on your Rails Autoscale dashboard, but there a few ways you can directly change the behavior of the adapter by creating an initializer in your app like the following:
 
 ```ruby
-# config/initializers/judoscale.rb
-Judoscale.configure do |config|
-  # configure Judoscale here, more on each configuration option below.
+# config/initializers/rails_autoscale.rb
+RailsAutoscale.configure do |config|
+  # configure Rails Autoscale here, more on each configuration option below.
 
-  # Enables debug logging. This can also be enabled/disabled by setting `JUDOSCALE_LOG_LEVEL=debug`.
+  # Enables debug logging. This can also be enabled/disabled by setting `RAILS_AUTOSCALE_LOG_LEVEL=debug`.
   # See more in the [logging](#logging) section below.
   config.log_level = :debug
 end
@@ -62,26 +62,26 @@ end
 
 ## Worker adapters
 
-Judoscale supports autoscaling worker dynos. Out of the box, three job backends are supported: Sidekiq, Delayed Job, and Que. You will need to install an additional gem depending on your job backend:
+Rails Autoscale supports autoscaling worker dynos. Out of the box, three job backends are supported: Sidekiq, Delayed Job, and Que. You will need to install an additional gem depending on your job backend:
 
 ```ruby
-gem 'judoscale-sidekiq'
-gem 'judoscale-delayed_job'
-gem 'judoscale-que'
+gem 'rails-autoscale-sidekiq'
+gem 'rails-autoscale-delayed_job'
+gem 'rails-autoscale-que'
 ```
 
-If you're also including `gem 'judoscale-rails'`, the reporter will start automatically. If you're using one of these job backends without Rails, you'll need to start the reporter manually when your application boots:
+If you're also including `gem 'rails-autoscale-web'`, the reporter will start automatically. If you're using one of these job backends without Rails, you'll need to start the reporter manually when your application boots:
 
 ```ruby
-require "judoscale/reporter"
-Judoscale::Reporter.start
+require "rails_autoscale/reporter"
+RailsAutoscale::Reporter.start
 ```
 
 Each worker adapter has its own set of configurations. These configurations are all optional. (Replace "sidekiq" in the examples below for other worker adapters.)
 
 ```ruby
-# config/initializers/judoscale.rb
-Judoscale.configure do |config|
+# config/initializers/rails_autoscale.rb
+RailsAutoscale.configure do |config|
   # Worker metrics will only report up to 20 queues by default. If you have more than 20 queues,
   # you'll need to configure this setting for the specific worker adapter or reduce your number of queues.
   config.sidekiq.max_queues = 30
@@ -96,7 +96,7 @@ Judoscale.configure do |config|
   config.sidekiq.queue_filter = ->(queue_name) { /custom/.match?(queue_name) }
 
   # Enables reporting for active (busy) workers.
-  # See [Handling Long-Running Background Jobs](https://judoscale.com/docs/long-running-jobs/) in the Judoscale docs for more.
+  # See [Handling Long-Running Background Jobs](https://railsautoscale.com/docs/long-running-jobs/) in the Rails Autoscale docs for more.
   config.sidekiq.track_busy_jobs = true
 
   # Disable reporting for this worker adapter
@@ -104,89 +104,89 @@ Judoscale.configure do |config|
 end
 ```
 
-It's also possible to write a custom worker adapter. See [these docs](https://judoscale.com/docs/custom-worker-adapter/) for details.
+It's also possible to write a custom worker adapter. See [these docs](https://railsautoscale.com/docs/custom-worker-adapter/) for details.
 
 ## Troubleshooting
 
 Once installed, you should see something like this in your development log:
 
-> [Judoscale] Reporter not started: JUDOSCALE_URL is not set
+> [RailsAutoscale] Reporter not started: RAILS_AUTOSCALE_URL is not set
 
-In production, run `heroku logs -t | grep Judoscale`, and you should see something like this:
+In production, run `heroku logs -t | grep RailsAutoscale`, and you should see something like this:
 
-> [Judoscale] Reporter starting, will report every 10 seconds
+> [RailsAutoscale] Reporter starting, will report every 10 seconds
 
 If you don't see either of these, try running `bundle` again and restarting your Rails application.
 
-You can see more detailed (debug) logging by setting `JUDOSCALE_LOG_LEVEL` on your Heroku app:
+You can see more detailed (debug) logging by setting `RAILS_AUTOSCALE_LOG_LEVEL` on your Heroku app:
 
 ```
-heroku config:set JUDOSCALE_LOG_LEVEL=debug
+heroku config:set RAILS_AUTOSCALE_LOG_LEVEL=debug
 ```
 
 See more in the [logging](#logging) section below.
 
-Reach out to help@judoscale.com if you run into any other problems.
+Reach out to help@railsautoscale.com if you run into any other problems.
 
 ## Logging
 
-The Rails logger is used by default when present, otherwise Judoscale will log everything to `stdout`.
+The Rails logger is used by default when present, otherwise Rails Autoscale will log everything to `stdout`.
 If you wish to use a different logger you can set it on the configuration object:
 
 ```ruby
-# config/initializers/judoscale.rb
-Judoscale.configure do |config|
+# config/initializers/rails_autoscale.rb
+RailsAutoscale.configure do |config|
   config.logger = MyLogger.new
 end
 ```
 
-The logger controls the log level by default. In case of Rails apps, that's going to be defined by the `log_level` config in each environment, so if your app is set to log at INFO level, you will only see Judoscale INFO logs as well. Please note that this gem has _very_ chatty debug logs, so if your app is set to DEBUG you will also see a lot of Judoscale debug logging output, which looks like this:
+The logger controls the log level by default. In case of Rails apps, that's going to be defined by the `log_level` config in each environment, so if your app is set to log at INFO level, you will only see Rails Autoscale INFO logs as well. Please note that this gem has _very_ chatty debug logs, so if your app is set to DEBUG you will also see a lot of Rails Autoscale debug logging output, which looks like this:
 
 ```
-[Judoscale] [DEBUG] Some debug log message
+[RailsAutoscale] [DEBUG] Some debug log message
 ```
 
-If you find the gem too chatty with that setup, you can quiet it down further with a more strict log level that only affects Judoscale logging:
+If you find the gem too chatty with that setup, you can quiet it down further with a more strict log level that only affects Rails Autoscale logging:
 
 ```ruby
-# config/initializers/judoscale.rb
-Judoscale.configure do |config|
+# config/initializers/rails_autoscale.rb
+RailsAutoscale.configure do |config|
   config.log_level = :info
 end
 ```
 
-Alternatively, set the `JUDOSCALE_LOG_LEVEL` environment variable on your Heroku app:
+Alternatively, set the `RAILS_AUTOSCALE_LOG_LEVEL` environment variable on your Heroku app:
 
 ```
-heroku config:set JUDOSCALE_LOG_LEVEL=info
+heroku config:set RAILS_AUTOSCALE_LOG_LEVEL=info
 ```
 
 If you want the debug logs even if your app is not using the DEBUG level, set either the `log_level` config:
 
 ```ruby
-# config/initializers/judoscale.rb
-Judoscale.configure do |config|
+# config/initializers/rails_autoscale.rb
+RailsAutoscale.configure do |config|
   config.log_level = :debug
 end
 ```
 
-Or `JUDOSCALE_LOG_LEVEL` on your app:
+Or `RAILS_AUTOSCALE_LOG_LEVEL` on your app:
 
 ```
-heroku config:set JUDOSCALE_LOG_LEVEL=debug
+heroku config:set RAILS_AUTOSCALE_LOG_LEVEL=debug
 ```
 
 Enabling the debug level will start logging everything, independently of the underlying logger level. It's recommended to enable it temporarily if you need to [troubleshoot](#troubleshooting) any issues.
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies across all the `judoscale-*` libraries, or install each one individually via `bundle install`. Then, run `bin/test` to run all the tests across all the libraries, or inside each `judoscale-*` library, run `bundle exec rake test`. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies across all the `rails-autoscale-*` libraries, or install each one individually via `bundle install`. Then, run `bin/test` to run all the tests across all the libraries, or inside each `rails-autoscale-*` library, run `bundle exec rake test`. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install each gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, commit it, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/judoscale/judoscale-ruby.
+Bug reports and pull requests are welcome on GitHub at https://github.com/rails-autoscale/rails-autoscale-gems.
 
 ## License
 

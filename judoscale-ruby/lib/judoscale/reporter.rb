@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 require "singleton"
-require "judoscale/config"
-require "judoscale/logger"
-require "judoscale/adapter_api"
-require "judoscale/job_metrics_collector"
-require "judoscale/web_metrics_collector"
+require "rails_autoscale/config"
+require "rails_autoscale/logger"
+require "rails_autoscale/adapter_api"
+require "rails_autoscale/job_metrics_collector"
+require "rails_autoscale/web_metrics_collector"
 
-module Judoscale
+module RailsAutoscale
   class Reporter
     include Singleton
     include Logger
 
-    def self.start(config = Config.instance, adapters = Judoscale.adapters)
+    def self.start(config = Config.instance, adapters = RailsAutoscale.adapters)
       instance.start!(config, adapters) unless instance.started?
     end
 
@@ -76,7 +76,7 @@ module Judoscale
     private
 
     def report(config, metrics)
-      report = Report.new(Judoscale.adapters, config, metrics)
+      report = Report.new(RailsAutoscale.adapters, config, metrics)
       logger.info "Reporting #{report.metrics.size} metrics"
       result = AdapterApi.new(config).report_metrics(report.as_json)
 

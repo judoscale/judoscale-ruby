@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "judoscale/config"
+require "rails_autoscale/config"
 
-module Judoscale
+module RailsAutoscale
   describe Config do
     it "initializes the config from default heroku ENV vars and other sensible defaults" do
       use_env "DYNO" => "web.1", "JUDOSCALE_URL" => "https://example.com" do
@@ -45,7 +45,7 @@ module Judoscale
     it "allows configuring all options via a block" do
       test_logger = ::Logger.new(StringIO.new)
 
-      Judoscale.configure do |config|
+      RailsAutoscale.configure do |config|
         config.dyno = "web.3"
         config.api_base_url = "https://block.example.com"
         config.log_level = :info

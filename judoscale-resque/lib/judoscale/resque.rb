@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require "judoscale-ruby"
-require "judoscale/config"
-require "judoscale/resque/version"
-require "judoscale/resque/metrics_collector"
+require "rails-autoscale-core"
+require "rails_autoscale/config"
+require "rails_autoscale/resque/version"
+require "rails_autoscale/resque/metrics_collector"
 require "resque"
-require "judoscale/resque/latency_extension"
+require "rails_autoscale/resque/latency_extension"
 
-Judoscale.add_adapter :"judoscale-resque",
+RailsAutoscale.add_adapter :"rails-autoscale-resque",
   {
-    adapter_version: Judoscale::Resque::VERSION,
+    adapter_version: RailsAutoscale::Resque::VERSION,
     framework_version: ::Resque::VERSION
   },
-  metrics_collector: Judoscale::Resque::MetricsCollector,
-  expose_config: Judoscale::Config::JobAdapterConfig.new(:resque)
+  metrics_collector: RailsAutoscale::Resque::MetricsCollector,
+  expose_config: RailsAutoscale::Config::JobAdapterConfig.new(:resque)

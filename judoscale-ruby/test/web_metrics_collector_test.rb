@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "judoscale/web_metrics_collector"
+require "rails_autoscale/web_metrics_collector"
 
-module Judoscale
+module RailsAutoscale
   describe WebMetricsCollector do
     let(:store) { MetricsStore.instance }
 
     describe ".collect?" do
       it "collects only from web dynos in the formation, to avoid unnecessary collection on workers" do
         %w[web.1 web.15 web.101].each do |dyno|
-          Judoscale.configure { |config| config.dyno = dyno }
+          RailsAutoscale.configure { |config| config.dyno = dyno }
 
-          _(WebMetricsCollector.collect?(Judoscale::Config.instance)).must_equal true
+          _(WebMetricsCollector.collect?(RailsAutoscale::Config.instance)).must_equal true
         end
 
         %w[worker.1 secondary.15 periodic.101].each do |dyno|
-          Judoscale.configure { |config| config.dyno = dyno }
+          RailsAutoscale.configure { |config| config.dyno = dyno }
 
-          _(WebMetricsCollector.collect?(Judoscale::Config.instance)).must_equal false
+          _(WebMetricsCollector.collect?(RailsAutoscale::Config.instance)).must_equal false
         end
       end
     end

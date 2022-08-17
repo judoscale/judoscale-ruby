@@ -7,4 +7,4 @@
 /spec/reports/
 /tmp/
 /log/
-/judoscale-*/Gemfile-*.lock
+/rails-autoscale-*/Gemfile-*.lock

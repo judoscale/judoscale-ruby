@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "judoscale/metrics_store"
-require "judoscale/reporter"
-require "judoscale/logger"
-require "judoscale/request_metrics"
+require "rails_autoscale/metrics_store"
+require "rails_autoscale/reporter"
+require "rails_autoscale/logger"
+require "rails_autoscale/request_metrics"
 
-module Judoscale
+module RailsAutoscale
   class RequestMiddleware
     include Logger
 
@@ -27,11 +27,11 @@ module Judoscale
         store = MetricsStore.instance
 
         # NOTE: Expose queue time to the app
-        env["judoscale.queue_time"] = queue_time
+        env["RailsAutoscale.queue_time"] = queue_time
         store.push :qt, queue_time
 
         unless network_time.zero?
-          env["judoscale.network_time"] = network_time
+          env["RailsAutoscale.network_time"] = network_time
           store.push :nt, network_time
         end
 

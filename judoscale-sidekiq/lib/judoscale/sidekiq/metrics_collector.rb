@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "judoscale/job_metrics_collector"
-require "judoscale/metric"
+require "rails_autoscale/job_metrics_collector"
+require "rails_autoscale/metric"
 
-module Judoscale
+module RailsAutoscale
   module Sidekiq
-    class MetricsCollector < Judoscale::JobMetricsCollector
+    class MetricsCollector < RailsAutoscale::JobMetricsCollector
       def self.adapter_config
-        Judoscale::Config.instance.sidekiq
+        RailsAutoscale::Config.instance.sidekiq
       end
 
       def collect

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "judoscale/config"
+require "rails_autoscale/config"
 
 module ConfigHelpers
   # Override Config.instance for a single spec
@@ -9,22 +9,22 @@ module ConfigHelpers
   #     ...
   #   end
   def use_config(options, &example)
-    swap_config Judoscale::Config.instance, options, example
+    swap_config RailsAutoscale::Config.instance, options, example
   end
 
   def use_adapter_config(adapter_identifier, options, &example)
-    adapter_config = Judoscale::Config.instance.public_send(adapter_identifier)
+    adapter_config = RailsAutoscale::Config.instance.public_send(adapter_identifier)
     swap_config adapter_config, options, example
   end
 
   def before_setup
     super
-    Judoscale::Config.instance.logger = LogHelpers.logger
+    RailsAutoscale::Config.instance.logger = LogHelpers.logger
   end
 
   # Reset config instance after each test to ensure changes don't leak to other tests.
   def after_teardown
-    Judoscale::Config.instance.reset
+    RailsAutoscale::Config.instance.reset
     super
   end
 
@@ -46,4 +46,4 @@ module ConfigHelpers
   end
 end
 
-Judoscale::Test.include ConfigHelpers
+RailsAutoscale::Test.include ConfigHelpers

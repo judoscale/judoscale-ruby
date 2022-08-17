@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "judoscale/metrics_store"
+require "rails_autoscale/metrics_store"
 
-module Judoscale
+module RailsAutoscale
   describe MetricsStore do
     let(:store) { MetricsStore.instance }
 

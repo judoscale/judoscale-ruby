@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Judoscale
+module RailsAutoscale
   class JobMetricsCollector
     module ActiveRecordHelper
       # Cleanup any whitespace characters (including new lines) from the SQL for simpler logging.
@@ -24,7 +24,7 @@ module Judoscale
 
       def select_rows_tagged(sql)
         if ActiveRecord::Base.logger.respond_to?(:tagged)
-          ActiveRecord::Base.logger.tagged(Judoscale::LoggerProxy::TAG) { select_rows(sql) }
+          ActiveRecord::Base.logger.tagged(RailsAutoscale::LoggerProxy::TAG) { select_rows(sql) }
         else
           select_rows(sql)
         end

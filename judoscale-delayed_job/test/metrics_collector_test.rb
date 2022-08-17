@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "judoscale/delayed_job/metrics_collector"
+require "rails_autoscale/delayed_job/metrics_collector"
 
 class Delayable
   def perform
   end
 end
 
-module Judoscale
+module RailsAutoscale
   describe DelayedJob::MetricsCollector do
     subject { DelayedJob::MetricsCollector.new }
 

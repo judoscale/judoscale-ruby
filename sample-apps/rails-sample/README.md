@@ -1,6 +1,6 @@
-# Sample app for judoscale-rails gem
+# Sample app for rails-autoscale-web gem
 
-This is a minimal Rails app to test the judoscale-rails gem.
+This is a minimal Rails app to test the rails-autoscale-web gem.
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ Run `./bin/setup` install necessary dependencies. This will...
 Run `./bin/dev` to run the app in development mode. This will...
 
 - Use `heroku local` and a `Procfile` to start the following processes:
-  - A [tiny proxy server](https://github.com/judoscale/judoscale-adapter-proxy-server) that adds the `X-Request-Start` request header so we can test request queue time reporting.
+  - A [tiny proxy server](https://github.com/judoscale/rails-autoscale-adapter-proxy-server) that adds the `X-Request-Start` request header so we can test request queue time reporting.
   - The Rails server.
 
 ## How to use this sample app
@@ -42,7 +42,7 @@ heroku create
 git push heroku main
 ```
 
-To install Judoscale:
+To install Rails Autoscale:
 
 ```sh
 heroku addons:create judoscale

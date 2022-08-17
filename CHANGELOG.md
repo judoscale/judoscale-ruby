@@ -1,64 +1,64 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/judoscale/judoscale-ruby/compare/v1.0.0.rc1...main)
+## [Unreleased](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v1.0.0.rc1...main)
 
-- Refactor how the config is exposed and accessed from job adapters / collectors to simplify and remove some indirection. ([#99](https://github.com/judoscale/judoscale-ruby/pull/99))
-- Add busy job tracking support for Que: ([#97](https://github.com/judoscale/judoscale-ruby/pull/97))
-- Add queue latency support to Resque via an extension, since it doesn't support it natively. ([#100](https://github.com/judoscale/judoscale-ruby/pull/100))
+- Refactor how the config is exposed and accessed from job adapters / collectors to simplify and remove some indirection. ([#99](https://github.com/rails-autoscale/rails-autoscale-gems/pull/99))
+- Add busy job tracking support for Que: ([#97](https://github.com/rails-autoscale/rails-autoscale-gems/pull/97))
+- Add queue latency support to Resque via an extension, since it doesn't support it natively. ([#100](https://github.com/rails-autoscale/rails-autoscale-gems/pull/100))
 
-## [1.0.0.rc1](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...v1.0.0.rc1)
+## [1.0.0.rc1](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v0.10.2...v1.0.0.rc1)
 
-- Add busy job tracking support for Resque: ([#92](https://github.com/judoscale/judoscale-ruby/pull/92))
+- Add busy job tracking support for Resque: ([#92](https://github.com/rails-autoscale/rails-autoscale-gems/pull/92))
 - Enforce and test against supported versions officially across all job adapters:
   - Sidekiq: 5, 6
   - Resque: 2
   - Que: 1
   - DJ: 4
 - Prevent Que adapter from collecting metrics of jobs locked for execution. [Original issue reference](https://github.com/adamlogic/rails_autoscale_agent/issues/42) ([#85](https://github.com/judoscale/judoscale-ruby/pull/85))
-- Remove the collection of a "default" queue across all job adapters. ([#84](https://github.com/judoscale/judoscale-ruby/pull/84))
-- Make logging more consistent if it has been configured: ([#60](https://github.com/judoscale/judoscale-ruby/pull/60))
+- Remove the collection of a "default" queue across all job adapters. ([#84](https://github.com/rails-autoscale/rails-autoscale-gems/pull/84))
+- Make logging more consistent if it has been configured: ([#60](https://github.com/rails-autoscale/rails-autoscale-gems/pull/60))
   - Without a configured log level, we'll just let the underlying logger (e.g. `Rails.logger` in the context of Rails) handle it.
   - With a configured log level, we:
     - skip if that level doesn't allow logging. (e.g. configured to INFO skips DEBUG logs by default)
     - let the underlying logger handle it if it allows the log level. (e.g. configured to INFO and logger has level INFO or DEBUG)
     - prefix our level to the message and use the underlying logger level if it doesn't allow ours, to ensure messages are logged. (e.g. configured to DEBUG and logger has level INFO, which wouldn't allow DEBUG messages)
 - Add sample apps:
-  - `judoscale-rails` ([#41](https://github.com/judoscale/judoscale-ruby/pull/41))
-  - `judoscale-sidekiq` ([#56](https://github.com/judoscale/judoscale-ruby/pull/56))
-  - `judoscale-resque` ([#74](https://github.com/judoscale/judoscale-ruby/pull/74))
-  - `judoscale-delayed_job` ([#75](https://github.com/judoscale/judoscale-ruby/pull/75))
-  - `judoscale-que` ([#76](https://github.com/judoscale/judoscale-ruby/pull/76))
+  - `judoscale-rails` ([#41](https://github.com/rails-autoscale/rails-autoscale-gems/pull/41))
+  - `judoscale-sidekiq` ([#56](https://github.com/rails-autoscale/rails-autoscale-gems/pull/56))
+  - `judoscale-resque` ([#74](https://github.com/rails-autoscale/rails-autoscale-gems/pull/74))
+  - `judoscale-delayed_job` ([#75](https://github.com/rails-autoscale/rails-autoscale-gems/pull/75))
+  - `judoscale-que` ([#76](https://github.com/rails-autoscale/rails-autoscale-gems/pull/76))
 - Split into multiple libraries/adapters: (including several internal refactorings & renamings to the core code to enable better separation and registration of the different libraries/adapters)
   - `judoscale-ruby` is the base Ruby library containing the core implementation used by all other libraries, and is responsible for running the metrics collection and reporting to Judoscale. ([#47](https://github.com/judoscale/judoscale-ruby/pull/47))
   - `judoscale-rails` integrates with Rails to initialize the reporter on app boot to send metrics to Judoscale, and register a middleware to collect web request metrics for reporting. ([#47](https://github.com/judoscale/judoscale-ruby/pull/47))
-  - `judoscale-sidekiq` integrates with Sidekiq to collect queue metrics. ([#52](https://github.com/judoscale/judoscale-ruby/pull/52))
-  - `judoscale-resque` integrates with Resque to collect queue metrics. ([#61](https://github.com/judoscale/judoscale-ruby/pull/61))
-  - `judoscale-delayed_job` integrates with Delayed Job to collect queue metrics. ([#64](https://github.com/judoscale/judoscale-ruby/pull/64))
-  - `judoscale-que` integrates with Que to collect queue metrics.([#65](https://github.com/judoscale/judoscale-ruby/pull/65))
-- Tests no longer use VCR, requiring only Webmock. ([#53](https://github.com/judoscale/judoscale-ruby/pull/53))
-- Include contextual metadata with each report, remove the registration API when starting the reporter. ([#50](https://github.com/judoscale/judoscale-ruby/pull/50))
-- Report metrics using a JSON payload instead of CSV + query params. ([#42](https://github.com/judoscale/judoscale-ruby/pull/42))
+  - `judoscale-sidekiq` integrates with Sidekiq to collect queue metrics. ([#52](https://github.com/rails-autoscale/rails-autoscale-gems/pull/52))
+  - `judoscale-resque` integrates with Resque to collect queue metrics. ([#61](https://github.com/rails-autoscale/rails-autoscale-gems/pull/61))
+  - `judoscale-delayed_job` integrates with Delayed Job to collect queue metrics. ([#64](https://github.com/rails-autoscale/rails-autoscale-gems/pull/64))
+  - `judoscale-que` integrates with Que to collect queue metrics.([#65](https://github.com/rails-autoscale/rails-autoscale-gems/pull/65))
+- Tests no longer use VCR, requiring only Webmock. ([#53](https://github.com/rails-autoscale/rails-autoscale-gems/pull/53))
+- Include contextual metadata with each report, remove the registration API when starting the reporter. ([#50](https://github.com/rails-autoscale/rails-autoscale-gems/pull/50))
+- Report metrics using a JSON payload instead of CSV + query params. ([#42](https://github.com/rails-autoscale/rails-autoscale-gems/pull/42))
 - Drop `worker_adapters` config list in favor of setting it for each individual adapter `<adapter>.enabled = true|false`. This allows to manually disable reporting for any automatically enabled adapter. ([#38](https://github.com/judoscale/judoscale-ruby/issues/38))
-- Combine `debug` and `quiet` config options into a single `log_level` which controls how our logging should behave. ([#37](https://github.com/judoscale/judoscale-ruby/issues/37))
+- Combine `debug` and `quiet` config options into a single `log_level` which controls how our logging should behave. ([#37](https://github.com/rails-autoscale/rails-autoscale-gems/issues/37))
 - Rename some configs: `<adapter>.track_long_running_jobs` => `<adapter>.track_busy_jobs`, `report_interval` => `report_interval_seconds`, `max_request_size` => `max_request_size_bytes`. ([#36](https://github.com/judoscale/judoscale-ruby/issues/36))
-- Silence queries from DelayedJob and Que adapters when collecting metrics. ([#35](https://github.com/judoscale/judoscale-ruby/pull/35))
+- Silence queries from DelayedJob and Que adapters when collecting metrics. ([#35](https://github.com/rails-autoscale/rails-autoscale-gems/pull/35))
 - Allow configuring a list of `queues` to collect metrics from. Any queues not in that list will be excluded, and `queue_filter` is not applied. Please note that `max_queues` still applies. ([#33](https://github.com/judoscale/judoscale-ruby/pull/33))
 - Adapter config `max_queues` to report is now 20 by default (previously 50), and will report up to that number of queues (sorted by queue name length) instead of skipping all the reporting once that threshold is crossed. ([#31](https://github.com/judoscale/judoscale-ruby/pull/31))
 - Allow configuring a custom proc to filter queues to collect metrics from by name: `queue_filter = ->(queue_name) { /custom/.match?(queue_name) }`. By default it will filter out queues matching UUIDs. ([#30](https://github.com/judoscale/judoscale-ruby/pull/30))
-- Allow per-adapter configuration of `max_queues` and `track_long_running_jobs`, dropping support for the global configurations. ([#29](https://github.com/judoscale/judoscale-ruby/pull/29))
+- Allow per-adapter configuration of `max_queues` and `track_long_running_jobs`, dropping support for the global configurations. ([#29](https://github.com/rails-autoscale/rails-autoscale-gems/pull/29))
 - Drop support for ENV vars `JUDOSCALE_WORKER_ADAPTER`, `JUDOSCALE_LONG_JOBS`, and `JUDOSCALE_MAX_QUEUES`, in favor of using the new block config format. ([#26](https://github.com/judoscale/judoscale-ruby/pull/26))
-- Configure Judoscale through a block: `Judoscale.configure { |config| config.logger = MyLogger.new }`. ([#25](https://github.com/judoscale/judoscale-ruby/pull/25))
-- Remove legacy configs: `sidekiq_latency_for_active_jobs`, `latency_for_active_jobs`. ([#22](https://github.com/judoscale/judoscale-ruby/pull/22))
+- Configure Judoscale through a block: `RailsAutoscale.configure { |config| config.logger = MyLogger.new }`. ([#25](https://github.com/rails-autoscale/rails-autoscale-gems/pull/25))
+- Remove legacy configs: `sidekiq_latency_for_active_jobs`, `latency_for_active_jobs`. ([#22](https://github.com/rails-autoscale/rails-autoscale-gems/pull/22))
 - Collect a new metric: network time, and expose it to the app via rack env with `judoscale.network_time`. This is currently only available with Puma, and represents the time Puma spent waiting for the request body. ([#20](https://github.com/judoscale/judoscale-ruby/pull/20))
-- Change the `queue_time` rack env value exposed to the app to `judoscale.queue_time`. ([#18](https://github.com/judoscale/judoscale-ruby/pull/18))
-- Drop dev mode. ([#16](https://github.com/judoscale/judoscale-ruby/pull/16))
-- Remove error reporting via the API, log exceptions with full backtraces. (that are more easily searchable now.) ([#13](https://github.com/judoscale/judoscale-ruby/pull/13))
-- Move test suite to minitest/spec. ([#8](https://github.com/judoscale/judoscale-ruby/pull/8))
-- Apply StandardRB to the code. ([#5](https://github.com/judoscale/judoscale-ruby/pull/5))
-- Require Ruby 2.6 or newer. ([#4](https://github.com/judoscale/judoscale-ruby/pull/4))
-- Move the build to GitHub Actions. ([#2](https://github.com/judoscale/judoscale-ruby/pull/2))
-- Rails Autoscale is now Judoscale. ([#1](https://github.com/judoscale/judoscale-ruby/pull/1))
+- Change the `queue_time` rack env value exposed to the app to `RailsAutoscale.queue_time`. ([#18](https://github.com/rails-autoscale/rails-autoscale-gems/pull/18))
+- Drop dev mode. ([#16](https://github.com/rails-autoscale/rails-autoscale-gems/pull/16))
+- Remove error reporting via the API, log exceptions with full backtraces. (that are more easily searchable now.) ([#13](https://github.com/rails-autoscale/rails-autoscale-gems/pull/13))
+- Move test suite to minitest/spec. ([#8](https://github.com/rails-autoscale/rails-autoscale-gems/pull/8))
+- Apply StandardRB to the code. ([#5](https://github.com/rails-autoscale/rails-autoscale-gems/pull/5))
+- Require Ruby 2.6 or newer. ([#4](https://github.com/rails-autoscale/rails-autoscale-gems/pull/4))
+- Move the build to GitHub Actions. ([#2](https://github.com/rails-autoscale/rails-autoscale-gems/pull/2))
+- Rails Autoscale is now RailsAutoscale. ([#1](https://github.com/rails-autoscale/rails-autoscale-gems/pull/1))
 
 ## [0.11.0](https://github.com/adamlogic/rails_autoscale_agent/compare/v0.10.2...v0.11.0)
 
@@ -76,7 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support for [long-running jobs](https://judoscale.com/docs/long-running-jobs/) in Sidekiq and Delayed Job.
+- Add support for [long-running jobs](https://RailsAutoscale.com/docs/long-running-jobs/) in Sidekiq and Delayed Job.
 - Handle x-request-start measured in seconds (instead of milliseconds) to support nginx buildpack ([cd092f3](https://github.com/adamlogic/rails_autoscale_agent/commit/cd092f38718abf5ffaea866bcae7831d4c910ffd))
 - Override worker adapter config via env var ([75dd06b](https://github.com/adamlogic/rails_autoscale_agent/commit/75dd06b2a7ff4eeab829eec24d503dc067c8fe32))
 

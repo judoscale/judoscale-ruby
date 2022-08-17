@@ -1,7 +1,7 @@
-name: judoscale-que tests
+name: rails-autoscale-que tests
 defaults:
   run:
-    working-directory: judoscale-que
+    working-directory: rails-autoscale-que
 on:
   push:
     branches:
@@ -17,24 +17,24 @@ jobs:
           - Gemfile-activerecord-6-1
           - Gemfile-que-2-beta
         ruby:
-          - '2.6'
-          - '2.7'
-          - '3.0'
-          - '3.1'
+          - "2.6"
+          - "2.7"
+          - "3.0"
+          - "3.1"
         exclude:
           - gemfile: Gemfile
-            ruby: '2.6'
+            ruby: "2.6"
           - gemfile: Gemfile-que-2-beta
-            ruby: '2.6'
+            ruby: "2.6"
     runs-on: ubuntu-latest
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
-      BUNDLE_GEMFILE: ${{ github.workspace }}/judoscale-que/${{ matrix.gemfile }}
+      BUNDLE_GEMFILE: ${{ github.workspace }}/rails-autoscale-que/${{ matrix.gemfile }}
     services:
       db:
         image: postgres:latest
         env:
           POSTGRES_HOST_AUTH_METHOD: trust
-        ports: ['5432:5432']
+        ports: ["5432:5432"]
         options: >-
           --health-cmd pg_isready
           --health-interval 10s

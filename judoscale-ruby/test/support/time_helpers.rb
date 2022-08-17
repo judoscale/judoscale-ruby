@@ -6,4 +6,4 @@ module TimeHelpers
   end
 end
 
-Judoscale::Test.include(TimeHelpers)
+RailsAutoscale::Test.include(TimeHelpers)

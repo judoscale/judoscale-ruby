@@ -13,6 +13,6 @@ gem "que", "~> 2.0.0.beta1"
 
 # Need to reference all locally, otherwise it'd use the the gemspecs to try to find each gem,
 # but we want to test against the local dev versions of them, not the released gems.
-gem "judoscale-ruby", path: "../../judoscale-ruby"
-gem "judoscale-rails", path: "../../judoscale-rails"
-gem "judoscale-que", path: "../../judoscale-que"
+gem "rails-autoscale-core", path: "../../rails-autoscale-core"
+gem "rails-autoscale-web", path: "../../rails-autoscale-web"
+gem "rails-autoscale-que", path: "../../rails-autoscale-que"

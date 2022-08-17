@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require "judoscale-ruby"
-require "judoscale/config"
-require "judoscale/que/version"
-require "judoscale/que/metrics_collector"
+require "rails-autoscale-core"
+require "rails_autoscale/config"
+require "rails_autoscale/que/version"
+require "rails_autoscale/que/metrics_collector"
 require "que"
 
-Judoscale.add_adapter :"judoscale-que",
+RailsAutoscale.add_adapter :"rails-autoscale-que",
   {
-    adapter_version: Judoscale::Que::VERSION,
+    adapter_version: RailsAutoscale::Que::VERSION,
     framework_version: ::Que::VERSION
   },
-  metrics_collector: Judoscale::Que::MetricsCollector,
-  expose_config: Judoscale::Config::JobAdapterConfig.new(:que)
+  metrics_collector: RailsAutoscale::Que::MetricsCollector,
+  expose_config: RailsAutoscale::Config::JobAdapterConfig.new(:que)

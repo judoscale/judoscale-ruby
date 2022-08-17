@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-require "judoscale/que"
+require "rails_autoscale/que"

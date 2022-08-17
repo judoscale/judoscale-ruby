@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "judoscale/logger"
+require "rails_autoscale/logger"
 
-module Judoscale
+module RailsAutoscale
   describe Logger do
     include Logger
 
@@ -12,21 +12,21 @@ module Judoscale
     let(:messages) { string_io.string }
 
     before {
-      Judoscale.configure { |config| config.logger = original_logger }
+      RailsAutoscale.configure { |config| config.logger = original_logger }
     }
 
     %w[ERROR WARN INFO DEBUG].each do |level|
       method_name = level.downcase
 
       describe "##{method_name}" do
-        it "delegates to the original logger, prepending Judoscale" do
+        it "delegates to the original logger, prepending RailsAutoscale" do
           logger.public_send method_name, "some message"
-          _(messages).must_include "#{level} -- : [Judoscale] some message"
+          _(messages).must_include "#{level} -- : [RailsAutoscale] some message"
         end
 
-        it "allows logging multiple messages in separate lines, all prepending Judoscale" do
+        it "allows logging multiple messages in separate lines, all prepending RailsAutoscale" do
           logger.public_send method_name, "some msg", "msg context", "more msg context"
-          _(messages).must_include "#{level} -- : [Judoscale] some msg\n[Judoscale] msg context\n[Judoscale] more msg context"
+          _(messages).must_include "#{level} -- : [RailsAutoscale] some msg\n[RailsAutoscale] msg context\n[RailsAutoscale] more msg context"
         end
 
         it "respects the configured log_level" do
@@ -48,7 +48,7 @@ module Judoscale
 
           use_config log_level: level do
             logger.public_send method_name, "some message"
-            _(messages).must_include "#{level} -- : [Judoscale] some message"
+            _(messages).must_include "#{level} -- : [RailsAutoscale] some message"
           end
         end
 
@@ -57,7 +57,7 @@ module Judoscale
 
           use_config log_level: level do
             logger.public_send method_name, "some message"
-            _(messages).must_include "FATAL -- : [Judoscale] [#{level}] some message"
+            _(messages).must_include "FATAL -- : [RailsAutoscale] [#{level}] some message"
           end
         end
       end

@@ -20,7 +20,7 @@ Run `./bin/setup` install necessary dependencies. This will...
 Run `./bin/dev` to run the app in development mode. This will...
 
 - Use `heroku local` and a `Procfile` to start the following processes:
-  - A [tiny proxy server](https://github.com/judoscale/judoscale-adapter-proxy-server) that adds the `X-Request-Start` request header so we can test request queue time reporting.
+  - A [tiny proxy server](https://github.com/judoscale/rails-autoscale-adapter-proxy-server) that adds the `X-Request-Start` request header so we can test request queue time reporting.
   - The Rails server.
   - The Sidekiq server to process jobs.
 
@@ -31,7 +31,6 @@ Open https://judoscale-adapter-mock.requestcatcher.com in a browser. The sample 
 Run the app. Both the Rails and Sidekiq processes will send an initial request to the API once the app boots up. These can be inspected via request catcher.
 
 Open http://localhost:5000 to see how many jobs are waiting on each of the available queues, and to enqueue sample jobs on those queues that will be processed by the Sidekiq server slowly.
-
 
 ## Deploy this app to Heroku
 
@@ -48,10 +47,10 @@ heroku addons:create heroku-redis
 
 Heroku Redis takes a few minutes to provision. Run `heroku logs -t` to watch when the app restarts.
 
-To install Judoscale:
+To install Rails Autoscale:
 
 ```sh
-# scale up a worker dyno before doing this so Judoscale picks it up
+# scale up a worker dyno before doing this so Rails Autoscale picks it up
 heroku ps:scale sidekiq=1
 heroku addons:create judoscale:trial
 ```

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "judoscale/reporter"
-require "judoscale/config"
+require "rails_autoscale/reporter"
+require "rails_autoscale/config"
 
-module Judoscale
+module RailsAutoscale
   describe Reporter do
     before {
-      Judoscale.configure do |config|
+      RailsAutoscale.configure do |config|
         config.dyno = "web.1"
         config.api_base_url = "http://example.com/api/test-token"
       end
@@ -17,7 +17,7 @@ module Judoscale
       it "initializes the reporter with the current configuration and loaded adapters" do
         reporter_mock = Minitest::Mock.new
         reporter_mock.expect :started?, false
-        reporter_mock.expect :start!, true, [Config.instance, Judoscale.adapters]
+        reporter_mock.expect :start!, true, [Config.instance, RailsAutoscale.adapters]
 
         Reporter.stub(:instance, reporter_mock) {
           Reporter.start
@@ -45,7 +45,7 @@ module Judoscale
 
       def run_reporter_start_thread
         stub_reporter_loop {
-          reporter_thread = Reporter.instance.start!(Config.instance, Judoscale.adapters)
+          reporter_thread = Reporter.instance.start!(Config.instance, RailsAutoscale.adapters)
           reporter_thread.join
         }
       end
@@ -63,7 +63,7 @@ module Judoscale
         job_metrics = Test::TestJobMetricsCollector.new.collect
         all_metrics = web_metrics + job_metrics
 
-        expected_body = Report.new(Judoscale.adapters, Config.instance, all_metrics).as_json
+        expected_body = Report.new(RailsAutoscale.adapters, Config.instance, all_metrics).as_json
         stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
           .with(body: JSON.generate(expected_body))
 
@@ -80,12 +80,12 @@ module Judoscale
         end
 
         Reporter.instance.stub(:run_loop, run_loop_stub) {
-          Reporter.instance.start!(Config.instance, Judoscale.adapters)
+          Reporter.instance.start!(Config.instance, RailsAutoscale.adapters)
         }
       end
 
       it "initializes the reporter only with registered web metrics collectors on subsequent dynos to avoid redundant worker metrics" do
-        Judoscale.configure { |config| config.dyno = "web.2" }
+        RailsAutoscale.configure { |config| config.dyno = "web.2" }
 
         run_loop_stub = proc do |config, metrics_collectors|
           _(metrics_collectors.size).must_equal 1
@@ -93,12 +93,12 @@ module Judoscale
         end
 
         Reporter.instance.stub(:run_loop, run_loop_stub) {
-          Reporter.instance.start!(Config.instance, Judoscale.adapters)
+          Reporter.instance.start!(Config.instance, RailsAutoscale.adapters)
         }
       end
 
       it "initializes the reporter only with registered job metrics collectors on the first non-web dyno to avoid unnecessary web collection attempts" do
-        Judoscale.configure { |config| config.dyno = "worker.1" }
+        RailsAutoscale.configure { |config| config.dyno = "worker.1" }
 
         run_loop_stub = proc do |config, metrics_collectors|
           _(metrics_collectors.size).must_equal 1
@@ -106,12 +106,12 @@ module Judoscale
         end
 
         Reporter.instance.stub(:run_loop, run_loop_stub) {
-          Reporter.instance.start!(Config.instance, Judoscale.adapters)
+          Reporter.instance.start!(Config.instance, RailsAutoscale.adapters)
         }
       end
 
       it "respects explicitly disabled job adapters / metrics collectors via config when initializing the reporter" do
-        Judoscale.configure { |config| config.test_job_config.enabled = false }
+        RailsAutoscale.configure { |config| config.test_job_config.enabled = false }
 
         run_loop_stub = proc do |config, metrics_collectors|
           _(metrics_collectors.size).must_equal 1
@@ -119,15 +119,15 @@ module Judoscale
         end
 
         Reporter.instance.stub(:run_loop, run_loop_stub) {
-          Reporter.instance.start!(Config.instance, Judoscale.adapters)
+          Reporter.instance.start!(Config.instance, RailsAutoscale.adapters)
         }
       end
 
       it "does not run the reporter thread when the API url is not configured" do
-        Judoscale.configure { |config| config.api_base_url = nil }
+        RailsAutoscale.configure { |config| config.api_base_url = nil }
 
         Reporter.instance.stub(:run_loop, ->(*) { raise "SHOULD NOT BE CALLED" }) {
-          Reporter.instance.start!(Config.instance, Judoscale.adapters)
+          Reporter.instance.start!(Config.instance, RailsAutoscale.adapters)
         }
 
         _(log_string).must_include "Reporter not started: JUDOSCALE_URL is not set"
@@ -135,7 +135,7 @@ module Judoscale
 
       it "does not run the reporter thread when there are no metrics collectors" do
         Reporter.instance.stub(:run_loop, ->(*) { raise "SHOULD NOT BE CALLED" }) {
-          Reporter.instance.start!(Config.instance, Judoscale.adapters.select { |a| a.metrics_collector.nil? })
+          Reporter.instance.start!(Config.instance, RailsAutoscale.adapters.select { |a| a.metrics_collector.nil? })
         }
 
         _(log_string).must_include "Reporter not started: no metrics need to be collected on this dyno"
@@ -145,16 +145,16 @@ module Judoscale
         stub_request(:post, "http://example.com/api/test-token/v1/metrics")
         run_reporter_start_thread
 
-        _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [judoscale-ruby, test_web, test_job]"
+        _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [rails-autoscale-core, test_web, test_job]"
       end
 
       it "logs only enabled adapters" do
-        Judoscale.configure { |config| config.test_job_config.enabled = false }
+        RailsAutoscale.configure { |config| config.test_job_config.enabled = false }
 
         stub_request(:post, "http://example.com/api/test-token/v1/metrics")
         run_reporter_start_thread
 
-        _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [judoscale-ruby, test_web]"
+        _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [rails-autoscale-core, test_web]"
       end
     end
 
@@ -164,7 +164,7 @@ module Judoscale
         job_metrics_collector = Test::TestJobMetricsCollector.new
         all_metrics = web_metrics_collector.collect + job_metrics_collector.collect
 
-        expected_body = Report.new(Judoscale.adapters, Config.instance, all_metrics).as_json
+        expected_body = Report.new(RailsAutoscale.adapters, Config.instance, all_metrics).as_json
         stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
           .with(body: JSON.generate(expected_body))
 
@@ -181,7 +181,7 @@ module Judoscale
 
         Reporter.instance.run_metrics_collection Config.instance, [metrics_collector]
 
-        _(log_string).must_include "ERROR -- : [Judoscale] Reporter failed: 503 - "
+        _(log_string).must_include "ERROR -- : [RailsAutoscale] Reporter failed: 503 - "
       end
 
       it "logs exceptions when reporting collected information" do
@@ -198,7 +198,7 @@ module Judoscale
         job_metrics_collector = Test::TestJobMetricsCollector.new
         web_metrics = web_metrics_collector.collect
 
-        expected_body = Report.new(Judoscale.adapters, Config.instance, web_metrics).as_json
+        expected_body = Report.new(RailsAutoscale.adapters, Config.instance, web_metrics).as_json
         stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
           .with(body: JSON.generate(expected_body))
 

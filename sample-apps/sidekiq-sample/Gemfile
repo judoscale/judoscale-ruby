@@ -12,6 +12,6 @@ gem "sidekiq", "~> 6.4"
 
 # Need to reference all locally, otherwise it'd use the the gemspecs to try to find each gem,
 # but we want to test against the local dev versions of them, not the released gems.
-gem "judoscale-ruby", path: "../../judoscale-ruby"
-gem "judoscale-rails", path: "../../judoscale-rails"
-gem "judoscale-sidekiq", path: "../../judoscale-sidekiq"
+gem "rails-autoscale-core", path: "../../rails-autoscale-core"
+gem "rails-autoscale-web", path: "../../rails-autoscale-web"
+gem "rails-autoscale-sidekiq", path: "../../rails-autoscale-sidekiq"

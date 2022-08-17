@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require "judoscale/config"
+require "rails_autoscale/config"
 require "logger"
 
-module Judoscale
+module RailsAutoscale
   module Logger
     def logger
       @logger ||= LoggerProxy.new(Config.instance.logger, Config.instance.log_level)
@@ -11,7 +11,7 @@ module Judoscale
   end
 
   class LoggerProxy < Struct.new(:logger, :log_level)
-    TAG = "Judoscale"
+    TAG = "RailsAutoscale"
 
     %w[ERROR WARN INFO DEBUG].each do |severity_name|
       severity_level = ::Logger::Severity.const_get(severity_name)

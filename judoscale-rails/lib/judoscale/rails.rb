@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "judoscale-ruby"
-require "judoscale/rails/version"
-require "judoscale/rails/railtie"
-require "judoscale/web_metrics_collector"
+require "rails-autoscale-core"
+require "rails_autoscale/rails/version"
+require "rails_autoscale/rails/railtie"
+require "rails_autoscale/web_metrics_collector"
 require "rails/version"
 
-Judoscale.add_adapter :"judoscale-rails", {
-  adapter_version: Judoscale::Rails::VERSION,
+RailsAutoscale.add_adapter :"rails-autoscale-rails", {
+  adapter_version: RailsAutoscale::Rails::VERSION,
   framework_version: ::Rails.version
-}, metrics_collector: Judoscale::WebMetricsCollector
+}, metrics_collector: RailsAutoscale::WebMetricsCollector

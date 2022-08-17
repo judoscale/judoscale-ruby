@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "judoscale/config"
-require "judoscale/version"
+require "rails_autoscale/config"
+require "rails_autoscale/version"
 
-module Judoscale
-  # Allows configuring Judoscale through a block, usually defined during application initialization.
+module RailsAutoscale
+  # Allows configuring Rails Autoscale through a block, usually defined during application initialization.
   #
   # Example:
   #
-  #    Judoscale.configure do |config|
+  #    RailsAutoscale.configure do |config|
   #      config.logger = MyLogger.new
   #    end
   def self.configure
@@ -31,7 +31,7 @@ module Judoscale
     @adapters << Adapter.new(identifier, adapter_info, metrics_collector)
   end
 
-  add_adapter :"judoscale-ruby", {
+  add_adapter :"rails-autoscale-core", {
     adapter_version: VERSION,
     language_version: RUBY_VERSION
   }

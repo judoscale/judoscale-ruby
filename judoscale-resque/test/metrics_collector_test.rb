@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "judoscale/resque/metrics_collector"
+require "rails_autoscale/resque/metrics_collector"
 require "securerandom"
 
-module Judoscale
+module RailsAutoscale
   ResqueWorkerStub = Struct.new(:job) do
     def idle?
       job.nil?

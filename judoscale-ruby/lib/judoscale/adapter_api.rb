@@ -3,9 +3,9 @@
 require "net/http"
 require "uri"
 require "json"
-require "judoscale/logger"
+require "rails_autoscale/logger"
 
-module Judoscale
+module RailsAutoscale
   class AdapterApi
     include Logger
 
