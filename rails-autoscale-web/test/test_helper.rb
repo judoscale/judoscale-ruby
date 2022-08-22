@@ -10,7 +10,7 @@ ENV["DYNO"] ||= "web.1"
 ENV["RACK_ENV"] ||= "test"
 require "action_controller"
 
-class TestRailsApp < Web::Application
+class TestRailsApp < Rails::Application
   config.secret_key_base = "test-secret"
   config.eager_load = false
   config.logger = ::Logger.new(StringIO.new, progname: "rails-app")
