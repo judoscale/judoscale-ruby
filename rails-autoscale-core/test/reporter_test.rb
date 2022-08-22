@@ -64,7 +64,7 @@ module RailsAutoscale
         all_metrics = web_metrics + job_metrics
 
         expected_body = Report.new(RailsAutoscale.adapters, Config.instance, all_metrics).as_json
-        stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
+        stub = stub_request(:post, "http://example.com/api/test-token/v3/reports")
           .with(body: JSON.generate(expected_body))
 
         run_reporter_start_thread
@@ -142,7 +142,7 @@ module RailsAutoscale
       end
 
       it "logs when the reporter starts successfully" do
-        stub_request(:post, "http://example.com/api/test-token/v1/metrics")
+        stub_request(:post, "http://example.com/api/test-token/v3/reports")
         run_reporter_start_thread
 
         _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [rails-autoscale-core, test_web, test_job]"
@@ -151,7 +151,7 @@ module RailsAutoscale
       it "logs only enabled adapters" do
         RailsAutoscale.configure { |config| config.test_job_config.enabled = false }
 
-        stub_request(:post, "http://example.com/api/test-token/v1/metrics")
+        stub_request(:post, "http://example.com/api/test-token/v3/reports")
         run_reporter_start_thread
 
         _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [rails-autoscale-core, test_web]"
@@ -165,7 +165,7 @@ module RailsAutoscale
         all_metrics = web_metrics_collector.collect + job_metrics_collector.collect
 
         expected_body = Report.new(RailsAutoscale.adapters, Config.instance, all_metrics).as_json
-        stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
+        stub = stub_request(:post, "http://example.com/api/test-token/v3/reports")
           .with(body: JSON.generate(expected_body))
 
         Reporter.instance.run_metrics_collection Config.instance, [web_metrics_collector, job_metrics_collector]
@@ -176,7 +176,7 @@ module RailsAutoscale
       it "logs reporting failures" do
         metrics_collector = Test::TestWebMetricsCollector.new
 
-        stub_request(:post, %r{http://example.com/api/test-token/v1/metrics})
+        stub_request(:post, %r{http://example.com/api/test-token/v3/reports})
           .to_return(body: "oops", status: 503)
 
         Reporter.instance.run_metrics_collection Config.instance, [metrics_collector]
@@ -199,7 +199,7 @@ module RailsAutoscale
         web_metrics = web_metrics_collector.collect
 
         expected_body = Report.new(RailsAutoscale.adapters, Config.instance, web_metrics).as_json
-        stub = stub_request(:post, "http://example.com/api/test-token/v1/metrics")
+        stub = stub_request(:post, "http://example.com/api/test-token/v3/reports")
           .with(body: JSON.generate(expected_body))
 
         job_metrics_collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {

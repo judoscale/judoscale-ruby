@@ -9,8 +9,8 @@ describe RailsAutoscale::AdapterApi do
 
   describe "#report_metrics" do
     it "returns a successful response" do
-      config.api_base_url = "http://RailsAutoscale.dev/api/test-app-token"
-      stub = stub_request(:post, "http://RailsAutoscale.dev/api/test-app-token/v1/metrics")
+      config.api_base_url = "http://railsautoscale.dev/api/test-app-token"
+      stub = stub_request(:post, "http://railsautoscale.dev/api/test-app-token/v3/reports")
         .to_return(status: 200)
 
       adapter_api = RailsAutoscale::AdapterApi.new(config)
@@ -21,8 +21,8 @@ describe RailsAutoscale::AdapterApi do
     end
 
     it "returns a failure response if we post unexpected params" do
-      config.api_base_url = "http://RailsAutoscale.dev/api/bad-app-token"
-      stub = stub_request(:post, "http://RailsAutoscale.dev/api/bad-app-token/v1/metrics")
+      config.api_base_url = "http://railsautoscale.dev/api/bad-app-token"
+      stub = stub_request(:post, "http://railsautoscale.dev/api/bad-app-token/v3/reports")
         .to_return(status: [400, "Bad Request"])
 
       adapter_api = RailsAutoscale::AdapterApi.new(config)
@@ -35,7 +35,7 @@ describe RailsAutoscale::AdapterApi do
 
     it "returns a failure response if the service is unavailable" do
       config.api_base_url = "http://does-not-exist.dev"
-      stub = stub_request(:post, "http://does-not-exist.dev/v1/metrics")
+      stub = stub_request(:post, "http://does-not-exist.dev/v3/reports")
         .to_return(status: [503, "Service Unavailable"])
 
       adapter_api = RailsAutoscale::AdapterApi.new(config)
@@ -48,7 +48,7 @@ describe RailsAutoscale::AdapterApi do
 
     it "supports HTTPS" do
       config.api_base_url = "https://rails-autoscale-production.herokuapp.com/api/test-token"
-      stub = stub_request(:post, "https://rails-autoscale-production.herokuapp.com/api/test-token/v1/metrics")
+      stub = stub_request(:post, "https://rails-autoscale-production.herokuapp.com/api/test-token/v3/reports")
         .to_return(status: 200)
 
       adapter_api = RailsAutoscale::AdapterApi.new(config)

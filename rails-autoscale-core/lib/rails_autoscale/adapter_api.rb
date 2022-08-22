@@ -16,7 +16,7 @@ module RailsAutoscale
     end
 
     def report_metrics(report_json)
-      post_json "/v1/metrics", report_json
+      post_json "/v3/reports", report_json
     end
 
     private
