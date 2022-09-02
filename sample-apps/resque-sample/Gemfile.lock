@@ -1,21 +1,21 @@
 PATH
-  remote: ../../rails-autoscale-web
+  remote: ../../rails-autoscale-core
   specs:
-    rails-autoscale-web (1.0.0.rc1)
-      rails-autoscale-core
-      railties
+    rails-autoscale-core (0.0.1)
 
 PATH
   remote: ../../rails-autoscale-resque
   specs:
-    rails-autoscale-resque (1.0.0.rc1)
+    rails-autoscale-resque (0.0.1)
       rails-autoscale-core
       resque (>= 2.0)
 
 PATH
-  remote: ../../rails-autoscale-core
+  remote: ../../rails-autoscale-web
   specs:
-    rails-autoscale-core (1.0.0.rc1)
+    rails-autoscale-web (0.0.1)
+      rails-autoscale-core
+      railties
 
 GEM
   remote: https://rubygems.org/
@@ -110,10 +110,10 @@ PLATFORMS
 DEPENDENCIES
   actionpack (~> 7.0.1)
   actionview (~> 7.0.1)
-  rails-autoscale-web!
-  rails-autoscale-resque!
-  rails-autoscale-core!
   puma (~> 5.0)
+  rails-autoscale-core!
+  rails-autoscale-resque!
+  rails-autoscale-web!
   railties (~> 7.0.1)
   resque
 

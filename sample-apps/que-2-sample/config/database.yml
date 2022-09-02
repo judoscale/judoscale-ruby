@@ -10,5 +10,5 @@ development:
   database: rails_autoscale_que_sample_development
   username: postgres
   #password:
-  #host: localhost
+  host: localhost
   #port: 5432

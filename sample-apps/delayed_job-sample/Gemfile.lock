@@ -1,21 +1,21 @@
 PATH
+  remote: ../../rails-autoscale-core
+  specs:
+    rails-autoscale-core (0.0.1)
+
+PATH
   remote: ../../rails-autoscale-delayed_job
   specs:
-    rails-autoscale-delayed_job (1.0.0.rc1)
+    rails-autoscale-delayed_job (0.0.1)
       delayed_job_active_record (>= 4.0)
       rails-autoscale-core
 
 PATH
   remote: ../../rails-autoscale-web
   specs:
-    rails-autoscale-web (1.0.0.rc1)
+    rails-autoscale-web (0.0.1)
       rails-autoscale-core
       railties
-
-PATH
-  remote: ../../rails-autoscale-core
-  specs:
-    rails-autoscale-core (1.0.0.rc1)
 
 GEM
   remote: https://rubygems.org/
@@ -119,11 +119,11 @@ DEPENDENCIES
   activerecord (~> 7.0.1)
   delayed_job_active_record
   delayed_job_web
-  rails-autoscale-delayed_job!
-  rails-autoscale-web!
-  rails-autoscale-core!
   pg (~> 1.1)
   puma (~> 5.0)
+  rails-autoscale-core!
+  rails-autoscale-delayed_job!
+  rails-autoscale-web!
   railties (~> 7.0.1)
 
 BUNDLED WITH

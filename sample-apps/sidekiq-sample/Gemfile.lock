@@ -1,21 +1,21 @@
 PATH
-  remote: ../../rails-autoscale-web
-  specs:
-    rails-autoscale-web (1.0.0.rc1)
-      rails-autoscale-core
-      railties
-
-PATH
   remote: ../../rails-autoscale-core
   specs:
-    rails-autoscale-core (1.0.0.rc1)
+    rails-autoscale-core (0.0.1)
 
 PATH
   remote: ../../rails-autoscale-sidekiq
   specs:
-    rails-autoscale-sidekiq (1.0.0.rc1)
+    rails-autoscale-sidekiq (0.0.1)
       rails-autoscale-core
       sidekiq (>= 5.0)
+
+PATH
+  remote: ../../rails-autoscale-web
+  specs:
+    rails-autoscale-web (0.0.1)
+      rails-autoscale-core
+      railties
 
 GEM
   remote: https://rubygems.org/
@@ -95,10 +95,10 @@ PLATFORMS
 DEPENDENCIES
   actionpack (~> 7.0.1)
   actionview (~> 7.0.1)
-  rails-autoscale-web!
+  puma (~> 5.0)
   rails-autoscale-core!
   rails-autoscale-sidekiq!
-  puma (~> 5.0)
+  rails-autoscale-web!
   railties (~> 7.0.1)
   sidekiq (~> 6.4)
 
