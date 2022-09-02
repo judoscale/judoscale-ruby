@@ -24,7 +24,7 @@ module RailsAutoscale
 
       def select_rows_tagged(sql)
         if ActiveRecord::Base.logger.respond_to?(:tagged)
-          ActiveRecord::Base.logger.tagged(RailsAutoscale::LoggerProxy::TAG) { select_rows(sql) }
+          ActiveRecord::Base.logger.tagged(Config.instance.log_tag) { select_rows(sql) }
         else
           select_rows(sql)
         end
