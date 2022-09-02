@@ -24,7 +24,7 @@ jobs:
         exclude:
           - gemfile: Gemfile
             ruby: "2.6"
-          - gemfile: Gemfile-que-2-beta
+          - gemfile: Gemfile-que-2
             ruby: "2.6"
     runs-on: ubuntu-latest
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
