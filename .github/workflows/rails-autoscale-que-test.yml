@@ -15,7 +15,7 @@ jobs:
         gemfile:
           - Gemfile
           - Gemfile-activerecord-6-1
-          - Gemfile-que-2-beta
+          - Gemfile-que-2
         ruby:
           - "2.6"
           - "2.7"
