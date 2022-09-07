@@ -1,0 +1,10 @@
+source "https://rubygems.org"
+
+gemspec
+
+gem "rails-autoscale-core", path: "../rails-autoscale-core"
+gem "que", "~> 2.0"
+gem "activerecord"
+gem "pg"
+gem "minitest"
+gem "rake"

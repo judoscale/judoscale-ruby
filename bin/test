@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "fileutils"
+
+Dir["rails-autoscale-*"].each do |dir|
+  FileUtils.cd(dir) do
+    puts "Running tests: #{dir}"
+    system("bundle exec rake test")
+    puts
+  end
+end

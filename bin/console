@@ -1,7 +1,21 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-require "bundler/setup"
-require "rails_autoscale_agent"
+# Loads an IRB console/session within `rails-autoscale-core` context by default.
+# Pass a different library to load the console within its context.
+#
+# Examples:
+#   bin/console
+#   bin/console rails-autoscale-web
 
-require "pry"
-Pry.start
+library = ARGV.shift || "rails-autoscale-core"
+puts "Console: #{library}"
+
+require "fileutils"
+FileUtils.cd(library) do
+  require "bundler/setup"
+  require library
+
+  require "irb"
+  IRB.start(__FILE__)
+end

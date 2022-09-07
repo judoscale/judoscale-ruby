@@ -1,0 +1,8 @@
+source "https://rubygems.org"
+
+gemspec
+
+gem "rails-autoscale-core", path: "../rails-autoscale-core"
+gem "railties", "~> 6.1"
+gem "minitest"
+gem "rake"
