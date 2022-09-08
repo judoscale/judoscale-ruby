@@ -90,6 +90,8 @@ Rails Autoscale aggregates and stores this information to power the autoscaler a
 
 The migration from `rails_autoscale_agent` to `rails-autoscale-web` (+ your job framework gem) is typically a single step: replace the `gem "rails_atuoscale_agent"` in your Gemfile with `gem "rails-autoscale-web"` _and_ the appropriate `rails-autoscale-*` package for your back-end job framework (`sidekiq`, `resque`, `delayed_job`, or `que`) or see the [Installation](#installation) section above for further specifics. If you previously had any custom configuration for the `rails_autoscale_agent`, please note that we now use a `configure` block as shown below.
 
+Looking for the old `rails_autoscale_agent` docs? They're available on [this branch](https://github.com/rails-autoscale/rails-autoscale-gems/tree/rails_autoscale_agent).
+
 ## Configuration
 
 All autoscaling configurations are handled in the Rails Autoscale web UI, but there a few ways you can change the behavior of the adapters. Most apps won't need to change any of the adapter configurations, in which case an initializer is not required.
