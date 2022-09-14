@@ -3,6 +3,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v1.0.0...main)
 
+### Added
+
+- Gracefully handle TCP connection timeouts.
+  - These timeouts do occasionally happen, and now we automatically retry them twice.
+  - If it fails on the third attempt, we now suppress the full backtrace in favor of a simple failure message.
+
 ## [1.0.0](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v0.10.2...v1.0.0)
 
 - Update API endpoint to V3.
