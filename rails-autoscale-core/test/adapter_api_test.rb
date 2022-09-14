@@ -46,6 +46,35 @@ describe RailsAutoscale::AdapterApi do
       assert_requested stub
     end
 
+    it "returns a failure response if opening the connection times out three times" do
+      config.api_base_url = "http://railsautoscale.dev/api/test-app-token"
+      stub = stub_request(:post, "http://railsautoscale.dev/api/test-app-token/v3/reports")
+        .to_timeout.then
+        .to_timeout.then
+        .to_timeout
+
+      adapter_api = RailsAutoscale::AdapterApi.new(config)
+      result = adapter_api.report_metrics(report_params)
+
+      _(result).must_be_instance_of RailsAutoscale::AdapterApi::FailureResponse
+      _(result.failure_message).must_equal "Timeout while obtaining TCP connection to railsautoscale.dev"
+      assert_requested stub, times: 3
+    end
+
+    it "retries twice if opening the connection times out" do
+      config.api_base_url = "http://railsautoscale.dev/api/test-app-token"
+      stub = stub_request(:post, "http://railsautoscale.dev/api/test-app-token/v3/reports")
+        .to_timeout.then
+        .to_timeout.then
+        .to_return(status: 200)
+
+      adapter_api = RailsAutoscale::AdapterApi.new(config)
+      result = adapter_api.report_metrics(report_params)
+
+      _(result).must_be_instance_of RailsAutoscale::AdapterApi::SuccessResponse
+      assert_requested stub, times: 3
+    end
+
     it "supports HTTPS" do
       config.api_base_url = "https://rails-autoscale-production.herokuapp.com/api/test-token"
       stub = stub_request(:post, "https://rails-autoscale-production.herokuapp.com/api/test-token/v3/reports")

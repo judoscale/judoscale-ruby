@@ -27,6 +27,7 @@ module RailsAutoscale
     end
 
     def post_raw(options)
+      attempts ||= 1
       uri = URI.parse("#{@config.api_base_url}#{options.fetch(:path)}")
       ssl = uri.scheme == "https"
 
@@ -41,6 +42,15 @@ module RailsAutoscale
       case response.code.to_i
       when 200...300 then SuccessResponse.new(response.body)
       else FailureResponse.new([response.code, response.message].join(" - "))
+      end
+    rescue Net::OpenTimeout
+      if attempts < 3
+        # TCP timeouts happen sometimes, but they can usually be successfully retried in a moment
+        sleep 0.01
+        attempts += 1
+        retry
+      else
+        FailureResponse.new("Timeout while obtaining TCP connection to #{uri.host}")
       end
     end
 
