@@ -1,0 +1,17 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: ruby
+          package-name: release-please-action
+          bump-minor-pre-major: true
+          version-file: "rails-autoscale-core/lib/rails_autoscale/version.rb"

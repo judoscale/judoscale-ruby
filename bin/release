@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+for folder in ./rails-autoscale-*; do
+    echo "-> $folder"
+    cd $folder
+    echo bundle exec rake release
+    echo ""
+    cd ..
+done

@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "fileutils"
+require "./rails-autoscale-core/lib/rails_autoscale/version"
+
+# Syncs the VERSION of all rails-autoscale-* gems based on rails-autoscale-core.
+#
+# Usage:
+#   - Manually update rails-autoscale-core/lib/rails_autoscale/version.rb
+#   - Run bin/sync-versions
+
+Dir["rails-autoscale-*/**/version.rb"].each do |filepath|
+  next if filepath.include?("rails-autoscale-core")
+
+  updated_file_content = File.read(filepath).gsub(
+    /VERSION = ".*"/,
+    %(VERSION = "#{RailsAutoscale::VERSION}")
+  )
+  File.open(filepath, "w") { |file| file << updated_file_content }
+
+  puts "Updated #{filepath} to version #{RailsAutoscale::VERSION}"
+end
