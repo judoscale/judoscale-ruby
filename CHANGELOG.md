@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v1.0.0...v1.0.1) (2022-09-14)
+
+
+### Bug Fixes
+
+* Gracefully handle TCP connection timeouts ([a34797b](https://github.com/rails-autoscale/rails-autoscale-gems/commit/a34797bf3cfcfefa17b8147475be26e4453aab58))
+
 ## [1.0.0](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v0.10.2...v1.0.0)
 
 - Update API endpoint to V3.
