@@ -1,12 +1,12 @@
 PATH
   remote: ../rails-autoscale-core
   specs:
-    rails-autoscale-core (1.0.0)
+    rails-autoscale-core (1.0.1)
 
 PATH
   remote: .
   specs:
-    rails-autoscale-resque (1.0.0)
+    rails-autoscale-resque (1.0.1)
       rails-autoscale-core
       resque (>= 2.0)
 
@@ -22,7 +22,7 @@ GEM
     rack-protection (2.2.2)
       rack
     rake (13.0.6)
-    redis (4.7.1)
+    redis (4.8.0)
     redis-namespace (1.9.0)
       redis (>= 4)
     resque (2.2.1)
@@ -49,6 +49,8 @@ DEPENDENCIES
   rails-autoscale-core!
   rails-autoscale-resque!
   rake
+  redis (~> 4.0)
+  resque (~> 2.2.0)
 
 BUNDLED WITH
    2.3.9

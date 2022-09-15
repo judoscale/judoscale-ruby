@@ -5,3 +5,9 @@ gemspec
 gem "rails-autoscale-core", path: "../rails-autoscale-core"
 gem "minitest"
 gem "rake"
+
+# Lock to known working versions to keep tests passing.
+# Without this, `bundle install` will update `Gemfile.lock` due to
+# https://github.com/rubygems/bundler/issues/6069
+gem "resque", "~> 2.2.0"
+gem "redis", "~> 4.0"
