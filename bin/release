@@ -5,7 +5,7 @@ IFS=$'\n\t'
 for folder in ./rails-autoscale-*; do
     echo "-> $folder"
     cd $folder
-    echo bundle exec rake release
+    bundle exec rake release
     echo ""
     cd ..
 done
