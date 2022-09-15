@@ -88,9 +88,15 @@ Rails Autoscale aggregates and stores this information to power the autoscaler a
 
 ## Migrating from `rails_autoscale_agent`
 
-The migration from `rails_autoscale_agent` to `rails-autoscale-web` (+ your job framework gem) is typically a single step: replace the `gem "rails_atuoscale_agent"` in your Gemfile with `gem "rails-autoscale-web"` _and_ the appropriate `rails-autoscale-*` package for your back-end job framework (`sidekiq`, `resque`, `delayed_job`, or `que`) or see the [Installation](#installation) section above for further specifics. If you previously had any custom configuration for the `rails_autoscale_agent`, please note that we now use a `configure` block as shown below.
+The migration from `rails_autoscale_agent` to `rails-autoscale-web` (+ your job framework gem) is typically a single step: replace the `gem "rails_autoscale_agent"` in your Gemfile with `gem "rails-autoscale-web"` _and_ the appropriate `rails-autoscale-*` package for your back-end job framework (`sidekiq`, `resque`, `delayed_job`, or `que`) or see the [Installation](#installation) section above for further specifics. If you previously had any custom configuration for the `rails_autoscale_agent`, please note that we now use a `configure` block as shown below.
 
 Looking for the old `rails_autoscale_agent` docs? They're available on [this branch](https://github.com/rails-autoscale/rails-autoscale-gems/tree/rails_autoscale_agent).
+
+## Migrating from `judoscale-ruby` (and `judoscale-rails`, etc.)
+
+(Judoscale customers only) To avoid maintaining two separate sets of Ruby gems, we have deprecated the [`judoscale-ruby` gems](https://github.com/adamlogic/judoscale-ruby) in favor of `rails-autoscale-gems` (this repo). Replace `judoscale-*` with `rails-autoscale-*` in your Gemfile, and you'll be good to go!
+
+See this article if you need help [deciding between Judoscale and Rails Autoscale](https://judoscale.com/guides/judoscale-rails-autoscale/).
 
 ## Configuration
 
