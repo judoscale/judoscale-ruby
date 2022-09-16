@@ -31,10 +31,12 @@ module RailsAutoscale
 
       def reset
         @enabled = true
-        @max_queues = 20
         @queues = []
         @queue_filter = DEFAULT_QUEUE_FILTER
-        @track_busy_jobs = false
+
+        # Support for deprecated legacy env var configs.
+        @max_queues = (ENV["RAILS_AUTOSCALE_MAX_QUEUES"] || 20).to_i
+        @track_busy_jobs = ENV["RAILS_AUTOSCALE_LONG_JOBS"] == "true"
       end
 
       def as_json
