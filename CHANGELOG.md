@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v1.0.1...v1.0.2) (2022-09-26)
+
+
+### Bug Fixes
+
+* Bring back support for legacy env var configs (RAILS_AUTOSCALE_MAX_QUEUES and RAILS_AUTOSCALE_LONG_JOBS) ([c508544](https://github.com/rails-autoscale/rails-autoscale-gems/commit/c508544499cfa7973c689a156722bfc9dd95418a))
+
 ## [1.0.1](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v1.0.0...v1.0.1) (2022-09-14)
 
 
