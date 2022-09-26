@@ -5,7 +5,8 @@ IFS=$'\n\t'
 for folder in ./rails-autoscale-*; do
     echo "-> $folder"
     cd $folder
-    bundle exec rake release
+    # can't call rake release since the tag is already created and pushed
+    bundle exec rake build release:rubygem_push
     echo ""
     cd ..
 done
