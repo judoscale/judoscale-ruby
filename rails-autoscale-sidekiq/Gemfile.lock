@@ -1,19 +1,19 @@
 PATH
   remote: ../rails-autoscale-core
   specs:
-    rails-autoscale-core (1.0.1)
+    rails-autoscale-core (1.0.2)
 
 PATH
   remote: .
   specs:
-    rails-autoscale-sidekiq (1.0.1)
+    rails-autoscale-sidekiq (1.0.2)
       rails-autoscale-core
       sidekiq (>= 5.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    connection_pool (2.2.5)
+    connection_pool (2.3.0)
     debug (1.6.2)
       irb (>= 1.3.6)
       reline (>= 0.3.1)
@@ -26,7 +26,7 @@ GEM
     redis (4.8.0)
     reline (0.3.1)
       io-console (~> 0.5)
-    sidekiq (6.5.6)
+    sidekiq (6.5.7)
       connection_pool (>= 2.2.5)
       rack (~> 2.0)
       redis (>= 4.5.0, < 5)
