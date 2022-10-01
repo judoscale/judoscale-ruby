@@ -69,8 +69,8 @@ module RailsAutoscale
               middleware.call(env)
             end
 
-            _(app.env).must_include("RailsAutoscale.queue_time")
-            _(app.env["RailsAutoscale.queue_time"]).must_equal 5000
+            _(app.env).must_include("rails_autoscale.queue_time")
+            _(app.env["rails_autoscale.queue_time"]).must_equal 5000
           end
 
           it "logs debug information about the request and queue time" do

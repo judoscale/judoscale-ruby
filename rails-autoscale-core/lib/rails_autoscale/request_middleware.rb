@@ -27,7 +27,7 @@ module RailsAutoscale
         store = MetricsStore.instance
 
         # NOTE: Expose queue time to the app
-        env["RailsAutoscale.queue_time"] = queue_time
+        env["rails_autoscale.queue_time"] = queue_time
         store.push :qt, queue_time
 
         unless network_time.zero?
