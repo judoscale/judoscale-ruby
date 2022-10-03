@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v1.0.2...v1.0.3) (2022-10-01)
+
+
+### Bug Fixes
+
+* Fix find & replace mistake for queue time header ([a19982d](https://github.com/rails-autoscale/rails-autoscale-gems/commit/a19982d7a08f7c6ce74ff7f8e61ea689b8c2552c))
+
 ## [1.0.2](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v1.0.1...v1.0.2) (2022-09-26)
 
 
