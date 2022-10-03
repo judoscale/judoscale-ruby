@@ -31,7 +31,7 @@ module RailsAutoscale
         store.push :qt, queue_time
 
         unless network_time.zero?
-          env["RailsAutoscale.network_time"] = network_time
+          env["rails_autoscale.network_time"] = network_time
           store.push :nt, network_time
         end
 
