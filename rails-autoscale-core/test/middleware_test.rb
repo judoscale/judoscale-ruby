@@ -110,8 +110,8 @@ module RailsAutoscale
             it "records the network time in the environment passed on" do
               middleware.call(env)
 
-              _(app.env).must_include("RailsAutoscale.network_time")
-              _(app.env["RailsAutoscale.network_time"]).must_equal 50
+              _(app.env).must_include("rails_autoscale.network_time")
+              _(app.env["rails_autoscale.network_time"]).must_equal 50
             end
           end
         end
