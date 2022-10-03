@@ -1,12 +1,12 @@
 PATH
   remote: ../rails-autoscale-core
   specs:
-    rails-autoscale-core (1.0.2)
+    rails-autoscale-core (1.0.3)
 
 PATH
   remote: .
   specs:
-    rails-autoscale-web (1.0.2)
+    rails-autoscale-web (1.0.3)
       rails-autoscale-core
       railties
 
@@ -76,7 +76,7 @@ GEM
     thor (1.2.1)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
-    zeitwerk (2.6.0)
+    zeitwerk (2.6.1)
 
 PLATFORMS
   arm64-darwin-20
