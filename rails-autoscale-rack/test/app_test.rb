@@ -20,7 +20,7 @@ module RailsAutoscale
         get "/"
 
         _(last_response).must_be :ok?
-        _(last_response.body).must_match /Hello World/m
+        _(last_response.body).must_match(/Hello World/m)
 
         _(MetricsStore.instance.metrics.size).must_equal i
         _(MetricsStore.instance.metrics.last.identifier).must_equal :qt

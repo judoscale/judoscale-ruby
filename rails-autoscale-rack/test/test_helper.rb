@@ -16,7 +16,7 @@ end
 
 class TestSinatraApp < Sinatra::Base
   use RailsAutoscale::RequestMiddleware
-  
+
   get "/" do
     "Hello World!"
   end
