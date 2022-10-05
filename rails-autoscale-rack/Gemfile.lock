@@ -1,0 +1,57 @@
+PATH
+  remote: ../rails-autoscale-core
+  specs:
+    rails-autoscale-core (1.0.3)
+
+PATH
+  remote: .
+  specs:
+    rails-autoscale-rack (1.0.3)
+      rack
+      rails-autoscale-core
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    debug (1.6.2)
+      irb (>= 1.3.6)
+      reline (>= 0.3.1)
+    io-console (0.5.11)
+    irb (1.4.1)
+      reline (>= 0.3.0)
+    minitest (5.16.3)
+    mustermann (3.0.0)
+      ruby2_keywords (~> 0.0.1)
+    rack (2.2.4)
+    rack-protection (3.0.2)
+      rack
+    rack-test (2.0.2)
+      rack (>= 1.3)
+    rake (13.0.6)
+    reline (0.3.1)
+      io-console (~> 0.5)
+    ruby2_keywords (0.0.5)
+    sinatra (3.0.2)
+      mustermann (~> 3.0)
+      rack (~> 2.2, >= 2.2.4)
+      rack-protection (= 3.0.2)
+      tilt (~> 2.0)
+    tilt (2.0.11)
+
+PLATFORMS
+  arm64-darwin-20
+  arm64-darwin-21
+  x86_64-darwin-21
+  x86_64-linux
+
+DEPENDENCIES
+  debug
+  minitest
+  rack-test
+  rails-autoscale-core!
+  rails-autoscale-rack!
+  rake
+  sinatra
+
+BUNDLED WITH
+   2.3.9

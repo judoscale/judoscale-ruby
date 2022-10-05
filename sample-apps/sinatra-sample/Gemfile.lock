@@ -1,0 +1,42 @@
+PATH
+  remote: ../../rails-autoscale-core
+  specs:
+    rails-autoscale-core (1.0.3)
+
+PATH
+  remote: ../../rails-autoscale-rack
+  specs:
+    rails-autoscale-rack (1.0.3)
+      rack
+      rails-autoscale-core
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    mustermann (3.0.0)
+      ruby2_keywords (~> 0.0.1)
+    nio4r (2.5.8)
+    puma (5.6.5)
+      nio4r (~> 2.0)
+    rack (2.2.4)
+    rack-protection (3.0.2)
+      rack
+    ruby2_keywords (0.0.5)
+    sinatra (3.0.2)
+      mustermann (~> 3.0)
+      rack (~> 2.2, >= 2.2.4)
+      rack-protection (= 3.0.2)
+      tilt (~> 2.0)
+    tilt (2.0.11)
+
+PLATFORMS
+  arm64-darwin-21
+
+DEPENDENCIES
+  puma
+  rails-autoscale-core!
+  rails-autoscale-rack!
+  sinatra
+
+BUNDLED WITH
+   2.3.9

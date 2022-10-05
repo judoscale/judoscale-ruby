@@ -1,12 +1,12 @@
 PATH
   remote: ../../rails-autoscale-core
   specs:
-    rails-autoscale-core (0.0.1)
+    rails-autoscale-core (1.0.3)
 
 PATH
   remote: ../../rails-autoscale-web
   specs:
-    rails-autoscale-web (0.0.1)
+    rails-autoscale-web (1.0.3)
       rails-autoscale-core
       railties
 

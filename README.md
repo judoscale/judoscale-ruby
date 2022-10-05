@@ -33,22 +33,20 @@ The adapters report queue metrics to Rails Autoscale every 10 seconds. The repor
 
 ## Installation for Non-Rails Rack apps
 
-If you're using another Rack-based framework (such as Sinatra), you should use `rails-autoscale-core` instead of `rails-autoscale-web`:
+If you're using another Rack-based framework (such as Sinatra), you should use `rails-autoscale-rack` instead of `rails-autoscale-web`:
 
 ```ruby
-gem "rails-autoscale-core"
+gem "rails-autoscale-rack"
 ```
 
-This gem provides a request middleware, but you'll need to insert that middleware in your app.
+The gem provides a request middleware, but you'll need to insert that middleware into your app.
 
 ```ruby
-require "rails_autoscale/request_middleware"
+Bundler.require
 use RailsAutoscale::RequestMiddleware
 ```
 
-If possible, insert it before `Rack::Runtime` to ensure accuracy of request queue timings.
-
-`RailsAutoscale::RequestMiddleware` will start the reporter when it processes the first request.
+The middleware will start the async reporter when it processes the first request.
 
 ## Worker adapters
 

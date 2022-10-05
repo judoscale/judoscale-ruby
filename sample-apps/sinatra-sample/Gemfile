@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "sinatra"
+gem "puma"
+gem "rails-autoscale-core", path: "../../rails-autoscale-core"
+gem "rails-autoscale-rack", path: "../../rails-autoscale-rack"
