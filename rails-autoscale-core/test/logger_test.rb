@@ -15,7 +15,7 @@ module RailsAutoscale
       RailsAutoscale.configure { |config| config.logger = original_logger }
     }
 
-    %w[ERROR WARN INFO DEBUG].each do |level|
+    %w[ERROR WARN INFO DEBUG FATAL].each do |level|
       method_name = level.downcase
 
       describe "##{method_name}" do
@@ -37,20 +37,6 @@ module RailsAutoscale
           _(messages).must_include "#{level} -- : [RailsAutoscale] some msg\n[RailsAutoscale] msg context\n[RailsAutoscale] more msg context"
         end
 
-        it "respects the configured log_level" do
-          use_config log_level: :fatal do
-            logger.public_send method_name, "some message"
-            _(messages).wont_include "some message"
-          end
-        end
-
-        it "respects the level set by the original logger when the log level config is not overridden" do
-          original_logger.level = ::Logger::Severity::FATAL
-
-          logger.public_send method_name, "some message"
-          _(messages).wont_include "some message"
-        end
-
         it "logs at the given level without tagging the level when both the configured log level and the underlying logger level permit" do
           original_logger.level = ::Logger::Severity::DEBUG
 
@@ -60,12 +46,28 @@ module RailsAutoscale
           end
         end
 
-        it "logs at the underlying logger level tagging with the given level when the configured log level is lower, to ensure messages are always logged" do
-          original_logger.level = ::Logger::Severity::FATAL
+        if method_name != "fatal"
+          it "respects the configured log_level" do
+            use_config log_level: :fatal do
+              logger.public_send method_name, "some message"
+              _(messages).wont_include "some message"
+            end
+          end
 
-          use_config log_level: level do
+          it "respects the level set by the original logger when the log level config is not overridden" do
+            original_logger.level = ::Logger::Severity::FATAL
+
             logger.public_send method_name, "some message"
-            _(messages).must_include "FATAL -- : [RailsAutoscale] [#{level}] some message"
+            _(messages).wont_include "some message"
+          end
+
+          it "logs at the underlying logger level tagging with the given level when the configured log level is lower, to ensure messages are always logged" do
+            original_logger.level = ::Logger::Severity::FATAL
+
+            use_config log_level: level do
+              logger.public_send method_name, "some message"
+              _(messages).must_include "FATAL -- : [RailsAutoscale] [#{level}] some message"
+            end
           end
         end
       end
