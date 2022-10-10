@@ -1,6 +1,18 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v1.0.3...v1.1.0) (2022-10-10)
+
+
+### Features
+
+* Add rails-autoscale-rack gem for Rack apps (non-Rails) ([66cb51d](https://github.com/rails-autoscale/rails-autoscale-gems/commit/66cb51dc871c54c58c89c4ce0b36482de99f4afb))
+
+
+### Bug Fixes
+
+* Fix logger when using Log4r ([1c9d726](https://github.com/rails-autoscale/rails-autoscale-gems/commit/1c9d72655ae236fb49572fecc1209f1a7564ba0c))
+
 ## [1.0.3](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v1.0.2...v1.0.3) (2022-10-01)
 
 
