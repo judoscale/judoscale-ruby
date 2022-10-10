@@ -1,12 +1,12 @@
 PATH
   remote: ../rails-autoscale-core
   specs:
-    rails-autoscale-core (1.0.3)
+    rails-autoscale-core (1.1.0)
 
 PATH
   remote: .
   specs:
-    rails-autoscale-resque (1.0.3)
+    rails-autoscale-resque (1.1.0)
       rails-autoscale-core
       resque (>= 2.0)
 

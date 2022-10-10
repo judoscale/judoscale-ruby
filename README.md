@@ -213,7 +213,15 @@ Reach out to help@railsautoscale.com if you run into any other problems.
 
 After checking out the repo, run `bin/setup` to install dependencies across all the `rails-autoscale-*` libraries, or install each one individually via `bundle install`. Then, run `bin/test` to run all the tests across all the libraries, or inside each `rails-autoscale-*` library, run `bundle exec rake test`. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install each gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, commit it, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install each gem onto your local machine, run `bundle exec rake install`.
+
+To release a new version:
+
+1. Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary), and release branches will be created automatically via [Release Please](https://github.com/google-github-actions/release-please-action). This updates the changelog and the version of rails-autoscale-core.
+1. On the release branch, run `bin/sync-versions` and `bin/setup` to update the versions of all gems.
+1. After merging the release branch, run `bin/release` to publish all gems to [Rubygems](https://rubygems.org).
+
+_Note: We keep all gem versions in sync to provide a better developer experience for our users. Eventually we'll automate steps 2 & 3 above._
 
 ## Contributing
 
