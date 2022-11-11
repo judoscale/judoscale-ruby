@@ -96,7 +96,7 @@ module RailsAutoscale
             ["pid1", "tid3", {"payload" => {"queue" => "high"}}]
           ]
 
-          metrics = ::Sidekiq::WorkSet.stub(:new, workers) {
+          metrics = ::Sidekiq::Workers.stub(:new, workers) {
             ::Sidekiq::Queue.stub(:all, queues) {
               subject.collect
             }
@@ -112,17 +112,17 @@ module RailsAutoscale
         end
       end
 
-      it "gracefully handles when the WorkSet payload is a string" do
+      it "gracefully handles when the Workers payload is a string" do
         use_adapter_config :sidekiq, track_busy_jobs: true do
           queues = [
-            SidekiqQueueStub.new(name: "default", latency: 11, size: 1),
+            SidekiqQueueStub.new(name: "default", latency: 11, size: 1)
           ]
           workers = [
             # We don't know why the payload would be a string, but we've seen it in practice.
-            ["pid1", "tid1", {"payload" => "why am I a string???"}],
+            ["pid1", "tid1", {"payload" => "why am I a string???"}]
           ]
 
-          metrics = ::Sidekiq::WorkSet.stub(:new, workers) {
+          metrics = ::Sidekiq::Workers.stub(:new, workers) {
             ::Sidekiq::Queue.stub(:all, queues) {
               subject.collect
             }
@@ -141,7 +141,7 @@ module RailsAutoscale
             queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
             workers = [["pid1", "tid1", {"payload" => {"queue" => "default"}}]]
 
-            ::Sidekiq::WorkSet.stub(:new, workers) {
+            ::Sidekiq::Workers.stub(:new, workers) {
               ::Sidekiq::Queue.stub(:all, queues) {
                 subject.collect
               }
