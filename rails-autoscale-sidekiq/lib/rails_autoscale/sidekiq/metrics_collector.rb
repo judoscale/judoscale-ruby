@@ -21,6 +21,9 @@ module RailsAutoscale
         if track_busy_jobs?
           busy_counts = Hash.new { |h, k| h[k] = 0 }
           ::Sidekiq::Workers.new.each do |pid, tid, work|
+            # We've seen scenarios where `work` is a String, not a Hash,
+            # and we're not sure why.
+            next unless work.respond_to?(:dig)
             busy_counts[work.dig("payload", "queue")] += 1
           end
         end
