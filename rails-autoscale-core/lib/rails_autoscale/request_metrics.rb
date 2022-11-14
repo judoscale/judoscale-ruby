@@ -36,7 +36,7 @@ module RailsAutoscale
       queue_time -= network_time
 
       # Safeguard against negative queue times (should not happen in practice)
-      queue_time > 0 ? queue_time : 0
+      (queue_time > 0) ? queue_time : 0
     end
   end
 end

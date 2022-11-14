@@ -112,6 +112,29 @@ module RailsAutoscale
         end
       end
 
+      it "gracefully handles when the Workers payload is a string" do
+        use_adapter_config :sidekiq, track_busy_jobs: true do
+          queues = [
+            SidekiqQueueStub.new(name: "default", latency: 11, size: 1)
+          ]
+          workers = [
+            # The payload appears to be a JSON string in Sidekiq 7
+            ["pid1", "tid1", {"payload" => '{"queue":"default"}'}]
+          ]
+
+          metrics = ::Sidekiq::Workers.stub(:new, workers) {
+            ::Sidekiq::Queue.stub(:all, queues) {
+              subject.collect
+            }
+          }
+
+          _(metrics.size).must_equal 3
+          _(metrics[2].value).must_equal 1
+          _(metrics[2].queue_name).must_equal "default"
+          _(metrics[2].identifier).must_equal :busy
+        end
+      end
+
       it "logs debug information about busy jobs being collected" do
         use_config log_level: :debug do
           use_adapter_config :sidekiq, track_busy_jobs: true do
