@@ -1,12 +1,12 @@
 PATH
   remote: ../rails-autoscale-core
   specs:
-    rails-autoscale-core (1.1.0)
+    rails-autoscale-core (1.1.1)
 
 PATH
   remote: .
   specs:
-    rails-autoscale-sidekiq (1.1.0)
+    rails-autoscale-sidekiq (1.1.1)
       rails-autoscale-core
       sidekiq (>= 5.0)
 
