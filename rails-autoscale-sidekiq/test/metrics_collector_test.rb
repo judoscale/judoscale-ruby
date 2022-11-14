@@ -118,8 +118,8 @@ module RailsAutoscale
             SidekiqQueueStub.new(name: "default", latency: 11, size: 1)
           ]
           workers = [
-            # We don't know why the payload would be a string, but we've seen it in practice.
-            ["pid1", "tid1", {"payload" => "why am I a string???"}]
+            # The payload appears to be a JSON string in Sidekiq 7
+            ["pid1", "tid1", {"payload" => '{"queue":"default"}'}]
           ]
 
           metrics = ::Sidekiq::Workers.stub(:new, workers) {
@@ -129,7 +129,7 @@ module RailsAutoscale
           }
 
           _(metrics.size).must_equal 3
-          _(metrics[2].value).must_equal 0
+          _(metrics[2].value).must_equal 1
           _(metrics[2].queue_name).must_equal "default"
           _(metrics[2].identifier).must_equal :busy
         end
