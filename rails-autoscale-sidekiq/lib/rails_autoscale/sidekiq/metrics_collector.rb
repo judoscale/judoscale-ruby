@@ -21,10 +21,10 @@ module RailsAutoscale
         if track_busy_jobs?
           busy_counts = Hash.new { |h, k| h[k] = 0 }
           ::Sidekiq::Workers.new.each do |pid, tid, work|
-            busy_counts[work.dig("payload", "queue")] += 1
-          rescue TypeError
-            # We've seen scenarios from customers where the payload is a String instead of Hash.
-            # We're not sure why, but we need to gracefully handle it.
+            payload = work["payload"]
+            # payload is unparsed in Sidekiq 7
+            payload = JSON.parse(payload) if payload.is_a?(String)
+            busy_counts[payload["queue"]] += 1
           end
         end
 
