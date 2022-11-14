@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v1.1.0...v1.1.1) (2022-11-14)
+
+
+### Bug Fixes
+
+* Fix "busy jobs" metric for Sidekiq 7 ([#75](https://github.com/rails-autoscale/rails-autoscale-gems/issues/75)) ([aa609af](https://github.com/rails-autoscale/rails-autoscale-gems/commit/aa609af93eb41cb7e231026d7948f97f55f3dc10))
+
 ## [1.1.0](https://github.com/rails-autoscale/rails-autoscale-gems/compare/v1.0.3...v1.1.0) (2022-10-10)
 
 
