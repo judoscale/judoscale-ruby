@@ -1,8 +1,8 @@
 source "https://rubygems.org"
 
-gemspec
+gemspec name: "judoscale-que"
 
-gem "rails-autoscale-core", path: "../rails-autoscale-core"
+gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "que", "~> 2.0"
 gem "activerecord"
 gem "pg"

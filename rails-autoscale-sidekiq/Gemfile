@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gemspec name: "judoscale-sidekiq"
 
-gem "rails-autoscale-core", path: "../rails-autoscale-core"
+gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "sidekiq", "~> 7.0"
 gem "minitest"
 gem "rake"

@@ -1,8 +1,8 @@
 source "https://rubygems.org"
 
-gemspec
+gemspec name: "judoscale-delayed_job"
 
-gem "rails-autoscale-core", path: "../rails-autoscale-core"
+gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "activerecord", "~> 6.1"
 gem "pg"
 gem "minitest"
