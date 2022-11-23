@@ -5,6 +5,7 @@ gemspec name: "judoscale-resque"
 gem "rails-autoscale-core", path: "../rails-autoscale-core"
 gem "minitest"
 gem "rake"
+gem "rake-release"
 gem "debug"
 
 # Lock to known working versions to keep tests passing.
