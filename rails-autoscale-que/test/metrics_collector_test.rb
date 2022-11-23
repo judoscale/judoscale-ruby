@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "rails_autoscale/que/metrics_collector"
+require "judoscale/que/metrics_collector"
 require "securerandom"
 
-module RailsAutoscale
+module Judoscale
   describe Que::MetricsCollector do
     def enqueue(queue, run_at)
       ActiveRecord::Base.connection.insert <<~SQL

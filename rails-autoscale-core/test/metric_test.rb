@@ -2,9 +2,9 @@
 
 require "time"
 require "test_helper"
-require "rails_autoscale/metric"
+require "judoscale/metric"
 
-module RailsAutoscale
+module Judoscale
   describe Metric do
     describe "#value" do
       it "is always an Integer" do

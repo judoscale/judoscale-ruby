@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "rails_autoscale/request_middleware"
+require "judoscale/request_middleware"
 
-module RailsAutoscale
+module Judoscale
   class MockApp
     attr_reader :env
 
@@ -32,7 +32,7 @@ module RailsAutoscale
 
       describe "with the API URL configured" do
         before {
-          RailsAutoscale.configure { |config| config.api_base_url = "http://example.com" }
+          Judoscale.configure { |config| config.api_base_url = "http://example.com" }
         }
 
         it "passes the request up the middleware stack" do
@@ -69,8 +69,8 @@ module RailsAutoscale
               middleware.call(env)
             end
 
-            _(app.env).must_include("rails_autoscale.queue_time")
-            _(app.env["rails_autoscale.queue_time"]).must_equal 5000
+            _(app.env).must_include("judoscale.queue_time")
+            _(app.env["judoscale.queue_time"]).must_equal 5000
           end
 
           it "logs debug information about the request and queue time" do
@@ -110,8 +110,8 @@ module RailsAutoscale
             it "records the network time in the environment passed on" do
               middleware.call(env)
 
-              _(app.env).must_include("rails_autoscale.network_time")
-              _(app.env["rails_autoscale.network_time"]).must_equal 50
+              _(app.env).must_include("judoscale.network_time")
+              _(app.env["judoscale.network_time"]).must_equal 50
             end
           end
         end
@@ -119,7 +119,7 @@ module RailsAutoscale
 
       describe "without the API URL configured" do
         before {
-          RailsAutoscale.configure { |config| config.api_base_url = nil }
+          Judoscale.configure { |config| config.api_base_url = nil }
         }
 
         it "passes the request up the middleware stack" do

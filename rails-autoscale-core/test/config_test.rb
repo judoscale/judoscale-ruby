@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "rails_autoscale/config"
+require "judoscale/config"
 
-module RailsAutoscale
+module Judoscale
   describe Config do
     it "initializes the config from default heroku ENV vars and other sensible defaults" do
-      use_env "DYNO" => "web.1", "RAILS_AUTOSCALE_URL" => "https://example.com" do
+      use_env "DYNO" => "web.1", "JUDOSCALE_URL" => "https://example.com" do
         config = Config.instance
         _(config.api_base_url).must_equal "https://example.com"
         _(config.dyno.to_s).must_equal "web.1"
@@ -30,7 +30,7 @@ module RailsAutoscale
     it "allows ENV vars config overrides for the debug and URL" do
       env = {
         "DYNO" => "web.2",
-        "RAILS_AUTOSCALE_URL" => "https://custom.example.com",
+        "JUDOSCALE_URL" => "https://custom.example.com",
         "RAILS_AUTOSCALE_LOG_LEVEL" => "debug"
       }
 
@@ -58,7 +58,7 @@ module RailsAutoscale
     it "allows configuring all options via a block" do
       test_logger = ::Logger.new(StringIO.new)
 
-      RailsAutoscale.configure do |config|
+      Judoscale.configure do |config|
         config.dyno = "web.3"
         config.api_base_url = "https://block.example.com"
         config.log_level = :info
@@ -100,7 +100,7 @@ module RailsAutoscale
       })
     end
 
-    it "supports Judoscale env vars" do
+    it "supports RailsAutoscale env vars" do
       env = {
         "JUDOSCALE_URL" => "https://custom.example.com",
         "JUDOSCALE_LOG_LEVEL" => "debug"
@@ -113,8 +113,8 @@ module RailsAutoscale
       end
     end
 
-    it "support configuring via Judoscale.configure" do
-      Judoscale.configure do |config|
+    it "support configuring via RailsAutoscale.configure" do
+      RailsAutoscale.configure do |config|
         config.report_interval_seconds = 20
 
         config = Config.instance

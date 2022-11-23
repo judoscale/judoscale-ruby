@@ -1,10 +1,10 @@
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "rails_autoscale/que/version"
+require "judoscale/que/version"
 
 Gem::Specification.new do |spec|
   spec.name = "rails-autoscale-que"
-  spec.version = RailsAutoscale::Que::VERSION
+  spec.version = Judoscale::Que::VERSION
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
   spec.email = ["adam@adamlogic.com"]
 

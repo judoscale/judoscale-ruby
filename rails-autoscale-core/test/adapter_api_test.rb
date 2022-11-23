@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "rails_autoscale/adapter_api"
+require "judoscale/adapter_api"
 
-describe RailsAutoscale::AdapterApi do
+describe Judoscale::AdapterApi do
   let(:report_params) { {dyno: "web.1", metrics: [[Time.now.to_i, 11, "qt"], [Time.now.to_i, 33, "qt"]]} }
   let(:config) { Struct.new(:api_base_url).new("http://example.com") }
 
@@ -13,10 +13,10 @@ describe RailsAutoscale::AdapterApi do
       stub = stub_request(:post, "http://railsautoscale.dev/api/test-app-token/v3/reports")
         .to_return(status: 200)
 
-      adapter_api = RailsAutoscale::AdapterApi.new(config)
+      adapter_api = Judoscale::AdapterApi.new(config)
       result = adapter_api.report_metrics(report_params)
 
-      _(result).must_be_instance_of RailsAutoscale::AdapterApi::SuccessResponse
+      _(result).must_be_instance_of Judoscale::AdapterApi::SuccessResponse
       assert_requested stub
     end
 
@@ -25,10 +25,10 @@ describe RailsAutoscale::AdapterApi do
       stub = stub_request(:post, "http://railsautoscale.dev/api/bad-app-token/v3/reports")
         .to_return(status: [400, "Bad Request"])
 
-      adapter_api = RailsAutoscale::AdapterApi.new(config)
+      adapter_api = Judoscale::AdapterApi.new(config)
       result = adapter_api.report_metrics(report_params)
 
-      _(result).must_be_instance_of RailsAutoscale::AdapterApi::FailureResponse
+      _(result).must_be_instance_of Judoscale::AdapterApi::FailureResponse
       _(result.failure_message).must_equal "400 - Bad Request"
       assert_requested stub
     end
@@ -38,10 +38,10 @@ describe RailsAutoscale::AdapterApi do
       stub = stub_request(:post, "http://does-not-exist.dev/v3/reports")
         .to_return(status: [503, "Service Unavailable"])
 
-      adapter_api = RailsAutoscale::AdapterApi.new(config)
+      adapter_api = Judoscale::AdapterApi.new(config)
       result = adapter_api.report_metrics(report_params)
 
-      _(result).must_be_instance_of RailsAutoscale::AdapterApi::FailureResponse
+      _(result).must_be_instance_of Judoscale::AdapterApi::FailureResponse
       _(result.failure_message).must_equal "503 - Service Unavailable"
       assert_requested stub
     end
@@ -53,10 +53,10 @@ describe RailsAutoscale::AdapterApi do
         .to_timeout.then
         .to_timeout
 
-      adapter_api = RailsAutoscale::AdapterApi.new(config)
+      adapter_api = Judoscale::AdapterApi.new(config)
       result = adapter_api.report_metrics(report_params)
 
-      _(result).must_be_instance_of RailsAutoscale::AdapterApi::FailureResponse
+      _(result).must_be_instance_of Judoscale::AdapterApi::FailureResponse
       _(result.failure_message).must_equal "Timeout while obtaining TCP connection to railsautoscale.dev"
       assert_requested stub, times: 3
     end
@@ -68,10 +68,10 @@ describe RailsAutoscale::AdapterApi do
         .to_timeout.then
         .to_return(status: 200)
 
-      adapter_api = RailsAutoscale::AdapterApi.new(config)
+      adapter_api = Judoscale::AdapterApi.new(config)
       result = adapter_api.report_metrics(report_params)
 
-      _(result).must_be_instance_of RailsAutoscale::AdapterApi::SuccessResponse
+      _(result).must_be_instance_of Judoscale::AdapterApi::SuccessResponse
       assert_requested stub, times: 3
     end
 
@@ -80,10 +80,10 @@ describe RailsAutoscale::AdapterApi do
       stub = stub_request(:post, "https://rails-autoscale-production.herokuapp.com/api/test-token/v3/reports")
         .to_return(status: 200)
 
-      adapter_api = RailsAutoscale::AdapterApi.new(config)
+      adapter_api = Judoscale::AdapterApi.new(config)
       result = adapter_api.report_metrics(report_params)
 
-      _(result).must_be_instance_of RailsAutoscale::AdapterApi::SuccessResponse
+      _(result).must_be_instance_of Judoscale::AdapterApi::SuccessResponse
       assert_requested stub
     end
   end

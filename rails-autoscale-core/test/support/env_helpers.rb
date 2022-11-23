@@ -33,7 +33,7 @@ module EnvHelpers
     end
 
     # Force config to load with the swapped ENV.
-    RailsAutoscale::Config.instance.reset
+    Judoscale::Config.instance.reset
   end
 
   # Restores ENV values to their original state. (from when `setup_env` was called, see it for more info.)
@@ -52,4 +52,4 @@ module EnvHelpers
   end
 end
 
-RailsAutoscale::Test.include EnvHelpers
+Judoscale::Test.include EnvHelpers

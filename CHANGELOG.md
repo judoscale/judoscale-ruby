@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update API endpoint to V3.
 - Make rails-autoscale-gems work with either Judoscale or Rails Autoscale
-  - `RailsAutoscale.configure` and `Judoscale.configure` are both supported.
+  - `Judoscale.configure` and `RailsAutoscale.configure` are both supported.
   - `RAILS_AUTOSCALE_URL` and `JUDOSCALE_URL` env vars are both supported.
 - Backport all changes from judoscale-ruby to rails-autoscale-gems.
 - Refactor how the config is exposed and accessed from job adapters / collectors to simplify and remove some indirection. ([#99](https://github.com/rails-autoscale/judoscale-ruby/pull/99))
@@ -84,10 +84,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow configuring a custom proc to filter queues to collect metrics from by name: `queue_filter = ->(queue_name) { /custom/.match?(queue_name) }`. By default it will filter out queues matching UUIDs. ([#30](https://github.com/judoscale/judoscale-ruby/pull/30))
 - Allow per-adapter configuration of `max_queues` and `track_long_running_jobs`, dropping support for the global configurations. ([#29](https://github.com/rails-autoscale/judoscale-ruby/pull/29))
 - Drop support for ENV vars `RAILS_AUTOSCALE_WORKER_ADAPTER`, `RAILS_AUTOSCALE_LONG_JOBS`, and `RAILS_AUTOSCALE_MAX_QUEUES`, in favor of using the new block config format. ([#26](https://github.com/judoscale/judoscale-ruby/pull/26))
-- Configure Judoscale through a block: `RailsAutoscale.configure { |config| config.logger = MyLogger.new }`. ([#25](https://github.com/rails-autoscale/judoscale-ruby/pull/25))
+- Configure Judoscale through a block: `Judoscale.configure { |config| config.logger = MyLogger.new }`. ([#25](https://github.com/rails-autoscale/judoscale-ruby/pull/25))
 - Remove legacy configs: `sidekiq_latency_for_active_jobs`, `latency_for_active_jobs`. ([#22](https://github.com/rails-autoscale/judoscale-ruby/pull/22))
 - Collect a new metric: network time, and expose it to the app via rack env with `judoscale.network_time`. This is currently only available with Puma, and represents the time Puma spent waiting for the request body. ([#20](https://github.com/judoscale/judoscale-ruby/pull/20))
-- Change the `queue_time` rack env value exposed to the app to `RailsAutoscale.queue_time`. ([#18](https://github.com/rails-autoscale/judoscale-ruby/pull/18))
+- Change the `queue_time` rack env value exposed to the app to `Judoscale.queue_time`. ([#18](https://github.com/rails-autoscale/judoscale-ruby/pull/18))
 - Drop dev mode. ([#16](https://github.com/rails-autoscale/judoscale-ruby/pull/16))
 - Remove error reporting via the API, log exceptions with full backtraces. (that are more easily searchable now.) ([#13](https://github.com/rails-autoscale/judoscale-ruby/pull/13))
 - Move test suite to minitest/spec. ([#8](https://github.com/rails-autoscale/judoscale-ruby/pull/8))

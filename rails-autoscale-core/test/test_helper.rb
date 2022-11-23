@@ -7,14 +7,14 @@ require "minitest/autorun"
 require "minitest/spec"
 require "webmock/minitest"
 
-require "rails_autoscale/job_metrics_collector"
-require "rails_autoscale/web_metrics_collector"
+require "judoscale/job_metrics_collector"
+require "judoscale/web_metrics_collector"
 
-module RailsAutoscale
+module Judoscale
   module Test
-    class TestJobMetricsCollector < RailsAutoscale::JobMetricsCollector
+    class TestJobMetricsCollector < Judoscale::JobMetricsCollector
       def self.adapter_config
-        RailsAutoscale::Config.instance.test_job_config
+        Judoscale::Config.instance.test_job_config
       end
 
       def collect
@@ -22,7 +22,7 @@ module RailsAutoscale
       end
     end
 
-    class TestWebMetricsCollector < RailsAutoscale::WebMetricsCollector
+    class TestWebMetricsCollector < Judoscale::WebMetricsCollector
       def collect
         [Metric.new(:qt, 1, Time.now)]
       end
@@ -36,4 +36,4 @@ end
 
 Dir[File.expand_path("./support/*.rb", __dir__)].sort.each { |file| require file }
 
-Minitest::Test.include(RailsAutoscale::Test)
+Minitest::Test.include(Judoscale::Test)

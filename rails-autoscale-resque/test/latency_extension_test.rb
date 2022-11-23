@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "rails_autoscale/resque/latency_extension"
+require "judoscale/resque/latency_extension"
 
-module RailsAutoscale
+module Judoscale
   class RedisStub
     attr_reader :hash
 
@@ -49,7 +49,7 @@ module RailsAutoscale
         ::Resque.enqueue_to "default", SampleJob
 
         item = ::Resque.pop("default")
-        _(item).must_equal({"class" => "RailsAutoscale::SampleJob", "args" => [], "timestamp" => Time.now.utc.to_f})
+        _(item).must_equal({"class" => "Judoscale::SampleJob", "args" => [], "timestamp" => Time.now.utc.to_f})
       end
     end
 

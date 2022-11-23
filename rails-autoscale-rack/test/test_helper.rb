@@ -10,12 +10,12 @@ require "sinatra/base"
 ENV["DYNO"] ||= "web.1"
 ENV["RACK_ENV"] ||= "test"
 
-RailsAutoscale.configure do |config|
+Judoscale.configure do |config|
   config.logger = ::Logger.new(StringIO.new, progname: "rack-app")
 end
 
 class TestSinatraApp < Sinatra::Base
-  use RailsAutoscale::RequestMiddleware
+  use Judoscale::RequestMiddleware
 
   get "/" do
     "Hello World!"

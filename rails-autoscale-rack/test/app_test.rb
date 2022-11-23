@@ -1,7 +1,7 @@
 require "test_helper"
 require "rack/test"
 
-module RailsAutoscale
+module Judoscale
   describe "App Request Metrics" do
     include ::Rack::Test::Methods
 

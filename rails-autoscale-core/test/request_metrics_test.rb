@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "rails_autoscale/request_metrics"
-require "rails_autoscale/config"
+require "judoscale/request_metrics"
+require "judoscale/config"
 
-module RailsAutoscale
+module Judoscale
   describe RequestMetrics do
     let(:request) { RequestMetrics.new(env, config) }
     let(:env) { {} }

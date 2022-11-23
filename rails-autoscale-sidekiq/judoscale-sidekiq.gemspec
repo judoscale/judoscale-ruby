@@ -1,10 +1,10 @@
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "rails_autoscale/sidekiq/version"
+require "judoscale/sidekiq/version"
 
 Gem::Specification.new do |spec|
   spec.name = "judoscale-sidekiq"
-  spec.version = RailsAutoscale::Sidekiq::VERSION
+  spec.version = Judoscale::Sidekiq::VERSION
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
   spec.email = ["adam@adamlogic.com"]
 

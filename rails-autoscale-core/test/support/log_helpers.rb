@@ -22,4 +22,4 @@ module LogHelpers
   end
 end
 
-RailsAutoscale::Test.include(LogHelpers)
+Judoscale::Test.include(LogHelpers)

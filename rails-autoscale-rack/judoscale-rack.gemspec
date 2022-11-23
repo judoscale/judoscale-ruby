@@ -1,10 +1,10 @@
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "rails_autoscale/rack/version"
+require "judoscale/rack/version"
 
 Gem::Specification.new do |spec|
   spec.name = "judoscale-rack"
-  spec.version = RailsAutoscale::Rack::VERSION
+  spec.version = Judoscale::Rack::VERSION
   spec.authors = ["Adam McCrea"]
   spec.email = ["adam@adamlogic.com"]
 

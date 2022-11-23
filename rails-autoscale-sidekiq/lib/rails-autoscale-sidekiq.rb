@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-require "rails_autoscale/sidekiq"
+require "judoscale/sidekiq"

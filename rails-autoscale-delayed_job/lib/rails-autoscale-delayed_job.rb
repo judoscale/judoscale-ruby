@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-require "rails_autoscale/delayed_job"
+require "judoscale/delayed_job"

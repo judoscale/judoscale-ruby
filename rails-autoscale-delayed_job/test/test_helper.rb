@@ -36,9 +36,9 @@ ActiveRecord::Schema.define do
   # standard:enable all
 end
 
-module RailsAutoscale::Test
+module Judoscale::Test
 end
 
 Dir[File.expand_path("../../rails-autoscale-core/test/support/*.rb", __dir__)].sort.each { |file| require file }
 
-Minitest::Test.include(RailsAutoscale::Test)
+Minitest::Test.include(Judoscale::Test)

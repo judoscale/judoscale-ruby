@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "rails_autoscale/sidekiq/metrics_collector"
+require "judoscale/sidekiq/metrics_collector"
 
-module RailsAutoscale
+module Judoscale
   SidekiqQueueStub = Struct.new(:name, :latency, :size, keyword_init: true)
 
   describe Sidekiq::MetricsCollector do
