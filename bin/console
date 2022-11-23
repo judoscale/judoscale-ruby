@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Loads an IRB console/session within `rails-autoscale-core` context by default.
+# Loads an IRB console/session within `judoscale-ruby` context by default.
 # Pass a different library to load the console within its context.
 #
 # Examples:
 #   bin/console
-#   bin/console rails-autoscale-web
+#   bin/console judoscale-rails
 
-library = ARGV.shift || "rails-autoscale-core"
+library = ARGV.shift || "judoscale-ruby"
 puts "Console: #{library}"
 
 require "fileutils"

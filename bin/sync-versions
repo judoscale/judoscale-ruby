@@ -2,22 +2,22 @@
 # frozen_string_literal: true
 
 require "fileutils"
-require "./rails-autoscale-core/lib/rails_autoscale/version"
+require "./judoscale-ruby/lib/judoscale/version"
 
-# Syncs the VERSION of all rails-autoscale-* gems based on rails-autoscale-core.
+# Syncs the VERSION of all judoscale-* gems based on judoscale-ruby.
 #
 # Usage:
-#   - Manually update rails-autoscale-core/lib/rails_autoscale/version.rb
+#   - Manually update judoscale-ruby/lib/judoscale/version.rb
 #   - Run bin/sync-versions
 
-Dir["rails-autoscale-*/**/version.rb"].each do |filepath|
-  next if filepath.include?("rails-autoscale-core")
+Dir["judoscale-*/**/version.rb"].each do |filepath|
+  next if filepath.include?("judoscale-ruby")
 
   updated_file_content = File.read(filepath).gsub(
     /VERSION = ".*"/,
-    %(VERSION = "#{RailsAutoscale::VERSION}")
+    %(VERSION = "#{Judoscale::VERSION}")
   )
   File.open(filepath, "w") { |file| file << updated_file_content }
 
-  puts "Updated #{filepath} to version #{RailsAutoscale::VERSION}"
+  puts "Updated #{filepath} to version #{Judoscale::VERSION}"
 end

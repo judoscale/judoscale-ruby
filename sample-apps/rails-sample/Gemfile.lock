@@ -1,13 +1,13 @@
 PATH
-  remote: ../../rails-autoscale-core
+  remote: ../../judoscale-ruby
   specs:
-    rails-autoscale-core (1.0.3)
+    judoscale-ruby (1.0.3)
 
 PATH
-  remote: ../../rails-autoscale-web
+  remote: ../../judoscale-rails
   specs:
-    rails-autoscale-web (1.0.3)
-      rails-autoscale-core
+    judoscale-rails (1.0.3)
+      judoscale-ruby
       railties
 
 GEM
@@ -83,8 +83,8 @@ DEPENDENCIES
   actionpack (~> 7.0.1)
   actionview (~> 7.0.1)
   puma (~> 5.0)
-  rails-autoscale-core!
-  rails-autoscale-web!
+  judoscale-ruby!
+  judoscale-rails!
   railties (~> 7.0.1)
 
 BUNDLED WITH

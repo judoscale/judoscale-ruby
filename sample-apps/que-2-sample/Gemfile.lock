@@ -1,20 +1,20 @@
 PATH
-  remote: ../../rails-autoscale-core
+  remote: ../../judoscale-ruby
   specs:
-    rails-autoscale-core (0.0.1)
+    judoscale-ruby (0.0.1)
 
 PATH
-  remote: ../../rails-autoscale-que
+  remote: ../../judoscale-que
   specs:
-    rails-autoscale-que (0.0.1)
+    judoscale-que (0.0.1)
       que (>= 1.0)
-      rails-autoscale-core
+      judoscale-ruby
 
 PATH
-  remote: ../../rails-autoscale-web
+  remote: ../../judoscale-rails
   specs:
-    rails-autoscale-web (0.0.1)
-      rails-autoscale-core
+    judoscale-rails (0.0.1)
+      judoscale-ruby
       railties
 
 GEM
@@ -100,9 +100,9 @@ DEPENDENCIES
   pg (~> 1.1)
   puma (~> 5.0)
   que (~> 2.0)
-  rails-autoscale-core!
-  rails-autoscale-que!
-  rails-autoscale-web!
+  judoscale-ruby!
+  judoscale-que!
+  judoscale-rails!
   railties (~> 7.0.1)
 
 BUNDLED WITH

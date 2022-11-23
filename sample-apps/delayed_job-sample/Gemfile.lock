@@ -1,20 +1,20 @@
 PATH
-  remote: ../../rails-autoscale-core
+  remote: ../../judoscale-ruby
   specs:
-    rails-autoscale-core (0.0.1)
+    judoscale-ruby (0.0.1)
 
 PATH
-  remote: ../../rails-autoscale-delayed_job
+  remote: ../../judoscale-delayed_job
   specs:
-    rails-autoscale-delayed_job (0.0.1)
+    judoscale-delayed_job (0.0.1)
       delayed_job_active_record (>= 4.0)
-      rails-autoscale-core
+      judoscale-ruby
 
 PATH
-  remote: ../../rails-autoscale-web
+  remote: ../../judoscale-rails
   specs:
-    rails-autoscale-web (0.0.1)
-      rails-autoscale-core
+    judoscale-rails (0.0.1)
+      judoscale-ruby
       railties
 
 GEM
@@ -121,9 +121,9 @@ DEPENDENCIES
   delayed_job_web
   pg (~> 1.1)
   puma (~> 5.0)
-  rails-autoscale-core!
-  rails-autoscale-delayed_job!
-  rails-autoscale-web!
+  judoscale-ruby!
+  judoscale-delayed_job!
+  judoscale-rails!
   railties (~> 7.0.1)
 
 BUNDLED WITH

@@ -1,14 +1,14 @@
 PATH
-  remote: ../../rails-autoscale-core
+  remote: ../../judoscale-ruby
   specs:
-    rails-autoscale-core (1.0.3)
+    judoscale-ruby (1.0.3)
 
 PATH
-  remote: ../../rails-autoscale-rack
+  remote: ../../judoscale-rack
   specs:
-    rails-autoscale-rack (1.0.3)
+    judoscale-rack (1.0.3)
       rack
-      rails-autoscale-core
+      judoscale-ruby
 
 GEM
   remote: https://rubygems.org/
@@ -34,8 +34,8 @@ PLATFORMS
 
 DEPENDENCIES
   puma
-  rails-autoscale-core!
-  rails-autoscale-rack!
+  judoscale-ruby!
+  judoscale-rack!
   sinatra
 
 BUNDLED WITH

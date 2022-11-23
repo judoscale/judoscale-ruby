@@ -3,7 +3,7 @@ set -euo pipefail
 IFS=$'\n\t'
 set -vx
 
-for folder in ./rails-autoscale-*; do
+for folder in ./judoscale-*; do
     echo "-> $folder"
     cd $folder
     bundle install --quiet

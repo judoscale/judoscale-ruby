@@ -1,8 +1,8 @@
-return unless defined?(RailsAutoscale)
+return unless defined?(Judoscale)
 
-RailsAutoscale.configure do |config|
-  # Open https://rails-autoscale-adapter-mock.requestcatcher.com in a browser to monitor requests
-  config.api_base_url = ENV["RAILS_AUTOSCALE_URL"] || "https://rails-autoscale-adapter-mock.requestcatcher.com"
+Judoscale.configure do |config|
+  # Open https://judoscale-adapter-mock.requestcatcher.com in a browser to monitor requests
+  config.api_base_url = ENV["JUDOSCALE_URL"] || "https://judoscale-adapter-mock.requestcatcher.com"
 
   # Enable busy jobs tracking for testing with the sample app.
   config.resque.track_busy_jobs = true
