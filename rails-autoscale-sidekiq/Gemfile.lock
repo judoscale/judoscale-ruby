@@ -1,13 +1,14 @@
 PATH
   remote: ../rails-autoscale-core
   specs:
+    judoscale-ruby (1.1.1)
     rails-autoscale-core (1.1.1)
 
 PATH
   remote: .
   specs:
-    rails-autoscale-sidekiq (1.1.1)
-      rails-autoscale-core
+    judoscale-sidekiq (1.1.1)
+      judoscale-ruby
       sidekiq (>= 5.0)
 
 GEM
@@ -42,9 +43,9 @@ PLATFORMS
 
 DEPENDENCIES
   debug
+  judoscale-sidekiq!
   minitest
   rails-autoscale-core!
-  rails-autoscale-sidekiq!
   rake
   sidekiq (~> 7.0)
 

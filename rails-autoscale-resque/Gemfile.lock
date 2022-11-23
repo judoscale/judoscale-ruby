@@ -1,13 +1,14 @@
 PATH
   remote: ../rails-autoscale-core
   specs:
+    judoscale-ruby (1.1.1)
     rails-autoscale-core (1.1.1)
 
 PATH
   remote: .
   specs:
-    rails-autoscale-resque (1.1.1)
-      rails-autoscale-core
+    judoscale-resque (1.1.1)
+      judoscale-ruby
       resque (>= 2.0)
 
 GEM
@@ -54,9 +55,9 @@ PLATFORMS
 
 DEPENDENCIES
   debug
+  judoscale-resque!
   minitest
   rails-autoscale-core!
-  rails-autoscale-resque!
   rake
   redis (~> 4.0)
   resque (~> 2.2.0)

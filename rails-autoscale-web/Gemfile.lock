@@ -1,13 +1,14 @@
 PATH
   remote: ../rails-autoscale-core
   specs:
+    judoscale-ruby (1.1.1)
     rails-autoscale-core (1.1.1)
 
 PATH
   remote: .
   specs:
-    rails-autoscale-web (1.1.1)
-      rails-autoscale-core
+    judoscale-rails (1.1.1)
+      judoscale-ruby
       railties
 
 GEM
@@ -86,9 +87,9 @@ PLATFORMS
 
 DEPENDENCIES
   debug
+  judoscale-rails!
   minitest
   rails-autoscale-core!
-  rails-autoscale-web!
   rake
 
 BUNDLED WITH

@@ -1,14 +1,15 @@
 PATH
   remote: ../rails-autoscale-core
   specs:
+    judoscale-ruby (1.1.1)
     rails-autoscale-core (1.1.1)
 
 PATH
   remote: .
   specs:
-    rails-autoscale-delayed_job (1.1.1)
+    judoscale-delayed_job (1.1.1)
       delayed_job_active_record (>= 4.0)
-      rails-autoscale-core
+      judoscale-ruby
 
 GEM
   remote: https://rubygems.org/
@@ -54,10 +55,10 @@ PLATFORMS
 DEPENDENCIES
   activerecord
   debug
+  judoscale-delayed_job!
   minitest
   pg
   rails-autoscale-core!
-  rails-autoscale-delayed_job!
   rake
 
 BUNDLED WITH

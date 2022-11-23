@@ -1,14 +1,15 @@
 PATH
   remote: ../rails-autoscale-core
   specs:
+    judoscale-ruby (1.1.1)
     rails-autoscale-core (1.1.1)
 
 PATH
   remote: .
   specs:
-    rails-autoscale-rack (1.1.1)
+    judoscale-rack (1.1.1)
+      judoscale-ruby
       rack
-      rails-autoscale-core
 
 GEM
   remote: https://rubygems.org/
@@ -46,10 +47,10 @@ PLATFORMS
 
 DEPENDENCIES
   debug
+  judoscale-rack!
   minitest
   rack-test
   rails-autoscale-core!
-  rails-autoscale-rack!
   rake
   sinatra
 
