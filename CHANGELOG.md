@@ -1,6 +1,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1](https://github.com/judoscale/rails-autoscale-gems/compare/v1.2.0...v1.2.1) (2022-11-23)
+
+
+### Bug Fixes
+
+* Fix gemspecs again ([#83](https://github.com/judoscale/rails-autoscale-gems/issues/83)) ([fbb2092](https://github.com/judoscale/rails-autoscale-gems/commit/fbb2092b3a8936b7d3c995df3ffe2fb54e6c3e0d))
+* Fix gemspecs for dual-publishing ([#81](https://github.com/judoscale/rails-autoscale-gems/issues/81)) ([a557e26](https://github.com/judoscale/rails-autoscale-gems/commit/a557e26285c43133a38eb98d5c589e413223b30a))
+
 ## [1.2.0](https://github.com/judoscale/rails-autoscale-gems/compare/v1.1.1...v1.2.0) (2022-11-23)
 
 
