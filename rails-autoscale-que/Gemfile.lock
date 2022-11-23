@@ -1,14 +1,14 @@
 PATH
   remote: ../rails-autoscale-core
   specs:
-    rails-autoscale-core (1.1.1)
+    judoscale-ruby (1.1.1)
 
 PATH
   remote: .
   specs:
-    rails-autoscale-que (1.1.1)
+    judoscale-que (1.1.1)
+      judoscale-ruby
       que (>= 1.0)
-      rails-autoscale-core
 
 GEM
   remote: https://rubygems.org/
@@ -36,6 +36,8 @@ GEM
     pg (1.3.5)
     que (2.2.0)
     rake (13.0.6)
+    rake-release (1.3.0)
+      bundler (>= 1.11, < 3)
     reline (0.3.1)
       io-console (~> 0.5)
     tzinfo (2.0.4)
@@ -50,11 +52,12 @@ PLATFORMS
 DEPENDENCIES
   activerecord
   debug
+  judoscale-que!
+  judoscale-ruby!
   minitest
   pg
-  rails-autoscale-core!
-  rails-autoscale-que!
   rake
+  rake-release
 
 BUNDLED WITH
    2.3.9

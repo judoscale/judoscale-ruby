@@ -1,10 +1,11 @@
 source "https://rubygems.org"
 
-gemspec
+gemspec name: "judoscale-rack"
 
-gem "rails-autoscale-core", path: "../rails-autoscale-core"
+gem "judoscale-ruby", path: "../rails-autoscale-core"
 gem "minitest"
 gem "rake"
+gem "rake-release"
 gem "debug"
 gem "sinatra"
 gem "rack-test"

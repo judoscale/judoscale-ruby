@@ -1,8 +1,9 @@
 source "https://rubygems.org"
 
-gemspec
+gemspec name: "judoscale-rails"
 
-gem "rails-autoscale-core", path: "../rails-autoscale-core"
+gem "judoscale-ruby", path: "../rails-autoscale-core"
 gem "minitest"
 gem "rake"
+gem "rake-release"
 gem "debug"

@@ -1,14 +1,14 @@
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "rails_autoscale/version"
+require "rails_autoscale/que/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "rails-autoscale-core"
-  spec.version = RailsAutoscale::VERSION
+  spec.name = "judoscale-que"
+  spec.version = RailsAutoscale::Que::VERSION
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
   spec.email = ["adam@adamlogic.com"]
 
-  spec.summary = "This gem works with the Judoscale Heroku add-on to automatically scale your web and worker dynos."
+  spec.summary = "This gem provides Que integration with the Judoscale autoscaling add-on for Heroku."
   spec.homepage = "https://judoscale.com"
   spec.license = "MIT"
 
@@ -24,4 +24,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.required_ruby_version = ">= 2.6.0"
+
+  spec.add_dependency "judoscale-ruby"
+  spec.add_dependency "que", ">= 1.0"
 end
