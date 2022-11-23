@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Features
 
-- Add rails-autoscale-rack gem for Rack apps (non-Rails) ([66cb51d](https://github.com/judoscale/judoscale-ruby/commit/66cb51dc871c54c58c89c4ce0b36482de99f4afb))
+- Add judoscale-rack gem for Rack apps (non-Rails) ([66cb51d](https://github.com/judoscale/judoscale-ruby/commit/66cb51dc871c54c58c89c4ce0b36482de99f4afb))
 
 ### Bug Fixes
 
@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0](https://github.com/judoscale/judoscale-ruby/compare/v0.10.2...v1.0.0)
 
 - Update API endpoint to V3.
-- Make rails-autoscale-gems work with either Judoscale or Rails Autoscale
+- Make judoscale-ruby work with either Judoscale or Rails Autoscale
   - `Judoscale.configure` and `RailsAutoscale.configure` are both supported.
   - `RAILS_AUTOSCALE_URL` and `JUDOSCALE_URL` env vars are both supported.
 - Backport all changes from judoscale-ruby to rails-autoscale-gems.
@@ -60,18 +60,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - let the underlying logger handle it if it allows the log level. (e.g. configured to INFO and logger has level INFO or DEBUG)
     - prefix our level to the message and use the underlying logger level if it doesn't allow ours, to ensure messages are logged. (e.g. configured to DEBUG and logger has level INFO, which wouldn't allow DEBUG messages)
 - Add sample apps:
-  - `rails-autoscale-web` ([#41](https://github.com/rails-autoscale/judoscale-ruby/pull/41))
-  - `rails-autoscale-sidekiq` ([#56](https://github.com/rails-autoscale/judoscale-ruby/pull/56))
-  - `rails-autoscale-resque` ([#74](https://github.com/rails-autoscale/judoscale-ruby/pull/74))
-  - `rails-autoscale-delayed_job` ([#75](https://github.com/rails-autoscale/judoscale-ruby/pull/75))
-  - `rails-autoscale-que` ([#76](https://github.com/rails-autoscale/judoscale-ruby/pull/76))
+  - `judoscale-rails` ([#41](https://github.com/rails-autoscale/judoscale-ruby/pull/41))
+  - `judoscale-sidekiq` ([#56](https://github.com/rails-autoscale/judoscale-ruby/pull/56))
+  - `judoscale-resque` ([#74](https://github.com/rails-autoscale/judoscale-ruby/pull/74))
+  - `judoscale-delayed_job` ([#75](https://github.com/rails-autoscale/judoscale-ruby/pull/75))
+  - `judoscale-que` ([#76](https://github.com/rails-autoscale/judoscale-ruby/pull/76))
 - Split into multiple libraries/adapters: (including several internal refactorings & renamings to the core code to enable better separation and registration of the different libraries/adapters)
-  - `rails-autoscale-core` is the base Ruby library containing the core implementation used by all other libraries, and is responsible for running the metrics collection and reporting to Judoscale. ([#47](https://github.com/judoscale/judoscale-ruby/pull/47))
-  - `rails-autoscale-web` integrates with Rails to initialize the reporter on app boot to send metrics to Judoscale, and register a middleware to collect web request metrics for reporting. ([#47](https://github.com/judoscale/judoscale-ruby/pull/47))
-  - `rails-autoscale-sidekiq` integrates with Sidekiq to collect queue metrics. ([#52](https://github.com/rails-autoscale/judoscale-ruby/pull/52))
-  - `rails-autoscale-resque` integrates with Resque to collect queue metrics. ([#61](https://github.com/rails-autoscale/judoscale-ruby/pull/61))
-  - `rails-autoscale-delayed_job` integrates with Delayed Job to collect queue metrics. ([#64](https://github.com/rails-autoscale/judoscale-ruby/pull/64))
-  - `rails-autoscale-que` integrates with Que to collect queue metrics.([#65](https://github.com/rails-autoscale/judoscale-ruby/pull/65))
+  - `judoscale-ruby` is the base Ruby library containing the core implementation used by all other libraries, and is responsible for running the metrics collection and reporting to Judoscale. ([#47](https://github.com/judoscale/judoscale-ruby/pull/47))
+  - `judoscale-rails` integrates with Rails to initialize the reporter on app boot to send metrics to Judoscale, and register a middleware to collect web request metrics for reporting. ([#47](https://github.com/judoscale/judoscale-ruby/pull/47))
+  - `judoscale-sidekiq` integrates with Sidekiq to collect queue metrics. ([#52](https://github.com/rails-autoscale/judoscale-ruby/pull/52))
+  - `judoscale-resque` integrates with Resque to collect queue metrics. ([#61](https://github.com/rails-autoscale/judoscale-ruby/pull/61))
+  - `judoscale-delayed_job` integrates with Delayed Job to collect queue metrics. ([#64](https://github.com/rails-autoscale/judoscale-ruby/pull/64))
+  - `judoscale-que` integrates with Que to collect queue metrics.([#65](https://github.com/rails-autoscale/judoscale-ruby/pull/65))
 - Tests no longer use VCR, requiring only Webmock. ([#53](https://github.com/rails-autoscale/judoscale-ruby/pull/53))
 - Include contextual metadata with each report, remove the registration API when starting the reporter. ([#50](https://github.com/rails-autoscale/judoscale-ruby/pull/50))
 - Report metrics using a JSON payload instead of CSV + query params. ([#42](https://github.com/rails-autoscale/judoscale-ruby/pull/42))

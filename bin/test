@@ -3,7 +3,7 @@
 
 require "fileutils"
 
-Dir["rails-autoscale-*"].each do |dir|
+Dir["judoscale-*"].each do |dir|
   FileUtils.cd(dir) do
     puts "Running tests: #{dir}"
     system("bundle exec rake test")

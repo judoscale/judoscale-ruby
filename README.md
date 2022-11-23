@@ -1,10 +1,10 @@
 # Judoscale
 
-[![Build Status: rails-autoscale-core](https://github.com/judoscale/judoscale-ruby/actions/workflows/rails-autoscale-core-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
-[![Build Status: rails-autoscale-web](https://github.com/judoscale/judoscale-ruby/actions/workflows/rails-autoscale-web-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
-[![Build Status: rails-autoscale-delayed_job](https://github.com/judoscale/judoscale-ruby/actions/workflows/rails-autoscale-delayed_job-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
-[![Build Status: rails-autoscale-que](https://github.com/judoscale/judoscale-ruby/actions/workflows/rails-autoscale-que-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
-[![Build Status: rails-autoscale-sidekiq](https://github.com/judoscale/judoscale-ruby/actions/workflows/rails-autoscale-sidekiq-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: judoscale-ruby](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-ruby-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: judoscale-rails](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-rails-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: judoscale-delayed_job](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-delayed_job-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: judoscale-que](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-que-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: judoscale-sidekiq](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-sidekiq-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 
 These gems works together with the [Judoscale](https://judoscale.com) Heroku add-on to scale your web and worker dynos automatically. They gather a minimal set of metrics for each request and job queue, and periodically posts this data asynchronously to the Judoscale API.
 
@@ -33,7 +33,7 @@ The adapters report queue metrics to Judoscale every 10 seconds. The reporter wi
 
 ## Installation for Non-Rails Rack apps
 
-If you're using another Rack-based framework (such as Sinatra), you should use `judoscale-rack` instead of `judoscale-web`:
+If you're using another Rack-based framework (such as Sinatra), you should use `judoscale-rack` instead of `judoscale-rails`:
 
 ```ruby
 gem "judoscale-rack"
@@ -63,7 +63,7 @@ For most apps, no additional configuration is needed. See the [configuration](#c
 
 ## Worker-only apps
 
-If your app doesn't have a web process, you don't _have_ to include the "judoscale-rails" gem. If you omit it, you'll need to start the reporter manually:
+If your app doesn't have a web process, you don't _have_ to include the "judoscale-rack" gem. If you omit it, you'll need to start the reporter manually:
 
 ```ruby
 require "judoscale/reporter"
@@ -86,11 +86,11 @@ Judoscale aggregates and stores this information to power the autoscaler algorit
 
 ## Migrating from `rails_autoscale_agent`
 
-The migration from `rails_autoscale_agent` to `judoscale-rails` (+ your job framework gem) is typically a single step: replace the `gem "rails_autoscale_agent"` in your Gemfile with `gem "judoscale-rails"` _and_ the appropriate `judoscale-*` package for your back-end job framework (`sidekiq`, `resque`, `delayed_job`, or `que`) or see the [Installation](#installation) section above for further specifics. If you previously had any custom configuration for the `rails_autoscale_agent`, please note that we now use a `configure` block as shown below.
+The migration from `rails_autoscale_agent` to `judoscale-rack` (+ your job framework gem) is typically a single step: replace the `gem "rails_autoscale_agent"` in your Gemfile with `gem "judoscale-rack"` _and_ the appropriate `judoscale-*` package for your back-end job framework (`sidekiq`, `resque`, `delayed_job`, or `que`) or see the [Installation](#installation) section above for further specifics. If you previously had any custom configuration for the `rails_autoscale_agent`, please note that we now use a `configure` block as shown below.
 
 Looking for the old `rails_autoscale_agent` docs? They're available on [this branch](https://github.com/judoscale/judoscale-ruby/tree/rails_autoscale_agent).
 
-## Migrating from `rails-autoscale-web`
+## Migrating from `judoscale-rails`
 
 Since [Rails Autoscale rebranded to Judoscale](https://judoscale.com/docs/rails-autoscale), these gems have been dual-published as `judoscale-*` and `rails-autoscale-*`. There's no need to migrate if you don't want to.
 
@@ -146,7 +146,7 @@ end
 
 ## Logging
 
-`judoscale-rails` will use the Rails logger by default. Otherwise everything will log to STDOUT.
+`judoscale-rack` will use the Rails logger by default. Otherwise everything will log to STDOUT.
 
 If you wish to use a different logger, you can set it on the configuration object:
 
