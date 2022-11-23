@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "judoscale/rack/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "judoscale-rack"
+  spec.name = "rails-autoscale-rack"
   spec.version = Judoscale::Rack::VERSION
   spec.authors = ["Adam McCrea"]
   spec.email = ["adam@adamlogic.com"]

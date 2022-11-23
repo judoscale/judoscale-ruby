@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "judoscale/delayed_job/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "judoscale-delayed_job"
+  spec.name = "rails-autoscale-delayed_job"
   spec.version = Judoscale::DelayedJob::VERSION
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
   spec.email = ["adam@adamlogic.com"]

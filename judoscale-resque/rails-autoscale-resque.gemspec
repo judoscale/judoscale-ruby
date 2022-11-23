@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "judoscale/resque/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "judoscale-resque"
+  spec.name = "rails-autoscale-resque"
   spec.version = Judoscale::Resque::VERSION
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
   spec.email = ["adam@adamlogic.com"]
