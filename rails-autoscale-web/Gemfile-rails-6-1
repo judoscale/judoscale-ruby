@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gemspec "judoscale-rails"
 
-gem "judoscale-ruby", path: "../judoscale-ruby"
+gem "judoscale-ruby", path: "../rails-autoscale-core"
 gem "railties", "~> 6.1"
 gem "minitest"
 gem "rake"

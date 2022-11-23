@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gemspec name: "judoscale-delayed_job"
 
-gem "judoscale-ruby", path: "../judoscale-ruby"
+gem "judoscale-ruby", path: "../rails-autoscale-core"
 gem "activerecord"
 gem "pg"
 gem "minitest"

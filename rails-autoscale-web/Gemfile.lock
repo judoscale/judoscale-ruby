@@ -2,7 +2,6 @@ PATH
   remote: ../rails-autoscale-core
   specs:
     judoscale-ruby (1.1.1)
-    rails-autoscale-core (1.1.1)
 
 PATH
   remote: .
@@ -90,8 +89,8 @@ PLATFORMS
 DEPENDENCIES
   debug
   judoscale-rails!
+  judoscale-ruby!
   minitest
-  rails-autoscale-core!
   rake
   rake-release
 

@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gemspec name: "judoscale-rack"
 
-gem "judoscale-ruby", path: "../judoscale-ruby"
+gem "judoscale-ruby", path: "../rails-autoscale-core"
 gem "minitest"
 gem "rake"
 gem "rake-release"
