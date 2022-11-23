@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gemspec name: "judoscale-rack"
+gemspec name: "judoscale-rails"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "railties", "~> 6.1"
