@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gemspec
+gemspec name: "judoscale-delayed_job"
 
 gem "rails-autoscale-core", path: "../rails-autoscale-core"
 gem "activerecord"

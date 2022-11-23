@@ -1,12 +1,12 @@
 # Rails Autoscale
 
-[![Build Status: rails-autoscale-core](https://github.com/rails-autoscale/rails-autoscale-gems/actions/workflows/rails-autoscale-core-test.yml/badge.svg)](https://github.com/rails-autoscale/rails-autoscale-gems/actions)
-[![Build Status: rails-autoscale-web](https://github.com/rails-autoscale/rails-autoscale-gems/actions/workflows/rails-autoscale-web-test.yml/badge.svg)](https://github.com/rails-autoscale/rails-autoscale-gems/actions)
-[![Build Status: rails-autoscale-delayed_job](https://github.com/rails-autoscale/rails-autoscale-gems/actions/workflows/rails-autoscale-delayed_job-test.yml/badge.svg)](https://github.com/rails-autoscale/rails-autoscale-gems/actions)
-[![Build Status: rails-autoscale-que](https://github.com/rails-autoscale/rails-autoscale-gems/actions/workflows/rails-autoscale-que-test.yml/badge.svg)](https://github.com/rails-autoscale/rails-autoscale-gems/actions)
-[![Build Status: rails-autoscale-sidekiq](https://github.com/rails-autoscale/rails-autoscale-gems/actions/workflows/rails-autoscale-sidekiq-test.yml/badge.svg)](https://github.com/rails-autoscale/rails-autoscale-gems/actions)
+[![Build Status: rails-autoscale-core](https://github.com/judoscale/judoscale-ruby/actions/workflows/rails-autoscale-core-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: rails-autoscale-web](https://github.com/judoscale/judoscale-ruby/actions/workflows/rails-autoscale-web-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: rails-autoscale-delayed_job](https://github.com/judoscale/judoscale-ruby/actions/workflows/rails-autoscale-delayed_job-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: rails-autoscale-que](https://github.com/judoscale/judoscale-ruby/actions/workflows/rails-autoscale-que-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: rails-autoscale-sidekiq](https://github.com/judoscale/judoscale-ruby/actions/workflows/rails-autoscale-sidekiq-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 
-These gems works together with the [Rails Autoscale](https://railsautoscale.com) Heroku add-on to scale your web and worker dynos automatically. They gather a minimal set of metrics for each request and job queue, and periodically posts this data asynchronously to the Rails Autoscale API.
+These gems works together with the [Rails Autoscale](https://judoscale.com) Heroku add-on to scale your web and worker dynos automatically. They gather a minimal set of metrics for each request and job queue, and periodically posts this data asynchronously to the Rails Autoscale API.
 
 ## Requirements
 
@@ -88,7 +88,7 @@ Rails Autoscale aggregates and stores this information to power the autoscaler a
 
 The migration from `rails_autoscale_agent` to `rails-autoscale-web` (+ your job framework gem) is typically a single step: replace the `gem "rails_autoscale_agent"` in your Gemfile with `gem "rails-autoscale-web"` _and_ the appropriate `rails-autoscale-*` package for your back-end job framework (`sidekiq`, `resque`, `delayed_job`, or `que`) or see the [Installation](#installation) section above for further specifics. If you previously had any custom configuration for the `rails_autoscale_agent`, please note that we now use a `configure` block as shown below.
 
-Looking for the old `rails_autoscale_agent` docs? They're available on [this branch](https://github.com/rails-autoscale/rails-autoscale-gems/tree/rails_autoscale_agent).
+Looking for the old `rails_autoscale_agent` docs? They're available on [this branch](https://github.com/judoscale/judoscale-ruby/tree/rails_autoscale_agent).
 
 ## Migrating from `judoscale-ruby` (and `judoscale-rails`, etc.)
 
@@ -136,7 +136,7 @@ RailsAutoscale.configure do |config|
 
   # Enables reporting for active (busy) workers so that downscaling can be
   # suppressed.
-  # See https://railsautoscale.com/docs/long-running-jobs/.
+  # See https://judoscale.com/docs/long-running-jobs/.
   # Default: false
   config.sidekiq.track_busy_jobs = true
 
@@ -207,7 +207,7 @@ You can see more detailed (debug) logging by setting `RAILS_AUTOSCALE_LOG_LEVEL`
 heroku config:set RAILS_AUTOSCALE_LOG_LEVEL=debug
 ```
 
-Reach out to help@railsautoscale.com if you run into any other problems.
+Reach out to help@judoscale.com if you run into any other problems.
 
 ## Development
 
@@ -225,7 +225,7 @@ _Note: We keep all gem versions in sync to provide a better developer experience
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/rails-autoscale/rails-autoscale-gems.
+Bug reports and pull requests are welcome on GitHub at https://github.com/judoscale/judoscale-ruby.
 
 ## License
 

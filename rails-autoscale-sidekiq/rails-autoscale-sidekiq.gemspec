@@ -8,16 +8,16 @@ Gem::Specification.new do |spec|
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
   spec.email = ["adam@adamlogic.com"]
 
-  spec.summary = "This gem provides Sidekiq integration with the Rails Autoscale autoscaling add-on for Heroku."
-  spec.homepage = "https://railsautoscale.com"
+  spec.summary = "This gem provides Sidekiq integration with the Judoscale autoscaling add-on for Heroku."
+  spec.homepage = "https://judoscale.com"
   spec.license = "MIT"
 
   spec.metadata = {
-    "homepage_uri" => "https://railsautoscale.com",
-    "bug_tracker_uri" => "https://github.com/rails-autoscale/rails-autoscale-gems/issues",
-    "documentation_uri" => "https://railsautoscale.com/docs",
-    "changelog_uri" => "https://github.com/rails-autoscale/rails-autoscale-gems/blob/main/CHANGELOG.md",
-    "source_code_uri" => "https://github.com/rails-autoscale/rails-autoscale-gems"
+    "homepage_uri" => "https://judoscale.com",
+    "bug_tracker_uri" => "https://github.com/judoscale/judoscale-ruby/issues",
+    "documentation_uri" => "https://judoscale.com/docs",
+    "changelog_uri" => "https://github.com/judoscale/judoscale-ruby/blob/main/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/judoscale/judoscale-ruby"
   }
 
   spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
