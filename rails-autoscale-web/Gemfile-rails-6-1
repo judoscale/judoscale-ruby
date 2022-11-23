@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gemspec "judoscale-rails"
+gemspec name: "judoscale-rails"
 
 gem "judoscale-ruby", path: "../rails-autoscale-core"
 gem "railties", "~> 6.1"
