@@ -1,12 +1,12 @@
 PATH
   remote: ../judoscale-ruby
   specs:
-    judoscale-ruby (1.1.1)
+    judoscale-ruby (1.2.0)
 
 PATH
   remote: .
   specs:
-    judoscale-rack (1.1.1)
+    judoscale-rack (1.2.0)
       judoscale-ruby
       rack
 
