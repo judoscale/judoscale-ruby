@@ -4,7 +4,7 @@ require "judoscale/rails/version"
 
 Gem::Specification.new do |spec|
   spec.name = "rails-autoscale-web"
-  spec.version = Judoscale::Web::VERSION
+  spec.version = Judoscale::Rails::VERSION
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
   spec.email = ["adam@adamlogic.com"]
 
@@ -25,6 +25,6 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 2.6.0"
 
-  spec.add_dependency "judoscale-ruby"
+  spec.add_dependency "rails-autoscale-core", Judoscale::Rails::VERSION
   spec.add_dependency "railties"
 end

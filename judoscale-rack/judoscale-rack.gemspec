@@ -25,6 +25,6 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 2.6.0"
 
-  spec.add_dependency "judoscale-ruby"
+  spec.add_dependency "judoscale-ruby", Judoscale::Rack::VERSION
   spec.add_dependency "rack"
 end

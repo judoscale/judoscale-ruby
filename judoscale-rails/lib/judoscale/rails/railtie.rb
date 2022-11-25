@@ -8,7 +8,7 @@ require "judoscale/logger"
 require "judoscale/reporter"
 
 module Judoscale
-  module Web
+  module Rails
     class Railtie < ::Rails::Railtie
       include Judoscale::Logger
 

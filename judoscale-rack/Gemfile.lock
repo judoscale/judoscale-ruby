@@ -7,7 +7,7 @@ PATH
   remote: .
   specs:
     judoscale-rack (1.2.1)
-      judoscale-ruby
+      judoscale-ruby (= 1.2.1)
       rack
 
 GEM
