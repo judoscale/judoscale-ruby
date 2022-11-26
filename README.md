@@ -12,7 +12,7 @@ These gems works together with the [Judoscale](https://judoscale.com) Heroku add
 
 - Rack-based app
 - Ruby 2.6 or newer
-- [Judoscale](https://elements.heroku.com/judoscale) installed on your Heroku app
+- [Judoscale](https://elements.heroku.com/addons/judoscale) or [Rails Autoscale](https://elements.heroku.com/addons/rails-autoscale) installed on your Heroku app
 
 ## Installation
 
