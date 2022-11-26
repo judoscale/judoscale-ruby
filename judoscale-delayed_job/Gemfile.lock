@@ -1,14 +1,14 @@
 PATH
   remote: ../judoscale-ruby
   specs:
-    judoscale-ruby (1.2.2)
+    judoscale-ruby (1.2.3)
 
 PATH
   remote: .
   specs:
-    judoscale-delayed_job (1.2.2)
+    judoscale-delayed_job (1.2.3)
       delayed_job_active_record (>= 4.0)
-      judoscale-ruby (= 1.2.2)
+      judoscale-ruby (= 1.2.3)
 
 GEM
   remote: https://rubygems.org/
