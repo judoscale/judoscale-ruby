@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3](https://github.com/judoscale/judoscale-ruby/compare/v1.2.2...v1.2.3) (2022-11-26)
+
+
+### Bug Fixes
+
+* Add default required files when using rails-autoscale-* gems ([#90](https://github.com/judoscale/judoscale-ruby/issues/90)) ([64c5b69](https://github.com/judoscale/judoscale-ruby/commit/64c5b69bf914370fca9c46135caa32b96a6bd49c))
+
 ## [1.2.2](https://github.com/judoscale/judoscale-ruby/compare/v1.2.1...v1.2.2) (2022-11-26)
 
 
