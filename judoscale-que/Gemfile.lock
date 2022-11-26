@@ -7,7 +7,7 @@ PATH
   remote: .
   specs:
     judoscale-que (1.2.1)
-      judoscale-ruby
+      judoscale-ruby (= 1.2.1)
       que (>= 1.0)
 
 GEM

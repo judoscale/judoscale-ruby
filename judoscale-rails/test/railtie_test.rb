@@ -3,7 +3,7 @@
 require "test_helper"
 
 module Judoscale
-  describe Judoscale::Web::Railtie do
+  describe Judoscale::Rails::Railtie do
     it "uses the Rails.logger when initialized though Rails" do
       _(::Judoscale::Config.instance.logger).must_equal ::Rails.logger
     end
