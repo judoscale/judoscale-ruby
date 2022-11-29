@@ -8,21 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Add default required files when using rails-autoscale-* gems ([#90](https://github.com/judoscale/judoscale-ruby/issues/90)) ([64c5b69](https://github.com/judoscale/judoscale-ruby/commit/64c5b69bf914370fca9c46135caa32b96a6bd49c))
 
-## [1.2.2](https://github.com/judoscale/judoscale-ruby/compare/v1.2.1...v1.2.2) (2022-11-26)
+## [1.2.2](https://github.com/judoscale/judoscale-ruby/compare/v1.2.1...v1.2.2) (2022-11-26) YANKED
 
 
 ### Bug Fixes
 
 * Fix rails-autoscale-* gem dependencies ([#88](https://github.com/judoscale/judoscale-ruby/issues/88)) ([25132da](https://github.com/judoscale/judoscale-ruby/commit/25132da88284a44a2e894a9a9ba789878f5f78cd)), closes [#87](https://github.com/judoscale/judoscale-ruby/issues/87)
 
-## [1.2.1](https://github.com/judoscale/rails-autoscale-gems/compare/v1.2.0...v1.2.1) (2022-11-23)
+## [1.2.1](https://github.com/judoscale/rails-autoscale-gems/compare/v1.2.0...v1.2.1) (2022-11-23) YANKED
 
 
 ### Bug Fixes
 
 * Fix gemspecs for dual-publishing ([#81](https://github.com/judoscale/rails-autoscale-gems/issues/81)) ([a557e26](https://github.com/judoscale/rails-autoscale-gems/commit/a557e26285c43133a38eb98d5c589e413223b30a) and [#83](https://github.com/judoscale/rails-autoscale-gems/issues/83)) ([fbb2092](https://github.com/judoscale/rails-autoscale-gems/commit/fbb2092b3a8936b7d3c995df3ffe2fb54e6c3e0d))
 
-## [1.2.0](https://github.com/judoscale/rails-autoscale-gems/compare/v1.1.1...v1.2.0) (2022-11-23)
+## [1.2.0](https://github.com/judoscale/rails-autoscale-gems/compare/v1.1.1...v1.2.0) (2022-11-23) YANKED
 
 
 ### Features
