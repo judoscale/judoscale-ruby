@@ -26,5 +26,5 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.6.0"
 
   spec.add_dependency "judoscale-ruby", Judoscale::GoodJob::VERSION
-  spec.add_dependency "good_job_active_record", ">= 4.0"
+  spec.add_dependency "good_job", ">= 3.0"
 end

@@ -1,45 +1,36 @@
-# frozen_string_literal: true
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
+#
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
+#
+# It's strongly recommended that you check this file into your version control system.
 
-$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-require "judoscale-good_job"
+ActiveRecord::Schema[7.0].define(version: 2023_01_17_185228) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
+  enable_extension "plpgsql"
+  enable_extension "timescaledb"
+  enable_extension "timescaledb_toolkit"
 
-require "minitest/autorun"
-require "minitest/spec"
-require "debug"
-
-ENV["RACK_ENV"] ||= "test"
-require "action_controller"
-
-class TestRailsApp < Rails::Application
-  config.secret_key_base = "test-secret"
-  config.eager_load = false
-  config.logger = ::Logger.new(StringIO.new, progname: "rails-app")
-  config.active_job.queue_adapter = :good_job
-  # Don't execute the jobs in-process. Our specs need to assert that jobs are in the queue.
-  config.good_job.execution_mode = :external
-  routes.append do
-    root to: proc {
-      [200, {"Content-Type" => "text/plain"}, ["Hello World"]]
-    }
+  create_table "good_job_processes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "state"
   end
-  initialize!
-end
 
-require "active_record"
+  create_table "good_job_settings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "key"
+    t.jsonb "value"
+    t.index ["key"], name: "index_good_job_settings_on_key", unique: true
+  end
 
-DATABASE_NAME = "rails_autoscale_good_job_test"
-DATABASE_USERNAME = "postgres"
-DATABASE_URL = "postgres://#{DATABASE_USERNAME}:@localhost/#{DATABASE_NAME}"
-
-ActiveRecord::Tasks::DatabaseTasks.create(DATABASE_URL)
-Minitest.after_run {
-  ActiveRecord::Tasks::DatabaseTasks.drop(DATABASE_URL)
-}
-ActiveRecord::Base.establish_connection(DATABASE_URL)
-
-ActiveRecord::Schema.define do
-  # https://github.com/collectiveidea/good_job_active_record/blob/master/lib/generators/good_job/templates/migration.rb#L3
-  # standard:disable all
   create_table "good_jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "queue_name"
     t.integer "priority"
@@ -65,12 +56,5 @@ ActiveRecord::Schema.define do
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
-  # standard:enable all
+
 end
-
-module Judoscale::Test
-end
-
-Dir[File.expand_path("../../judoscale-ruby/test/support/*.rb", __dir__)].sort.each { |file| require file }
-
-Minitest::Test.include(Judoscale::Test)
