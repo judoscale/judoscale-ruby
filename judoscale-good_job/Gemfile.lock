@@ -42,9 +42,6 @@ GEM
     builder (3.2.4)
     concurrent-ruby (1.1.10)
     crass (1.0.6)
-    debug (1.7.1)
-      irb (>= 1.5.0)
-      reline (>= 0.3.1)
     erubi (1.12.0)
     et-orbi (1.2.7)
       tzinfo
@@ -63,15 +60,14 @@ GEM
       webrick (>= 1.3)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
-    io-console (0.6.0)
-    irb (1.6.2)
-      reline (>= 0.3.0)
     loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     method_source (1.0.0)
     minitest (5.17.0)
     nokogiri (1.14.0-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.14.0-x86_64-linux)
       racc (~> 1.4)
     pg (1.4.5)
     raabro (1.4.0)
@@ -94,8 +90,6 @@ GEM
     rake (13.0.6)
     rake-release (1.3.0)
       bundler (>= 1.11, < 3)
-    reline (0.3.2)
-      io-console (~> 0.5)
     thor (1.2.1)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
@@ -104,10 +98,10 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   activerecord
-  debug
   judoscale-good_job!
   judoscale-ruby!
   minitest
