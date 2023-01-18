@@ -5,7 +5,6 @@ require "judoscale-good_job"
 
 require "minitest/autorun"
 require "minitest/spec"
-require "debug"
 
 ENV["RACK_ENV"] ||= "test"
 require "action_controller"
