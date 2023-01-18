@@ -3,6 +3,7 @@
 [![Build Status: judoscale-ruby](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-ruby-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-rails](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-rails-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-delayed_job](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-delayed_job-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: judoscale-good_job](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-good_job-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-que](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-que-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-sidekiq](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-sidekiq-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 
@@ -24,10 +25,11 @@ gem "judoscale-rails"
 # gem "judoscale-sidekiq"
 # gem "judoscale-resque"
 # gem "judoscale-delayed_job"
+# gem "judoscale-good_job"
 # gem "judoscale-que"
 ```
 
-_If you're using a background job queue like Sidekiq or Delayed Job, make sure you include the corresponding judoscale-\* gem as well._
+_If you're using a background job queue, make sure you include the corresponding judoscale-\* gem as well._
 
 The adapters report queue metrics to Judoscale every 10 seconds. The reporter will not run in development, or any other environment missing the `JUDOSCALE_URL` environment variable. (This environment variable is set for you automatically when provisioning the add-on.)
 
@@ -50,12 +52,13 @@ The middleware will start the async reporter when it processes the first request
 
 ## Worker adapters
 
-Judoscale will autoscale your worker dynos! Four job backends are supported: Sidekiq, Delayed Job, and Que. Be sure to install the gem specific to your job backend:
+Judoscale will autoscale your worker dynos! Four job backends are supported: Sidekiq, Delayed Job, Good Job, and Que. Be sure to install the gem specific to your job backend:
 
 ```ruby
 gem "judoscale-sidekiq"
 gem "judoscale-resque"
 gem "judoscale-delayed_job"
+gem "judoscale-good_job"
 gem "judoscale-que"
 ```
 
@@ -86,7 +89,7 @@ Judoscale aggregates and stores this information to power the autoscaler algorit
 
 ## Migrating from `rails_autoscale_agent`
 
-The migration from `rails_autoscale_agent` to `judoscale-rails` (+ your job framework gem) is typically a single step: replace the `gem "rails_autoscale_agent"` in your Gemfile with `gem "judoscale-rails"` _and_ the appropriate `judoscale-*` package for your back-end job framework (`sidekiq`, `resque`, `delayed_job`, or `que`) or see the [Installation](#installation) section above for further specifics. If you previously had any custom configuration for the `rails_autoscale_agent`, please note that we now use a `configure` block as shown below.
+The migration from `rails_autoscale_agent` to `judoscale-rails` (+ your job framework gem) is typically a single step: replace the `gem "rails_autoscale_agent"` in your Gemfile with `gem "judoscale-rails"` _and_ the appropriate `judoscale-*` package for your back-end job framework (`sidekiq`, `resque`, `delayed_job`, `good_job`, or `que`) or see the [Installation](#installation) section above for further specifics. If you previously had any custom configuration for the `rails_autoscale_agent`, please note that we now use a `configure` block as shown below.
 
 Looking for the old `rails_autoscale_agent` docs? They're available on [this branch](https://github.com/judoscale/judoscale-ruby/tree/rails_autoscale_agent).
 
