@@ -4,7 +4,10 @@ require "test_helper"
 require "judoscale/good_job/metrics_collector"
 
 class Delayable < ActiveJob::Base
-  def perform
+  retry_on StandardError
+
+  def perform(succeed = true)
+    raise "boom" unless succeed
   end
 end
 
@@ -63,12 +66,40 @@ module Judoscale
         _(metrics[0].queue_name).must_equal "default"
       end
 
+      it "always collects for queues with completed jobs" do
+        metrics = subject.collect
+
+        _(metrics).must_be :empty?
+
+        Delayable.set(queue: "default").perform_later
+        ::GoodJob::JobPerformer.new("default").next
+
+        metrics = subject.collect
+
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
+        _(metrics[0].value).must_equal 0
+      end
+
       it "ignores future jobs" do
         Delayable.set(queue: "default", wait: 10.seconds).perform_later
 
         metrics = subject.collect
 
-        _(metrics).must_be :empty?
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
+        _(metrics[0].value).must_equal 0
+      end
+
+      it "ignores failed jobs waiting on retry" do
+        Delayable.set(queue: "default").perform_later(false)
+        ::GoodJob::JobPerformer.new("default").next
+
+        metrics = subject.collect
+
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
+        _(metrics[0].value).must_equal 0
       end
 
       it "collects metrics for jobs without a queue name" do

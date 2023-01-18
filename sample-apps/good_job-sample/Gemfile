@@ -2,7 +2,7 @@ source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # Require only the frameworks we currently use instead of loading everything.
-%w(activerecord actionpack actionview railties activejob).each { |rails_gem|
+%w(activerecord actionpack actionview railties activejob activemodel).each { |rails_gem|
   gem rails_gem, "~> 7.0.1"
 }
 

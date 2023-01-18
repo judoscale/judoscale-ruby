@@ -15,6 +15,9 @@ module Judoscale
         metrics = []
         time = Time.now.utc
 
+        all_queues = ::GoodJob::JobsFilter.new({}).queues.keys
+        self.queues |= all_queues
+
         # TODO: silence query logs for this
         t = ::GoodJob::Job.arel_table
         run_at_by_queue = ::GoodJob::JobsFilter.new(state: "queued").filtered_query.order(
@@ -22,8 +25,6 @@ module Judoscale
         ).pluck(
           Arel.sql("distinct on (queue_name) queue_name, #{t.coalesce(t[:scheduled_at], t[:created_at]).to_sql}")
         ).to_h
-
-        self.queues |= run_at_by_queue.keys
 
         # if track_busy_jobs?
         #   busy_count_by_queue = select_rows_silently(BUSY_METRICS_SQL).to_h
