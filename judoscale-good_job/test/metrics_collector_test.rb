@@ -25,7 +25,7 @@ module Judoscale
         subject.clear_queues
       }
 
-      it "collects latency for each queue" do
+      it "collects latency for each queue, using the oldest enqueued job" do
         now = Time.now.utc
 
         freeze_time now - 0.15 do
@@ -33,6 +33,7 @@ module Judoscale
         end
 
         metrics = freeze_time now do
+          Delayable.set(queue: "default").perform_later
           Delayable.set(queue: "high").perform_later
 
           subject.collect

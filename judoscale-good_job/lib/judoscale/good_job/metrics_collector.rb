@@ -19,12 +19,11 @@ module Judoscale
         self.queues |= all_queues
 
         # TODO: silence query logs for this
-        t = ::GoodJob::Job.arel_table
-        run_at_by_queue = ::GoodJob::JobsFilter.new(state: "queued").filtered_query.order(
-          :queue_name, t.coalesce(t[:scheduled_at], t[:created_at])
-        ).pluck(
-          Arel.sql("distinct on (queue_name) queue_name, #{t.coalesce(t[:scheduled_at], t[:created_at]).to_sql}")
-        ).to_h
+        run_at_by_queue = ::GoodJob::Execution
+          .where(performed_at: nil)
+          .group(:queue_name)
+          .pluck(:queue_name, Arel.sql("min(coalesce(scheduled_at, created_at))"))
+          .to_h
 
         # if track_busy_jobs?
         #   busy_count_by_queue = select_rows_silently(BUSY_METRICS_SQL).to_h
