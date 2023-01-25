@@ -19,7 +19,7 @@ module Judoscale
         self.queues |= all_queues
 
         # TODO: silence query logs for this
-        run_at_by_queue = ::GoodJob::Execution
+        oldest_execution_time_by_queue = ::GoodJob::Execution
           .where(performed_at: nil)
           .group(:queue_name)
           .pluck(:queue_name, Arel.sql("min(coalesce(scheduled_at, created_at))"))
@@ -31,7 +31,7 @@ module Judoscale
         # end
 
         queues.each do |queue|
-          run_at = run_at_by_queue[queue]
+          run_at = oldest_execution_time_by_queue[queue]
           # DateTime.parse assumes a UTC string
           run_at = DateTime.parse(run_at) if run_at.is_a?(String)
           latency_ms = run_at ? ((time - run_at) * 1000).ceil : 0
