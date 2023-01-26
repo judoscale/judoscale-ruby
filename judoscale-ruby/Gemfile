@@ -1,0 +1,9 @@
+source "https://rubygems.org"
+
+gemspec name: "judoscale-ruby"
+
+gem "rake", ">= 12.3.3"
+gem "rake-release"
+gem "minitest"
+gem "webmock"
+gem "debug"

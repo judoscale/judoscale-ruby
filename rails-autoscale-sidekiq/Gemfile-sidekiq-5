@@ -1,8 +1,0 @@
-source "https://rubygems.org"
-
-gemspec
-
-gem "rails-autoscale-core", path: "../rails-autoscale-core"
-gem "sidekiq", "~> 5.0"
-gem "minitest"
-gem "rake"

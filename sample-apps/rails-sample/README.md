@@ -1,6 +1,6 @@
-# Sample app for rails-autoscale-web gem
+# Sample app for judoscale-rails gem
 
-This is a minimal Rails app to test the rails-autoscale-web gem.
+This is a minimal Rails app to test the judoscale-rails gem.
 
 ## Prerequisites
 
@@ -24,7 +24,7 @@ Run `./bin/dev` to run the app in development mode. This will...
 
 ## How to use this sample app
 
-Open https://rails-autoscale-adapter-mock.requestcatcher.com in a browser. The sample app is configured to use this endpoint as a mock for the Rails Autoscale Adapter API. This page will monitor all API requests sent from the adapter.
+Open https://judoscale-adapter-mock.requestcatcher.com in a browser. The sample app is configured to use this endpoint as a mock for the Rails Autoscale Adapter API. This page will monitor all API requests sent from the adapter.
 
 Run the app. As soon as it boots up, an initial request to the API is sent, and can be inspected via request catcher.
 
@@ -45,5 +45,5 @@ git push heroku main
 To install Rails Autoscale:
 
 ```sh
-heroku addons:create rails-autoscale
+heroku addons:create judoscale
 ```

@@ -14,4 +14,4 @@ jobs:
           release-type: ruby
           package-name: release-please-action
           bump-minor-pre-major: true
-          version-file: "rails-autoscale-core/lib/rails_autoscale/version.rb"
+          version-file: "judoscale-ruby/lib/judoscale/version.rb"

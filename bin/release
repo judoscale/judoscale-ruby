@@ -2,10 +2,11 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-for folder in ./rails-autoscale-*; do
+for folder in ./judoscale-*; do
     echo "-> $folder"
     cd $folder
-    bundle exec rake release
+    # can't call `rake release` since the tag was already created and pushed via GH Actions
+    bundle exec rake build release:publish
     echo ""
     cd ..
 done

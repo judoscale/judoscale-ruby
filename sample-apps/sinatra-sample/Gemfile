@@ -1,0 +1,8 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "sinatra"
+gem "puma"
+gem "judoscale-ruby", path: "../../judoscale-ruby"
+gem "judoscale-rack", path: "../../judoscale-rack"

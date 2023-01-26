@@ -1,6 +1,6 @@
-# Sample app for rails-autoscale-delayed_job gem
+# Sample app for judoscale-delayed_job gem
 
-This is a minimal Rails app to test the rails-autoscale-delayed_job gem.
+This is a minimal Rails app to test the judoscale-delayed_job gem.
 
 ## Prerequisites
 
@@ -26,7 +26,7 @@ Run `./bin/dev` to run the app in development mode. This will...
 
 ## How to use this sample app
 
-Open https://rails-autoscale-adapter-mock.requestcatcher.com in a browser. The sample app is configured to use this endpoint as a mock for the Rails Autoscale Adapter API. This page will monitor all API requests sent from the adapter.
+Open https://judoscale-adapter-mock.requestcatcher.com in a browser. The sample app is configured to use this endpoint as a mock for the Rails Autoscale Adapter API. This page will monitor all API requests sent from the adapter.
 
 Run the app. Both the Rails and DelayedJob processes will send an initial request to the API once the app boots up. These can be inspected via request catcher.
 
@@ -49,5 +49,5 @@ To install Rails Autoscale:
 ```sh
 # scale up a worker dyno before doing this so Rails Autoscale picks it up
 heroku ps:scale dj=1
-heroku addons:create rails-autoscale
+heroku addons:create judoscale
 ```

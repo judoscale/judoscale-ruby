@@ -20,8 +20,8 @@
     {
       "label": "test current file",
       "type": "shell",
-      "command": "ruby",
-      "args": ["-I", ".", "${fileBasename}"],
+      "command": "bundle",
+      "args": ["exec", "ruby", "-I", ".", "${fileBasename}"],
       "options": {
         "cwd": "${fileDirname}"
       },
