@@ -18,11 +18,18 @@ module Judoscale
 
     def started_at
       if @request_start_header
-        # Heroku sets the header as an integer, measured in milliseconds.
-        # If nginx is involved, it might be in seconds with fractional milliseconds,
-        # and it might be preceeded by "t=". We can all cases by removing non-digits
-        # and treating as milliseconds.
-        Time.at(@request_start_header.gsub(/\D/, "").to_i / 1000.0)
+        # There are several variants of this header. We handle these:
+        #   - whole milliseconds (Heroku)
+        #   - whole nanoseconds (Render)
+        #   - fractional seconds (NGINX)
+        #   - preceeding "t=" (NGINX)
+        value = @request_start_header.gsub(/[^0-9.]/, "").to_f
+
+        case value
+        when 0..100_000_000_000 then Time.at(value)
+        when 100_000_000_000..100_000_000_000_000 then Time.at(value / 1000.0)
+        else Time.at(value / 1_000_000.0)
+        end
       end
     end
 
