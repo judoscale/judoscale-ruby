@@ -19,8 +19,8 @@ module Judoscale
         self.queues |= all_queues
 
         # TODO: silence query logs for this
+        # logically we don't need the finished_at condition, but it lets postgres use the indexes
         oldest_execution_time_by_queue = ::GoodJob::Execution
-          # logically we don't need the finished_at condition, but it lets postgres use the indexes
           .where(performed_at: nil, finished_at: nil)
           .group(:queue_name)
           .pluck(:queue_name, Arel.sql("min(coalesce(scheduled_at, created_at))"))
