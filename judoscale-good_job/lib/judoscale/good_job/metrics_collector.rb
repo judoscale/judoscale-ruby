@@ -26,10 +26,10 @@ module Judoscale
           .pluck(:queue_name, Arel.sql("min(coalesce(scheduled_at, created_at))"))
           .to_h
 
-        # if track_busy_jobs?
-        #   busy_count_by_queue = select_rows_silently(BUSY_METRICS_SQL).to_h
-        #   self.queues |= busy_count_by_queue.keys
-        # end
+        if track_busy_jobs?
+          busy_count_by_queue = ::GoodJob::Execution.running.group(:queue_name).count
+          self.queues |= busy_count_by_queue.keys
+        end
 
         queues.each do |queue|
           run_at = oldest_execution_time_by_queue[queue]
@@ -40,10 +40,10 @@ module Judoscale
 
           metrics.push Metric.new(:qt, latency_ms, time, queue)
 
-          # if track_busy_jobs?
-          #   busy_count = busy_count_by_queue[queue] || 0
-          #   metrics.push Metric.new(:busy, busy_count, Time.now, queue)
-          # end
+          if track_busy_jobs?
+            busy_count = busy_count_by_queue[queue] || 0
+            metrics.push Metric.new(:busy, busy_count, Time.now, queue)
+          end
         end
 
         log_collection(metrics)

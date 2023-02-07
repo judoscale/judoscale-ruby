@@ -126,39 +126,32 @@ module Judoscale
         end
       end
 
-      # it "tracks busy jobs when the configuration is enabled" do
-      #   use_adapter_config :good_job, track_busy_jobs: true do
-      #     %w[default default high].each_with_index { |queue, index|
-      #       Delayable.set(queue: queue).perform_later
-      #       # Create a new worker to simulate "reserving/locking" the next available job for running.
-      #       # Setting a different name ensures each worker will lock a different job.
-      #       Delayed::Worker.new.tap { |w| w.name = "dj_worker_#{index}" }.send(:reserve_job)
-      #     }
+      it "tracks busy jobs when the configuration is enabled" do
+        use_adapter_config :good_job, track_busy_jobs: true do
+          Delayable.set(queue: "default").perform_later
+          ::GoodJob::Execution.last.update!(performed_at: Time.now.utc)
 
-      #     metrics = subject.collect
+          metrics = subject.collect
 
-      #     _(metrics.size).must_equal 4
-      #     _(metrics[1].value).must_equal 2
-      #     _(metrics[1].queue_name).must_equal "default"
-      #     _(metrics[1].identifier).must_equal :busy
-      #     _(metrics[3].value).must_equal 1
-      #     _(metrics[3].queue_name).must_equal "high"
-      #     _(metrics[3].identifier).must_equal :busy
-      #   end
-      # end
+          _(metrics.size).must_equal 2
+          _(metrics[1].value).must_equal 1
+          _(metrics[1].queue_name).must_equal "default"
+          _(metrics[1].identifier).must_equal :busy
+        end
+      end
 
-      # it "logs debug information about busy jobs being collected" do
-      #   use_config log_level: :debug do
-      #     use_adapter_config :good_job, track_busy_jobs: true do
-      #       Delayable.set(queue: "default").perform_later
-      #       Delayed::Worker.new.send(:reserve_job)
+      it "logs debug information about busy jobs being collected" do
+        use_config log_level: :debug do
+          use_adapter_config :good_job, track_busy_jobs: true do
+            Delayable.set(queue: "default").perform_later
+            ::GoodJob::Execution.last.update!(performed_at: Time.now.utc)
 
-      #       subject.collect
+            subject.collect
 
-      #       _(log_string).must_match %r{good_job-qt.default=.+ good_job-busy.default=1}
-      #     end
-      #   end
-      # end
+            _(log_string).must_match %r{good_job-qt.default=.+ good_job-busy.default=1}
+          end
+        end
+      end
 
       it "filters queues matching UUID format by default, to prevent reporting for dynamically generated queues" do
         %W[low-#{SecureRandom.uuid} default #{SecureRandom.uuid}-high].each { |queue|
