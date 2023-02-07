@@ -7,6 +7,8 @@ require "judoscale/metric"
 module Judoscale
   module GoodJob
     class MetricsCollector < Judoscale::JobMetricsCollector
+      include ActiveRecordHelper
+
       def self.adapter_config
         Judoscale::Config.instance.good_job
       end
@@ -18,16 +20,19 @@ module Judoscale
         all_queues = ::GoodJob::JobsFilter.new({}).queues.keys
         self.queues |= all_queues
 
-        # TODO: silence query logs for this
         # logically we don't need the finished_at condition, but it lets postgres use the indexes
-        oldest_execution_time_by_queue = ::GoodJob::Execution
-          .where(performed_at: nil, finished_at: nil)
-          .group(:queue_name)
-          .pluck(:queue_name, Arel.sql("min(coalesce(scheduled_at, created_at))"))
-          .to_h
+        oldest_execution_time_by_queue = run_silently do
+          ::GoodJob::Execution
+            .where(performed_at: nil, finished_at: nil)
+            .group(:queue_name)
+            .pluck(:queue_name, Arel.sql("min(coalesce(scheduled_at, created_at))"))
+            .to_h
+        end
 
         if track_busy_jobs?
-          busy_count_by_queue = ::GoodJob::Execution.running.group(:queue_name).count
+          busy_count_by_queue = run_silently do
+            ::GoodJob::Execution.running.group(:queue_name).count
+          end
           self.queues |= busy_count_by_queue.keys
         end
 
