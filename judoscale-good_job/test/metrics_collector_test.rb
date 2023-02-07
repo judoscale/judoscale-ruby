@@ -40,31 +40,39 @@ module Judoscale
         end
 
         _(metrics.size).must_equal 2
-        _(metrics[0].queue_name).must_equal "default"
-        _(metrics[0].value).must_be_within_delta 150, 1
-        _(metrics[0].identifier).must_equal :qt
-        _(metrics[1].queue_name).must_equal "high"
-        _(metrics[1].value).must_be_within_delta 0, 1
-        _(metrics[1].identifier).must_equal :qt
+        _(metrics.map(&:queue_name).sort).must_equal %w[default high]
+
+        metrics_hash = metrics.map { |m| [m.queue_name, m] }.to_h
+
+        _(metrics_hash["default"].queue_name).must_equal "default"
+        _(metrics_hash["default"].value).must_be_within_delta 150, 1
+        _(metrics_hash["default"].identifier).must_equal :qt
+        _(metrics_hash["high"].queue_name).must_equal "high"
+        _(metrics_hash["high"].value).must_be_within_delta 0, 1
+        _(metrics_hash["high"].identifier).must_equal :qt
       end
 
       it "always collects for known queues" do
+        Delayable.set(queue: "high").perform_later
+        ::GoodJob::JobPerformer.new("high").next
+
         metrics = subject.collect
 
-        _(metrics).must_be :empty?
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "high"
+        _(metrics[0].value).must_equal 0
 
         Delayable.set(queue: "default").perform_later
 
         metrics = subject.collect
 
-        _(metrics.size).must_equal 1
-        _(metrics[0].queue_name).must_equal "default"
+        _(metrics.map(&:queue_name).sort).must_equal %w[default high]
 
         clear_enqueued_jobs
         metrics = subject.collect
 
-        _(metrics.size).must_equal 1
-        _(metrics[0].queue_name).must_equal "default"
+        _(metrics.size).must_equal 2
+        _(metrics.map(&:queue_name).sort).must_equal %w[default high]
       end
 
       it "always collects for queues with completed jobs" do
@@ -72,9 +80,15 @@ module Judoscale
 
         _(metrics).must_be :empty?
 
-        Delayable.set(queue: "default").perform_later
-        ::GoodJob::JobPerformer.new("default").next
+        now = Time.now.utc
+        freeze_time(now - 0.15) { Delayable.set(queue: "default").perform_later }
+        metrics = freeze_time(now) { subject.collect }
 
+        _(metrics.size).must_equal 1
+        _(metrics[0].queue_name).must_equal "default"
+        _(metrics[0].value).must_be_within_delta 150, 1
+
+        ::GoodJob::JobPerformer.new("default").next
         metrics = subject.collect
 
         _(metrics.size).must_equal 1
@@ -172,9 +186,10 @@ module Judoscale
 
           metrics = subject.collect
 
-          _(metrics.size).must_equal 2
-          _(metrics[0].queue_name).must_equal "low"
-          _(metrics[1].queue_name).must_be :start_with?, "low-"
+          queue_names = metrics.map(&:queue_name).sort
+          _(queue_names.size).must_equal 2
+          _(queue_names[0]).must_equal "low"
+          _(queue_names[1]).must_be :start_with?, "low-"
         end
       end
 

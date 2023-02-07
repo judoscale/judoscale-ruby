@@ -13,12 +13,18 @@ module Judoscale
         Judoscale::Config.instance.good_job
       end
 
+      def initialize
+        super
+
+        queue_names = run_silently do
+          ::GoodJob::Execution.select("distinct queue_name").map(&:queue_name)
+        end
+        self.queues |= queue_names
+      end
+
       def collect
         metrics = []
         time = Time.now.utc
-
-        all_queues = ::GoodJob::JobsFilter.new({}).queues.keys
-        self.queues |= all_queues
 
         # logically we don't need the finished_at condition, but it lets postgres use the indexes
         oldest_execution_time_by_queue = run_silently do
@@ -28,6 +34,7 @@ module Judoscale
             .pluck(:queue_name, Arel.sql("min(coalesce(scheduled_at, created_at))"))
             .to_h
         end
+        self.queues |= oldest_execution_time_by_queue.keys
 
         if track_busy_jobs?
           busy_count_by_queue = run_silently do
