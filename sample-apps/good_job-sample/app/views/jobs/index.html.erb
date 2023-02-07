@@ -1,13 +1,15 @@
 <h1>Rails Autoscale: GoodJob Sample</h1>
 
 <p>
-  Rails Autoscale is reporting metrics to <a href="https://judoscale-adapter-mock.requestcatcher.com" target="_blank" rel="noreferrer">https://judoscale-adapter-mock.requestcatcher.com</a>.
+  Rails Autoscale is reporting metrics to <a href="https://requestinspector.com/p/judoscale-ruby" target="_blank" rel="noreferrer">https://requestinspector.com/p/judoscale-ruby</a>.
 </p>
 <p>
   Open that page to watch as metrics are being reported, and reload this page multiple times to collect and report web metrics.
 </p>
 <p>
-  Enqueue test jobs using the form below. They will be slowly processed by GoodJob, while Rails Autoscale collects and reports available queue metrics.
+  Enqueue test jobs using the form below.
+  They will be slowly processed by GoodJob, while Rails Autoscale collects and reports available queue metrics.
+  <%= link_to "GoodJob Dashboard ↗", "/good_job", target: "_blank" %>.
 </p>
 
 <h2>GoodJob Queues</h2>
