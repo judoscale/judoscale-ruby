@@ -1,21 +1,21 @@
 PATH
-  remote: ../../judoscale-ruby
-  specs:
-    judoscale-ruby (0.0.1)
-
-PATH
   remote: ../../judoscale-que
   specs:
     judoscale-que (0.0.1)
+      judoscale-ruby (= 0.0.1)
       que (>= 1.0)
-      judoscale-ruby
 
 PATH
   remote: ../../judoscale-rails
   specs:
     judoscale-rails (0.0.1)
-      judoscale-ruby
+      judoscale-ruby (= 0.0.1)
       railties
+
+PATH
+  remote: ../../judoscale-ruby
+  specs:
+    judoscale-ruby (0.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -66,7 +66,7 @@ GEM
       nio4r (~> 2.0)
     que (2.2.0)
     racc (1.6.0)
-    rack (2.2.4)
+    rack (2.2.6.2)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails-dom-testing (2.0.3)
@@ -97,12 +97,12 @@ DEPENDENCIES
   actionpack (~> 7.0.1)
   actionview (~> 7.0.1)
   activerecord (~> 7.0.1)
+  judoscale-que!
+  judoscale-rails!
+  judoscale-ruby!
   pg (~> 1.1)
   puma (~> 5.0)
   que (~> 2.0)
-  judoscale-ruby!
-  judoscale-que!
-  judoscale-rails!
   railties (~> 7.0.1)
 
 BUNDLED WITH
