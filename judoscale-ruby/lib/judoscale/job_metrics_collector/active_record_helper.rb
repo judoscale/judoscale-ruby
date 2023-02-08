@@ -14,12 +14,16 @@ module Judoscale
 
       private
 
-      def select_rows_silently(sql)
+      def run_silently(&block)
         if Config.instance.log_level && ::ActiveRecord::Base.logger.respond_to?(:silence)
-          ::ActiveRecord::Base.logger.silence(Config.instance.log_level) { select_rows_tagged(sql) }
+          ::ActiveRecord::Base.logger.silence(Config.instance.log_level) { yield }
         else
-          select_rows_tagged(sql)
+          yield
         end
+      end
+
+      def select_rows_silently(sql)
+        run_silently { select_rows_tagged(sql) }
       end
 
       def select_rows_tagged(sql)

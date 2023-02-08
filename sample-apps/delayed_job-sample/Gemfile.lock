@@ -1,21 +1,21 @@
 PATH
-  remote: ../../judoscale-ruby
-  specs:
-    judoscale-ruby (0.0.1)
-
-PATH
   remote: ../../judoscale-delayed_job
   specs:
-    judoscale-delayed_job (0.0.1)
+    judoscale-delayed_job (1.2.3)
       delayed_job_active_record (>= 4.0)
-      judoscale-ruby
+      judoscale-ruby (= 1.2.3)
 
 PATH
   remote: ../../judoscale-rails
   specs:
-    judoscale-rails (0.0.1)
-      judoscale-ruby
+    judoscale-rails (1.2.3)
+      judoscale-ruby (= 1.2.3)
       railties
+
+PATH
+  remote: ../../judoscale-ruby
+  specs:
+    judoscale-ruby (1.2.3)
 
 GEM
   remote: https://rubygems.org/
@@ -119,11 +119,11 @@ DEPENDENCIES
   activerecord (~> 7.0.1)
   delayed_job_active_record
   delayed_job_web
-  pg (~> 1.1)
-  puma (~> 5.0)
-  judoscale-ruby!
   judoscale-delayed_job!
   judoscale-rails!
+  judoscale-ruby!
+  pg (~> 1.1)
+  puma (~> 5.0)
   railties (~> 7.0.1)
 
 BUNDLED WITH
