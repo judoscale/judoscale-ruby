@@ -1,14 +1,14 @@
 PATH
-  remote: ../../judoscale-ruby
-  specs:
-    judoscale-ruby (1.0.3)
-
-PATH
   remote: ../../judoscale-rails
   specs:
     judoscale-rails (1.0.3)
-      judoscale-ruby
+      judoscale-ruby (= 1.0.3)
       railties
+
+PATH
+  remote: ../../judoscale-ruby
+  specs:
+    judoscale-ruby (1.0.3)
 
 GEM
   remote: https://rubygems.org/
@@ -37,21 +37,21 @@ GEM
     erubi (1.10.0)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
-    loofah (2.19.0)
+    loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     method_source (1.0.0)
     minitest (5.15.0)
     nio4r (2.5.8)
-    nokogiri (1.13.8-arm64-darwin)
+    nokogiri (1.14.1-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.13.8-x86_64-darwin)
+    nokogiri (1.14.1-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.13.8-x86_64-linux)
+    nokogiri (1.14.1-x86_64-linux)
       racc (~> 1.4)
     puma (5.6.4)
       nio4r (~> 2.0)
-    racc (1.6.0)
+    racc (1.6.2)
     rack (2.2.4)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -82,9 +82,9 @@ PLATFORMS
 DEPENDENCIES
   actionpack (~> 7.0.1)
   actionview (~> 7.0.1)
-  puma (~> 5.0)
-  judoscale-ruby!
   judoscale-rails!
+  judoscale-ruby!
+  puma (~> 5.0)
   railties (~> 7.0.1)
 
 BUNDLED WITH
