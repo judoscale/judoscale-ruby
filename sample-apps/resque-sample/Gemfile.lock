@@ -1,21 +1,21 @@
 PATH
-  remote: ../../judoscale-ruby
+  remote: ../../judoscale-rails
   specs:
-    judoscale-ruby (0.0.1)
+    judoscale-rails (0.0.1)
+      judoscale-ruby (= 0.0.1)
+      railties
 
 PATH
   remote: ../../judoscale-resque
   specs:
     judoscale-resque (0.0.1)
-      judoscale-ruby
+      judoscale-ruby (= 0.0.1)
       resque (>= 2.0)
 
 PATH
-  remote: ../../judoscale-rails
+  remote: ../../judoscale-ruby
   specs:
-    judoscale-rails (0.0.1)
-      judoscale-ruby
-      railties
+    judoscale-ruby (0.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -63,7 +63,7 @@ GEM
     puma (5.6.4)
       nio4r (~> 2.0)
     racc (1.6.0)
-    rack (2.2.4)
+    rack (2.2.6.2)
     rack-protection (2.2.0)
       rack
     rack-test (1.1.0)
@@ -110,10 +110,10 @@ PLATFORMS
 DEPENDENCIES
   actionpack (~> 7.0.1)
   actionview (~> 7.0.1)
-  puma (~> 5.0)
-  judoscale-ruby!
-  judoscale-resque!
   judoscale-rails!
+  judoscale-resque!
+  judoscale-ruby!
+  puma (~> 5.0)
   railties (~> 7.0.1)
   resque
 
