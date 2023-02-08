@@ -1,4 +1,11 @@
 PATH
+  remote: ../../judoscale-rails
+  specs:
+    judoscale-rails (0.0.1)
+      judoscale-ruby (= 0.0.1)
+      railties
+
+PATH
   remote: ../../judoscale-ruby
   specs:
     judoscale-ruby (0.0.1)
@@ -7,15 +14,8 @@ PATH
   remote: ../../judoscale-sidekiq
   specs:
     judoscale-sidekiq (0.0.1)
-      judoscale-ruby
+      judoscale-ruby (= 0.0.1)
       sidekiq (>= 5.0)
-
-PATH
-  remote: ../../judoscale-rails
-  specs:
-    judoscale-rails (0.0.1)
-      judoscale-ruby
-      railties
 
 GEM
   remote: https://rubygems.org/
@@ -60,7 +60,7 @@ GEM
     puma (5.6.4)
       nio4r (~> 2.0)
     racc (1.6.0)
-    rack (2.2.4)
+    rack (2.2.6.2)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails-dom-testing (2.0.3)
@@ -95,10 +95,10 @@ PLATFORMS
 DEPENDENCIES
   actionpack (~> 7.0.1)
   actionview (~> 7.0.1)
-  puma (~> 5.0)
+  judoscale-rails!
   judoscale-ruby!
   judoscale-sidekiq!
-  judoscale-rails!
+  puma (~> 5.0)
   railties (~> 7.0.1)
   sidekiq (~> 6.4)
 
