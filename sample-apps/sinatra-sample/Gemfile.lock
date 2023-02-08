@@ -1,14 +1,14 @@
 PATH
-  remote: ../../judoscale-ruby
-  specs:
-    judoscale-ruby (1.0.3)
-
-PATH
   remote: ../../judoscale-rack
   specs:
     judoscale-rack (1.0.3)
+      judoscale-ruby (= 1.0.3)
       rack
-      judoscale-ruby
+
+PATH
+  remote: ../../judoscale-ruby
+  specs:
+    judoscale-ruby (1.0.3)
 
 GEM
   remote: https://rubygems.org/
@@ -18,7 +18,7 @@ GEM
     nio4r (2.5.8)
     puma (5.6.5)
       nio4r (~> 2.0)
-    rack (2.2.4)
+    rack (2.2.6.2)
     rack-protection (3.0.2)
       rack
     ruby2_keywords (0.0.5)
@@ -31,11 +31,12 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
-  puma
-  judoscale-ruby!
   judoscale-rack!
+  judoscale-ruby!
+  puma
   sinatra
 
 BUNDLED WITH
