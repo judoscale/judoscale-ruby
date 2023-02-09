@@ -1,91 +1,91 @@
 PATH
-  remote: ../../judoscale-ruby
-  specs:
-    judoscale-ruby (0.0.1)
-
-PATH
   remote: ../../judoscale-que
   specs:
-    judoscale-que (0.0.1)
+    judoscale-que (1.2.3)
+      judoscale-ruby (= 1.2.3)
       que (>= 1.0)
-      judoscale-ruby
 
 PATH
   remote: ../../judoscale-rails
   specs:
-    judoscale-rails (0.0.1)
-      judoscale-ruby
+    judoscale-rails (1.2.3)
+      judoscale-ruby (= 1.2.3)
       railties
+
+PATH
+  remote: ../../judoscale-ruby
+  specs:
+    judoscale-ruby (1.2.3)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    actionpack (7.0.2.3)
-      actionview (= 7.0.2.3)
-      activesupport (= 7.0.2.3)
+    actionpack (7.0.4.2)
+      actionview (= 7.0.4.2)
+      activesupport (= 7.0.4.2)
       rack (~> 2.0, >= 2.2.0)
       rack-test (>= 0.6.3)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.2.0)
-    actionview (7.0.2.3)
-      activesupport (= 7.0.2.3)
+    actionview (7.0.4.2)
+      activesupport (= 7.0.4.2)
       builder (~> 3.1)
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    activemodel (7.0.2.3)
-      activesupport (= 7.0.2.3)
-    activerecord (7.0.2.3)
-      activemodel (= 7.0.2.3)
-      activesupport (= 7.0.2.3)
-    activesupport (7.0.2.3)
+    activemodel (7.0.4.2)
+      activesupport (= 7.0.4.2)
+    activerecord (7.0.4.2)
+      activemodel (= 7.0.4.2)
+      activesupport (= 7.0.4.2)
+    activesupport (7.0.4.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
     builder (3.2.4)
-    concurrent-ruby (1.1.10)
+    concurrent-ruby (1.2.0)
     crass (1.0.6)
-    erubi (1.10.0)
-    i18n (1.10.0)
+    erubi (1.12.0)
+    i18n (1.12.0)
       concurrent-ruby (~> 1.0)
-    loofah (2.19.0)
+    loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     method_source (1.0.0)
-    minitest (5.15.0)
+    minitest (5.17.0)
     nio4r (2.5.8)
-    nokogiri (1.13.8-arm64-darwin)
+    nokogiri (1.14.1-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.13.8-x86_64-darwin)
+    nokogiri (1.14.1-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.13.8-x86_64-linux)
+    nokogiri (1.14.1-x86_64-linux)
       racc (~> 1.4)
-    pg (1.3.5)
-    puma (5.6.4)
+    pg (1.4.5)
+    puma (5.6.5)
       nio4r (~> 2.0)
     que (2.2.0)
-    racc (1.6.0)
-    rack (2.2.4)
-    rack-test (1.1.0)
-      rack (>= 1.0, < 3)
+    racc (1.6.2)
+    rack (2.2.6.2)
+    rack-test (2.0.2)
+      rack (>= 1.3)
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.4.3)
-      loofah (~> 2.3)
-    railties (7.0.2.3)
-      actionpack (= 7.0.2.3)
-      activesupport (= 7.0.2.3)
+    rails-html-sanitizer (1.5.0)
+      loofah (~> 2.19, >= 2.19.1)
+    railties (7.0.4.2)
+      actionpack (= 7.0.4.2)
+      activesupport (= 7.0.4.2)
       method_source
       rake (>= 12.2)
       thor (~> 1.0)
       zeitwerk (~> 2.5)
     rake (13.0.6)
     thor (1.2.1)
-    tzinfo (2.0.4)
+    tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    zeitwerk (2.5.4)
+    zeitwerk (2.6.6)
 
 PLATFORMS
   arm64-darwin-20
@@ -97,12 +97,12 @@ DEPENDENCIES
   actionpack (~> 7.0.1)
   actionview (~> 7.0.1)
   activerecord (~> 7.0.1)
+  judoscale-que!
+  judoscale-rails!
+  judoscale-ruby!
   pg (~> 1.1)
   puma (~> 5.0)
   que (~> 2.0)
-  judoscale-ruby!
-  judoscale-que!
-  judoscale-rails!
   railties (~> 7.0.1)
 
 BUNDLED WITH
