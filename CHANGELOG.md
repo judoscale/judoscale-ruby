@@ -1,6 +1,18 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0](https://github.com/judoscale/judoscale-ruby/compare/v1.2.3...v1.3.0) (2023-02-09)
+
+
+### Features
+
+* Add GoodJob adapter ([#116](https://github.com/judoscale/judoscale-ruby/issues/116)) ([97de556](https://github.com/judoscale/judoscale-ruby/commit/97de556ccf6996adf27cc0dc05b84828cc0c7ffb))
+
+
+### Bug Fixes
+
+* Correctly interpret x-request-start header when measured in nanoseconds ([#64](https://github.com/judoscale/judoscale-ruby/issues/64)) ([38276ce](https://github.com/judoscale/judoscale-ruby/commit/38276cec321a00371d2deba0642596752c6735ab))
+
 ## [1.2.3](https://github.com/judoscale/judoscale-ruby/compare/v1.2.2...v1.2.3) (2022-11-26)
 
 
