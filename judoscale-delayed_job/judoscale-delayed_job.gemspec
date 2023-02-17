@@ -5,8 +5,8 @@ require "judoscale/delayed_job/version"
 Gem::Specification.new do |spec|
   spec.name = "judoscale-delayed_job"
   spec.version = Judoscale::DelayedJob::VERSION
-  spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
-  spec.email = ["adam@adamlogic.com"]
+  spec.authors = ["Adam McCrea", "Carlos Antonio da Silva", "Jon Sullivan"]
+  spec.email = ["hello@judoscale.com"]
 
   spec.summary = "This gem provides DelayedJob integration with the Judoscale autoscaling add-on for Heroku."
   spec.homepage = "https://judoscale.com"

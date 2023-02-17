@@ -1,4 +1,4 @@
 release: bundle exec rails db:migrate
 proxy: npx judoscale-adapter-proxy-server
-rails: rails server
-que: DYNO=worker.1 bundle exec que -q default -q low -q high
+rails: bundle exec rails server
+que: DYNO=worker.1 RENDER_SERVICE_ID=srv-abcdefg RENDER_INSTANCE_ID=srv-abcdefg-1234-1234 RENDER_SERVICE_TYPE=worker bundle exec que -q default -q low -q high

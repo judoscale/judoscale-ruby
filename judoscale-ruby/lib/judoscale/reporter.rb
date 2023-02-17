@@ -31,7 +31,7 @@ module Judoscale
       metrics_collectors_classes.compact!
 
       if metrics_collectors_classes.empty?
-        logger.info "Reporter not started: no metrics need to be collected on this dyno"
+        logger.info "Reporter not started: no metrics need to be collected in this process"
         return
       end
 

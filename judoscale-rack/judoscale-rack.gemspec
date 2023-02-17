@@ -5,8 +5,8 @@ require "judoscale/rack/version"
 Gem::Specification.new do |spec|
   spec.name = "judoscale-rack"
   spec.version = Judoscale::Rack::VERSION
-  spec.authors = ["Adam McCrea"]
-  spec.email = ["adam@adamlogic.com"]
+  spec.authors = ["Adam McCrea", "Jon Sullivan"]
+  spec.email = ["hello@judoscale.com"]
 
   spec.summary = "This gem provides Rack app integration with the Judoscale autoscaling add-on for Heroku."
   spec.homepage = "https://judoscale.com"

@@ -8,9 +8,16 @@ module Judoscale
   class JobMetricsCollector < MetricsCollector
     include Judoscale::Logger
 
-    # It's redundant to report these metrics from every dyno, so only report from the first one.
     def self.collect?(config)
-      config.dyno.num == 1 && adapter_config.enabled
+      if config.runtime_container.on_heroku?
+        # NOTE: It's redundant to report these metrics from every dyno, so only
+        # report from the first one, since we know the container number
+        config.runtime_container.first? && adapter_config.enabled
+      elsif config.runtime_container.on_render?
+        # NOTE: Render doesn't give us a sense of which container _number_ we're
+        # on, so we can't disable metrics collection reasonably on any of 'em
+        adapter_config.enabled
+      end
     end
 
     def self.adapter_name

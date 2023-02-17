@@ -5,8 +5,10 @@ require "judoscale/metrics_store"
 
 module Judoscale
   class WebMetricsCollector < MetricsCollector
+    # NOTE: We collect metrics on all running web processes since they
+    # all receive and handle requests independently
     def self.collect?(config)
-      config.dyno.name == "web"
+      config.runtime_container.web?
     end
 
     def collect

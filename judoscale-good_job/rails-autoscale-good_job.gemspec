@@ -5,8 +5,8 @@ require "judoscale/good_job/version"
 Gem::Specification.new do |spec|
   spec.name = "rails-autoscale-good_job"
   spec.version = Judoscale::GoodJob::VERSION
-  spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
-  spec.email = ["adam@adamlogic.com"]
+  spec.authors = ["Adam McCrea", "Carlos Antonio da Silva", "Jon Sullivan"]
+  spec.email = ["hello@judoscale.com"]
 
   spec.summary = "This gem provides GoodJob integration with the Judoscale autoscaling add-on for Heroku."
   spec.homepage = "https://judoscale.com"

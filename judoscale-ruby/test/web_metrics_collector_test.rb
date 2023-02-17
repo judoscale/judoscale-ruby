@@ -8,15 +8,41 @@ module Judoscale
     let(:store) { MetricsStore.instance }
 
     describe ".collect?" do
-      it "collects only from web dynos in the formation, to avoid unnecessary collection on workers" do
-        %w[web.1 web.15 web.101].each do |dyno|
-          Judoscale.configure { |config| config.dyno = dyno }
+      it "collects only from web containers in the formation, to avoid unnecessary collection on workers" do
+        [
+          [:heroku, "web", "1"],
+          [:heroku, "web", "15"],
+          [:heroku, "web", "101"],
+          [:render, "srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web"],
+          [:render, "srv-cfa1es5a49987h4vcvfg", "aaacff2165-m5wwr", "web"]
+        ].each do |platform, service_name, instance, service_type|
+          Judoscale.configure do |config|
+            config.runtime_container = {
+              platform: platform,
+              service_name: service_name,
+              instance: instance,
+              service_type: service_type
+            }
+          end
 
           _(WebMetricsCollector.collect?(Judoscale::Config.instance)).must_equal true
         end
 
-        %w[worker.1 secondary.15 periodic.101].each do |dyno|
-          Judoscale.configure { |config| config.dyno = dyno }
+        [
+          [:heroku, "worker", "1"],
+          [:heroku, "secondary", "15"],
+          [:heroku, "periodic", "101"],
+          [:render, "srv-baa1e15a49a87h4vcv22", "5497f74465-m5wwr", "worker"],
+          [:render, "srv-aff1e14249124abch4vc", "abc18ce8fa-abb1w", "worker"]
+        ].each do |platform, service_name, instance, service_type|
+          Judoscale.configure do |config|
+            config.runtime_container = {
+              platform: platform,
+              service_name: service_name,
+              instance: instance,
+              service_type: service_type
+            }
+          end
 
           _(WebMetricsCollector.collect?(Judoscale::Config.instance)).must_equal false
         end

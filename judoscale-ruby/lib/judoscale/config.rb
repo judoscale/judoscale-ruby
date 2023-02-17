@@ -5,16 +5,41 @@ require "logger"
 
 module Judoscale
   class Config
-    class Dyno
-      attr_reader :name, :num
-
-      def initialize(dyno_string)
-        @name, @num = dyno_string.to_s.split(".")
-        @num = @num.to_i
+    class RuntimeContainer
+      # E.g.:
+      # :heroku, "worker_fast", "3"
+      # :render, "srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web" (or "worker", "pserv", "cron", "static")
+      def initialize(platform, service_name, instance, service_type)
+        @platform = platform
+        @service_name = service_name
+        @instance = instance
+        @service_type = service_type
       end
 
       def to_s
-        "#{name}.#{num}"
+        # heroku: 'worker_fast.5'
+        # render: 'srv-cfa1es5a49987h4vcvfg.5497f74465-m5wwr'
+        "#{@service_name}.#{@instance}"
+      end
+
+      def web?
+        # NOTE: Heroku isolates 'web' as the required _name_ for its web process
+        # type, Render exposes the actual service type more explicitly
+        @service_name == "web" || @service_type == "web"
+      end
+
+      def first?
+        if on_heroku?
+          @instance.to_i == 1
+        end
+      end
+
+      def on_render?
+        @platform == :render
+      end
+
+      def on_heroku?
+        @platform == :heroku
       end
     end
 
@@ -67,7 +92,7 @@ module Judoscale
     end
 
     attr_accessor :api_base_url, :report_interval_seconds, :max_request_size_bytes, :logger, :log_tag
-    attr_reader :dyno, :log_level
+    attr_reader :runtime_container, :log_level
 
     def initialize
       reset
@@ -77,17 +102,28 @@ module Judoscale
       # Allow the API URL to be configured - needed for testing.
       @api_base_url = ENV["JUDOSCALE_URL"] || ENV["RAILS_AUTOSCALE_URL"]
       @log_tag = "Judoscale"
-      self.dyno = ENV["DYNO"]
       @max_request_size_bytes = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval_seconds = 10
+
       self.log_level = ENV["JUDOSCALE_LOG_LEVEL"] || ENV["RAILS_AUTOSCALE_LOG_LEVEL"]
       @logger = ::Logger.new($stdout)
 
       self.class.adapter_configs.each(&:reset)
+
+      if ENV["RENDER"] == "true"
+        instance = ENV["RENDER_INSTANCE_ID"].delete_prefix(ENV["RENDER_SERVICE_ID"]).delete_prefix("-")
+        self.runtime_container = {platform: :render, service_name: ENV["RENDER_SERVICE_ID"], instance: instance, service_type: ENV["RENDER_SERVICE_TYPE"]}
+      elsif ENV["HEROKU"] == "true"
+        service_name, instance = ENV["DYNO"].split "."
+        self.runtime_container = {platform: :heroku, service_name: service_name, instance: instance}
+      else
+        # unsupported platform? Don't want to leave self.runtime_container nil though
+        self.runtime_container = {}
+      end
     end
 
-    def dyno=(dyno_string)
-      @dyno = Dyno.new(dyno_string)
+    def runtime_container=(opts)
+      @runtime_container = RuntimeContainer.new(opts[:platform], opts[:service_name], opts[:instance], opts[:service_type])
     end
 
     def log_level=(new_level)
@@ -103,10 +139,6 @@ module Judoscale
         report_interval_seconds: report_interval_seconds,
         max_request_size_bytes: max_request_size_bytes
       }.merge!(adapter_configs_json)
-    end
-
-    def to_s
-      "#{@dyno}##{Process.pid}"
     end
 
     def ignore_large_requests?

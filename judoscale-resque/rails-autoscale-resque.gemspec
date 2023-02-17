@@ -5,8 +5,8 @@ require "judoscale/resque/version"
 Gem::Specification.new do |spec|
   spec.name = "rails-autoscale-resque"
   spec.version = Judoscale::Resque::VERSION
-  spec.authors = ["Adam McCrea", "Carlos Antonio da Silva"]
-  spec.email = ["adam@adamlogic.com"]
+  spec.authors = ["Adam McCrea", "Carlos Antonio da Silva", "Jon Sullivan"]
+  spec.email = ["hello@judoscale.com"]
 
   spec.summary = "This gem provides Resque integration with the Judoscale autoscaling add-on for Heroku."
   spec.homepage = "https://judoscale.com"

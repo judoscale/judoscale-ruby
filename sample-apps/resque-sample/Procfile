@@ -1,3 +1,3 @@
 proxy: npx judoscale-adapter-proxy-server
-rails: rails server
-resque: DYNO=worker.1 COUNT=2 QUEUE=* bundle exec rake resque:workers
+rails: bundle exec rails server
+resque: DYNO=worker.1 COUNT=2 QUEUE=* RENDER_SERVICE_ID=srv-abcdefg RENDER_INSTANCE_ID=srv-abcdefg-1234-1234 RENDER_SERVICE_TYPE=worker bundle exec rake resque:workers
