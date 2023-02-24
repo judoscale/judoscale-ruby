@@ -96,11 +96,8 @@ module Judoscale
       test_logger = ::Logger.new(StringIO.new)
 
       Judoscale.configure do |config|
-        config.runtime_container = {
-          platform: :heroku,
-          service_name: "web",
-          instance: "3"
-        }
+        config.runtime_container = Config::RuntimeContainer.new(:heroku, "web", "3")
+
         config.api_base_url = "https://block.example.com"
         config.log_level = :info
         config.logger = test_logger

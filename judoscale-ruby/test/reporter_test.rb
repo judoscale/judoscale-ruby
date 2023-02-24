@@ -8,11 +8,7 @@ module Judoscale
   describe Reporter do
     before {
       Judoscale.configure do |config|
-        config.runtime_container = {
-          platform: :heroku,
-          service_name: "web",
-          instance: "1"
-        }
+        config.runtime_container = Config::RuntimeContainer.new(:heroku, "web", "1")
         config.api_base_url = "http://example.com/api/test-token"
       end
     }
@@ -90,11 +86,7 @@ module Judoscale
 
       it "initializes the reporter only with registered web metrics collectors on subsequent runtime containers to avoid redundant worker metrics" do
         Judoscale.configure do |config|
-          config.runtime_container = {
-            platform: :heroku,
-            service_name: "web",
-            instance: "2"
-          }
+          config.runtime_container = Config::RuntimeContainer.new(:heroku, "web", "2")
         end
 
         run_loop_stub = proc do |config, metrics_collectors|
@@ -109,11 +101,7 @@ module Judoscale
 
       it "initializes the reporter only with registered job metrics collectors on the first non-web heroku runtime containter to avoid unnecessary web collection attempts" do
         Judoscale.configure do |config|
-          config.runtime_container = {
-            platform: :heroku,
-            service_name: "worker",
-            instance: "1"
-          }
+          config.runtime_container = Config::RuntimeContainer.new(:heroku, "worker", "1")
         end
 
         run_loop_stub = proc do |config, metrics_collectors|
@@ -128,12 +116,7 @@ module Judoscale
 
       it "initializes the reporter only with registered job metrics collectors on every non-web Render runtime containter since we can't tell which instance is which on Render" do
         Judoscale.configure do |config|
-          config.runtime_container = {
-            platform: :render,
-            service_name: "srv-12345-12345",
-            instance: "abcd-abcd",
-            service_type: "worker"
-          }
+          config.runtime_container = Config::RuntimeContainer.new(:render, "srv-12345-12345", "abcd-abcd", "worker")
         end
 
         run_loop_stub = proc do |config, metrics_collectors|

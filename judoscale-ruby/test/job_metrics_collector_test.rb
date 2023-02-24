@@ -13,14 +13,9 @@ module Judoscale
           [:heroku, "custom_name", "1"],
           [:render, "srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web"],
           [:render, "srv-cfa1es5a49987h4vcvfg", "aaacff2165-m5wwr", "worker"]
-        ].each do |platform, service_name, instance, service_type|
+        ].each do |args|
           Judoscale.configure do |config|
-            config.runtime_container = {
-              platform: platform,
-              service_name: service_name,
-              instance: instance,
-              service_type: service_type
-            }
+            config.runtime_container = Config::RuntimeContainer.new(*args)
           end
 
           _(Test::TestJobMetricsCollector.collect?(Judoscale::Config.instance)).must_equal true
@@ -30,14 +25,9 @@ module Judoscale
           [:heroku, "web", "2"],
           [:heroku, "worker", "8"],
           [:heroku, "custom_name", "15"]
-        ].each do |platform, service_name, instance, service_type|
+        ].each do |args|
           Judoscale.configure do |config|
-            config.runtime_container = {
-              platform: platform,
-              service_name: service_name,
-              instance: instance,
-              service_type: service_type
-            }
+            config.runtime_container = Config::RuntimeContainer.new(*args)
           end
 
           _(Test::TestJobMetricsCollector.collect?(Judoscale::Config.instance)).must_equal false
@@ -46,11 +36,7 @@ module Judoscale
 
       it "skips collecting if the adapter has been explicitly disabled" do
         Judoscale.configure { |config|
-          config.runtime_container = {
-            platform: :heroku,
-            service_name: "web",
-            instance: "1"
-          }
+          config.runtime_container = Config::RuntimeContainer.new(:heroku, "web", "1")
           config.test_job_config.enabled = true
         }
 

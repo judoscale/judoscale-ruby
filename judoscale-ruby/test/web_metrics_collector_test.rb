@@ -15,14 +15,9 @@ module Judoscale
           [:heroku, "web", "101"],
           [:render, "srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web"],
           [:render, "srv-cfa1es5a49987h4vcvfg", "aaacff2165-m5wwr", "web"]
-        ].each do |platform, service_name, instance, service_type|
+        ].each do |args|
           Judoscale.configure do |config|
-            config.runtime_container = {
-              platform: platform,
-              service_name: service_name,
-              instance: instance,
-              service_type: service_type
-            }
+            config.runtime_container = Config::RuntimeContainer.new(*args)
           end
 
           _(WebMetricsCollector.collect?(Judoscale::Config.instance)).must_equal true
@@ -34,14 +29,9 @@ module Judoscale
           [:heroku, "periodic", "101"],
           [:render, "srv-baa1e15a49a87h4vcv22", "5497f74465-m5wwr", "worker"],
           [:render, "srv-aff1e14249124abch4vc", "abc18ce8fa-abb1w", "worker"]
-        ].each do |platform, service_name, instance, service_type|
+        ].each do |args|
           Judoscale.configure do |config|
-            config.runtime_container = {
-              platform: platform,
-              service_name: service_name,
-              instance: instance,
-              service_type: service_type
-            }
+            config.runtime_container = Config::RuntimeContainer.new(*args)
           end
 
           _(WebMetricsCollector.collect?(Judoscale::Config.instance)).must_equal false

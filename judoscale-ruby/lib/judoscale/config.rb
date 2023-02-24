@@ -9,7 +9,7 @@ module Judoscale
       # E.g.:
       # :heroku, "worker_fast", "3"
       # :render, "srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web" (or "worker", "pserv", "cron", "static")
-      def initialize(platform, service_name, instance, service_type)
+      def initialize(platform, service_name = nil, instance = nil, service_type = nil)
         @platform = platform
         @service_name = service_name
         @instance = instance
@@ -91,8 +91,9 @@ module Judoscale
       end
     end
 
-    attr_accessor :api_base_url, :report_interval_seconds, :max_request_size_bytes, :logger, :log_tag
-    attr_reader :runtime_container, :log_level
+    attr_accessor :api_base_url, :report_interval_seconds,
+      :max_request_size_bytes, :logger, :log_tag, :runtime_container
+    attr_reader :log_level
 
     def initialize
       reset
@@ -112,18 +113,14 @@ module Judoscale
 
       if ENV["RENDER"] == "true"
         instance = ENV["RENDER_INSTANCE_ID"].delete_prefix(ENV["RENDER_SERVICE_ID"]).delete_prefix("-")
-        self.runtime_container = {platform: :render, service_name: ENV["RENDER_SERVICE_ID"], instance: instance, service_type: ENV["RENDER_SERVICE_TYPE"]}
+        @runtime_container = RuntimeContainer.new :render, ENV["RENDER_SERVICE_ID"], instance, ENV["RENDER_SERVICE_TYPE"]
       elsif ENV["HEROKU"] == "true"
         service_name, instance = ENV["DYNO"].split "."
-        self.runtime_container = {platform: :heroku, service_name: service_name, instance: instance}
+        @runtime_container = RuntimeContainer.new :heroku, service_name, instance
       else
         # unsupported platform? Don't want to leave self.runtime_container nil though
-        self.runtime_container = {}
+        @runtime_container = RuntimeContainer.new :unknown
       end
-    end
-
-    def runtime_container=(opts)
-      @runtime_container = RuntimeContainer.new(opts[:platform], opts[:service_name], opts[:instance], opts[:service_type])
     end
 
     def log_level=(new_level)
