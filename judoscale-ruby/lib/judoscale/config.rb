@@ -102,7 +102,6 @@ module Judoscale
     end
 
     def reset
-      # Allow the API URL to be configured - needed for testing.
       @api_base_url = ENV["JUDOSCALE_URL"] || ENV["RAILS_AUTOSCALE_URL"]
       @log_tag = "Judoscale"
       @max_request_size_bytes = 100_000 # ignore request payloads over 100k since they skew the queue times
@@ -116,6 +115,7 @@ module Judoscale
       if ENV["RENDER"] == "true"
         instance = ENV["RENDER_INSTANCE_ID"].delete_prefix(ENV["RENDER_SERVICE_ID"]).delete_prefix("-")
         @current_runtime_container = RuntimeContainer.new :render, ENV["RENDER_SERVICE_ID"], instance, ENV["RENDER_SERVICE_TYPE"]
+        @api_base_url ||= "https://adapter.judoscale.com/api/#{ENV["RENDER_SERVICE_ID"]}"
       elsif ENV["HEROKU"] == "true"
         service_name, instance = ENV["DYNO"].split "."
         @current_runtime_container = RuntimeContainer.new :heroku, service_name, instance

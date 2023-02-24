@@ -38,13 +38,12 @@ module Judoscale
         "RENDER" => "true",
         "RENDER_SERVICE_ID" => "srv-cfa1es5a49987h4vcvfg",
         "RENDER_INSTANCE_ID" => "srv-cfa1es5a49987h4vcvfg-5497f74465-m5wwr",
-        "RENDER_SERVICE_TYPE" => "web",
-        "JUDOSCALE_URL" => "https://example.com"
+        "RENDER_SERVICE_TYPE" => "web"
       }
 
       use_env env do
         config = Config.instance
-        _(config.api_base_url).must_equal "https://example.com"
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/srv-cfa1es5a49987h4vcvfg"
         _(config.current_runtime_container.to_s).must_equal "srv-cfa1es5a49987h4vcvfg.5497f74465-m5wwr"
         _(config.log_level).must_be_nil
         _(config.logger).must_be_instance_of ::Logger
