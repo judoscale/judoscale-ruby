@@ -8,7 +8,7 @@ module Judoscale
     # NOTE: We collect metrics on all running web processes since they
     # all receive and handle requests independently
     def self.collect?(config)
-      config.runtime_container.web?
+      config.current_runtime_container.web?
     end
 
     def collect

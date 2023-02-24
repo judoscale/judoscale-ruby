@@ -17,7 +17,7 @@ module Judoscale
           [:render, "srv-cfa1es5a49987h4vcvfg", "aaacff2165-m5wwr", "web"]
         ].each do |args|
           Judoscale.configure do |config|
-            config.runtime_container = Config::RuntimeContainer.new(*args)
+            config.current_runtime_container = Config::RuntimeContainer.new(*args)
           end
 
           _(WebMetricsCollector.collect?(Judoscale::Config.instance)).must_equal true
@@ -31,7 +31,7 @@ module Judoscale
           [:render, "srv-aff1e14249124abch4vc", "abc18ce8fa-abb1w", "worker"]
         ].each do |args|
           Judoscale.configure do |config|
-            config.runtime_container = Config::RuntimeContainer.new(*args)
+            config.current_runtime_container = Config::RuntimeContainer.new(*args)
           end
 
           _(WebMetricsCollector.collect?(Judoscale::Config.instance)).must_equal false

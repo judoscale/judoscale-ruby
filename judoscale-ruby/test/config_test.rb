@@ -15,7 +15,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://example.com"
-        _(config.runtime_container.to_s).must_equal "web.1"
+        _(config.current_runtime_container.to_s).must_equal "web.1"
         _(config.log_level).must_be_nil
         _(config.logger).must_be_instance_of ::Logger
         _(config.max_request_size_bytes).must_equal 100_000
@@ -45,7 +45,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://example.com"
-        _(config.runtime_container.to_s).must_equal "srv-cfa1es5a49987h4vcvfg.5497f74465-m5wwr"
+        _(config.current_runtime_container.to_s).must_equal "srv-cfa1es5a49987h4vcvfg.5497f74465-m5wwr"
         _(config.log_level).must_be_nil
         _(config.logger).must_be_instance_of ::Logger
         _(config.max_request_size_bytes).must_equal 100_000
@@ -74,7 +74,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://custom.example.com"
-        _(config.runtime_container.to_s).must_equal "web.2"
+        _(config.current_runtime_container.to_s).must_equal "web.2"
         _(config.log_level).must_equal ::Logger::Severity::DEBUG
       end
     end
@@ -96,7 +96,7 @@ module Judoscale
       test_logger = ::Logger.new(StringIO.new)
 
       Judoscale.configure do |config|
-        config.runtime_container = Config::RuntimeContainer.new(:heroku, "web", "3")
+        config.current_runtime_container = Config::RuntimeContainer.new(:heroku, "web", "3")
 
         config.api_base_url = "https://block.example.com"
         config.log_level = :info
@@ -110,7 +110,7 @@ module Judoscale
 
       config = Config.instance
       _(config.api_base_url).must_equal "https://block.example.com"
-      _(config.runtime_container.to_s).must_equal "web.3"
+      _(config.current_runtime_container.to_s).must_equal "web.3"
       _(config.log_level).must_equal ::Logger::Severity::INFO
       _(config.logger).must_equal test_logger
       _(config.max_request_size_bytes).must_equal 50_000

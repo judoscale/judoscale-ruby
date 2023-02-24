@@ -28,10 +28,12 @@ module Judoscale
         @service_name == "web" || @service_type == "web"
       end
 
-      def first?
-        if on_heroku?
-          @instance.to_i == 1
-        end
+      # Since Heroku exposes ordinal dyno 'numbers', we can tell if the current
+      # instance is redundant (and thus skip collecting some metrics sometimes)
+      # We don't have a means of determining that on Render though — so every
+      # instance must be considered non-redundant
+      def redundant_instance?
+        on_heroku? && @instance.to_i != 1
       end
 
       def on_render?
@@ -92,7 +94,7 @@ module Judoscale
     end
 
     attr_accessor :api_base_url, :report_interval_seconds,
-      :max_request_size_bytes, :logger, :log_tag, :runtime_container
+      :max_request_size_bytes, :logger, :log_tag, :current_runtime_container
     attr_reader :log_level
 
     def initialize
@@ -113,13 +115,13 @@ module Judoscale
 
       if ENV["RENDER"] == "true"
         instance = ENV["RENDER_INSTANCE_ID"].delete_prefix(ENV["RENDER_SERVICE_ID"]).delete_prefix("-")
-        @runtime_container = RuntimeContainer.new :render, ENV["RENDER_SERVICE_ID"], instance, ENV["RENDER_SERVICE_TYPE"]
+        @current_runtime_container = RuntimeContainer.new :render, ENV["RENDER_SERVICE_ID"], instance, ENV["RENDER_SERVICE_TYPE"]
       elsif ENV["HEROKU"] == "true"
         service_name, instance = ENV["DYNO"].split "."
-        @runtime_container = RuntimeContainer.new :heroku, service_name, instance
+        @current_runtime_container = RuntimeContainer.new :heroku, service_name, instance
       else
-        # unsupported platform? Don't want to leave self.runtime_container nil though
-        @runtime_container = RuntimeContainer.new :unknown
+        # unsupported platform? Don't want to leave @current_runtime_container nil though
+        @current_runtime_container = RuntimeContainer.new :unknown
       end
     end
 
