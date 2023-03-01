@@ -8,11 +8,11 @@ module Judoscale
     describe ".collect?" do
       it "collects only from the first container in the formation (if we know that), to avoid redundant collection from multiple containers when possible" do
         [
-          [:heroku, "web", "1"],
-          [:heroku, "worker", "1"],
-          [:heroku, "custom_name", "1"],
-          [:render, "srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web"],
-          [:render, "srv-cfa1es5a49987h4vcvfg", "aaacff2165-m5wwr", "worker"]
+          ["web", "1"],
+          ["worker", "1"],
+          ["custom_name", "1"],
+          ["srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web"],
+          ["srv-cfa1es5a49987h4vcvfg", "aaacff2165-m5wwr", "worker"]
         ].each do |args|
           Judoscale.configure do |config|
             config.current_runtime_container = Config::RuntimeContainer.new(*args)
@@ -22,9 +22,9 @@ module Judoscale
         end
 
         [
-          [:heroku, "web", "2"],
-          [:heroku, "worker", "8"],
-          [:heroku, "custom_name", "15"]
+          ["web", "2"],
+          ["worker", "8"],
+          ["custom_name", "15"]
         ].each do |args|
           Judoscale.configure do |config|
             config.current_runtime_container = Config::RuntimeContainer.new(*args)
@@ -36,7 +36,7 @@ module Judoscale
 
       it "skips collecting if the adapter has been explicitly disabled" do
         Judoscale.configure { |config|
-          config.current_runtime_container = Config::RuntimeContainer.new(:heroku, "web", "1")
+          config.current_runtime_container = Config::RuntimeContainer.new("web", "1")
           config.test_job_config.enabled = true
         }
 

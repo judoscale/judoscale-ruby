@@ -7,7 +7,6 @@ module Judoscale
   describe Config do
     it "initializes the config from default heroku ENV vars and other sensible defaults" do
       env = {
-        "HEROKU" => "true",
         "DYNO" => "web.1",
         "JUDOSCALE_URL" => "https://example.com"
       }
@@ -35,7 +34,6 @@ module Judoscale
 
     it "initializes the config from default render ENV vars and other sensible defaults" do
       env = {
-        "RENDER" => "true",
         "RENDER_SERVICE_ID" => "srv-cfa1es5a49987h4vcvfg",
         "RENDER_INSTANCE_ID" => "srv-cfa1es5a49987h4vcvfg-5497f74465-m5wwr",
         "RENDER_SERVICE_TYPE" => "web"
@@ -64,7 +62,6 @@ module Judoscale
 
     it "allows ENV vars config overrides for the debug and URL" do
       env = {
-        "HEROKU" => "true",
         "DYNO" => "web.2",
         "JUDOSCALE_URL" => "https://custom.example.com",
         "RAILS_AUTOSCALE_LOG_LEVEL" => "debug"
@@ -95,7 +92,7 @@ module Judoscale
       test_logger = ::Logger.new(StringIO.new)
 
       Judoscale.configure do |config|
-        config.current_runtime_container = Config::RuntimeContainer.new(:heroku, "web", "3")
+        config.current_runtime_container = Config::RuntimeContainer.new("web", "3")
 
         config.api_base_url = "https://block.example.com"
         config.log_level = :info

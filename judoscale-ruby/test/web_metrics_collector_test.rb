@@ -10,11 +10,11 @@ module Judoscale
     describe ".collect?" do
       it "collects only from web containers in the formation, to avoid unnecessary collection on workers" do
         [
-          [:heroku, "web", "1"],
-          [:heroku, "web", "15"],
-          [:heroku, "web", "101"],
-          [:render, "srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web"],
-          [:render, "srv-cfa1es5a49987h4vcvfg", "aaacff2165-m5wwr", "web"]
+          ["web", "1"],
+          ["web", "15"],
+          ["web", "101"],
+          ["srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web"],
+          ["srv-cfa1es5a49987h4vcvfg", "aaacff2165-m5wwr", "web"]
         ].each do |args|
           Judoscale.configure do |config|
             config.current_runtime_container = Config::RuntimeContainer.new(*args)
@@ -24,11 +24,11 @@ module Judoscale
         end
 
         [
-          [:heroku, "worker", "1"],
-          [:heroku, "secondary", "15"],
-          [:heroku, "periodic", "101"],
-          [:render, "srv-baa1e15a49a87h4vcv22", "5497f74465-m5wwr", "worker"],
-          [:render, "srv-aff1e14249124abch4vc", "abc18ce8fa-abb1w", "worker"]
+          ["worker", "1"],
+          ["secondary", "15"],
+          ["periodic", "101"],
+          ["srv-baa1e15a49a87h4vcv22", "5497f74465-m5wwr", "worker"],
+          ["srv-aff1e14249124abch4vc", "abc18ce8fa-abb1w", "worker"]
         ].each do |args|
           Judoscale.configure do |config|
             config.current_runtime_container = Config::RuntimeContainer.new(*args)

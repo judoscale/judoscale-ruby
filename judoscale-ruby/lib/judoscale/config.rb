@@ -7,10 +7,9 @@ module Judoscale
   class Config
     class RuntimeContainer
       # E.g.:
-      # :heroku, "worker_fast", "3"
-      # :render, "srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web" (or "worker", "pserv", "cron", "static")
-      def initialize(platform, service_name = nil, instance = nil, service_type = nil)
-        @platform = platform
+      # (Heroku) => "worker_fast", "3"
+      # (Render) => "srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web" (or "worker", "pserv", "cron", "static")
+      def initialize(service_name = nil, instance = nil, service_type = nil)
         @service_name = service_name
         @instance = instance
         @service_type = service_type
@@ -33,15 +32,8 @@ module Judoscale
       # We don't have a means of determining that on Render though — so every
       # instance must be considered non-redundant
       def redundant_instance?
-        on_heroku? && @instance.to_i != 1
-      end
-
-      def on_render?
-        @platform == :render
-      end
-
-      def on_heroku?
-        @platform == :heroku
+        instance_is_number = Integer(@instance, exception: false)
+        instance_is_number && instance_is_number != 1
       end
     end
 
@@ -112,16 +104,16 @@ module Judoscale
 
       self.class.adapter_configs.each(&:reset)
 
-      if ENV["RENDER"] == "true"
+      if ENV["RENDER_INSTANCE_ID"]
         instance = ENV["RENDER_INSTANCE_ID"].delete_prefix(ENV["RENDER_SERVICE_ID"]).delete_prefix("-")
-        @current_runtime_container = RuntimeContainer.new :render, ENV["RENDER_SERVICE_ID"], instance, ENV["RENDER_SERVICE_TYPE"]
+        @current_runtime_container = RuntimeContainer.new ENV["RENDER_SERVICE_ID"], instance, ENV["RENDER_SERVICE_TYPE"]
         @api_base_url ||= "https://adapter.judoscale.com/api/#{ENV["RENDER_SERVICE_ID"]}"
-      elsif ENV["HEROKU"] == "true"
+      elsif ENV["DYNO"]
         service_name, instance = ENV["DYNO"].split "."
-        @current_runtime_container = RuntimeContainer.new :heroku, service_name, instance
+        @current_runtime_container = RuntimeContainer.new service_name, instance
       else
         # unsupported platform? Don't want to leave @current_runtime_container nil though
-        @current_runtime_container = RuntimeContainer.new :unknown
+        @current_runtime_container = RuntimeContainer.new
       end
     end
 

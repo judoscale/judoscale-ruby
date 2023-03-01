@@ -1,3 +1,10 @@
 proxy: npx judoscale-adapter-proxy-server
-rails: bundle exec rails server
-resque: DYNO=worker.1 COUNT=2 QUEUE=* RENDER_SERVICE_ID=srv-abcdefg RENDER_INSTANCE_ID=srv-abcdefg-1234-1234 RENDER_SERVICE_TYPE=worker bundle exec rake resque:workers
+
+# NOTE: Enable either the `heroku_` processes or the `render_` processes based
+# on which env you want to spoof locally.
+
+heroku_rails: DYNO=web.1 bundle exec rails server
+heroku_resque: DYNO=worker.1 COUNT=2 QUEUE=* bundle exec rake resque:workers
+
+# render_rails: RENDER_SERVICE_ID=srv-xyz RENDER_INSTANCE_ID=srv-xyz-1234 RENDER_SERVICE_TYPE=web bundle exec rails server
+# render_resque: RENDER_SERVICE_ID=srv-abc RENDER_INSTANCE_ID=srv-abc-1234 RENDER_SERVICE_TYPE=worker COUNT=2 QUEUE=* bundle exec rake resque:workers

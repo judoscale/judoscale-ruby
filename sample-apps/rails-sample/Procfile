@@ -1,2 +1,8 @@
 proxy: npx judoscale-adapter-proxy-server
-rails: rails server
+
+# NOTE: Enable either the `heroku_` processes or the `render_` processes based
+# on which env you want to spoof locally.
+
+heroku_rails: DYNO=web.1 bundle exec rails server
+
+# render_rails: RENDER_SERVICE_ID=srv-xyz RENDER_INSTANCE_ID=srv-xyz-1234 RENDER_SERVICE_TYPE=web bundle exec rails server

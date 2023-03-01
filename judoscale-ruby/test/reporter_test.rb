@@ -8,7 +8,7 @@ module Judoscale
   describe Reporter do
     before {
       Judoscale.configure do |config|
-        config.current_runtime_container = Config::RuntimeContainer.new(:heroku, "web", "1")
+        config.current_runtime_container = Config::RuntimeContainer.new("web", "1")
         config.api_base_url = "http://example.com/api/test-token"
       end
     }
@@ -86,7 +86,7 @@ module Judoscale
 
       it "initializes the reporter only with registered web metrics collectors on subsequent runtime containers to avoid redundant worker metrics" do
         Judoscale.configure do |config|
-          config.current_runtime_container = Config::RuntimeContainer.new(:heroku, "web", "2")
+          config.current_runtime_container = Config::RuntimeContainer.new("web", "2")
         end
 
         run_loop_stub = proc do |config, metrics_collectors|
@@ -101,7 +101,7 @@ module Judoscale
 
       it "initializes the reporter only with registered job metrics collectors on the first non-web heroku runtime containter to avoid unnecessary web collection attempts" do
         Judoscale.configure do |config|
-          config.current_runtime_container = Config::RuntimeContainer.new(:heroku, "worker", "1")
+          config.current_runtime_container = Config::RuntimeContainer.new("worker", "1")
         end
 
         run_loop_stub = proc do |config, metrics_collectors|
@@ -116,7 +116,7 @@ module Judoscale
 
       it "initializes the reporter only with registered job metrics collectors on every non-web Render runtime containter since we can't tell which instance is which on Render" do
         Judoscale.configure do |config|
-          config.current_runtime_container = Config::RuntimeContainer.new(:render, "srv-12345-12345", "abcd-abcd", "worker")
+          config.current_runtime_container = Config::RuntimeContainer.new("srv-12345-12345", "abcd-abcd", "worker")
         end
 
         run_loop_stub = proc do |config, metrics_collectors|

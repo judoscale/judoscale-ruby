@@ -1,9 +1,3 @@
 #!/bin/bash
 
-# NOTE: These two commands will run the rails server, one as though it's running
-# on Heroku, the other as though it's running on Render. Don't enable them both :)
-
-
-HEROKU=true DYNO=web.1 heroku local
-
-# RENDER=true RENDER_SERVICE_ID=srv-afa1es514aa87h4vfvfg RENDER_INSTANCE_ID=srv-afa1es514aa87h4vfvfg-5497f74465-a5aar RENDER_SERVICE_TYPE=web heroku local
+heroku local
