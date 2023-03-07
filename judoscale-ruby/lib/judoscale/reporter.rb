@@ -77,7 +77,7 @@ module Judoscale
 
     def report(config, metrics)
       report = Report.new(Judoscale.adapters, config, metrics)
-      logger.info "Reporting #{report.metrics.size} metrics"
+      logger.debug "Reporting #{report.metrics.size} metrics"
       result = AdapterApi.new(config).report_metrics(report.as_json)
 
       case result
