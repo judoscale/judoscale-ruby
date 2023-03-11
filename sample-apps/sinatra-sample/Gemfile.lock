@@ -18,7 +18,7 @@ GEM
     nio4r (2.5.8)
     puma (6.0.2)
       nio4r (~> 2.0)
-    rack (2.2.6.2)
+    rack (2.2.6.3)
     rack-protection (3.0.5)
       rack
     ruby2_keywords (0.0.5)
@@ -31,6 +31,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   judoscale-rack!
