@@ -57,7 +57,7 @@ describe Judoscale::AdapterApi do
       result = adapter_api.report_metrics(report_params)
 
       _(result).must_be_instance_of Judoscale::AdapterApi::FailureResponse
-      _(result.failure_message).must_equal "Timeout while obtaining TCP connection to railsautoscale.dev"
+      _(result.failure_message).must_equal "Could not connect to railsautoscale.dev: #<Net::OpenTimeout: execution expired>"
       assert_requested stub, times: 3
     end
 

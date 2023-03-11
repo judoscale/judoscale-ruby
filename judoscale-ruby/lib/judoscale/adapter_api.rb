@@ -10,6 +10,14 @@ module Judoscale
     include Logger
 
     SUCCESS = "success"
+    TRANSIENT_ERRORS = [
+      Errno::ECONNREFUSED,
+      Errno::ECONNRESET,
+      Net::OpenTimeout,
+      Net::ReadTimeout,
+      OpenSSL::SSL::SSLError,
+    ]
+
 
     def initialize(config)
       @config = config
@@ -43,14 +51,14 @@ module Judoscale
       when 200...300 then SuccessResponse.new(response.body)
       else FailureResponse.new([response.code, response.message].join(" - "))
       end
-    rescue Net::OpenTimeout
+    rescue *TRANSIENT_ERRORS => ex
       if attempts < 3
         # TCP timeouts happen sometimes, but they can usually be successfully retried in a moment
         sleep 0.01
         attempts += 1
         retry
       else
-        FailureResponse.new("Timeout while obtaining TCP connection to #{uri.host}")
+        FailureResponse.new("Could not connect to #{uri.host}: #{ex.inspect}")
       end
     end
 
