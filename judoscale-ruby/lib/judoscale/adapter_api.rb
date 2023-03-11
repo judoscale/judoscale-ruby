@@ -15,9 +15,8 @@ module Judoscale
       Errno::ECONNRESET,
       Net::OpenTimeout,
       Net::ReadTimeout,
-      OpenSSL::SSL::SSLError,
+      OpenSSL::SSL::SSLError
     ]
-
 
     def initialize(config)
       @config = config
