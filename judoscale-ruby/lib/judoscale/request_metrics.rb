@@ -2,7 +2,7 @@
 
 module Judoscale
   class RequestMetrics
-    MILLISECONDS_CUTOFF = Date.new(2000, 1, 1).to_time.to_i * 1000
+    MILLISECONDS_CUTOFF = Time.new(2000, 1, 1).to_i * 1000
     MICROSECONDS_CUTOFF = MILLISECONDS_CUTOFF * 1000
     NANOSECONDS_CUTOFF = MICROSECONDS_CUTOFF * 1000
 
