@@ -2,6 +2,10 @@
 
 module Judoscale
   class RequestMetrics
+    MILLISECONDS_CUTOFF = Time.new(2000, 1, 1).to_i * 1000
+    MICROSECONDS_CUTOFF = MILLISECONDS_CUTOFF * 1000
+    NANOSECONDS_CUTOFF = MICROSECONDS_CUTOFF * 1000
+
     attr_reader :request_id, :size, :network_time
 
     def initialize(env, config = Config.instance)
@@ -20,15 +24,23 @@ module Judoscale
       if @request_start_header
         # There are several variants of this header. We handle these:
         #   - whole milliseconds (Heroku)
+        #   - whole microseconds (???)
         #   - whole nanoseconds (Render)
         #   - fractional seconds (NGINX)
         #   - preceeding "t=" (NGINX)
         value = @request_start_header.gsub(/[^0-9.]/, "").to_f
 
-        case value
-        when 0..100_000_000_000 then Time.at(value)
-        when 100_000_000_000..100_000_000_000_000 then Time.at(value / 1000.0)
-        else Time.at(value / 1_000_000.0)
+        # `value` could be seconds, milliseconds, microseconds or nanoseconds.
+        # We use some arbitrary cutoffs to determine which one it is.
+
+        if value > NANOSECONDS_CUTOFF
+          Time.at(value / 1_000_000_000.0)
+        elsif value > MICROSECONDS_CUTOFF
+          Time.at(value / 1_000_000.0)
+        elsif value > MILLISECONDS_CUTOFF
+          Time.at(value / 1000.0)
+        else
+          Time.at(value)
         end
       end
     end
