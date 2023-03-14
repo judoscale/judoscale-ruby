@@ -27,8 +27,16 @@ module Judoscale
           ended_at = started_at + 1
           env["HTTP_X_REQUEST_START"] = "t=#{format "%.3f", started_at.to_f}"
 
-          # The queue time might return 999 or 1000 depending to time + float + format conversion,
-          # even when freezing time.
+          _(request.queue_time(ended_at)).must_be_within_delta 1000, 1
+        end
+      end
+
+      it "handles X_REQUEST_START in microseconds" do
+        freeze_time do
+          started_at = Time.now.utc - 2
+          ended_at = started_at + 1
+          env["HTTP_X_REQUEST_START"] = (started_at.to_f * 1_000_000).to_i.to_s
+
           _(request.queue_time(ended_at)).must_be_within_delta 1000, 1
         end
       end
@@ -37,10 +45,8 @@ module Judoscale
         freeze_time do
           started_at = Time.now.utc - 2
           ended_at = started_at + 1
-          env["HTTP_X_REQUEST_START"] = (started_at.to_f * 1_000_000).to_i.to_s
+          env["HTTP_X_REQUEST_START"] = (started_at.to_f * 1_000_000_000).to_i.to_s
 
-          # The queue time might return 999 or 1000 depending to time + float + format conversion,
-          # even when freezing time.
           _(request.queue_time(ended_at)).must_be_within_delta 1000, 1
         end
       end
