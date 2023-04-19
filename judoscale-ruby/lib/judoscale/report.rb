@@ -12,7 +12,7 @@ module Judoscale
 
     def as_json
       {
-        dyno: config.dyno,
+        container: config.current_runtime_container,
         pid: Process.pid,
         config: config.as_json,
         adapters: adapters.reduce({}) { |hash, adapter| hash.merge!(adapter.as_json) },

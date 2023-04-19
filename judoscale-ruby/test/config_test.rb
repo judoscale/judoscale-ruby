@@ -6,10 +6,43 @@ require "judoscale/config"
 module Judoscale
   describe Config do
     it "initializes the config from default heroku ENV vars and other sensible defaults" do
-      use_env "DYNO" => "web.1", "JUDOSCALE_URL" => "https://example.com" do
+      env = {
+        "DYNO" => "web.1",
+        "JUDOSCALE_URL" => "https://example.com"
+      }
+
+      use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://example.com"
-        _(config.dyno.to_s).must_equal "web.1"
+        _(config.current_runtime_container.to_s).must_equal "web.1"
+        _(config.log_level).must_be_nil
+        _(config.logger).must_be_instance_of ::Logger
+        _(config.max_request_size_bytes).must_equal 100_000
+        _(config.report_interval_seconds).must_equal 10
+
+        enabled_adapter_configs = Config.adapter_configs.select(&:enabled).map(&:identifier)
+        _(enabled_adapter_configs).must_equal %i[test_job_config]
+
+        enabled_adapter_configs.each do |adapter_name|
+          adapter_config = config.public_send(adapter_name)
+          _(adapter_config.enabled).must_equal true
+          _(adapter_config.max_queues).must_equal 20
+          _(adapter_config.track_busy_jobs).must_equal false
+        end
+      end
+    end
+
+    it "initializes the config from default render ENV vars and other sensible defaults" do
+      env = {
+        "RENDER_SERVICE_ID" => "srv-cfa1es5a49987h4vcvfg",
+        "RENDER_INSTANCE_ID" => "srv-cfa1es5a49987h4vcvfg-5497f74465-m5wwr",
+        "RENDER_SERVICE_TYPE" => "web"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/srv-cfa1es5a49987h4vcvfg"
+        _(config.current_runtime_container.to_s).must_equal "srv-cfa1es5a49987h4vcvfg.5497f74465-m5wwr"
         _(config.log_level).must_be_nil
         _(config.logger).must_be_instance_of ::Logger
         _(config.max_request_size_bytes).must_equal 100_000
@@ -37,7 +70,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://custom.example.com"
-        _(config.dyno.to_s).must_equal "web.2"
+        _(config.current_runtime_container.to_s).must_equal "web.2"
         _(config.log_level).must_equal ::Logger::Severity::DEBUG
       end
     end
@@ -59,7 +92,8 @@ module Judoscale
       test_logger = ::Logger.new(StringIO.new)
 
       Judoscale.configure do |config|
-        config.dyno = "web.3"
+        config.current_runtime_container = Config::RuntimeContainer.new("web", "3")
+
         config.api_base_url = "https://block.example.com"
         config.log_level = :info
         config.logger = test_logger
@@ -72,7 +106,7 @@ module Judoscale
 
       config = Config.instance
       _(config.api_base_url).must_equal "https://block.example.com"
-      _(config.dyno.to_s).must_equal "web.3"
+      _(config.current_runtime_container.to_s).must_equal "web.3"
       _(config.log_level).must_equal ::Logger::Severity::INFO
       _(config.logger).must_equal test_logger
       _(config.max_request_size_bytes).must_equal 50_000

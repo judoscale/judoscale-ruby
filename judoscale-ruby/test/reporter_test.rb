@@ -8,7 +8,7 @@ module Judoscale
   describe Reporter do
     before {
       Judoscale.configure do |config|
-        config.dyno = "web.1"
+        config.current_runtime_container = Config::RuntimeContainer.new("web", "1")
         config.api_base_url = "http://example.com/api/test-token"
       end
     }
@@ -72,7 +72,7 @@ module Judoscale
         assert_requested stub
       end
 
-      it "initializes the reporter with all registered web and job metrics collectors when on the first dyno" do
+      it "initializes the reporter with all registered web and job metrics collectors when on the first runtime container" do
         run_loop_stub = proc do |config, metrics_collectors|
           _(metrics_collectors.size).must_equal 2
           _(metrics_collectors[0]).must_be_instance_of Test::TestWebMetricsCollector
@@ -84,8 +84,10 @@ module Judoscale
         }
       end
 
-      it "initializes the reporter only with registered web metrics collectors on subsequent dynos to avoid redundant worker metrics" do
-        Judoscale.configure { |config| config.dyno = "web.2" }
+      it "initializes the reporter only with registered web metrics collectors on subsequent runtime containers to avoid redundant worker metrics" do
+        Judoscale.configure do |config|
+          config.current_runtime_container = Config::RuntimeContainer.new("web", "2")
+        end
 
         run_loop_stub = proc do |config, metrics_collectors|
           _(metrics_collectors.size).must_equal 1
@@ -97,8 +99,25 @@ module Judoscale
         }
       end
 
-      it "initializes the reporter only with registered job metrics collectors on the first non-web dyno to avoid unnecessary web collection attempts" do
-        Judoscale.configure { |config| config.dyno = "worker.1" }
+      it "initializes the reporter only with registered job metrics collectors on the first non-web heroku runtime containter to avoid unnecessary web collection attempts" do
+        Judoscale.configure do |config|
+          config.current_runtime_container = Config::RuntimeContainer.new("worker", "1")
+        end
+
+        run_loop_stub = proc do |config, metrics_collectors|
+          _(metrics_collectors.size).must_equal 1
+          _(metrics_collectors[0]).must_be_instance_of Test::TestJobMetricsCollector
+        end
+
+        Reporter.instance.stub(:run_loop, run_loop_stub) {
+          Reporter.instance.start!(Config.instance, Judoscale.adapters)
+        }
+      end
+
+      it "initializes the reporter only with registered job metrics collectors on every non-web Render runtime containter since we can't tell which instance is which on Render" do
+        Judoscale.configure do |config|
+          config.current_runtime_container = Config::RuntimeContainer.new("srv-12345-12345", "abcd-abcd", "worker")
+        end
 
         run_loop_stub = proc do |config, metrics_collectors|
           _(metrics_collectors.size).must_equal 1
@@ -138,7 +157,7 @@ module Judoscale
           Reporter.instance.start!(Config.instance, Judoscale.adapters.select { |a| a.metrics_collector.nil? })
         }
 
-        _(log_string).must_include "Reporter not started: no metrics need to be collected on this dyno"
+        _(log_string).must_include "Reporter not started: no metrics need to be collected in this process"
       end
 
       it "logs when the reporter starts successfully" do

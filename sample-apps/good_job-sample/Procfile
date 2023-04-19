@@ -1,4 +1,11 @@
 release: bundle exec rails db:migrate
 proxy: npx judoscale-adapter-proxy-server
-rails: rails server
-jobs: DYNO=worker.1 bundle exec good_job start --max-threads=1
+
+# NOTE: Enable either the `heroku_` processes or the `render_` processes based
+# on which env you want to spoof locally.
+
+heroku_rails: DYNO=web.1 bundle exec rails server
+heroku_good_job: DYNO=worker.1 bundle exec good_job start --max-threads=1
+
+# render_rails: RENDER_SERVICE_ID=srv-xyz RENDER_INSTANCE_ID=srv-xyz-1234 RENDER_SERVICE_TYPE=web bundle exec rails server
+# render_good_job: RENDER_SERVICE_ID=srv-abc RENDER_INSTANCE_ID=srv-abc-1234 RENDER_SERVICE_TYPE=worker bundle exec good_job start --max-threads=1
