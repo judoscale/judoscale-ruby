@@ -1,6 +1,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0](https://github.com/judoscale/judoscale-ruby/compare/v1.3.1...v1.4.0) (2023-04-19)
+
+
+### Features
+
+* 🤖✨ Add Render platform support ([#142](https://github.com/judoscale/judoscale-ruby/issues/142)) ([81f283e](https://github.com/judoscale/judoscale-ruby/commit/81f283eef5251974641341fcd3160c10c7955a05))
+* Handle request-start header in microseconds and nanoseconds ([#157](https://github.com/judoscale/judoscale-ruby/issues/157)) ([6c91e1d](https://github.com/judoscale/judoscale-ruby/commit/6c91e1d1d182caf3e7f6aeb923d255b60e17cc2f))
+
 ## [1.3.1](https://github.com/judoscale/judoscale-ruby/compare/v1.3.0...v1.3.1) (2023-03-11)
 
 
