@@ -1,13 +1,13 @@
 PATH
   remote: ../judoscale-ruby
   specs:
-    judoscale-ruby (1.4.0)
+    judoscale-ruby (1.4.1)
 
 PATH
   remote: .
   specs:
-    judoscale-que (1.4.0)
-      judoscale-ruby (= 1.4.0)
+    judoscale-que (1.4.1)
+      judoscale-ruby (= 1.4.1)
       que (>= 1.0)
 
 GEM
@@ -34,7 +34,7 @@ GEM
       reline (>= 0.3.0)
     minitest (5.17.0)
     pg (1.4.5)
-    que (2.2.0)
+    que (2.2.1)
     rake (13.0.6)
     reline (0.3.2)
       io-console (~> 0.5)

@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1](https://github.com/judoscale/judoscale-ruby/compare/v1.4.0...v1.4.1) (2023-05-04)
+
+
+### Bug Fixes
+
+* Don't start the reporter in a Rails console ([#172](https://github.com/judoscale/judoscale-ruby/issues/172)) ([c75770e](https://github.com/judoscale/judoscale-ruby/commit/c75770e1ec2bc9d0d30f3e143f41f28f8f294be7))
+
 ## [1.4.0](https://github.com/judoscale/judoscale-ruby/compare/v1.3.1...v1.4.0) (2023-04-19)
 
 
