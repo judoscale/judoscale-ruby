@@ -8,3 +8,4 @@
 /tmp/
 /log/
 /judoscale-*/Gemfile-*.lock
+*.gem

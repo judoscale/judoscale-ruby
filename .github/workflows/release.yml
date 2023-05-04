@@ -7,11 +7,39 @@ on:
 
 jobs:
   release-please:
+    name: Create a release
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - name: Release
+        id: release
+        uses: google-github-actions/release-please-action@v3
         with:
           release-type: ruby
           package-name: release-please-action
           bump-minor-pre-major: true
           version-file: "judoscale-ruby/lib/judoscale/version.rb"
+
+  publish:
+    name: Publish to Rubygems
+    needs: release-please
+    runs-on: ubuntu-latest
+    # if: ${{ needs.release-please.outputs.release_created == 'true' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.2
+          bundler-cache: true
+
+      - name: Publish gems
+        env:
+          RUBYGEMS_AUTH_TOKEN: ${{ secrets.RUBYGEMS_AUTH_TOKEN }}
+        # Args to `bin/release` are passed to `gem push`.
+        # `--key` is the name of the environment variable (not the value).
+        run: bin/release --key RUBYGEMS_AUTH_TOKEN
