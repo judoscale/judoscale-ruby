@@ -20,7 +20,7 @@ module Judoscale
       @pid = Process.pid
 
       if !config.api_base_url
-        logger.info "Reporter not started: JUDOSCALE_URL is not set"
+        logger.debug "Reporter not started: JUDOSCALE_URL is not set"
         return
       end
 
@@ -31,7 +31,7 @@ module Judoscale
       metrics_collectors_classes.compact!
 
       if metrics_collectors_classes.empty?
-        logger.info "Reporter not started: no metrics need to be collected in this process"
+        logger.debug "Reporter not started: no metrics need to be collected in this process"
         return
       end
 

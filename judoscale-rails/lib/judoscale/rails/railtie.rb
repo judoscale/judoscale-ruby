@@ -17,12 +17,16 @@ module Judoscale
       end
 
       initializer "Judoscale.request_middleware" do |app|
-        logger.info "Preparing request middleware"
+        logger.debug "Preparing request middleware"
         app.middleware.insert_before Rack::Runtime, RequestMiddleware
       end
 
       config.after_initialize do
-        Reporter.start
+        # Don't start the reporter in a Rails console.
+        # NOTE: This is untested because we initialize the Rails test app in test_helper.rb,
+        # so the reporter has already started before any of the tests run. You can manually
+        # test this by running `DYNO=web.1 rails c` in sample-apps/rails-sample.
+        Reporter.start unless defined?(::Rails::Console)
       end
     end
   end
