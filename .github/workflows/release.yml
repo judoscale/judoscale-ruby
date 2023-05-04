@@ -17,7 +17,6 @@ on:
       - completed
     branches:
       - main
-      - test-gh-actions
 
 jobs:
   release-please:
