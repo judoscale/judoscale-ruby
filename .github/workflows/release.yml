@@ -1,7 +1,20 @@
 name: release
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - "judoscale-delayed_job tests"
+      - "judoscale-good_job tests"
+      - "judoscale-que tests"
+      - "judoscale-rack tests"
+      - "judoscale-rails tests"
+      - "judoscale-resque tests"
+      - "judoscale-ruby tests"
+      - "judoscale-sidekiq tests"
+      - "rails-autoscale-core tests"
+      - "rails-autoscale-web tests"
+    types:
+      - completed
     branches:
       - main
 
@@ -25,7 +38,9 @@ jobs:
     name: Publish to Rubygems
     needs: release-please
     runs-on: ubuntu-latest
-    # if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      needs.release-please.outputs.release_created == 'true'
 
     steps:
       - name: Checkout code
@@ -35,7 +50,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2.2
-          bundler-cache: true
 
       - name: Publish gems
         env:
