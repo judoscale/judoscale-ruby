@@ -2,6 +2,6 @@
 
 module Judoscale
   module Rack
-    VERSION = "1.4.0"
+    VERSION = "1.4.1"
   end
 end
