@@ -38,7 +38,5 @@ jobs:
 
       - name: Publish gems
         env:
-          RUBYGEMS_AUTH_TOKEN: ${{ secrets.RUBYGEMS_AUTH_TOKEN }}
-        # Args to `bin/release` are passed to `gem push`.
-        # `--key` is the name of the environment variable (not the value).
-        run: bin/release --key RUBYGEMS_AUTH_TOKEN
+          GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_AUTH_TOKEN }}
+        run: bin/release
