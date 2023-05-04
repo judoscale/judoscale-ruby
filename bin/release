@@ -1,12 +1,26 @@
-#!/usr/bin/env bash
-set -euo pipefail
-IFS=$'\n\t'
+#!/usr/bin/env ruby
 
-for folder in ./judoscale-*; do
-    echo "-> $folder"
-    cd $folder
-    # can't call `rake release` since the tag was already created and pushed via GH Actions
-    bundle exec rake build release:publish
-    echo ""
-    cd ..
-done
+require 'rubygems'
+require 'fileutils'
+
+gem_push_options = ARGV
+
+Dir.glob('./judoscale-*').each do |folder|
+  puts
+  puts "-> #{folder}"
+  puts
+
+  Dir.chdir(folder) do
+    # We publish each gem as "judoscale-*" and "rails-autoscale-*"
+    Dir.glob('*.gemspec').each do |gemspec|
+      spec = Gem::Specification.load(gemspec)
+
+      # Build the gem
+      system "gem", "build", gemspec
+
+      # Push the gem
+      gem_file = "#{spec.name}-#{spec.version}.gem"
+      system "gem", "push", *gem_push_options, gem_file
+    end
+  end
+end
