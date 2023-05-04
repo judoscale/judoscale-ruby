@@ -24,7 +24,8 @@ module Judoscale
       config.after_initialize do
         # Don't start the reporter in a Rails console.
         # NOTE: This is untested because we initialize the Rails test app in test_helper.rb,
-        # so the reporter has already started before any of the tests run.
+        # so the reporter has already started before any of the tests run. You can manually
+        # test this by running `DYNO=web.1 rails c` in sample-apps/rails-sample.
         Reporter.start unless defined?(::Rails::Console)
       end
     end
