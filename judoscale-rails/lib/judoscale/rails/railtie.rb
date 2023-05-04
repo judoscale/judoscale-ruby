@@ -22,7 +22,10 @@ module Judoscale
       end
 
       config.after_initialize do
-        Reporter.start
+        # Don't start the reporter in a Rails console.
+        # NOTE: This is untested because we initialize the Rails test app in test_helper.rb,
+        # so the reporter has already started before any of the tests run.
+        Reporter.start unless defined?(::Rails::Console)
       end
     end
   end
