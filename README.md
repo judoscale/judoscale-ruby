@@ -64,6 +64,8 @@ gem "judoscale-que"
 
 For most apps, no additional configuration is needed. See the [configuration](#configuration) section below for all available options.
 
+Note that if you aren't using Rails, you'll need to start the reporter manually. See below.
+
 ## Worker-only apps
 
 If your app doesn't have a web process, you don't _have_ to include the "judoscale-rails" gem. If you omit it, you'll need to start the reporter manually:
@@ -72,6 +74,8 @@ If your app doesn't have a web process, you don't _have_ to include the "judosca
 require "judoscale/reporter"
 Judoscale::Reporter.start
 ```
+
+You should do this _after_ you've configured your job backend (such as `Sidekiq.configure_server`).
 
 ## What data is collected?
 
