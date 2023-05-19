@@ -101,7 +101,7 @@ Looking for the old `rails_autoscale_agent` docs? They're available on [this bra
 
 Since [Rails Autoscale rebranded to Judoscale](https://judoscale.com/docs/rails-autoscale), these gems have been dual-published as `judoscale-*` and `rails-autoscale-*`. There's no need to migrate if you don't want to.
 
-## Configuration
+## Optional Configuration
 
 All autoscaling configurations are handled in the Judoscale web UI, but there a few ways you can change the behavior of the adapters. Most apps won't need to change any of the adapter configurations, in which case an initializer is not required.
 
@@ -112,42 +112,42 @@ The sample code below uses "sidekiq" for worker adapter configuration, but the o
 Judoscale.configure do |config|
   # Provide a custom logger.
   # Default: (Rails logger, if available, or a basic Logger to STDOUT)
-  config.logger = MyLogger.new
+  # config.logger = MyLogger.new
 
   # Change the log_level for debugging or to quiet the logs.
   # See more in the "logging" section of the README.
   # Default: (defer to underlying logger)
-  config.log_level = :debug
+  # config.log_level = :debug
 
   # Interval between each metrics report to the Judoscale API.
   # Default: 10 seconds
-  config.report_interval_seconds = 5
+  # config.report_interval_seconds = 5
 
   # Worker metrics will only report up to 20 queues by default. If you have more than 20 queues,
   # you'll need to configure this setting for the specific worker adapter or reduce your number of queues.
   # Default: 20 queues
-  config.sidekiq.max_queues = 30
+  # config.sidekiq.max_queues = 30
 
   # Specify a list of queues to collect metrics from. This overrides the default behavior which
   # automatically detects the queues. If specified, anything not explicitly listed will be excluded.
   # When setting the list of queues, `queue_filter` is ignored, but `max_queues` is still respected.
   # Default: (queues detected automatically)
-  config.sidekiq.queues = %w[low default high]
+  # config.sidekiq.queues = %w[low default high]
 
   # Filter queues to collect metrics from with a custom proc.
   # Return a falsy value (`nil`/`false`) to exclude the queue, any other value will include it.
   # Default: (queues that look like a UUID are rejected)
-  config.sidekiq.queue_filter = ->(queue_name) { /custom/.match?(queue_name) }
+  # config.sidekiq.queue_filter = ->(queue_name) { /custom/.match?(queue_name) }
 
   # Enables reporting for active (busy) workers so that downscaling can be
   # suppressed.
   # See https://judoscale.com/docs/long-running-jobs/.
   # Default: false
-  config.sidekiq.track_busy_jobs = true
+  # config.sidekiq.track_busy_jobs = true
 
   # Disable reporting for this worker adapter.
   # Default: true
-  config.sidekiq.enabled = false
+  # config.sidekiq.enabled = false
 end
 ```
 
