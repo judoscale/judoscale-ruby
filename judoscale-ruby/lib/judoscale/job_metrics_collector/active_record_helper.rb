@@ -12,6 +12,12 @@ module Judoscale
         sql
       end
 
+      def self.table_exists?(table_name)
+        ::ActiveRecord::Base.connection.table_exists?(table_name)
+      rescue ActiveRecord::NoDatabaseError
+        false
+      end
+
       private
 
       def run_silently(&block)

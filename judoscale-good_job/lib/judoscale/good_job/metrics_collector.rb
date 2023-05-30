@@ -13,6 +13,10 @@ module Judoscale
         Judoscale::Config.instance.good_job
       end
 
+      def self.collect?(config)
+        super && ActiveRecordHelper.table_exists?("good_jobs")
+      end
+
       def initialize
         super
 
