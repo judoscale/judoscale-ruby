@@ -30,6 +30,10 @@ module Judoscale
         Judoscale::Config.instance.delayed_job
       end
 
+      def self.collect?(config)
+        super && ActiveRecordHelper.table_exists?("delayed_jobs")
+      end
+
       def collect
         metrics = []
         t = Time.now.utc

@@ -38,6 +38,10 @@ module Judoscale
         Judoscale::Config.instance.que
       end
 
+      def self.collect?(config)
+        super && ActiveRecordHelper.table_exists?("que_jobs")
+      end
+
       def collect
         metrics = []
         t = Time.now.utc
