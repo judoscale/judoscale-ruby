@@ -5,28 +5,14 @@ require "logger"
 
 module Judoscale
   class Config
-    class RuntimeContainer
-      # E.g.:
-      # (Heroku) => "worker_fast", "3"
-      # (Render) => "srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr"
-      def initialize(service_name = nil, instance = nil)
-        @service_name = service_name
-        @instance = instance
-      end
-
-      def to_s
-        # heroku: 'worker_fast.5'
-        # render: 'srv-cfa1es5a49987h4vcvfg.5497f74465-m5wwr'
-        "#{@service_name}.#{@instance}"
-      end
-
+    class RuntimeContainer < String
       # Since Heroku exposes ordinal dyno 'numbers', we can tell if the current
       # instance is redundant (and thus skip collecting some metrics sometimes)
       # We don't have a means of determining that on Render though — so every
       # instance must be considered non-redundant
       def redundant_instance?
-        instance_is_number = Integer(@instance, exception: false)
-        instance_is_number && instance_is_number != 1
+        instance_number = split(".")[1].to_i
+        instance_number > 1
       end
     end
 
@@ -99,11 +85,10 @@ module Judoscale
 
       if ENV["RENDER_INSTANCE_ID"]
         instance = ENV["RENDER_INSTANCE_ID"].delete_prefix(ENV["RENDER_SERVICE_ID"]).delete_prefix("-")
-        @current_runtime_container = RuntimeContainer.new ENV["RENDER_SERVICE_ID"], instance
+        @current_runtime_container = RuntimeContainer.new instance
         @api_base_url ||= "https://adapter.judoscale.com/api/#{ENV["RENDER_SERVICE_ID"]}"
       elsif ENV["DYNO"]
-        service_name, instance = ENV["DYNO"].split "."
-        @current_runtime_container = RuntimeContainer.new service_name, instance
+        @current_runtime_container = RuntimeContainer.new ENV["DYNO"]
       else
         # unsupported platform? Don't want to leave @current_runtime_container nil though
         @current_runtime_container = RuntimeContainer.new

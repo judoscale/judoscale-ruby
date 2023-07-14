@@ -7,27 +7,27 @@ module Judoscale
   describe JobMetricsCollector do
     describe ".collect?" do
       it "collects only from the first container in the formation (if we know that), to avoid redundant collection from multiple containers when possible" do
-        [
-          ["web", "1"],
-          ["worker", "1"],
-          ["custom_name", "1"],
-          ["srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr"],
-          ["srv-cfa1es5a49987h4vcvfg", "aaacff2165-m5wwr"]
-        ].each do |args|
+        %w[
+          web.1
+          worker.1
+          custom_name.1
+          5497f74465-m5wwr
+          aaacff2165-m5wwr
+        ].each do |container_id|
           Judoscale.configure do |config|
-            config.current_runtime_container = Config::RuntimeContainer.new(*args)
+            config.current_runtime_container = Config::RuntimeContainer.new(container_id)
           end
 
           _(Test::TestJobMetricsCollector.collect?(Judoscale::Config.instance)).must_equal true
         end
 
-        [
-          ["web", "2"],
-          ["worker", "8"],
-          ["custom_name", "15"]
-        ].each do |args|
+        %w[
+          web.2
+          worker.8
+          custom_name.15
+        ].each do |container_id|
           Judoscale.configure do |config|
-            config.current_runtime_container = Config::RuntimeContainer.new(*args)
+            config.current_runtime_container = Config::RuntimeContainer.new(container_id)
           end
 
           _(Test::TestJobMetricsCollector.collect?(Judoscale::Config.instance)).must_equal false
@@ -36,7 +36,7 @@ module Judoscale
 
       it "skips collecting if the adapter has been explicitly disabled" do
         Judoscale.configure { |config|
-          config.current_runtime_container = Config::RuntimeContainer.new("web", "1")
+          config.current_runtime_container = Config::RuntimeContainer.new("web.1")
           config.test_job_config.enabled = true
         }
 

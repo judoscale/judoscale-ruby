@@ -8,7 +8,7 @@ module Judoscale
   describe Reporter do
     before {
       Judoscale.configure do |config|
-        config.current_runtime_container = Config::RuntimeContainer.new("web", "1")
+        config.current_runtime_container = Config::RuntimeContainer.new("web.1")
         config.api_base_url = "http://example.com/api/test-token"
       end
     }
@@ -86,7 +86,7 @@ module Judoscale
 
       it "initializes the reporter only with registered web metrics collectors on subsequent runtime containers to avoid redundant worker metrics" do
         Judoscale.configure do |config|
-          config.current_runtime_container = Config::RuntimeContainer.new("web", "2")
+          config.current_runtime_container = Config::RuntimeContainer.new("web.2")
         end
 
         run_loop_stub = proc do |config, metrics_collectors|
