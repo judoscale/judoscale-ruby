@@ -8,23 +8,16 @@ module Judoscale
     class RuntimeContainer
       # E.g.:
       # (Heroku) => "worker_fast", "3"
-      # (Render) => "srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web" (or "worker", "pserv", "cron", "static")
-      def initialize(service_name = nil, instance = nil, service_type = nil)
+      # (Render) => "srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr"
+      def initialize(service_name = nil, instance = nil)
         @service_name = service_name
         @instance = instance
-        @service_type = service_type
       end
 
       def to_s
         # heroku: 'worker_fast.5'
         # render: 'srv-cfa1es5a49987h4vcvfg.5497f74465-m5wwr'
         "#{@service_name}.#{@instance}"
-      end
-
-      def web?
-        # NOTE: Heroku isolates 'web' as the required _name_ for its web process
-        # type, Render exposes the actual service type more explicitly
-        @service_name == "web" || @service_type == "web"
       end
 
       # Since Heroku exposes ordinal dyno 'numbers', we can tell if the current
@@ -106,7 +99,7 @@ module Judoscale
 
       if ENV["RENDER_INSTANCE_ID"]
         instance = ENV["RENDER_INSTANCE_ID"].delete_prefix(ENV["RENDER_SERVICE_ID"]).delete_prefix("-")
-        @current_runtime_container = RuntimeContainer.new ENV["RENDER_SERVICE_ID"], instance, ENV["RENDER_SERVICE_TYPE"]
+        @current_runtime_container = RuntimeContainer.new ENV["RENDER_SERVICE_ID"], instance
         @api_base_url ||= "https://adapter.judoscale.com/api/#{ENV["RENDER_SERVICE_ID"]}"
       elsif ENV["DYNO"]
         service_name, instance = ENV["DYNO"].split "."

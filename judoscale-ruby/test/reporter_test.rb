@@ -99,36 +99,6 @@ module Judoscale
         }
       end
 
-      it "initializes the reporter only with registered job metrics collectors on the first non-web heroku runtime containter to avoid unnecessary web collection attempts" do
-        Judoscale.configure do |config|
-          config.current_runtime_container = Config::RuntimeContainer.new("worker", "1")
-        end
-
-        run_loop_stub = proc do |config, metrics_collectors|
-          _(metrics_collectors.size).must_equal 1
-          _(metrics_collectors[0]).must_be_instance_of Test::TestJobMetricsCollector
-        end
-
-        Reporter.instance.stub(:run_loop, run_loop_stub) {
-          Reporter.instance.start!(Config.instance, Judoscale.adapters)
-        }
-      end
-
-      it "initializes the reporter only with registered job metrics collectors on every non-web Render runtime containter since we can't tell which instance is which on Render" do
-        Judoscale.configure do |config|
-          config.current_runtime_container = Config::RuntimeContainer.new("srv-12345-12345", "abcd-abcd", "worker")
-        end
-
-        run_loop_stub = proc do |config, metrics_collectors|
-          _(metrics_collectors.size).must_equal 1
-          _(metrics_collectors[0]).must_be_instance_of Test::TestJobMetricsCollector
-        end
-
-        Reporter.instance.stub(:run_loop, run_loop_stub) {
-          Reporter.instance.start!(Config.instance, Judoscale.adapters)
-        }
-      end
-
       it "respects explicitly disabled job adapters / metrics collectors via config when initializing the reporter" do
         Judoscale.configure { |config| config.test_job_config.enabled = false }
 

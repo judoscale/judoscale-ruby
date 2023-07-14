@@ -11,8 +11,8 @@ module Judoscale
           ["web", "1"],
           ["worker", "1"],
           ["custom_name", "1"],
-          ["srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr", "web"],
-          ["srv-cfa1es5a49987h4vcvfg", "aaacff2165-m5wwr", "worker"]
+          ["srv-cfa1es5a49987h4vcvfg", "5497f74465-m5wwr"],
+          ["srv-cfa1es5a49987h4vcvfg", "aaacff2165-m5wwr"]
         ].each do |args|
           Judoscale.configure do |config|
             config.current_runtime_container = Config::RuntimeContainer.new(*args)
