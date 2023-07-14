@@ -89,9 +89,11 @@ module Judoscale
         @api_base_url ||= "https://adapter.judoscale.com/api/#{ENV["RENDER_SERVICE_ID"]}"
       elsif ENV["DYNO"]
         @current_runtime_container = RuntimeContainer.new ENV["DYNO"]
+      elsif (metadata_uri = ENV["ECS_CONTAINER_METADATA_URI"])
+        @current_runtime_container = RuntimeContainer.new(metadata_uri.split("/").last)
       else
         # unsupported platform? Don't want to leave @current_runtime_container nil though
-        @current_runtime_container = RuntimeContainer.new
+        @current_runtime_container = RuntimeContainer.new("")
       end
     end
 
