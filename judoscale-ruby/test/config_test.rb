@@ -60,6 +60,20 @@ module Judoscale
       end
     end
 
+    it "initializes the config from default Amazon ECS ENV vars" do
+      # Users must set JUDOSCALE_URL manually when using Amazon ECS.
+      env = {
+        "ECS_CONTAINER_METADATA_URI" => "http://169.254.170.2/v3/a8880ee042bc4db3ba878dce65b769b6-2750272591",
+        "JUDOSCALE_URL" => "https://adapter.judoscale.com/api/1234567890"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
+        _(config.current_runtime_container).must_equal "a8880ee042bc4db3ba878dce65b769b6-2750272591"
+      end
+    end
+
     it "allows ENV vars config overrides for the debug and URL" do
       env = {
         "DYNO" => "web.2",
