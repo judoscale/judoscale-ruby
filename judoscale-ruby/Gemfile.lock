@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    judoscale-ruby (1.4.1)
+    judoscale-ruby (1.5.0)
 
 GEM
   remote: https://rubygems.org/

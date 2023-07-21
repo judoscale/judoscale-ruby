@@ -1,6 +1,18 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0](https://github.com/judoscale/judoscale-ruby/compare/v1.4.1...v1.5.0) (2023-07-17)
+
+
+### Features
+
+* Add support for Amazon ECS services ([#179](https://github.com/judoscale/judoscale-ruby/issues/179)) ([75de436](https://github.com/judoscale/judoscale-ruby/commit/75de436aba8df94cf5542378b192d22ecdd5f61d))
+
+
+### Bug Fixes
+
+* Fail silently when DB or table is missing ([#175](https://github.com/judoscale/judoscale-ruby/issues/175)) ([4e1cab6](https://github.com/judoscale/judoscale-ruby/commit/4e1cab6b33fe1af9d6c690f0c8f23db44593f1da))
+
 ## [1.4.1](https://github.com/judoscale/judoscale-ruby/compare/v1.4.0...v1.4.1) (2023-05-04)
 
 
