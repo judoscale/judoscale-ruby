@@ -86,7 +86,9 @@ module Judoscale
       if ENV["RENDER_INSTANCE_ID"]
         instance = ENV["RENDER_INSTANCE_ID"].delete_prefix(ENV["RENDER_SERVICE_ID"]).delete_prefix("-")
         @current_runtime_container = RuntimeContainer.new instance
-        @api_base_url ||= "https://adapter.judoscale.com/api/#{ENV["RENDER_SERVICE_ID"]}"
+        # Allow a custom API base URL to be set for Render (for testing)
+        @api_base_url ||= "https://adapter.judoscale.com/api"
+        @api_base_url += "/#{ENV["RENDER_SERVICE_ID"]}"
       elsif ENV["DYNO"]
         @current_runtime_container = RuntimeContainer.new ENV["DYNO"]
       elsif (metadata_uri = ENV["ECS_CONTAINER_METADATA_URI"])
