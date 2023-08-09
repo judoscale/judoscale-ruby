@@ -4,5 +4,6 @@ gemspec name: "judoscale-rails"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "minitest"
+gem "minitest-stub-const"
 gem "rake"
 gem "debug"

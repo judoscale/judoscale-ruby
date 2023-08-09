@@ -18,6 +18,7 @@ GEM
     irb (1.6.2)
       reline (>= 0.3.0)
     minitest (5.17.0)
+    minitest-stub-const (0.6)
     public_suffix (5.0.1)
     rake (13.0.6)
     reline (0.3.2)
@@ -39,6 +40,7 @@ DEPENDENCIES
   debug
   judoscale-ruby!
   minitest
+  minitest-stub-const
   rake (>= 12.3.3)
   webmock
 

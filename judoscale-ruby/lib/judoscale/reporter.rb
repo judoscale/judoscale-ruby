@@ -24,19 +24,21 @@ module Judoscale
         return
       end
 
-      enabled_adapters = adapters.select { |adapter|
+      enabled_adapters, skipped_adapters = adapters.partition { |adapter|
+        # judoscale-ruby adapter does not have a metrics collector
         adapter.metrics_collector.nil? || adapter.metrics_collector.collect?(config)
       }
       metrics_collectors_classes = enabled_adapters.map(&:metrics_collector)
       metrics_collectors_classes.compact!
 
       if metrics_collectors_classes.empty?
-        logger.debug "Reporter not started: no metrics need to be collected in this process"
+        adapters_msg = skipped_adapters.map(&:identifier).join(", ")
+        logger.debug "No metrics need to be collected (adapters: #{adapters_msg})"
         return
       end
 
       adapters_msg = enabled_adapters.map(&:identifier).join(", ")
-      logger.info "Reporter starting, will report every #{config.report_interval_seconds} seconds or so. Adapters: [#{adapters_msg}]"
+      logger.info "Reporter starting, will report every ~#{config.report_interval_seconds} seconds (adapters: #{adapters_msg})"
 
       metrics_collectors = metrics_collectors_classes.map(&:new)
 

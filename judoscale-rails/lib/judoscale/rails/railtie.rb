@@ -12,21 +12,28 @@ module Judoscale
     class Railtie < ::Rails::Railtie
       include Judoscale::Logger
 
+      def in_rails_console?
+        defined?(::Rails::Console)
+      end
+
+      def in_rake_task?
+        defined?(::Rake) && Rake.respond_to?(:application)
+      end
+
       initializer "Judoscale.logger" do |app|
         Config.instance.logger = ::Rails.logger
       end
 
       initializer "Judoscale.request_middleware" do |app|
-        logger.debug "Preparing request middleware"
-        app.middleware.insert_before Rack::Runtime, RequestMiddleware
+        if !in_rails_console? && !in_rake_task?
+          logger.debug "Preparing request middleware"
+          app.middleware.insert_before Rack::Runtime, RequestMiddleware
+        end
       end
 
       config.after_initialize do
-        # Don't start the reporter in a Rails console.
-        # NOTE: This is untested because we initialize the Rails test app in test_helper.rb,
-        # so the reporter has already started before any of the tests run. You can manually
-        # test this by running `DYNO=web.1 rails c` in sample-apps/rails-sample.
-        Reporter.start unless defined?(::Rails::Console)
+        # Don't suppress this in Rake tasks since some job adapters use Rake tasks to run jobs.
+        Reporter.start unless in_rails_console?
       end
     end
   end

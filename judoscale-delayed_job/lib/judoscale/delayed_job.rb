@@ -6,6 +6,8 @@ require "judoscale/delayed_job/version"
 require "judoscale/delayed_job/metrics_collector"
 require "delayed_job_active_record"
 
+Judoscale::Config.instance.allow_rake_tasks << /jobs:work/
+
 Judoscale.add_adapter :"judoscale-delayed_job",
   {
     adapter_version: Judoscale::DelayedJob::VERSION,
