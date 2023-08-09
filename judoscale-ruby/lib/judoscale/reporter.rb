@@ -20,7 +20,7 @@ module Judoscale
       @pid = Process.pid
 
       if !config.api_base_url
-        logger.debug "Reporter not started: JUDOSCALE_URL is not set"
+        logger.debug "Set api_base_url to enable metrics reporting"
         return
       end
 

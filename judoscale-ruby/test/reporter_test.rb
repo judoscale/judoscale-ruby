@@ -119,7 +119,7 @@ module Judoscale
           Reporter.instance.start!(Config.instance, Judoscale.adapters)
         }
 
-        _(log_string).must_include "Reporter not started: JUDOSCALE_URL is not set"
+        _(log_string).must_include "Set api_base_url to enable metrics reporting"
       end
 
       it "does not run the reporter thread when there are no metrics collectors" do
@@ -127,14 +127,14 @@ module Judoscale
           Reporter.instance.start!(Config.instance, Judoscale.adapters.select { |a| a.metrics_collector.nil? })
         }
 
-        _(log_string).must_include "Reporter not started: no metrics need to be collected in this process"
+        _(log_string).must_include "No metrics need to be collected"
       end
 
       it "logs when the reporter starts successfully" do
         stub_request(:post, "http://example.com/api/test-token/v3/reports")
         run_reporter_start_thread
 
-        _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [judoscale-ruby, test_web, test_job]"
+        _(log_string).must_include "Reporter starting, will report every ~10 seconds (adapters: judoscale-ruby, test_web, test_job)"
       end
 
       it "logs only enabled adapters" do
@@ -143,7 +143,7 @@ module Judoscale
         stub_request(:post, "http://example.com/api/test-token/v3/reports")
         run_reporter_start_thread
 
-        _(log_string).must_include "Reporter starting, will report every 10 seconds or so. Adapters: [judoscale-ruby, test_web]"
+        _(log_string).must_include "Reporter starting, will report every ~10 seconds (adapters: judoscale-ruby, test_web)"
       end
     end
 
