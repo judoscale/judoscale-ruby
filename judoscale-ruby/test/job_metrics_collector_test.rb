@@ -12,10 +12,14 @@ module Judoscale
         Object.stub_const :Rake, nil do
           _(WebMetricsCollector.collect?(Config.instance)).must_equal true
         end
+
+        Object.stub_const :Rake, RakeMock.new([]) do
+          _(WebMetricsCollector.collect?(Config.instance)).must_equal true
+        end
       end
 
       it "returns false when running in a rake task" do
-        Object.stub_const :Rake, RakeMock.new do
+        Object.stub_const :Rake, RakeMock.new(["foo"]) do
           _(WebMetricsCollector.collect?(Config.instance)).must_equal false
         end
       end

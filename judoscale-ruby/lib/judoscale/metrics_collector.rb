@@ -3,7 +3,7 @@
 module Judoscale
   class MetricsCollector
     def self.collect?(config)
-      in_rake_task = defined?(::Rake) && Rake.respond_to?(:application)
+      in_rake_task = defined?(::Rake) && Rake.respond_to?(:application) && Rake.application.top_level_tasks.any?
 
       !in_rake_task || in_whitelisted_rake_tasks?(config.allow_rake_tasks)
     end

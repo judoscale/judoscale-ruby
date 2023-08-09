@@ -1,5 +1,5 @@
 class RakeMock
-  def initialize(top_level_tasks = [])
+  def initialize(top_level_tasks)
     @top_level_tasks = top_level_tasks
   end
 
