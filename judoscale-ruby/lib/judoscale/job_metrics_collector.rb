@@ -9,7 +9,7 @@ module Judoscale
     include Judoscale::Logger
 
     def self.collect?(config)
-      !config.current_runtime_container.redundant_instance? && adapter_config.enabled
+      super && !config.current_runtime_container.redundant_instance? && adapter_config.enabled
     end
 
     def self.adapter_name

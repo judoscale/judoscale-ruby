@@ -1,11 +1,34 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "rake_mock"
+require "minitest/stub_const"
 require "judoscale/job_metrics_collector"
 
 module Judoscale
   describe JobMetricsCollector do
     describe ".collect?" do
+      it "returns true when not running in a rake task" do
+        Object.stub_const :Rake, nil do
+          _(WebMetricsCollector.collect?(Config.instance)).must_equal true
+        end
+      end
+
+      it "returns false when running in a rake task" do
+        Object.stub_const :Rake, RakeMock.new do
+          _(WebMetricsCollector.collect?(Config.instance)).must_equal false
+        end
+      end
+
+      it "returns true when running in a whitelisted rake task" do
+        config = Config.instance
+        config.allow_rake_tasks << /foo/
+
+        Object.stub_const :Rake, RakeMock.new(["bar", "foo"]) do
+          _(WebMetricsCollector.collect?(config)).must_equal true
+        end
+      end
+
       it "collects only from the first container in the formation (if we know that), to avoid redundant collection from multiple containers when possible" do
         %w[
           web.1

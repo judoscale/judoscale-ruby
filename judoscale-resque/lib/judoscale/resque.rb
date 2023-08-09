@@ -7,6 +7,8 @@ require "judoscale/resque/metrics_collector"
 require "resque"
 require "judoscale/resque/latency_extension"
 
+Judoscale::Config.instance.allow_rake_tasks << /resque:work/
+
 Judoscale.add_adapter :"judoscale-resque",
   {
     adapter_version: Judoscale::Resque::VERSION,
