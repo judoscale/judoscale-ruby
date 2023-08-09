@@ -17,7 +17,7 @@ module Judoscale
       end
 
       def in_rake_task?
-        defined?(::Rake) && Rake.respond_to?(:application)
+        defined?(::Rake) && Rake.respond_to?(:application) && Rake.application.top_level_tasks.any?
       end
 
       initializer "Judoscale.logger" do |app|
