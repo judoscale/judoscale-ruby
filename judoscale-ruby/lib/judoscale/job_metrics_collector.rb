@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "set"
 require "judoscale/metrics_collector"
 require "judoscale/logger"
 
