@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.2](https://github.com/judoscale/judoscale-ruby/compare/v1.5.1...v1.5.2) (2023-08-10)
+
+
+### Bug Fixes
+
+* Properly handle GoodJob configured with a non-primary database ([#182](https://github.com/judoscale/judoscale-ruby/issues/182)) ([ed0c6f4](https://github.com/judoscale/judoscale-ruby/commit/ed0c6f467106260cb9f4345bd62444c4196f1919))
+
 ## [1.5.1](https://github.com/judoscale/judoscale-ruby/compare/v1.5.0...v1.5.1) (2023-08-09)
 
 
