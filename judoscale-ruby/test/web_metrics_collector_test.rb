@@ -6,6 +6,12 @@ require "minitest/stub_const"
 require "judoscale/web_metrics_collector"
 require "judoscale/config"
 
+module RailsMock
+  module Command
+    class GenerateCommand; end
+  end
+end
+
 module Judoscale
   describe WebMetricsCollector do
     describe ".collect?" do
@@ -16,6 +22,12 @@ module Judoscale
 
         Object.stub_const :Rake, RakeMock.new([]) do
           _(WebMetricsCollector.collect?(Config.instance)).must_equal true
+        end
+      end
+
+      it "returns false when running in a generator" do
+        Object.stub_const :Rails, RailsMock do
+          _(WebMetricsCollector.collect?(Config.instance)).must_equal false
         end
       end
 
