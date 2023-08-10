@@ -1,0 +1,19 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # https://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  primary:
+    <<: *default
+    database: rails_autoscale_good_job_sample_primary
+    username: postgres
+    host: localhost
+  good_job_db:
+    <<: *default
+    database: rails_autoscale_good_job_sample_good_job_db
+    username: postgres
+    host: localhost
+    migrations_paths: db/good_job_db_migrate
