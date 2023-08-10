@@ -20,9 +20,18 @@ module Judoscale
     attr_reader :adapters
   end
 
-  Adapter = Struct.new(:identifier, :adapter_info, :metrics_collector) do
+  class Adapter < Struct.new(:identifier, :adapter_info, :metrics_collector)
+    attr_accessor :enabled
+
+    def initialize(identifier, adapter_info, metrics_collector)
+      super
+      self.enabled = false
+    end
+
     def as_json
-      {identifier => adapter_info}
+      {
+        identifier => adapter_info.merge(enabled: enabled)
+      }
     end
   end
 
