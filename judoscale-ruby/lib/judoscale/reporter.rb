@@ -25,13 +25,11 @@ module Judoscale
       end
 
       enabled_adapters, skipped_adapters = adapters.partition { |adapter|
-        # judoscale-ruby adapter does not have a metrics collector
-        if adapter.metrics_collector.nil? || adapter.metrics_collector.collect?(config)
+        if adapter.metrics_collector&.collect?(config)
           adapter.enabled = true
         end
       }
       metrics_collectors_classes = enabled_adapters.map(&:metrics_collector)
-      metrics_collectors_classes.compact!
       adapters_msg = enabled_adapters.map(&:identifier).concat(
         skipped_adapters.map { |adapter| "#{adapter.identifier}[skipped]" }
       ).join(", ")
