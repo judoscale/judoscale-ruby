@@ -12,6 +12,13 @@ module Judoscale
         sql
       end
 
+      # This will respect a multiple-database setup, unlike the `table_exists?` method.
+      def self.table_exists_for_model?(model)
+        model.connection.schema_cache.data_source_exists?(model.table_name)
+      rescue ActiveRecord::NoDatabaseError
+        false
+      end
+
       def self.table_exists?(table_name)
         ::ActiveRecord::Base.connection.table_exists?(table_name)
       rescue ActiveRecord::NoDatabaseError

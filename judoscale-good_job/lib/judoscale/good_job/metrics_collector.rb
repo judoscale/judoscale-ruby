@@ -14,7 +14,7 @@ module Judoscale
       end
 
       def self.collect?(config)
-        super && ActiveRecordHelper.table_exists?("good_jobs")
+        super && ActiveRecordHelper.table_exists_for_model?(::GoodJob::Execution)
       end
 
       def initialize

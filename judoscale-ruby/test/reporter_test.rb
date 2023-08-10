@@ -134,7 +134,7 @@ module Judoscale
         stub_request(:post, "http://example.com/api/test-token/v3/reports")
         run_reporter_start_thread
 
-        _(log_string).must_include "Reporter starting, will report every ~10 seconds (adapters: judoscale-ruby, test_web, test_job)"
+        _(log_string).must_include "Reporter starting, will report every ~10 seconds (adapters: test_web, test_job, judoscale-ruby[skipped])"
       end
 
       it "logs only enabled adapters" do
@@ -143,7 +143,7 @@ module Judoscale
         stub_request(:post, "http://example.com/api/test-token/v3/reports")
         run_reporter_start_thread
 
-        _(log_string).must_include "Reporter starting, will report every ~10 seconds (adapters: judoscale-ruby, test_web)"
+        _(log_string).must_include "Reporter starting, will report every ~10 seconds (adapters: test_web, judoscale-ruby[skipped], test_job[skipped])"
       end
     end
 
