@@ -3,7 +3,7 @@
 require "rails"
 require "rails/railtie"
 require "judoscale/request_middleware"
-require "judoscale/config"
+require "judoscale/rails/config"
 require "judoscale/logger"
 require "judoscale/reporter"
 
@@ -21,7 +21,7 @@ module Judoscale
       end
 
       initializer "Judoscale.logger" do |app|
-        Config.instance.logger = ::Rails.logger
+        ::Judoscale::Config.instance.logger = ::Rails.logger
       end
 
       initializer "Judoscale.request_middleware" do |app|
@@ -33,7 +33,7 @@ module Judoscale
 
       config.after_initialize do
         # Don't suppress this in Rake tasks since some job adapters use Rake tasks to run jobs.
-        Reporter.start unless in_rails_console?
+        Reporter.start if !in_rails_console? && ::Judoscale::Config.instance.start_reporter_after_initialize
       end
     end
   end
