@@ -97,10 +97,6 @@ The migration from `rails_autoscale_agent` to `judoscale-rails` (+ your job fram
 
 Looking for the old `rails_autoscale_agent` docs? They're available on [this branch](https://github.com/judoscale/judoscale-ruby/tree/rails_autoscale_agent).
 
-## Migrating from `judoscale-rails`
-
-Since [Rails Autoscale rebranded to Judoscale](https://judoscale.com/docs/rails-autoscale), these gems have been dual-published as `judoscale-*` and `rails-autoscale-*`. There's no need to migrate if you don't want to.
-
 ## Optional Configuration
 
 All autoscaling configurations are handled in the Judoscale web UI, but there a few ways you can change the behavior of the adapters. Most apps won't need to change any of the adapter configurations, in which case an initializer is not required.
