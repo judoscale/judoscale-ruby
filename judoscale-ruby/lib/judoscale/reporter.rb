@@ -19,7 +19,7 @@ module Judoscale
     def start!(config, adapters)
       @pid = Process.pid
 
-      if !config.api_base_url
+      if config.api_base_url.nil? || config.api_base_url.strip.empty?
         logger.debug "Set api_base_url to enable metrics reporting"
         return
       end

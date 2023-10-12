@@ -122,6 +122,16 @@ module Judoscale
         _(log_string).must_include "Set api_base_url to enable metrics reporting"
       end
 
+      it "does not run the reporter thread when the API url is a blank string" do
+        Judoscale.configure { |config| config.api_base_url = " " }
+
+        Reporter.instance.stub(:run_loop, ->(*) { raise "SHOULD NOT BE CALLED" }) {
+          Reporter.instance.start!(Config.instance, Judoscale.adapters)
+        }
+
+        _(log_string).must_include "Set api_base_url to enable metrics reporting"
+      end
+
       it "does not run the reporter thread when there are no metrics collectors" do
         Reporter.instance.stub(:run_loop, ->(*) { raise "SHOULD NOT BE CALLED" }) {
           Reporter.instance.start!(Config.instance, Judoscale.adapters.select { |a| a.metrics_collector.nil? })
