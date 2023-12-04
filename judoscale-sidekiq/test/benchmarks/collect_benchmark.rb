@@ -11,6 +11,9 @@ class CollectBenchmark < Minitest::Benchmark
   end
 
   def setup
+    # Override ConfigHelpers and log to STDOUT for debugging
+    Judoscale::Config.instance.reset
+
     @collector = Judoscale::Sidekiq::MetricsCollector.new
 
     # We need to prepare data for all benchmarks in advance. Each benchmark
