@@ -21,6 +21,9 @@ class CollectBenchmark < Minitest::Benchmark
     @collector = Judoscale::Sidekiq::MetricsCollector.new
     sidekiq_args = BATCH_SIZE.times.map { [] }
 
+    puts "Sidekiq verison: #{Sidekiq::VERSION}"
+    puts "Redis version: #{Sidekiq.redis(&:info)["redis_version"]}"
+
     # We need to prepare data for all benchmarks in advance. Each benchmark
     # will target an isolated Redis DB with a different number of jobs.
     self.class.bench_range.each do |n|
@@ -32,9 +35,9 @@ class CollectBenchmark < Minitest::Benchmark
 
           begin
             Sidekiq::Client.push_bulk "class" => "Foo", "args" => sidekiq_args
-          rescue RedisClient::CannotConnectError => e
+          rescue => e
             attempts += 1
-            puts "RESCUED batch #{i}, attempt #{attempts}: #{e.message}"
+            puts "RESCUED batch #{i}, attempt #{attempts}: #{e.class}, #{e.message}"
 
             # Give the connection a moment to recover
             sleep(1)
