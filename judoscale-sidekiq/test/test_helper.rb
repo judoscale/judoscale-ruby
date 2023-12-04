@@ -5,7 +5,6 @@ require "judoscale-sidekiq"
 
 require "minitest/autorun"
 require "minitest/spec"
-require "debug"
 
 module Judoscale::Test
 end

@@ -41,12 +41,15 @@ class CollectBenchmark < Minitest::Benchmark
     # n is in powers of 10, but we want to use a database number in the range 1-9
     db_number = Math.log10(n).to_i
 
-    # `new_redis_pool` will use the configuration from Sidekiq.default_configuration
-    Sidekiq.default_configuration.redis = {db: db_number}
-    pool = Sidekiq.default_configuration.new_redis_pool 10, "bench-#{n}"
-    Sidekiq::Client.via(pool, &block)
-
-    # For older (pre-capsule) versions of Sidekiq
-    # Sidekiq.redis = {db: db_number}
+    if Sidekiq.respond_to?(:default_configuration)
+      # `new_redis_pool` will use the configuration from Sidekiq.default_configuration
+      Sidekiq.default_configuration.redis = {db: db_number}
+      pool = Sidekiq.default_configuration.new_redis_pool 10, "bench-#{n}"
+      Sidekiq::Client.via(pool, &block)
+    else
+      # For older (pre-capsule) versions of Sidekiq
+      Sidekiq.redis = {db: db_number}
+      block.call
+    end
   end
 end
