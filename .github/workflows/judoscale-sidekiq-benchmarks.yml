@@ -25,7 +25,7 @@ jobs:
         exclude:
           # Recent redis-client requires Redis 6+
           - gemfile: Gemfile
-            ruby: "5.0"
+            redis: "5.0"
 
     runs-on: ubuntu-latest
 
