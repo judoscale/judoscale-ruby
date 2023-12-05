@@ -10,8 +10,9 @@ module Judoscale
     subject { Sidekiq::MetricsCollector.new }
 
     describe "#collect" do
-      before { ::Sidekiq.redis { |r| r.flushdb } }
-      after { subject.clear_queues }
+      after {
+        subject.clear_queues
+      }
 
       it "collects latency for each queue" do
         queues = [
@@ -38,22 +39,6 @@ module Judoscale
         _(metrics[3].identifier).must_equal :qd
       end
 
-      it "avoids redundant collections" do
-        queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
-
-        metrics = ::Sidekiq::Queue.stub(:all, queues) {
-          subject.collect
-        }
-
-        _(metrics.size).must_equal 2
-
-        metrics = ::Sidekiq::Queue.stub(:all, queues) {
-          subject.collect
-        }
-
-        _(metrics.size).must_equal 0
-      end
-
       it "always collects for known queues" do
         queues = []
 
@@ -66,7 +51,6 @@ module Judoscale
         queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
 
         metrics = ::Sidekiq::Queue.stub(:all, queues) {
-          subject.forget_recent_collection!
           subject.collect
         }
 
@@ -79,7 +63,6 @@ module Judoscale
 
         metrics = ::Sidekiq::Queue.stub(:all, queues) {
           ::Sidekiq::Queue.stub(:new, ->(queue_name) { new_queues.fetch(queue_name) }) {
-            subject.forget_recent_collection!
             subject.collect
           }
         }
