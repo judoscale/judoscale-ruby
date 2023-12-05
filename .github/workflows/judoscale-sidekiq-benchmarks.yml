@@ -1,0 +1,47 @@
+name: judoscale-sidekiq benchmarks
+defaults:
+  run:
+    working-directory: judoscale-sidekiq
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+jobs:
+  benchmarks:
+    strategy:
+      fail-fast: false
+      matrix:
+        gemfile:
+          - Gemfile
+          - Gemfile-sidekiq-5
+        ruby:
+          - "2.7"
+          - "3.1"
+        redis:
+          - "5.0"
+          - "6.0"
+          - "7.0"
+        exclude:
+          # Recent redis-client requires Redis 6+
+          - gemfile: Gemfile
+            redis: "5.0"
+
+    runs-on: ubuntu-latest
+
+    env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
+      BUNDLE_GEMFILE: ${{ github.workspace }}/judoscale-sidekiq/${{ matrix.gemfile }}
+
+    services:
+      redis:
+        image: redis:${{ matrix.redis }}
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true # runs bundle install and caches installed gems automatically
+      - run: bundle exec rake bench
