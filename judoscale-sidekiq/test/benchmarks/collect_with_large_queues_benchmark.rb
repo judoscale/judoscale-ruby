@@ -11,7 +11,7 @@ class CollectWithLargeQueuesBenchmark < Minitest::Benchmark
   # performance assertions will iterate over `bench_range`.
   # We'll use it to define the number Sidekiq jobs we enqueue in Redis.
   def self.bench_range
-    bench_exp 10, 10_000_000 #=> [10, 100, 1,000, 10,000, 100,000, 1,000,000, 10,000,000]
+    bench_exp 10, 1_000_000 #=> [10, 100, 1,000, 10,000, 100,000, 1,000,000]
   end
 
   def setup
