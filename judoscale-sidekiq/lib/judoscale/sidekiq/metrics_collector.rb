@@ -52,6 +52,11 @@ module Judoscale
         metrics
       end
 
+      def forget_recent_collection!
+        # We need this for testing
+        ::Sidekiq.redis { |r| r.del RECENT_KEY }
+      end
+
       private
 
       def collected_recently?
