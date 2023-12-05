@@ -4,7 +4,7 @@ require "test_helper"
 require "minitest/benchmark"
 require "judoscale/sidekiq/metrics_collector"
 
-class CollectBenchmark < Minitest::Benchmark
+class CollectWithLargeQueuesBenchmark < Minitest::Benchmark
   BATCH_SIZE = 1_000
   MAX_RETRIES = 3
 

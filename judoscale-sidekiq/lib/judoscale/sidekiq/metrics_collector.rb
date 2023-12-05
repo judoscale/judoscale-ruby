@@ -6,11 +6,17 @@ require "judoscale/metric"
 module Judoscale
   module Sidekiq
     class MetricsCollector < Judoscale::JobMetricsCollector
+      RECENT = 1 # second
+      RECENT_KEY = "judoscale:sidekiq:recent"
+      RECENT_VALUE = "1"
+
       def self.adapter_config
         Judoscale::Config.instance.sidekiq
       end
 
       def collect
+        return [] if collected_recently?
+
         metrics = []
         queues_by_name = ::Sidekiq::Queue.all.each_with_object({}) do |queue, obj|
           obj[queue.name] = queue
@@ -44,6 +50,13 @@ module Judoscale
 
         log_collection(metrics)
         metrics
+      end
+
+      private
+
+      def collected_recently?
+        # If another process has collected metrics recently, we don't need to.
+        !::Sidekiq.redis { |r| r.set RECENT_KEY, RECENT_VALUE, nx: true, ex: RECENT }
       end
     end
   end
