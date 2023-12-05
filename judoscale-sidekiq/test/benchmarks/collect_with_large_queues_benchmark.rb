@@ -36,6 +36,8 @@ class CollectWithLargeQueuesBenchmark < Minitest::Benchmark
           begin
             Sidekiq::Client.push_bulk "class" => "Foo", "args" => sidekiq_args
           rescue => e
+            # Redis sometimes fails locally when enqueueing a million jobs, so we need
+            # to retry a few times.
             attempts += 1
             puts "RESCUED batch #{i}, attempt #{attempts}: #{e.class}, #{e.message}"
 
