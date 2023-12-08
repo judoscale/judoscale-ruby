@@ -46,6 +46,15 @@ module Judoscale
             end
           end
 
+          it "respects the configured log_level even if the logger has been initialized" do
+            logger.debug "this triggers the logger initialization"
+
+            use_config log_level: :fatal do
+              logger.public_send method_name, "some message"
+              _(messages).wont_include "some message"
+            end
+          end
+
           it "respects the level set by the original logger when the log level config is not overridden" do
             original_logger.level = ::Logger::Severity::FATAL
 
