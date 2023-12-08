@@ -6,7 +6,11 @@ require "logger"
 module Judoscale
   module Logger
     def logger
-      @logger ||= LoggerProxy.new(Config.instance.logger, Config.instance.log_level)
+      if @logger && @logger.log_level == Config.instance.log_level
+        @logger
+      else
+        @logger = LoggerProxy.new(Config.instance.logger, Config.instance.log_level)
+      end
     end
   end
 
