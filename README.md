@@ -143,7 +143,7 @@ Judoscale.configure do |config|
 
   # Disable reporting for this worker adapter.
   # Default: true
-  # config.sidekiq.enabled = false
+  # config.sidekiq.enabled = !ENV.key?("DISABLE_JUDOSCALE_SIDEKIQ_REPORTING")
 end
 ```
 
