@@ -10,6 +10,7 @@ module Judoscale
       Judoscale.configure do |config|
         config.current_runtime_container = Config::RuntimeContainer.new("web.1")
         config.api_base_url = "http://example.com/api/test-token"
+        config.test_job_config.enabled = true
       end
     }
 
@@ -168,6 +169,19 @@ module Judoscale
           .with(body: JSON.generate(expected_body))
 
         Reporter.instance.run_metrics_collection Config.instance, [web_metrics_collector, job_metrics_collector]
+
+        assert_requested stub
+      end
+
+      it "only sends an empty (no metrics) report one time" do
+        metrics_collector = Test::TestEmptyMetricsCollector.new
+
+        expected_body = Report.new(Judoscale.adapters, Config.instance, metrics_collector.collect).as_json
+        stub = stub_request(:post, "http://example.com/api/test-token/v3/reports")
+          .with(body: JSON.generate(expected_body)).to_return({status: 200}).times(1)
+
+        Reporter.instance.run_metrics_collection Config.instance, [metrics_collector]
+        Reporter.instance.run_metrics_collection Config.instance, [metrics_collector]
 
         assert_requested stub
       end
