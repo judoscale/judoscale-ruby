@@ -74,17 +74,26 @@ module Judoscale
       @_thread&.terminate
       @_thread = nil
       @pid = nil
+      @reported = false
     end
 
     private
 
     def report(config, metrics)
+      # Make sure we report at least once, even if there are no metrics,
+      # so Judoscale knows the adapter is installed and running.
+      if @reported && metrics.empty?
+        logger.debug "No metrics to report - skipping"
+        return
+      end
+
       report = Report.new(Judoscale.adapters, config, metrics)
       logger.info "Reporting #{report.metrics.size} metrics"
       result = AdapterApi.new(config).report_metrics(report.as_json)
 
       case result
       when AdapterApi::SuccessResponse
+        @reported = true
         logger.debug "Reported successfully"
       when AdapterApi::FailureResponse
         logger.error "Reporter failed: #{result.failure_message}"
