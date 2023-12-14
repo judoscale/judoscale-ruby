@@ -14,6 +14,8 @@ module Judoscale
       end
     }
 
+    after { Reporter.instance.stop! }
+
     describe ".start" do
       it "initializes the reporter with the current configuration and loaded adapters" do
         reporter_mock = Minitest::Mock.new
@@ -40,10 +42,6 @@ module Judoscale
     end
 
     describe "#start!" do
-      after {
-        Reporter.instance.stop!
-      }
-
       def run_reporter_start_thread
         stub_reporter_loop {
           reporter_thread = Reporter.instance.start!(Config.instance, Judoscale.adapters)
