@@ -13,27 +13,36 @@ module Judoscale
       include Judoscale::Logger
 
       def in_rails_console?
-        defined?(::Rails::Console)
+        # This is gross, but we can't find a more reliable way to detect if we're in a Rails console.
+        caller.any? { |call| call.include?("console_command.rb") }
       end
 
-      def in_rake_task?
-        defined?(::Rake) && Rake.respond_to?(:application) && Rake.application.top_level_tasks.any?
+      def in_rake_task?(task_regex)
+        top_level_tasks = defined?(::Rake) && Rake.respond_to?(:application) && Rake.application.top_level_tasks || []
+        top_level_tasks.any? { |task| task_regex.match?(task) }
+      end
+
+      def judoscale_config
+        # Disambiguate from Judoscale::Rails::Config
+        ::Judoscale::Config.instance
       end
 
       initializer "Judoscale.logger" do |app|
-        ::Judoscale::Config.instance.logger = ::Rails.logger
+        judoscale_config.logger = ::Rails.logger
       end
 
       initializer "Judoscale.request_middleware" do |app|
-        if !in_rails_console? && !in_rake_task?
-          logger.debug "Preparing request middleware"
-          app.middleware.insert_before Rack::Runtime, RequestMiddleware
-        end
+        app.middleware.insert_before Rack::Runtime, RequestMiddleware
       end
 
       config.after_initialize do
-        # Don't suppress this in Rake tasks since some job adapters use Rake tasks to run jobs.
-        Reporter.start if !in_rails_console? && ::Judoscale::Config.instance.start_reporter_after_initialize
+        if in_rails_console?
+          logger.debug "No reporting since we're in a Rails console"
+        elsif in_rake_task?(/assets:|db:/)
+          logger.debug "No reporting since we're in a build process"
+        elsif judoscale_config.start_reporter_after_initialize
+          Reporter.start
+        end
       end
     end
   end
