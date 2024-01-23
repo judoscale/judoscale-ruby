@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "rake_mock"
 require "minitest/stub_const"
 require "judoscale/web_metrics_collector"
 require "judoscale/config"
