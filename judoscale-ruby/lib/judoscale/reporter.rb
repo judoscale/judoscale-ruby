@@ -25,9 +25,7 @@ module Judoscale
       end
 
       enabled_adapters, skipped_adapters = adapters.partition { |adapter|
-        if adapter.metrics_collector&.collect?(config)
-          adapter.enabled = true
-        end
+        adapter.metrics_collector&.collect?(config)
       }
       metrics_collectors_classes = enabled_adapters.map(&:metrics_collector)
       adapters_msg = enabled_adapters.map(&:identifier).concat(
