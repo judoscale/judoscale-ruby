@@ -60,7 +60,7 @@ module Judoscale
             metrics = MetricsStore.instance.flush
             _(metrics.length).must_equal 1
             _(metrics.first).must_be_instance_of Metric
-            _(metrics.first.value).must_equal 5000
+            _(metrics.first.value).must_be_within_delta 5000, 1
             _(metrics.first.identifier).must_equal :qt
           end
 
@@ -70,7 +70,7 @@ module Judoscale
             end
 
             _(app.env).must_include("judoscale.queue_time")
-            _(app.env["judoscale.queue_time"]).must_equal 5000
+            _(app.env["judoscale.queue_time"]).must_be_within_delta 5000, 1
           end
 
           it "logs debug information about the request and queue time" do

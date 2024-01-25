@@ -7,5 +7,5 @@
 /spec/reports/
 /tmp/
 /log/
-/judoscale-*/Gemfile-*.lock
+/judoscale-*/Gemfile*.lock
 *.gem
