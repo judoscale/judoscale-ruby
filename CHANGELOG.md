@@ -1,6 +1,21 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.3](https://github.com/judoscale/judoscale-ruby/compare/v1.5.2...v1.5.3) (2024-01-25)
+
+
+### Bug Fixes
+
+* Don't include "enabled" metadata with adapters ([#193](https://github.com/judoscale/judoscale-ruby/issues/193)) ([ff6a560](https://github.com/judoscale/judoscale-ruby/commit/ff6a560ff6479f0eba8c2907bec60383bcaed2de))
+* Fix console detection and improve rake detection ([#192](https://github.com/judoscale/judoscale-ruby/issues/192)) ([d6ae321](https://github.com/judoscale/judoscale-ruby/commit/d6ae32109b0793d5f36b31be07d471f1029a4a9a))
+* Gracefully fail when JUDOSCALE_URL is a blank string ([ca565d3](https://github.com/judoscale/judoscale-ruby/commit/ca565d377f6aed430a57a89862262e7bf254e8d1))
+* Use the configured log level even if the logger has already been initialized ([#190](https://github.com/judoscale/judoscale-ruby/issues/190)) ([7908eb2](https://github.com/judoscale/judoscale-ruby/commit/7908eb25914019b07328ee994f3763b60d4bde5b))
+
+
+### Performance Improvements
+
+* Skip reporting if there are no metrics ([#191](https://github.com/judoscale/judoscale-ruby/issues/191)) ([0835f53](https://github.com/judoscale/judoscale-ruby/commit/0835f53e615350f432be9d7e759c7ec8327cf829))
+
 ## [1.5.2](https://github.com/judoscale/judoscale-ruby/compare/v1.5.1...v1.5.2) (2023-08-10)
 
 
