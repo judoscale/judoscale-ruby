@@ -212,15 +212,15 @@ Reach out to help@judoscale.com if you run into any other problems.
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies across all the `judoscale-*` libraries, or install each one individually via `bundle install`. Then, run `bin/test` to run all the tests across all the libraries, or inside each `judoscale-*` library, run `bundle exec rake test`. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Run `bin/test` to run all the tests across all the libraries, or inside each `judoscale-*` library, run `bundle exec rake test`. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install each gem onto your local machine, run `bundle exec rake install`.
 
 To release a new version:
 
 1. Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary), and release branches will be created automatically via [Release Please](https://github.com/google-github-actions/release-please-action). This updates the changelog and the version of judoscale-ruby.
-1. On the release branch, run `bin/sync-versions` and `bin/setup` to update the versions of all gems and `Gemfile.lock` files.
-1. After merging the release branch, GitHub Actions will run `bin/release` to publish all gems to [Rubygems](https://rubygems.org).
+1. On the release branch, run `bin/sync-versions` to update the `VERSION` constants for each gem. Commit and push this change to the release branch.
+1. Merge the release branch, and GitHub Actions will run `bin/release` to publish all gems to [Rubygems](https://rubygems.org).
 
 _Note: We keep all gem versions in sync to provide a better developer experience for our users._
 
