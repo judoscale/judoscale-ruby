@@ -35,13 +35,13 @@ module ConfigHelpers
 
     options.each do |key, val|
       original_config[key] = config_instance.public_send(key)
-      config_instance.public_send "#{key}=", val
+      config_instance.public_send :"#{key}=", val
     end
 
     example.call
   ensure
     options.each do |key, val|
-      config_instance.public_send "#{key}=", original_config[key]
+      config_instance.public_send :"#{key}=", original_config[key]
     end
   end
 end

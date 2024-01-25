@@ -13,13 +13,6 @@ module Judoscale
       _(::Rails.application.config.middleware).must_include Judoscale::RequestMiddleware
     end
 
-    # TODO: Fix this test. It fails because Rails initialization has already run in test_helper.
-    # it "skips the request middleware if running Rails console" do
-    #   ::Rails.stub_const :Console, Module.new do
-    #     _(::Rails.application.config.middleware).wont_include Judoscale::RequestMiddleware
-    #   end
-    # end
-
     it "boots up a reporter automatically after the app/config is initialized" do
       _(::Judoscale::Reporter.instance).must_be :started?
     end
