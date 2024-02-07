@@ -21,7 +21,9 @@ module Judoscale
         if track_busy_jobs?
           busy_counts = Hash.new { |h, k| h[k] = 0 }
           ::Sidekiq::Workers.new.each do |pid, tid, work|
-            payload = work["payload"]
+            # Sidekiq 7.2 added a new Sidekiq::Work type; hash access is deprecated
+            payload = work.payload if work.respond_to?(:payload)
+            payload ||= work["payload"]
             # payload is unparsed in Sidekiq 7
             payload = JSON.parse(payload) if payload.is_a?(String)
             busy_counts[payload["queue"]] += 1

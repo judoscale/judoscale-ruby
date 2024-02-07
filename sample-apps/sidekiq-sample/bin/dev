@@ -1,3 +1,4 @@
 #!/bin/bash
 
-heroku local
+# Show all warnings: https://www.fastruby.io/blog/exploring-ruby-warnings.html
+RUBYOPT="-W2" heroku local
