@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.4](https://github.com/judoscale/judoscale-ruby/compare/v1.5.3...v1.5.4) (2024-02-07)
+
+
+### Bug Fixes
+
+* Fix deprecation warning in Sidekiq 7.2 ([9e22147](https://github.com/judoscale/judoscale-ruby/commit/9e22147343279361ff59782bd37d0dd5d666253d)), closes [#195](https://github.com/judoscale/judoscale-ruby/issues/195)
+
 ## [1.5.3](https://github.com/judoscale/judoscale-ruby/compare/v1.5.2...v1.5.3) (2024-01-25)
 
 
