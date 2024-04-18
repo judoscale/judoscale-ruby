@@ -3,6 +3,6 @@ source "https://rubygems.org"
 gemspec name: "judoscale-sidekiq"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
-gem "sidekiq", "~> 5.0"
+gem "sidekiq", "~> 6.0"
 gem "minitest"
 gem "rake"
