@@ -1,0 +1,9 @@
+source "https://rubygems.org"
+
+gemspec name: "judoscale-que"
+
+gem "judoscale-ruby", path: "../judoscale-ruby"
+gem "activerecord", "~> 7.0"
+gem "pg"
+gem "minitest"
+gem "rake"
