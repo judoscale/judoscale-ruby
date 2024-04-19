@@ -26,7 +26,7 @@ end
 
 require "active_record"
 
-DATABASE_NAME = "rails_autoscale_good_job_test"
+DATABASE_NAME = "judoscale_good_job_test"
 DATABASE_USERNAME = "postgres"
 DATABASE_URL = "postgres://#{DATABASE_USERNAME}:@localhost/#{DATABASE_NAME}"
 

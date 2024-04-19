@@ -8,7 +8,7 @@ require "minitest/spec"
 
 require "active_record"
 
-DATABASE_NAME = "rails_autoscale_delayed_job_test"
+DATABASE_NAME = "judoscale_delayed_job_test"
 DATABASE_USERNAME = "postgres"
 DATABASE_URL = "postgres://#{DATABASE_USERNAME}:@localhost/#{DATABASE_NAME}"
 
