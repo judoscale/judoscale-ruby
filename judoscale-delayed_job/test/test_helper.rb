@@ -33,6 +33,8 @@ ActiveRecord::Schema.define do
     table.string :queue                              # The name of the queue this job is in
     table.timestamps null: true
   end
+
+  add_index :delayed_jobs, [:priority, :run_at], name: "delayed_jobs_priority"
   # standard:enable all
 end
 
