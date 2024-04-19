@@ -28,7 +28,7 @@ Open https://judoscale-adapter-mock.requestcatcher.com in a browser. The sample 
 
 Run the app. As soon as it boots up, an initial request to the API is sent, and can be inspected via request catcher.
 
-Access http://localhost:5000 and continue to reload it to collect and report more request metrics.
+Access http://localhost:5006 and continue to reload it to collect and report more request metrics.
 
 ## Deploy this app to Heroku
 

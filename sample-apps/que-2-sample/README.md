@@ -30,7 +30,7 @@ Open https://judoscale-adapter-mock.requestcatcher.com in a browser. The sample 
 
 Run the app. Both the Rails and Que processes will send an initial request to the API once the app boots up. These can be inspected via request catcher.
 
-Open http://localhost:5000 to see how many jobs are waiting on each of the available queues, and to enqueue sample jobs on those queues that will be processed by the Que server slowly.
+Open http://localhost:5006 to see how many jobs are waiting on each of the available queues, and to enqueue sample jobs on those queues that will be processed by the Que server slowly.
 
 ## Deploy this app to Heroku
 
