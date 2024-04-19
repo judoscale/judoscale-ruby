@@ -24,7 +24,7 @@ Run `./bin/dev` to run the app in development mode. This will...
 
 ## How to use this sample app
 
-Open https://requestinspector.com/p/judoscale-ruby in a browser. The sample app is configured to use this endpoint as a mock for the Rails Autoscale Adapter API. This page will monitor all API requests sent from the adapter.
+Open https://requestinspector.com/p/judoscale-ruby in a browser. The sample app is configured to use this endpoint as a mock for the Judoscale Adapter API. This page will monitor all API requests sent from the adapter.
 
 Run the app. As soon as it boots up, an initial request to the API is sent, and can be inspected via request catcher.
 
@@ -42,7 +42,7 @@ heroku create
 git push heroku main
 ```
 
-To install Rails Autoscale:
+To install Judoscale:
 
 ```sh
 heroku addons:create judoscale
