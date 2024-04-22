@@ -5,7 +5,7 @@ require "judoscale/report"
 
 module Judoscale
   describe Resque do
-    it "adds itself as an adapter with information to be reported to the Rails Autoscale API" do
+    it "adds itself as an adapter with information to be reported to the Judoscale API" do
       adapter = Judoscale.adapters.detect { |adapter| adapter.identifier == :"judoscale-resque" }
       _(adapter).wont_be_nil
       _(adapter.metrics_collector).must_equal Judoscale::Resque::MetricsCollector

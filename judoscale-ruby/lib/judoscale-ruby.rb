@@ -4,7 +4,7 @@ require "judoscale/config"
 require "judoscale/version"
 
 module Judoscale
-  # Allows configuring Rails Autoscale through a block, usually defined during application initialization.
+  # Allows configuring Judoscale through a block, usually defined during application initialization.
   #
   # Example:
   #

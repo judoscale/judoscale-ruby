@@ -1,8 +1,10 @@
 source "https://rubygems.org"
 
-gemspec name: "judoscale-sidekiq"
+gemspec name: "judoscale-que"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
-gem "sidekiq", "~> 5.0"
+gem "que", "~> 1.0"
+gem "activerecord"
+gem "pg"
 gem "minitest"
 gem "rake"

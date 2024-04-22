@@ -14,20 +14,25 @@ jobs:
       matrix:
         gemfile:
           - Gemfile
+          - Gemfile-rails-7-0
           - Gemfile-rails-6-1
         ruby:
           - "2.6"
           - "2.7"
           - "3.0"
           - "3.1"
+          - "3.2"
+          - "3.3"
         exclude:
           - gemfile: Gemfile
+            ruby: "2.6"
+          - gemfile: Gemfile-rails-7-0
             ruby: "2.6"
     runs-on: ubuntu-latest
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
       BUNDLE_GEMFILE: ${{ github.workspace }}/judoscale-rails/${{ matrix.gemfile }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}

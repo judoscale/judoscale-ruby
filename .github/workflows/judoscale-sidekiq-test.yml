@@ -14,12 +14,15 @@ jobs:
       matrix:
         gemfile:
           - Gemfile
+          - Gemfile-sidekiq-6
           - Gemfile-sidekiq-5
         ruby:
           - "2.6"
           - "2.7"
           - "3.0"
           - "3.1"
+          - "3.2"
+          - "3.3"
         exclude:
           # Sidekiq 7.0 requires Ruby 2.7
           - gemfile: Gemfile
@@ -28,7 +31,7 @@ jobs:
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
       BUNDLE_GEMFILE: ${{ github.workspace }}/judoscale-sidekiq/${{ matrix.gemfile }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}

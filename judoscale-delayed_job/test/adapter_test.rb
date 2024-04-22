@@ -5,7 +5,7 @@ require "judoscale/report"
 
 module Judoscale
   describe DelayedJob do
-    it "adds itself as an adapter with information to be reported to the Rails Autoscale API" do
+    it "adds itself as an adapter with information to be reported to the Judoscale API" do
       adapter = Judoscale.adapters.detect { |adapter| adapter.identifier == :"judoscale-delayed_job" }
       _(adapter).wont_be_nil
       _(adapter.metrics_collector).must_equal Judoscale::DelayedJob::MetricsCollector
