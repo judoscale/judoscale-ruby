@@ -1,0 +1,9 @@
+source "https://rubygems.org"
+
+gemspec name: "judoscale-solid_queue"
+
+gem "judoscale-ruby", path: "../judoscale-ruby"
+gem "activerecord"
+gem "pg"
+gem "minitest"
+gem "rake"
