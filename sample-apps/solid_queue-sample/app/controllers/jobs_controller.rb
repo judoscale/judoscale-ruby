@@ -3,8 +3,7 @@ class JobsController < ApplicationController
 
   def index
     @available_queues = QUEUES.dup
-    @queues = []
-    # @queues = Delayed::Backend::ActiveRecord::Job.group(:queue).count
+    @queues = ::SolidQueue::ReadyExecution.group(:queue_name).count
   end
 
   def create

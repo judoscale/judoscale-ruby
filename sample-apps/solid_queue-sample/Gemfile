@@ -13,6 +13,11 @@ gem "puma", "~> 6.0"
 # but we want to test against the local dev versions of them, not the released gems.
 gem "judoscale-ruby", path: "../../judoscale-ruby"
 gem "judoscale-rails", path: "../../judoscale-rails"
-# gem "judoscale-solid_queue", path: "../../judoscale-solid_queue"
+gem "judoscale-solid_queue", path: "../../judoscale-solid_queue"
 
-# gem "solid_queue", "~> 0.3"
+gem "solid_queue", "~> 0.3"
+# Install mission control to inspect jobs in the web UI.
+# (A `/jobs` route is added via config/routes.rb if `MissionControl` is detected.)
+# Note: mission control requires assets, so we also need sprockets-rails here for now.
+# gem "mission_control-jobs"
+# gem "sprockets-rails"

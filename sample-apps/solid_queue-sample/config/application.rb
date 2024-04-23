@@ -44,6 +44,6 @@ module SolidQueueSample
     logger.formatter = config.log_formatter
     config.logger = ActiveSupport::TaggedLogging.new(logger)
 
-    # config.active_job.queue_adapter = :solid_queue
+    config.active_job.queue_adapter = :solid_queue
   end
 end

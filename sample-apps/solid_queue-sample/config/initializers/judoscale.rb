@@ -5,5 +5,5 @@ Judoscale.configure do |config|
   config.api_base_url = ENV["JUDOSCALE_URL"] || "https://judoscale-adapter-mock.requestcatcher.com"
 
   # Enable busy jobs tracking for testing with the sample app.
-  # config.solid_queue.track_busy_jobs = true
+  config.solid_queue.track_busy_jobs = true
 end

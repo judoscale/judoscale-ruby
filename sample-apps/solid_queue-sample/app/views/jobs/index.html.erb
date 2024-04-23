@@ -9,7 +9,7 @@
 <p>
   Enqueue test jobs using the form below.
   They will be slowly processed by SolidQueue, while Judoscale collects and reports available queue metrics.
-  <%= link_to "SolidQueue / MissionControl Dashboard ↗", "/mission_control", target: "_blank" %>.
+  <%= link_to "SolidQueue / MissionControl Dashboard ↗", "/jobs", target: "_blank" if defined?(MissionControl) %>.
 </p>
 
 <h2>SolidQueue Queues</h2>
