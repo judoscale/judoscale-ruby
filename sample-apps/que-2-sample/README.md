@@ -48,6 +48,6 @@ To install Judoscale:
 
 ```sh
 # scale up a worker dyno before doing this so Judoscale picks it up
-heroku ps:scale que=1
+heroku ps:scale heroku_que=1
 heroku addons:create judoscale
 ```

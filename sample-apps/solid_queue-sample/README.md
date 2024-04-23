@@ -7,7 +7,6 @@ This is a minimal Rails app to test the judoscale-solid_queue gem.
 - Ruby
 - Node
 - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
-- Redis
 
 ## Set up the app
 
@@ -48,6 +47,6 @@ To install Judoscale:
 
 ```sh
 # scale up a worker dyno before doing this so Judoscale picks it up
-heroku ps:scale dj=1
+heroku ps:scale heroku_solid_queue=1
 heroku addons:create judoscale
 ```
