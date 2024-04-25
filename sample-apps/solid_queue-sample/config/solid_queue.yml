@@ -8,8 +8,10 @@
 #       processes: 1
 #       polling_interval: 0.1
 #
-# development:
-#  <<: *default
+development:
+  workers:
+    - queues: [high, default, low]
+      threads: 3
 #
 # test:
 #  <<: *default
