@@ -6,6 +6,7 @@
 [![Build Status: judoscale-good_job](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-good_job-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-que](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-que-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-sidekiq](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-sidekiq-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: judoscale-solid_queue](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-solid_queue-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 
 These gems works together with the [Judoscale](https://judoscale.com) Heroku add-on to scale your web and worker dynos automatically. They gather a minimal set of metrics for each request and job queue, and periodically posts this data asynchronously to the Judoscale API.
 
@@ -27,6 +28,7 @@ gem "judoscale-rails"
 # gem "judoscale-delayed_job"
 # gem "judoscale-good_job"
 # gem "judoscale-que"
+# gem "judoscale-solid_queue"
 ```
 
 _If you're using a background job queue, make sure you include the corresponding judoscale-\* gem as well._
@@ -52,7 +54,7 @@ The middleware will start the async reporter when it processes the first request
 
 ## Worker adapters
 
-Judoscale will autoscale your worker dynos! Four job backends are supported: Sidekiq, Delayed Job, Good Job, and Que. Be sure to install the gem specific to your job backend:
+Judoscale will autoscale your worker dynos! The following job backends are supported: Sidekiq, Resque, Delayed Job, Good Job, Que, and Solid Queue. Be sure to install the gem specific to your job backend:
 
 ```ruby
 gem "judoscale-sidekiq"
@@ -60,6 +62,7 @@ gem "judoscale-resque"
 gem "judoscale-delayed_job"
 gem "judoscale-good_job"
 gem "judoscale-que"
+gem "judoscale-solid_queue"
 ```
 
 For most apps, no additional configuration is needed. See the [configuration](#configuration) section below for all available options.

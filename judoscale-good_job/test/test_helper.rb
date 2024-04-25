@@ -10,6 +10,7 @@ ENV["RACK_ENV"] ||= "test"
 require "action_controller"
 
 class TestRailsApp < Rails::Application
+  config.load_defaults "#{Rails::VERSION::MAJOR}.#{Rails::VERSION::MINOR}"
   config.secret_key_base = "test-secret"
   config.eager_load = false
   config.logger = ::Logger.new(StringIO.new, progname: "rails-app")
