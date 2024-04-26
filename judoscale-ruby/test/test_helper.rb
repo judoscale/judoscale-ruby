@@ -27,12 +27,6 @@ module Judoscale
         [Metric.new(:qt, 1, Time.now)]
       end
     end
-
-    class TestEmptyMetricsCollector < Judoscale::WebMetricsCollector
-      def collect
-        []
-      end
-    end
   end
 
   add_adapter :test_web, {}, metrics_collector: Test::TestWebMetricsCollector
