@@ -1,6 +1,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0](https://github.com/judoscale/judoscale-ruby/compare/v1.5.4...v1.6.0) (2024-04-26)
+
+
+### Features
+
+* Solid Queue Integration ([#199](https://github.com/judoscale/judoscale-ruby/issues/199)) ([30d95b9](https://github.com/judoscale/judoscale-ruby/commit/30d95b932990e2b59cb5283b692f6f3549c9b567))
+
+
+### Bug Fixes
+
+* Always send reports, even with no metrics ([e40e43f](https://github.com/judoscale/judoscale-ruby/commit/e40e43f133d591cc7e4b3fadf8a0968a9d318ff9))
+* GoodJob dependency on Rails Autoscale version of the gem ([#198](https://github.com/judoscale/judoscale-ruby/issues/198)) ([adccecc](https://github.com/judoscale/judoscale-ruby/commit/adcceccb54269d3ee10e141e1a24ff7edd9c8574))
+
 ## [1.5.4](https://github.com/judoscale/judoscale-ruby/compare/v1.5.3...v1.5.4) (2024-02-07)
 
 
