@@ -1,21 +1,21 @@
 PATH
   remote: ../../judoscale-good_job
   specs:
-    judoscale-good_job (1.5.4)
+    judoscale-good_job (1.6.0)
       good_job (>= 3.0)
-      judoscale-ruby (= 1.5.4)
+      judoscale-ruby (= 1.6.0)
 
 PATH
   remote: ../../judoscale-rails
   specs:
-    judoscale-rails (1.5.4)
-      judoscale-ruby (= 1.5.4)
+    judoscale-rails (1.6.0)
+      judoscale-ruby (= 1.6.0)
       railties
 
 PATH
   remote: ../../judoscale-ruby
   specs:
-    judoscale-ruby (1.5.4)
+    judoscale-ruby (1.6.0)
 
 GEM
   remote: https://rubygems.org/
@@ -52,12 +52,12 @@ GEM
     erubi (1.12.0)
     et-orbi (1.2.11)
       tzinfo
-    fugit (1.10.1)
-      et-orbi (~> 1, >= 1.2.7)
+    fugit (1.11.0)
+      et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    good_job (3.27.4)
+    good_job (3.28.2)
       activejob (>= 6.0.0)
       activerecord (>= 6.0.0)
       concurrent-ruby (>= 1.0.2)
