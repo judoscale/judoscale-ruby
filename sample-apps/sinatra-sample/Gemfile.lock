@@ -1,14 +1,14 @@
 PATH
   remote: ../../judoscale-rack
   specs:
-    judoscale-rack (1.5.4)
-      judoscale-ruby (= 1.5.4)
+    judoscale-rack (1.6.0)
+      judoscale-ruby (= 1.6.0)
       rack
 
 PATH
   remote: ../../judoscale-ruby
   specs:
-    judoscale-ruby (1.5.4)
+    judoscale-ruby (1.6.0)
 
 GEM
   remote: https://rubygems.org/

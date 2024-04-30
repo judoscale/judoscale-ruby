@@ -1,20 +1,20 @@
 PATH
   remote: ../../judoscale-rails
   specs:
-    judoscale-rails (1.5.4)
-      judoscale-ruby (= 1.5.4)
+    judoscale-rails (1.6.0)
+      judoscale-ruby (= 1.6.0)
       railties
 
 PATH
   remote: ../../judoscale-ruby
   specs:
-    judoscale-ruby (1.5.4)
+    judoscale-ruby (1.6.0)
 
 PATH
   remote: ../../judoscale-solid_queue
   specs:
-    judoscale-solid_queue (1.5.4)
-      judoscale-ruby (= 1.5.4)
+    judoscale-solid_queue (1.6.0)
+      judoscale-ruby (= 1.6.0)
       solid_queue (>= 0.3)
 
 GEM
@@ -200,7 +200,7 @@ GEM
     rake (13.2.1)
     rdoc (6.6.3.1)
       psych (>= 4.0.0)
-    reline (0.5.3)
+    reline (0.5.4)
       io-console (~> 0.5)
     solid_queue (0.3.0)
       activejob (>= 7.1)
