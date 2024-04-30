@@ -9,3 +9,4 @@
 /log/
 /judoscale-*/Gemfile*.lock
 *.gem
+.env*
