@@ -82,14 +82,6 @@ module Judoscale
         end
       end
 
-      it "tracks busy jobs when the configuration is enabled" do
-        skip "busy jobs not available yet."
-      end
-
-      it "logs debug information about busy jobs being collected" do
-        skip "busy jobs not available yet."
-      end
-
       it "filters queues matching UUID format by default, to prevent reporting for dynamically generated queues" do
         queues = %W[low-#{SecureRandom.uuid} default #{SecureRandom.uuid}-high]
         stub_sqs queues.map.with_index.to_h

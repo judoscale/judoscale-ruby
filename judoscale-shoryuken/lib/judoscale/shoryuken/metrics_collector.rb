@@ -17,7 +17,6 @@ module Judoscale
         self.queues |= ::Shoryuken.ungrouped_queues
       end
 
-      # TODO: support for busy jobs?
       def collect
         metrics = []
         queues_by_name = Hash.new { |hash, queue_name|

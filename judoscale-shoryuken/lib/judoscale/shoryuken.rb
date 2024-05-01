@@ -12,4 +12,4 @@ Judoscale.add_adapter :"judoscale-shoryuken",
     framework_version: ::Shoryuken::VERSION
   },
   metrics_collector: Judoscale::Shoryuken::MetricsCollector,
-  expose_config: Judoscale::Config::JobAdapterConfig.new(:shoryuken)
+  expose_config: Judoscale::Config::JobAdapterConfig.new(:shoryuken, support_busy_jobs: false)
