@@ -38,9 +38,9 @@ module Judoscale
         Judoscale.configure do |config|
           config.shoryuken.track_busy_jobs = true
         end
-      }.must_raise ArgumentError
+      }.must_raise RuntimeError
 
-      _(exception.message).must_equal "shoryuken does not support busy jobs"
+      _(exception.message).must_equal "[Judoscale] shoryuken does not support busy jobs"
     end
   end
 end

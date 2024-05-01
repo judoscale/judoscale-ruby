@@ -41,7 +41,7 @@ module Judoscale
 
       def track_busy_jobs=(value)
         if value && !@support_busy_jobs
-          raise ArgumentError, "#{identifier} does not support busy jobs"
+          raise "[#{Config.instance.log_tag}] #{identifier} does not support busy jobs"
         end
 
         @track_busy_jobs = value
