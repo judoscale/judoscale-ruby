@@ -18,9 +18,8 @@ module Judoscale
       # TODO: support for busy jobs?
       def collect
         metrics = []
-        # TODO: maybe cache the Shoryuken queue instances, to avoid extra requests to SQS?
         queues_by_name = Hash.new { |hash, queue_name|
-          hash[queue_name] = ::Shoryuken::Queue.new(::Shoryuken.sqs_client, queue_name)
+          hash[queue_name] = ::Shoryuken::Client.queues(queue_name)
         }
         # Initialize each queue known by Shoryuken.
         ::Shoryuken.ungrouped_queues.each do |queue_name|
