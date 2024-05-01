@@ -12,25 +12,12 @@ module Judoscale
         Judoscale::Config.instance.shoryuken
       end
 
-      def initialize
-        super
-        self.queues |= ::Shoryuken.ungrouped_queues
-      end
-
       def collect
         metrics = []
-        queues_by_name = Hash.new { |hash, queue_name|
-          hash[queue_name] = ::Shoryuken::Client.queues(queue_name)
-        }
-        # Initialize each queue known by Shoryuken.
-        ::Shoryuken.ungrouped_queues.each do |queue_name|
-          queues_by_name[queue_name]
-        end
-
-        self.queues |= queues_by_name.keys
+        self.queues |= ::Shoryuken.ungrouped_queues
 
         queues.each do |queue_name|
-          queue = queues_by_name[queue_name]
+          queue = ::Shoryuken::Client.queues(queue_name)
 
           # Reach out to SQS client directly to fetch the queue attribute we need to report.
           # Shoryuken has a private `queue_attributes` API to fetch all attributes, this call mimics that.
