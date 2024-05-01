@@ -7,9 +7,4 @@ Rake::TestTask.new(:test) do |t|
   t.pattern = "test/**/*_test.rb"
 end
 
-Rake::TestTask.new(:bench) do |t|
-  t.libs = %w[lib test]
-  t.pattern = "test/benchmarks/**/*_benchmark.rb"
-end
-
 task default: :test

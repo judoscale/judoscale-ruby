@@ -4,8 +4,6 @@ require "test_helper"
 require "judoscale/shoryuken/metrics_collector"
 
 module Judoscale
-  ShoryukenQueueStub = Struct.new(:name, :latency, :size, keyword_init: true)
-
   describe Shoryuken::MetricsCollector do
     subject { Shoryuken::MetricsCollector.new }
 
