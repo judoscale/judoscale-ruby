@@ -3,7 +3,11 @@ class JobsController < ApplicationController
 
   def index
     @available_queues = QUEUES.dup
-    @queues = [] # ::Shoryuken.ungrouped_queues
+    @queues = Judoscale::Config.instance.shoryuken.queues.each_with_object({}) { |queue_name, hash|
+      queue = ::Shoryuken::Client.queues(queue_name)
+      depth = queue.send(:queue_attributes).attributes[Judoscale::Shoryuken::MetricsCollector::SQS_QUEUE_DEPTH_ATTRIBUTE]
+      hash[queue_name] = depth
+    }
   end
 
   def create
