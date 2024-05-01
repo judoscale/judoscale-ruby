@@ -6,4 +6,8 @@ Judoscale.configure do |config|
 
   # Shoryuken does not support tracking busy jobs yet.
   # config.shoryuken.track_busy_jobs = true
+
+  # List queue names so we can track from web process as well,
+  # since Shoryuken only knows about them on the worker process.
+  config.shoryuken.queues = %w[high default low]
 end
