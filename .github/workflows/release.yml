@@ -21,6 +21,26 @@ jobs:
           bump-minor-pre-major: true
           version-file: "judoscale-ruby/lib/judoscale/version.rb"
 
+      - name: Sync versions - checkout code
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@v4
+
+      - name: Sync versions - setup Ruby
+        if: ${{ steps.release.outputs.release_created }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+
+      - name: Sync versions
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          bin/sync-versions
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .
+          git commit -m "Sync versions"
+          git push
+
   publish:
     name: Publish to Rubygems
     needs: release-please
@@ -29,12 +49,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2.2
+          ruby-version: 3.3
 
       - name: Publish gems
         env:
