@@ -20,10 +20,12 @@ module Judoscale
       UUID_REGEXP = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
       DEFAULT_QUEUE_FILTER = ->(queue_name) { !UUID_REGEXP.match?(queue_name) }
 
-      attr_accessor :identifier, :enabled, :max_queues, :queues, :queue_filter, :track_busy_jobs
+      attr_accessor :identifier, :enabled, :max_queues, :queues, :queue_filter
+      attr_reader :track_busy_jobs
 
-      def initialize(identifier)
+      def initialize(identifier, support_busy_jobs: true)
         @identifier = identifier
+        @support_busy_jobs = support_busy_jobs
         reset
       end
 
@@ -34,7 +36,15 @@ module Judoscale
 
         # Support for deprecated legacy env var configs.
         @max_queues = (ENV["RAILS_AUTOSCALE_MAX_QUEUES"] || 20).to_i
-        @track_busy_jobs = ENV["RAILS_AUTOSCALE_LONG_JOBS"] == "true"
+        self.track_busy_jobs = ENV["RAILS_AUTOSCALE_LONG_JOBS"] == "true"
+      end
+
+      def track_busy_jobs=(value)
+        if value && !@support_busy_jobs
+          raise "[#{Config.instance.log_tag}] #{identifier} does not support busy jobs"
+        end
+
+        @track_busy_jobs = value
       end
 
       def as_json

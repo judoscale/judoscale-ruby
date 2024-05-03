@@ -1,0 +1,10 @@
+source "https://rubygems.org"
+
+gemspec name: "judoscale-shoryuken"
+
+gem "judoscale-ruby", path: "../judoscale-ruby"
+gem "shoryuken", "~> 6.2"
+gem "aws-sdk-sqs" # shoryuken integration with AWS SDK v3+
+gem "rexml" # aws-sdk-core requires an XML parser.
+gem "minitest"
+gem "rake"

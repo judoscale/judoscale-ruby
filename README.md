@@ -2,11 +2,12 @@
 
 [![Build Status: judoscale-ruby](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-ruby-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-rails](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-rails-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: judoscale-sidekiq](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-sidekiq-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: judoscale-solid_queue](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-solid_queue-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-delayed_job](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-delayed_job-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-good_job](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-good_job-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-que](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-que-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
-[![Build Status: judoscale-sidekiq](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-sidekiq-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
-[![Build Status: judoscale-solid_queue](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-solid_queue-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
+[![Build Status: judoscale-shoryuken](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-shoryuken-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 
 These gems works together with the [Judoscale](https://judoscale.com) Heroku add-on to scale your web and worker dynos automatically. They gather a minimal set of metrics for each request and job queue, and periodically posts this data asynchronously to the Judoscale API.
 
@@ -24,11 +25,12 @@ To connect your app with Judoscale, add these lines to your application's `Gemfi
 gem "judoscale-rails"
 # Uncomment the gem for your job backend:
 # gem "judoscale-sidekiq"
+# gem "judoscale-solid_queue"
 # gem "judoscale-resque"
 # gem "judoscale-delayed_job"
 # gem "judoscale-good_job"
 # gem "judoscale-que"
-# gem "judoscale-solid_queue"
+# gem "judoscale-shoryuken"
 ```
 
 _If you're using a background job queue, make sure you include the corresponding judoscale-\* gem as well._
@@ -54,15 +56,16 @@ The middleware will start the async reporter when it processes the first request
 
 ## Worker adapters
 
-Judoscale will autoscale your worker dynos! The following job backends are supported: Sidekiq, Resque, Delayed Job, Good Job, Que, and Solid Queue. Be sure to install the gem specific to your job backend:
+Judoscale will autoscale your worker dynos! The following job backends are supported: Sidekiq, Solid Queue, Resque, Delayed Job, Good Job, Que, and Shoryuken. Be sure to install the gem specific to your job backend:
 
 ```ruby
 gem "judoscale-sidekiq"
+gem "judoscale-solid_queue"
 gem "judoscale-resque"
 gem "judoscale-delayed_job"
 gem "judoscale-good_job"
 gem "judoscale-que"
-gem "judoscale-solid_queue"
+gem "judoscale-shoryuken"
 ```
 
 For most apps, no additional configuration is needed. See the [configuration](#configuration) section below for all available options.
@@ -130,6 +133,8 @@ Judoscale.configure do |config|
   # Specify a list of queues to collect metrics from. This overrides the default behavior which
   # automatically detects the queues. If specified, anything not explicitly listed will be excluded.
   # When setting the list of queues, `queue_filter` is ignored, but `max_queues` is still respected.
+  # Note: judoscale-shoryuken will only report all queues across all available processes if the list
+  # of queues is specified, otherwise just the shoryuken processes can report their known queues.
   # Default: (queues detected automatically)
   # config.sidekiq.queues = %w[low default high]
 
@@ -141,6 +146,7 @@ Judoscale.configure do |config|
   # Enables reporting for active (busy) workers so that downscaling can be
   # suppressed.
   # See https://judoscale.com/docs/long-running-jobs/.
+  # Note: judoscale-shoryuken does not support reporting busy jobs.
   # Default: false
   # config.sidekiq.track_busy_jobs = true
 
