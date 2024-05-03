@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva", "Jon Sullivan"]
   spec.email = ["hello@judoscale.com"]
 
-  spec.summary = "This gem works with the Judoscale Heroku add-on to automatically scale your web and worker dynos."
+  spec.summary = "Autoscaling for Ruby."
   spec.homepage = "https://judoscale.com"
   spec.license = "MIT"
 

@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva", "Jon Sullivan"]
   spec.email = ["hello@judoscale.com"]
 
-  spec.summary = "This gem provides SolidQueue integration with the Judoscale autoscaling add-on for Heroku."
+  spec.summary = "Autoscaling for Solid Queue workers."
   spec.homepage = "https://judoscale.com"
   spec.license = "MIT"
 
