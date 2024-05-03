@@ -1,6 +1,6 @@
-lib = File.expand_path("../lib", __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "judoscale/version"
+# frozen_string_literal: true
+
+require_relative "lib/judoscale/version"
 
 Gem::Specification.new do |spec|
   spec.name = "rails-autoscale-core"

@@ -1,6 +1,6 @@
-lib = File.expand_path("../lib", __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "judoscale/delayed_job/version"
+# frozen_string_literal: true
+
+require_relative "lib/judoscale/delayed_job/version"
 
 Gem::Specification.new do |spec|
   spec.name = "judoscale-delayed_job"
