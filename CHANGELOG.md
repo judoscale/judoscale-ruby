@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0](https://github.com/judoscale/judoscale-ruby/compare/v1.6.0...v1.7.0) (2024-05-03)
+
+
+### Features
+
+* Shoryuken adapter support ([#204](https://github.com/judoscale/judoscale-ruby/issues/204)) ([1dc6e00](https://github.com/judoscale/judoscale-ruby/commit/1dc6e003729c32178d38d9ae3aabc08f4b7c7e4b))
+
 ## [1.6.0](https://github.com/judoscale/judoscale-ruby/compare/v1.5.4...v1.6.0) (2024-04-26)
 
 
