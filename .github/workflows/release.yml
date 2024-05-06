@@ -24,6 +24,8 @@ jobs:
       - name: Sync versions - checkout code
         if: ${{ steps.release.outputs.release_created }}
         uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.release.outputs.pr.headBranchName }}
 
       - name: Sync versions - setup Ruby
         if: ${{ steps.release.outputs.release_created }}
