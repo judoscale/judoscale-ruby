@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
     "source_code_uri" => "https://github.com/judoscale/judoscale-ruby"
   }
 
-  spec.files = `git ls-files -z`.split("\x0").select { |f| f.match?(%r{rails-autoscale|version.rb}) }
+  spec.files = Dir["lib/**/*"].select { |f| f.match?(%r{rails-autoscale}) }
   spec.require_paths = ["lib"]
 
   spec.required_ruby_version = ">= 2.6.0"
