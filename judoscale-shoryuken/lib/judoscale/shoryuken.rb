@@ -2,13 +2,13 @@
 
 require "judoscale-ruby"
 require "judoscale/config"
-require "judoscale/shoryuken/version"
+require "judoscale/version"
 require "judoscale/shoryuken/metrics_collector"
 require "shoryuken"
 
 Judoscale.add_adapter :"judoscale-shoryuken",
   {
-    adapter_version: Judoscale::Shoryuken::VERSION,
+    adapter_version: Judoscale::VERSION,
     framework_version: ::Shoryuken::VERSION
   },
   metrics_collector: Judoscale::Shoryuken::MetricsCollector,

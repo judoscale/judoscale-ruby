@@ -2,14 +2,14 @@
 
 require "judoscale-ruby"
 require "judoscale/config"
-require "judoscale/resque/version"
+require "judoscale/version"
 require "judoscale/resque/metrics_collector"
 require "resque"
 require "judoscale/resque/latency_extension"
 
 Judoscale.add_adapter :"judoscale-resque",
   {
-    adapter_version: Judoscale::Resque::VERSION,
+    adapter_version: Judoscale::VERSION,
     framework_version: ::Resque::VERSION
   },
   metrics_collector: Judoscale::Resque::MetricsCollector,
