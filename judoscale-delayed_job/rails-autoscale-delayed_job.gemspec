@@ -20,11 +20,10 @@ Gem::Specification.new do |spec|
     "source_code_uri" => "https://github.com/judoscale/judoscale-ruby"
   }
 
-  spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.files = `git ls-files -z`.split("\x0").select { |f| f.match?(%r{rails-autoscale|version.rb}) }
   spec.require_paths = ["lib"]
 
   spec.required_ruby_version = ">= 2.6.0"
 
-  spec.add_dependency "rails-autoscale-core", Judoscale::DelayedJob::VERSION
-  spec.add_dependency "delayed_job_active_record", ">= 4.0"
+  spec.add_dependency "judoscale-delayed_job", Judoscale::DelayedJob::VERSION
 end
