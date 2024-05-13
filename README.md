@@ -228,7 +228,6 @@ To install each gem onto your local machine, run `bundle exec rake install`.
 To release a new version:
 
 1. Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary), and release branches will be created automatically via [Release Please](https://github.com/google-github-actions/release-please-action). This updates the changelog and the version of judoscale-ruby.
-1. On the release branch, run `bin/sync-versions` to update the `VERSION` constants for each gem. Commit and push this change to the release branch.
 1. Merge the release branch, and GitHub Actions will run `bin/release` to publish all gems to [Rubygems](https://rubygems.org).
 
 _Note: We keep all gem versions in sync to provide a better developer experience for our users._

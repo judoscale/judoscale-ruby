@@ -2,13 +2,13 @@
 
 require "judoscale-ruby"
 require "judoscale/config"
-require "judoscale/sidekiq/version"
+require "judoscale/version"
 require "judoscale/sidekiq/metrics_collector"
 require "sidekiq/api"
 
 Judoscale.add_adapter :"judoscale-sidekiq",
   {
-    adapter_version: Judoscale::Sidekiq::VERSION,
+    adapter_version: Judoscale::VERSION,
     framework_version: ::Sidekiq::VERSION
   },
   metrics_collector: Judoscale::Sidekiq::MetricsCollector,

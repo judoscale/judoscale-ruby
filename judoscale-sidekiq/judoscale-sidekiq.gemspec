@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/judoscale/sidekiq/version"
+require_relative "../judoscale-ruby/lib/judoscale/version"
 
 Gem::Specification.new do |spec|
   spec.name = "judoscale-sidekiq"
-  spec.version = Judoscale::Sidekiq::VERSION
+  spec.version = Judoscale::VERSION
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva", "Jon Sullivan"]
   spec.email = ["hello@judoscale.com"]
 
@@ -25,6 +25,6 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 2.6.0"
 
-  spec.add_dependency "judoscale-ruby", Judoscale::Sidekiq::VERSION
+  spec.add_dependency "judoscale-ruby", Judoscale::VERSION
   spec.add_dependency "sidekiq", ">= 5.0"
 end

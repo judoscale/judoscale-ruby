@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/judoscale/que/version"
+require_relative "../judoscale-ruby/lib/judoscale/version"
 
 Gem::Specification.new do |spec|
   spec.name = "rails-autoscale-que"
-  spec.version = Judoscale::Que::VERSION
+  spec.version = Judoscale::VERSION
   spec.authors = ["Adam McCrea", "Carlos Antonio da Silva", "Jon Sullivan"]
   spec.email = ["hello@judoscale.com"]
 
@@ -23,5 +23,5 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*"].select { |f| f.match?(%r{rails-autoscale}) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "judoscale-que", Judoscale::Que::VERSION
+  spec.add_dependency "judoscale-que", Judoscale::VERSION
 end

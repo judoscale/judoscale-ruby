@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "judoscale-ruby"
-require "judoscale/rack/version"
+require "judoscale/version"
 require "judoscale/web_metrics_collector"
 require "judoscale/request_middleware"
 require "rack"
@@ -10,6 +10,6 @@ require "rack"
 # the app's middleware chain.
 
 Judoscale.add_adapter :"judoscale-rack", {
-  adapter_version: Judoscale::Rack::VERSION,
+  adapter_version: Judoscale::VERSION,
   framework_version: ::Rack.version
 }, metrics_collector: Judoscale::WebMetricsCollector
