@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-require "judoscale/good_job"
+require "judoscale-good_job"

@@ -1,6 +1,6 @@
-lib = File.expand_path("../lib", __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "judoscale/solid_queue/version"
+# frozen_string_literal: true
+
+require_relative "lib/judoscale/solid_queue/version"
 
 Gem::Specification.new do |spec|
   spec.name = "rails-autoscale-solid_queue"
@@ -20,11 +20,8 @@ Gem::Specification.new do |spec|
     "source_code_uri" => "https://github.com/judoscale/judoscale-ruby"
   }
 
-  spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.files = Dir["lib/**/*"].select { |f| f.match?(%r{rails-autoscale}) }
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = ">= 2.7.0"
-
-  spec.add_dependency "rails-autoscale-core", Judoscale::SolidQueue::VERSION
-  spec.add_dependency "solid_queue", ">= 0.3"
+  spec.add_dependency "judoscale-solid_queue", Judoscale::SolidQueue::VERSION
 end

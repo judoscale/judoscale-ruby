@@ -1,6 +1,6 @@
-lib = File.expand_path("../lib", __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "judoscale/good_job/version"
+# frozen_string_literal: true
+
+require_relative "lib/judoscale/good_job/version"
 
 Gem::Specification.new do |spec|
   spec.name = "rails-autoscale-good_job"
@@ -20,11 +20,8 @@ Gem::Specification.new do |spec|
     "source_code_uri" => "https://github.com/judoscale/judoscale-ruby"
   }
 
-  spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  spec.files = Dir["lib/**/*"].select { |f| f.match?(%r{rails-autoscale}) }
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = ">= 2.6.0"
-
-  spec.add_dependency "rails-autoscale-core", Judoscale::GoodJob::VERSION
-  spec.add_dependency "good_job", ">= 3.0"
+  spec.add_dependency "judoscale-good_job", Judoscale::GoodJob::VERSION
 end
