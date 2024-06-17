@@ -11,5 +11,6 @@ require "rack"
 
 Judoscale.add_adapter :"judoscale-rack", {
   adapter_version: Judoscale::VERSION,
-  framework_version: ::Rack.version
+  # Rack deprecated `version` in v3, removed in v3.1.
+  framework_version: ::Rack.respond_to?(:release) ? ::Rack.release : ::Rack.version
 }, metrics_collector: Judoscale::WebMetricsCollector
