@@ -28,6 +28,11 @@ jobs:
             ruby: "2.6"
           - gemfile: Gemfile-activerecord-7-0
             ruby: "2.6"
+          # GoodJob v4+ dropped support for Ruby 2.6/2.7, we test it against these Gemfiles.
+          - gemfile: Gemfile
+            ruby: "2.7"
+          - gemfile: Gemfile-activerecord-7-0
+            ruby: "2.7"
           # AR 6.1 stable doesn't play nice with Ruby 3.2+. Fixes have been backported
           # https://github.com/rails/rails/pull/46895, but no release is planned.
           # To avoid testing against 6-1-stable branch, we'll just skip those for now.

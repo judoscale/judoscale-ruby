@@ -9,19 +9,29 @@ module Judoscale
     class MetricsCollector < Judoscale::JobMetricsCollector
       include ActiveRecordHelper
 
+      def self.good_job_v4?
+        Gem::Version.new(::GoodJob::VERSION) >= Gem::Version.new("4")
+      end
+
+      def self.good_job_base_class
+        good_job_v4? ? ::GoodJob::Job : ::GoodJob::Execution
+      end
+
       def self.adapter_config
         Judoscale::Config.instance.good_job
       end
 
       def self.collect?(config)
-        super && ActiveRecordHelper.table_exists_for_model?(::GoodJob::Execution)
+        super && ActiveRecordHelper.table_exists_for_model?(good_job_base_class)
       end
 
       def initialize
         super
 
+        @good_job_base_class = self.class.good_job_base_class
+
         queue_names = run_silently do
-          ::GoodJob::Execution.select("distinct queue_name").map(&:queue_name)
+          @good_job_base_class.select("distinct queue_name").map(&:queue_name)
         end
         self.queues |= queue_names
       end
@@ -32,7 +42,7 @@ module Judoscale
 
         # logically we don't need the finished_at condition, but it lets postgres use the indexes
         oldest_execution_time_by_queue = run_silently do
-          ::GoodJob::Execution
+          @good_job_base_class
             .where(performed_at: nil, finished_at: nil)
             .group(:queue_name)
             .pluck(:queue_name, Arel.sql("min(coalesce(scheduled_at, created_at))"))
@@ -42,7 +52,7 @@ module Judoscale
 
         if track_busy_jobs?
           busy_count_by_queue = run_silently do
-            ::GoodJob::Execution.running.group(:queue_name).count
+            @good_job_base_class.running.group(:queue_name).count
           end
           self.queues |= busy_count_by_queue.keys
         end

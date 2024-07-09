@@ -15,4 +15,4 @@ gem "judoscale-ruby", path: "../../judoscale-ruby"
 gem "judoscale-rails", path: "../../judoscale-rails"
 gem "judoscale-good_job", path: "../../judoscale-good_job"
 
-gem "good_job", "~> 3.7"
+gem "good_job", "~> 4.0"

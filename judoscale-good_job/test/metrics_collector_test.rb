@@ -143,9 +143,14 @@ module Judoscale
       it "tracks busy jobs when the configuration is enabled" do
         use_adapter_config :good_job, track_busy_jobs: true do
           Delayable.set(queue: "default").perform_later
-          ::GoodJob::Execution.last.update!(performed_at: Time.now.utc)
+          metrics = nil
+          ::GoodJob::JobPerformer.new("default").next do |execution|
+            # Support GoodJob v3 query/scope `GoodJob::Execution.running`, which filters by `performed_at`.
+            # v4 scope `GoodJob::Job.running` joins with the advisory lock created by `JobPerformer#next` instead.
+            execution.update!(performed_at: Time.now.utc)
 
-          metrics = subject.collect
+            metrics = subject.collect
+          end
 
           _(metrics.size).must_equal 2
           _(metrics[1].value).must_equal 1
@@ -158,9 +163,13 @@ module Judoscale
         use_config log_level: :debug do
           use_adapter_config :good_job, track_busy_jobs: true do
             Delayable.set(queue: "default").perform_later
-            ::GoodJob::Execution.last.update!(performed_at: Time.now.utc)
+            ::GoodJob::JobPerformer.new("default").next do |execution|
+              # Support GoodJob v3 query/scope `GoodJob::Execution.running`, which filters by `performed_at`.
+              # v4 scope `GoodJob::Job.running` joins with the advisory lock created by `JobPerformer#next` instead.
+              execution.update!(performed_at: Time.now.utc)
 
-            subject.collect
+              subject.collect
+            end
 
             _(log_string).must_match %r{good_job-qt.default=.+ good_job-busy.default=1}
           end
