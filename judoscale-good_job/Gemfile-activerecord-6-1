@@ -4,6 +4,7 @@ gemspec name: "judoscale-good_job"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "activerecord", "~> 6.1"
+gem "good_job", "~> 3.30"
 gem "pg"
 gem "minitest"
 gem "rake"
