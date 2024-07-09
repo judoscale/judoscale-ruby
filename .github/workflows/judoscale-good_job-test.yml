@@ -28,7 +28,7 @@ jobs:
             ruby: "2.6"
           - gemfile: Gemfile-activerecord-7-0
             ruby: "2.6"
-          # GoodJob v4+ dropped support to Ruby 2.6/2.7, we test it against these Gemfiles.
+          # GoodJob v4+ dropped support for Ruby 2.6/2.7, we test it against these Gemfiles.
           - gemfile: Gemfile
             ruby: "2.7"
           - gemfile: Gemfile-activerecord-7-0

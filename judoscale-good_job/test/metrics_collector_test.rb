@@ -145,8 +145,8 @@ module Judoscale
           Delayable.set(queue: "default").perform_later
           metrics = nil
           ::GoodJob::JobPerformer.new("default").next do |execution|
-            # GoodJob v3 queries `GoodJob::Execution.running` scope, which uses `performed_at` in the condition,
-            # so we set it here. v4 uses `GoodJob::Job.running` scope, joined with the advisory lock instead.
+            # Support GoodJob v3 query/scope `GoodJob::Execution.running`, which filters by `performed_at`.
+            # v4 scope `GoodJob::Job.running` joins with the advisory lock created by `JobPerformer#next` instead.
             execution.update!(performed_at: Time.now.utc)
 
             metrics = subject.collect
@@ -164,8 +164,8 @@ module Judoscale
           use_adapter_config :good_job, track_busy_jobs: true do
             Delayable.set(queue: "default").perform_later
             ::GoodJob::JobPerformer.new("default").next do |execution|
-              # GoodJob v3 queries `GoodJob::Execution.running` scope, which uses `performed_at` in the condition,
-              # so we set it here. v4 uses `GoodJob::Job.running` scope, joined with the advisory lock instead.
+              # Support GoodJob v3 query/scope `GoodJob::Execution.running`, which filters by `performed_at`.
+              # v4 scope `GoodJob::Job.running` joins with the advisory lock created by `JobPerformer#next` instead.
               execution.update!(performed_at: Time.now.utc)
 
               subject.collect
