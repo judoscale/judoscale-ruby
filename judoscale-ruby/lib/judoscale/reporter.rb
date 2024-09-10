@@ -46,6 +46,9 @@ module Judoscale
 
     def run_loop(config, metrics_collectors)
       @_thread = Thread.new do
+        # Advise multi-threaded app servers to ignore this thread for the purposes of fork safety warnings.
+        Thread.current.thread_variable_set(:fork_safe, true)
+
         loop do
           run_metrics_collection(config, metrics_collectors)
 
