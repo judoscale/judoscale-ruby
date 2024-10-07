@@ -12,9 +12,9 @@ module Judoscale
     class Railtie < ::Rails::Railtie
       include Judoscale::Logger
 
-      def in_rails_console?
-        # This is gross, but we can't find a more reliable way to detect if we're in a Rails console.
-        caller.any? { |call| call.include?("console_command.rb") }
+      def in_rails_console_or_runner?
+        # This is gross, but we can't find a more reliable way to detect if we're in a Rails console/runner.
+        caller.any? { |call| call.include?("console_command.rb") || call.include?("runner_command.rb") }
       end
 
       def in_rake_task?(task_regex)
@@ -36,8 +36,8 @@ module Judoscale
       end
 
       config.after_initialize do
-        if in_rails_console?
-          logger.debug "No reporting since we're in a Rails console"
+        if in_rails_console_or_runner?
+          logger.debug "No reporting since we're in a Rails console or runner process"
         elsif in_rake_task?(/assets:|db:/)
           logger.debug "No reporting since we're in a build process"
         elsif judoscale_config.start_reporter_after_initialize
