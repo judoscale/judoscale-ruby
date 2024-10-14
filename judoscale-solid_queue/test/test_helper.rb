@@ -41,10 +41,15 @@ ActiveRecord::Tasks::DatabaseTasks.create(DATABASE_URL)
 Minitest.after_run {
   ActiveRecord::Tasks::DatabaseTasks.drop(DATABASE_URL)
 }
-ActiveRecord::Base.establish_connection(DATABASE_URL)
+ActiveRecord::Base.configurations = {test: {url: DATABASE_URL}}
+ActiveRecord::Base.establish_connection(:test)
 
 # Suppress migration noise.
 ENV["VERBOSE"] ||= "false"
+# SolidQueue v0.8+ merged migrations into a single schema file, which we load directly into our test DB.
+# Migrations are still executed afterwards, as they may add them in the future if schema changes are needed.
+SCHEMA_FILE = SolidQueue::Engine.config.paths["lib"].paths.first.join("generators", "solid_queue", "install", "templates", "db", "queue_schema.rb")
+ActiveRecord::Tasks::DatabaseTasks.load_schema_current(ActiveRecord.schema_format, SCHEMA_FILE) if SCHEMA_FILE.exist?
 # Add SolidQueue migration path to Active Record to migrate to the latest automatically.
 # It seems we can't only set it on `DatabaseTasks` as expected, need to set on the `Migrator` directly instead.
 ActiveRecord::Migrator.migrations_paths += SolidQueue::Engine.config.paths["db/migrate"].existent
