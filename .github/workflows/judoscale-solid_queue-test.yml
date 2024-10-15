@@ -14,6 +14,7 @@ jobs:
       matrix:
         gemfile:
           - Gemfile
+          - Gemfile-solid_queue-0-3
         ruby:
           - "2.7"
           - "3.0"
