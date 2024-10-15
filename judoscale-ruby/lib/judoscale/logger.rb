@@ -37,7 +37,7 @@ module Judoscale
     private
 
     def tag(msgs, tag_level: nil)
-      tag = "[#{Config.instance.log_tag}]"
+      tag = +"[#{Config.instance.log_tag}]"
       tag << " [#{tag_level}]" if tag_level
       msgs.map { |msg| "#{tag} #{msg}" }.join("\n")
     end
