@@ -9,6 +9,9 @@ require "active_job/railtie"
 # https://github.com/rails/solid_queue/commit/5ff6e0178bbe7c0cf93134ea2ef974c1dfc09a09
 require "active_support"
 require "active_support/core_ext/numeric/time"
+# It seems SolidQueue v0.7.1+ blows up without requiring activemodel.
+# It should be a dependency for them through activerecord, but they may not be requiring it properly.
+require "active_model"
 require "judoscale-solid_queue"
 
 require "minitest/autorun"
