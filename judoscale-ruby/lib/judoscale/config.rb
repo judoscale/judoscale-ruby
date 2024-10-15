@@ -74,7 +74,7 @@ module Judoscale
       end
     end
 
-    attr_accessor :api_base_url, :report_interval_seconds, :rake_task_ignore_regex,
+    attr_accessor :api_base_url, :report_interval_seconds,
       :max_request_size_bytes, :logger, :log_tag, :current_runtime_container
     attr_reader :log_level
 
@@ -87,7 +87,6 @@ module Judoscale
       @log_tag = "Judoscale"
       @max_request_size_bytes = 100_000 # ignore request payloads over 100k since they skew the queue times
       @report_interval_seconds = 10
-      @rake_task_ignore_regex = /assets:|db:/
 
       self.log_level = ENV["JUDOSCALE_LOG_LEVEL"] || ENV["RAILS_AUTOSCALE_LOG_LEVEL"]
       @logger = ::Logger.new($stdout)
