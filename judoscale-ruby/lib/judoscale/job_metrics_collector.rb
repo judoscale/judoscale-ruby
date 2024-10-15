@@ -27,7 +27,7 @@ module Judoscale
     def initialize
       super
 
-      log_msg = "#{self.class.adapter_name} enabled"
+      log_msg = +"#{self.class.adapter_name} enabled"
       log_msg << " with busy job tracking support" if track_busy_jobs?
       logger.info log_msg
     end
