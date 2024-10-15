@@ -10,7 +10,7 @@ module Judoscale
     end
 
     it "adds the rake_task_ignore_regex config option" do
-      _(::Judoscale::Config.instance.rake_task_ignore_regex).must_equal /assets:|db:/
+      _(::Judoscale::Config.instance.rake_task_ignore_regex).must_equal(/assets:|db:/)
     end
   end
 end
