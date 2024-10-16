@@ -38,7 +38,7 @@ module Judoscale
       config.after_initialize do
         if in_rails_console_or_runner?
           logger.debug "No reporting since we're in a Rails console or runner process"
-        elsif in_rake_task?(/assets:|db:/)
+        elsif in_rake_task?(judoscale_config.rake_task_ignore_regex)
           logger.debug "No reporting since we're in a build process"
         elsif judoscale_config.start_reporter_after_initialize
           Reporter.start
