@@ -15,6 +15,6 @@ gem "judoscale-ruby", path: "../../judoscale-ruby"
 gem "judoscale-rails", path: "../../judoscale-rails"
 gem "judoscale-solid_queue", path: "../../judoscale-solid_queue"
 
-gem "solid_queue", "~> 0.3"
+gem "solid_queue", "~> 1.0"
 gem "mission_control-jobs"
 gem "sprockets-rails"

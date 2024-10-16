@@ -3,6 +3,7 @@
 source "https://rubygems.org"
 
 gem "sinatra"
+gem "rackup"
 gem "puma"
 gem "judoscale-ruby", path: "../../judoscale-ruby"
 gem "judoscale-rack", path: "../../judoscale-rack"
