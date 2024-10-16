@@ -13,8 +13,6 @@
 ActiveRecord::Schema[7.0].define(version: 2024_07_08_144259) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "timescaledb"
-  enable_extension "timescaledb_toolkit"
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false

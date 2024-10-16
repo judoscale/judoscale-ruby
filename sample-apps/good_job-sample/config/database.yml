@@ -8,7 +8,7 @@ default: &default
 development:
   <<: *default
   database: judoscale_good_job_sample_development
-  username: postgres
-  #password:
-  host: localhost
-  #port: 5432
+  # username: postgres
+  # password:
+  # host: localhost
+  # port: 5432
