@@ -89,6 +89,19 @@ module Judoscale
       end
     end
 
+    it "gracefully handles invalid JUDOSCALE_LOG_LEVEL values" do
+      env = {
+        "JUDOSCALE_LOG_LEVEL" => "not_a_real_log_level"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.log_level).must_be_nil
+      end
+
+      _(log_string).must_include "Invalid log_level detected: not_a_real_log_level"
+    end
+
     it "supports legacy ENV var configs" do
       env = {
         "RAILS_AUTOSCALE_MAX_QUEUES" => "42",
@@ -131,6 +144,28 @@ module Judoscale
 
       enabled_adapter_configs = Config.adapter_configs.select(&:enabled).map(&:identifier)
       _(enabled_adapter_configs).must_be :empty?
+    end
+
+    it "gracefully handles invalid log_level values and logs a warning" do
+      Judoscale.configure do |config|
+        config.log_level = :not_a_real_log_level
+      end
+
+      config = Config.instance
+      _(config.log_level).must_be_nil
+
+      _(log_string).must_include "Invalid log_level detected: not_a_real_log_level"
+    end
+
+    it "gracefully handles blank log_level values" do
+      Judoscale.configure do |config|
+        config.log_level = " "
+      end
+
+      config = Config.instance
+      _(config.log_level).must_be_nil
+
+      _(log_string).wont_include "Invalid log_level detected"
     end
 
     it "dumps the configuration options as json" do
