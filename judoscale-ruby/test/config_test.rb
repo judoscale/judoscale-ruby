@@ -89,7 +89,7 @@ module Judoscale
       end
     end
 
-    it 'gracefully handles invalid JUDOSCALE_LOG_LEVEL values' do
+    it "gracefully handles invalid JUDOSCALE_LOG_LEVEL values" do
       env = {
         "JUDOSCALE_LOG_LEVEL" => "not_a_real_log_level"
       }
@@ -146,7 +146,7 @@ module Judoscale
       _(enabled_adapter_configs).must_be :empty?
     end
 
-    it 'gracefully handles invalid log_level values and logs a warning' do
+    it "gracefully handles invalid log_level values and logs a warning" do
       Judoscale.configure do |config|
         config.log_level = :not_a_real_log_level
       end
@@ -157,7 +157,7 @@ module Judoscale
       _(log_string).must_include "Invalid log_level detected: not_a_real_log_level"
     end
 
-    it 'gracefully handles blank log_level values' do
+    it "gracefully handles blank log_level values" do
       Judoscale.configure do |config|
         config.log_level = " "
       end

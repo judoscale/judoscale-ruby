@@ -59,7 +59,7 @@ module Judoscale
       end
     end
 
-    BLANK_REGEXP = /\A[[:space:]]*\z/.freeze
+    BLANK_REGEXP = /\A[[:space:]]*\z/
 
     private_constant :BLANK_REGEXP
 
