@@ -59,10 +59,6 @@ module Judoscale
       end
     end
 
-    BLANK_REGEXP = /\A[[:space:]]*\z/
-
-    private_constant :BLANK_REGEXP
-
     include Singleton
 
     @adapter_configs = []
@@ -114,7 +110,7 @@ module Judoscale
     end
 
     def log_level=(new_level)
-      @log_level = blank_log_level?(new_level) ? nil : get_severity_log_level(new_level)
+      @log_level = get_severity_log_level(new_level)
     end
 
     def as_json
@@ -134,11 +130,9 @@ module Judoscale
 
     private
 
-    def blank_log_level?(log_level)
-      log_level.nil? || log_level.match?(BLANK_REGEXP)
-    end
-
     def get_severity_log_level(log_level)
+      return nil if log_level.to_s.strip.empty?
+
       upcased_log_level = log_level.to_s.upcase
 
       if ::Logger::Severity.const_defined?(upcased_log_level)
