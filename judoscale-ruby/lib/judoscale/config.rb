@@ -110,7 +110,7 @@ module Judoscale
     end
 
     def log_level=(new_level)
-      @log_level = new_level ? ::Logger::Severity.const_get(new_level.to_s.upcase) : nil
+      @log_level = get_severity_log_level(new_level)
     end
 
     def as_json
@@ -126,6 +126,22 @@ module Judoscale
 
     def ignore_large_requests?
       @max_request_size_bytes
+    end
+
+    private
+
+    def get_severity_log_level(log_level)
+      return nil if log_level.to_s.strip.empty?
+
+      upcased_log_level = log_level.to_s.upcase
+
+      if ::Logger::Severity.const_defined?(upcased_log_level)
+        ::Logger::Severity.const_get(upcased_log_level)
+      else
+        logger.warn "Invalid log_level detected: #{log_level}"
+
+        nil
+      end
     end
   end
 end
