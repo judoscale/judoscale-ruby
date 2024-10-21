@@ -25,7 +25,7 @@ module Judoscale
     end
 
     def pipelined
-      yield
+      yield self
     end
   end
 
