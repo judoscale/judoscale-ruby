@@ -72,6 +72,12 @@ For most apps, no additional configuration is needed. See the [configuration](#c
 
 Note that if you aren't using Rails, you'll need to start the reporter manually. See below.
 
+### Specific backend notes
+
+#### Resque
+
+If you're using `resque-scheduler` and their [standalone executable](https://github.com/resque/resque-scheduler?tab=readme-ov-file#standalone-executable) approach, make sure to add a `require "judoscale-resque"` to your executable, or require your entire Rails application, to make sure the Judoscale extension that stores latency for each job gets properly loaded within the scheduler process, otherwise metrics may not be reported appropriately from the scheduler.
+
 ## Worker-only apps
 
 If your app doesn't have a web process, you don't _have_ to include the "judoscale-rails" gem. If you omit it, you'll need to start the reporter manually:
