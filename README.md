@@ -106,15 +106,15 @@ Judoscale aggregates and stores this information to power the autoscaler algorit
 
 ### What data is collected for each worker adapter?
 
-| adapter               | queue time | queue depth | busy |
-|-----------------------|------------|-------------|------|
-| judoscale-sidekiq     | ✅         | ✅          | ✅   |
-| judoscale-solid_queue | ✅         | ❌          | ✅   |
-| judoscale-resque      | ✅         | ✅          | ✅   |
-| judoscale-delayed_job | ✅         | ❌          | ✅   |
-| judoscale-good_job    | ✅         | ❌          | ✅   |
-| judoscale-que         | ✅         | ❌          | ✅   |
-| judoscale-shoryuken   | ❌         | ✅          | ❌   |
+| adapter               | queue time | queue depth | busy (if enabled) |
+|-----------------------|------------|-------------|-------------------|
+| judoscale-sidekiq     | ✅         | ✅          | ✅                |
+| judoscale-solid_queue | ✅         | ❌          | ✅                |
+| judoscale-resque      | ✅         | ✅          | ✅                |
+| judoscale-delayed_job | ✅         | ❌          | ✅                |
+| judoscale-good_job    | ✅         | ❌          | ✅                |
+| judoscale-que         | ✅         | ❌          | ✅                |
+| judoscale-shoryuken   | ❌         | ✅          | ❌                |
 
 ## Migrating from `rails_autoscale_agent`
 
