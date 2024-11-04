@@ -72,7 +72,7 @@ For most apps, no additional configuration is needed. See the [configuration](#c
 
 Note that if you aren't using Rails, you'll need to start the reporter manually. See below.
 
-### Specific backend notes
+### Specific worker backend notes
 
 #### Resque
 
@@ -99,9 +99,22 @@ The reporter runs in its own thread so your web requests and background jobs are
 - Judoscale gem versions
 - Dyno name (example: web.1)
 - PID
-- Collection of queue time metrics (time and milliseconds)
+- Collection of queue time metrics (time and milliseconds) for web
+- Collection of queue time and/or queue depth metrics, and busy metrics (if enabled), for workers (see below)
 
 Judoscale aggregates and stores this information to power the autoscaler algorithm and dashboard visualizations.
+
+### What data is collected for each worker adapter?
+
+| adapter               | queue time | queue depth | busy |
+|-----------------------|------------|-------------|------|
+| judoscale-sidekiq     | ✅         | ✅          | ✅   |
+| judoscale-solid_queue | ✅         | ❌          | ✅   |
+| judoscale-resque      | ✅         | ✅          | ✅   |
+| judoscale-delayed_job | ✅         | ❌          | ✅   |
+| judoscale-good_job    | ✅         | ❌          | ✅   |
+| judoscale-que         | ✅         | ❌          | ✅   |
+| judoscale-shoryuken   | ❌         | ✅          | ❌   |
 
 ## Migrating from `rails_autoscale_agent`
 
