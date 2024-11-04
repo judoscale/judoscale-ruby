@@ -76,7 +76,7 @@ Note that if you aren't using Rails, you'll need to start the reporter manually.
 
 #### Resque
 
-If you're using `resque-scheduler` and their [standalone executable](https://github.com/resque/resque-scheduler?tab=readme-ov-file#standalone-executable) approach, make sure to add a `require "judoscale-resque"` to your executable, or require your entire Rails application, to make sure the Judoscale extension that stores latency for each job gets properly loaded within the scheduler process, otherwise metrics may not be reported appropriately from the scheduler.
+If you're using `resque-scheduler` and their [standalone executable](https://github.com/resque/resque-scheduler?tab=readme-ov-file#standalone-executable) approach, add a `require "judoscale-resque"` to your executable, or require your entire Rails application. This ensures the Judoscale extension that stores latency for each job gets properly loaded within the scheduler process, otherwise metrics may not be reported appropriately from the scheduler.
 
 ## Worker-only apps
 
