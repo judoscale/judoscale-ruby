@@ -1,44 +1,44 @@
 PATH
   remote: ../../judoscale-delayed_job
   specs:
-    judoscale-delayed_job (1.8.1)
+    judoscale-delayed_job (1.8.2)
       delayed_job_active_record (>= 4.0)
-      judoscale-ruby (= 1.8.1)
+      judoscale-ruby (= 1.8.2)
 
 PATH
   remote: ../../judoscale-rails
   specs:
-    judoscale-rails (1.8.1)
-      judoscale-ruby (= 1.8.1)
+    judoscale-rails (1.8.2)
+      judoscale-ruby (= 1.8.2)
       railties
 
 PATH
   remote: ../../judoscale-ruby
   specs:
-    judoscale-ruby (1.8.1)
+    judoscale-ruby (1.8.2)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    actionpack (7.0.8.5)
-      actionview (= 7.0.8.5)
-      activesupport (= 7.0.8.5)
+    actionpack (7.0.8.6)
+      actionview (= 7.0.8.6)
+      activesupport (= 7.0.8.6)
       rack (~> 2.0, >= 2.2.4)
       rack-test (>= 0.6.3)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.2.0)
-    actionview (7.0.8.5)
-      activesupport (= 7.0.8.5)
+    actionview (7.0.8.6)
+      activesupport (= 7.0.8.6)
       builder (~> 3.1)
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    activemodel (7.0.8.5)
-      activesupport (= 7.0.8.5)
-    activerecord (7.0.8.5)
-      activemodel (= 7.0.8.5)
-      activesupport (= 7.0.8.5)
-    activesupport (7.0.8.5)
+    activemodel (7.0.8.6)
+      activesupport (= 7.0.8.6)
+    activerecord (7.0.8.6)
+      activemodel (= 7.0.8.6)
+      activesupport (= 7.0.8.6)
+    activesupport (7.0.8.6)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -60,21 +60,21 @@ GEM
     erubi (1.13.0)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
-    loofah (2.22.0)
+    loofah (2.23.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     method_source (1.1.0)
     minitest (5.25.1)
     mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
-    nio4r (2.7.3)
+    nio4r (2.7.4)
     nokogiri (1.16.7-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.7-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
-    pg (1.5.8)
+    pg (1.5.9)
     puma (5.6.9)
       nio4r (~> 2.0)
     racc (1.8.1)
@@ -91,9 +91,9 @@ GEM
     rails-html-sanitizer (1.6.0)
       loofah (~> 2.21)
       nokogiri (~> 1.14)
-    railties (7.0.8.5)
-      actionpack (= 7.0.8.5)
-      activesupport (= 7.0.8.5)
+    railties (7.0.8.6)
+      actionpack (= 7.0.8.6)
+      activesupport (= 7.0.8.6)
       method_source
       rake (>= 12.2)
       thor (~> 1.0)
@@ -109,13 +109,14 @@ GEM
     tilt (2.4.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    zeitwerk (2.7.0)
+    zeitwerk (2.7.1)
 
 PLATFORMS
   arm64-darwin-20
   arm64-darwin-21
   arm64-darwin-22
   arm64-darwin-23
+  arm64-darwin-24
   x86_64-darwin-21
   x86_64-linux
 
