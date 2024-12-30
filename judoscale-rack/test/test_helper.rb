@@ -15,6 +15,7 @@ Judoscale.configure do |config|
 end
 
 class TestSinatraApp < Sinatra::Base
+  set :environment, :test
   use Judoscale::RequestMiddleware
 
   get "/" do
