@@ -144,7 +144,12 @@ module Judoscale
           DelayableWithoutRetry.set(queue: "default").perform_later(false)
         end
 
-        ::SolidQueue::ReadyExecution.claim(%w[default], 1, 42).each(&:perform)
+        begin
+          ::SolidQueue::ReadyExecution.claim(%w[default], 1, 42).each(&:perform)
+        rescue RuntimeError => e
+          _(e.message).must_equal "boom"
+        end
+
         _(::SolidQueue::FailedExecution.count).must_equal 1
 
         metrics = subject.collect
