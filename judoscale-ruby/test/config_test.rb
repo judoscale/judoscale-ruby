@@ -57,7 +57,7 @@ module Judoscale
 
       use_env env do
         config = Config.instance
-        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890/srv-cfa1es5a49987h4vcvfg"
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
         _(config.current_runtime_container).must_equal "5497f74465-m5wwr"
       end
     end
