@@ -44,7 +44,6 @@ module Judoscale
         _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/srv-cfa1es5a49987h4vcvfg"
         _(config.current_runtime_container).must_equal "5497f74465-m5wwr"
       end
-
     end
 
     it "initializes the config from default render ENV vars for legacy render services not using JUDOSCALE_URL" do
