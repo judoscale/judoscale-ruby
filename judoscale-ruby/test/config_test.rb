@@ -76,6 +76,20 @@ module Judoscale
       end
     end
 
+    it "initializes the config from default Railway ENV vars" do
+      env = {
+        "RAILWAY_SERVICE_ID" => "1431de82-74ad-4f1a-b8f2-1952262d66cf",
+        "RAILWAY_REPLICA_ID" => "f9c88b6e-0e96-46f2-9884-ece3bf53d009",
+        "JUDOSCALE_URL" => "https://adapter.judoscale.com/api/1234567890"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
+        _(config.current_runtime_container).must_equal "f9c88b6e-0e96-46f2-9884-ece3bf53d009"
+      end
+    end
+
     it "allows ENV vars config overrides for the debug and URL" do
       env = {
         "DYNO" => "web.2",

@@ -105,6 +105,8 @@ module Judoscale
         elsif ENV.include?("ECS_CONTAINER_METADATA_URI")
           instance = ENV["ECS_CONTAINER_METADATA_URI"].split("/").last
           RuntimeContainer.new instance
+        elsif ENV.include?("RAILWAY_REPLICA_ID")
+          RuntimeContainer.new ENV["RAILWAY_REPLICA_ID"]
         else
           # Unsupported platform...
           RuntimeContainer.new("")
