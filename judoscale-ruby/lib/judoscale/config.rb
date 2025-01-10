@@ -93,19 +93,22 @@ module Judoscale
 
       self.class.adapter_configs.each(&:reset)
 
-      if ENV["RENDER_INSTANCE_ID"]
-        instance = ENV["RENDER_INSTANCE_ID"].delete_prefix(ENV["RENDER_SERVICE_ID"]).delete_prefix("-")
-        @current_runtime_container = RuntimeContainer.new instance
-        # Deprecated API url using the service ID for legacy render services not using `JUDOSCALE_URL`.
-        @api_base_url ||= "https://adapter.judoscale.com/api/#{ENV["RENDER_SERVICE_ID"]}"
-      elsif ENV["DYNO"]
-        @current_runtime_container = RuntimeContainer.new ENV["DYNO"]
-      elsif (metadata_uri = ENV["ECS_CONTAINER_METADATA_URI"])
-        @current_runtime_container = RuntimeContainer.new(metadata_uri.split("/").last)
-      else
-        # unsupported platform? Don't want to leave @current_runtime_container nil though
-        @current_runtime_container = RuntimeContainer.new("")
-      end
+      @current_runtime_container =
+        if ENV.include?("DYNO")
+          RuntimeContainer.new ENV["DYNO"]
+        elsif ENV.include?("RENDER_INSTANCE_ID")
+          # Deprecated API url using the service ID for legacy render services not using `JUDOSCALE_URL`.
+          @api_base_url ||= "https://adapter.judoscale.com/api/#{ENV["RENDER_SERVICE_ID"]}"
+
+          instance = ENV["RENDER_INSTANCE_ID"].delete_prefix("#{ENV["RENDER_SERVICE_ID"]}-")
+          RuntimeContainer.new instance
+        elsif ENV.include?("ECS_CONTAINER_METADATA_URI")
+          instance = ENV["ECS_CONTAINER_METADATA_URI"].split("/").last
+          RuntimeContainer.new instance
+        else
+          # Unsupported platform...
+          RuntimeContainer.new("")
+        end
     end
 
     def log_level=(new_level)
