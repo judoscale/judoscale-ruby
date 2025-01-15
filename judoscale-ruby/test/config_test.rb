@@ -8,12 +8,12 @@ module Judoscale
     it "initializes the config from default heroku ENV vars and other sensible defaults" do
       env = {
         "DYNO" => "web.1",
-        "JUDOSCALE_URL" => "https://example.com"
+        "JUDOSCALE_URL" => "https://adapter.judoscale.com/api/1234567890"
       }
 
       use_env env do
         config = Config.instance
-        _(config.api_base_url).must_equal "https://example.com"
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
         _(config.current_runtime_container).must_equal "web.1"
         _(config.log_level).must_be_nil
         _(config.logger).must_be_instance_of ::Logger
@@ -32,7 +32,7 @@ module Judoscale
       end
     end
 
-    it "initializes the config from default render ENV vars and other sensible defaults" do
+    it "initializes the config from default render ENV vars for render services" do
       env = {
         "RENDER_SERVICE_ID" => "srv-cfa1es5a49987h4vcvfg",
         "RENDER_INSTANCE_ID" => "srv-cfa1es5a49987h4vcvfg-5497f74465-m5wwr",
@@ -43,20 +43,21 @@ module Judoscale
         config = Config.instance
         _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/srv-cfa1es5a49987h4vcvfg"
         _(config.current_runtime_container).must_equal "5497f74465-m5wwr"
-        _(config.log_level).must_be_nil
-        _(config.logger).must_be_instance_of ::Logger
-        _(config.max_request_size_bytes).must_equal 100_000
-        _(config.report_interval_seconds).must_equal 10
+      end
+    end
 
-        enabled_adapter_configs = Config.adapter_configs.select(&:enabled).map(&:identifier)
-        _(enabled_adapter_configs).must_equal %i[test_job_config]
+    it "initializes the config from default render ENV vars for legacy render services not using JUDOSCALE_URL" do
+      env = {
+        "JUDOSCALE_URL" => "https://adapter.judoscale.com/api/1234567890",
+        "RENDER_SERVICE_ID" => "srv-cfa1es5a49987h4vcvfg",
+        "RENDER_INSTANCE_ID" => "srv-cfa1es5a49987h4vcvfg-5497f74465-m5wwr",
+        "RENDER_SERVICE_TYPE" => "web"
+      }
 
-        enabled_adapter_configs.each do |adapter_name|
-          adapter_config = config.public_send(adapter_name)
-          _(adapter_config.enabled).must_equal true
-          _(adapter_config.max_queues).must_equal 20
-          _(adapter_config.track_busy_jobs).must_equal false
-        end
+      use_env env do
+        config = Config.instance
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
+        _(config.current_runtime_container).must_equal "5497f74465-m5wwr"
       end
     end
 
@@ -71,6 +72,20 @@ module Judoscale
         config = Config.instance
         _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
         _(config.current_runtime_container).must_equal "a8880ee042bc4db3ba878dce65b769b6-2750272591"
+      end
+    end
+
+    it "initializes the config from default Railway ENV vars" do
+      env = {
+        "RAILWAY_SERVICE_ID" => "1431de82-74ad-4f1a-b8f2-1952262d66cf",
+        "RAILWAY_REPLICA_ID" => "f9c88b6e-0e96-46f2-9884-ece3bf53d009",
+        "JUDOSCALE_URL" => "https://adapter.judoscale.com/api/1234567890"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
+        _(config.current_runtime_container).must_equal "f9c88b6e-0e96-46f2-9884-ece3bf53d009"
       end
     end
 
