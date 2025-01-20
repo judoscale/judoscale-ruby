@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # require "good_job" fails unless we require these first
+require "logger"
 require "rails"
 require "active_support/core_ext/numeric/time"
 require "active_job/railtie"
