@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0](https://github.com/judoscale/judoscale-ruby/compare/v1.9.0...v1.10.0) (2025-02-17)
+
+
+### Features
+
+* Configure runtime container for Fly.io ([#233](https://github.com/judoscale/judoscale-ruby/issues/233)) ([0e51a87](https://github.com/judoscale/judoscale-ruby/commit/0e51a87c9e135c1d4fee6296eb204dd8d1daa4f4))
+
 ## [1.9.0](https://github.com/judoscale/judoscale-ruby/compare/v1.8.3...v1.9.0) (2025-01-15)
 
 
