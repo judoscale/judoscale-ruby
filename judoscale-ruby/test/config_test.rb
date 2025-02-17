@@ -75,6 +75,20 @@ module Judoscale
       end
     end
 
+    it "initializes the config from default Fly ENV vars" do
+      env = {
+        "FLY_MACHINE_ID" => "683d924b322418",
+        "FLY_PROCESS_GROUP" => "web",
+        "JUDOSCALE_URL" => "https://adapter.judoscale.com/api/1234567890"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
+        _(config.current_runtime_container).must_equal "683d924b322418"
+      end
+    end
+
     it "initializes the config from default Railway ENV vars" do
       env = {
         "RAILWAY_SERVICE_ID" => "1431de82-74ad-4f1a-b8f2-1952262d66cf",
