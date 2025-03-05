@@ -35,8 +35,8 @@ module Judoscale
         @queue_filter = DEFAULT_QUEUE_FILTER
 
         # Support for deprecated legacy env var configs.
-        @max_queues = (ENV["RAILS_AUTOSCALE_MAX_QUEUES"] || 20).to_i
-        self.track_busy_jobs = ENV["RAILS_AUTOSCALE_LONG_JOBS"] == "true"
+        @max_queues = (ENV["JUDOSCALE_MAX_QUEUES"] || ENV["RAILS_AUTOSCALE_MAX_QUEUES"] || 20).to_i
+        self.track_busy_jobs = (ENV["JUDOSCALE_LONG_JOBS"] || ENV["RAILS_AUTOSCALE_LONG_JOBS"]) == "true"
       end
 
       def track_busy_jobs=(value)
