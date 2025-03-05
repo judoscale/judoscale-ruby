@@ -131,10 +131,23 @@ module Judoscale
       _(log_string).must_include "Invalid log_level detected: not_a_real_log_level"
     end
 
-    it "supports legacy ENV var configs" do
+    it "supports legacy ENV var configs using rails autoscale prefix" do
       env = {
         "RAILS_AUTOSCALE_MAX_QUEUES" => "42",
         "RAILS_AUTOSCALE_LONG_JOBS" => "true"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.test_job_config.max_queues).must_equal 42
+        _(config.test_job_config.track_busy_jobs).must_equal true
+      end
+    end
+
+    it "supports legacy ENV var configs using judoscale prefix" do
+      env = {
+        "JUDOSCALE_MAX_QUEUES" => "42",
+        "JUDOSCALE_LONG_JOBS" => "true"
       }
 
       use_env env do
