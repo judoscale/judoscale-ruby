@@ -22,8 +22,8 @@ module Judoscale
         _(last_response).must_be :ok?
         _(last_response.body).must_match(/Hello World/m)
 
-        _(MetricsStore.instance.metrics.size).must_equal i
-        _(MetricsStore.instance.metrics.last.identifier).must_equal :qt
+        _(MetricsStore.instance.metrics.size).must_equal i * 2
+        _(MetricsStore.instance.metrics.last(2).map(&:identifier)).must_equal [:qt, :at]
       }
     end
   end

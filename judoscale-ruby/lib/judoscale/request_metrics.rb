@@ -31,6 +31,14 @@ module Judoscale
       (queue_time > 0) ? queue_time : 0
     end
 
+    def elapsed_time
+      start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      response = yield
+      finish = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+      [finish - start, response]
+    end
+
     private
 
     def ignore_large_request?

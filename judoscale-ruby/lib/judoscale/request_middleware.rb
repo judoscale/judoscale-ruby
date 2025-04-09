@@ -33,9 +33,16 @@ module Judoscale
         end
 
         logger.debug "Request queue_time=#{queue_time}ms network_time=#{network_time}ms request_id=#{request_metrics.request_id} size=#{request_metrics.size}"
-      end
 
-      @app.call(env)
+        app_time, response = request_metrics.elapsed_time do
+          @app.call(env)
+        end
+        store.push :at, app_time, time
+
+        response
+      else
+        @app.call(env)
+      end
     end
   end
 end
