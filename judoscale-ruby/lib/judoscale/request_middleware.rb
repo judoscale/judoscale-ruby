@@ -17,12 +17,9 @@ module Judoscale
       Reporter.start
       request_metrics = RequestMetrics.new(env)
 
-      unless request_metrics.ignore?
+      if request_metrics.track?
         queue_time = request_metrics.queue_time
         network_time = request_metrics.network_time
-      end
-
-      if queue_time
         store = MetricsStore.instance
 
         # NOTE: Expose queue time to the app

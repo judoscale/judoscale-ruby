@@ -16,8 +16,8 @@ module Judoscale
       @request_start_header = env["HTTP_X_REQUEST_START"]
     end
 
-    def ignore?
-      @config.ignore_large_requests? && @size > @config.max_request_size_bytes
+    def track?
+      @request_start_header && !ignore_large_request?
     end
 
     def started_at
@@ -56,6 +56,12 @@ module Judoscale
 
       # Safeguard against negative queue times (should not happen in practice)
       (queue_time > 0) ? queue_time : 0
+    end
+
+    private
+
+    def ignore_large_request?
+      @config.ignore_large_requests? && @size > @config.max_request_size_bytes
     end
   end
 end
