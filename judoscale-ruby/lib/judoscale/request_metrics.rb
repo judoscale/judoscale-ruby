@@ -22,6 +22,7 @@ module Judoscale
 
     def queue_time(now = Time.now)
       return if started_at.nil?
+      now = now.utc
 
       queue_time = ((now - started_at) * 1000).to_i
 
@@ -60,7 +61,7 @@ module Judoscale
           Time.at(value / 1000.0)
         else
           Time.at(value)
-        end
+        end.utc
       end
     end
   end
