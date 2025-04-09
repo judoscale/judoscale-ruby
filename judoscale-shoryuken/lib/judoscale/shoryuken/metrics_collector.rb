@@ -14,6 +14,7 @@ module Judoscale
 
       def collect
         metrics = []
+        time = Time.now.utc
         self.queues |= ::Shoryuken.ungrouped_queues
 
         queues.each do |queue_name|
@@ -25,7 +26,7 @@ module Judoscale
             .get_queue_attributes(queue_url: queue.url, attribute_names: [SQS_QUEUE_DEPTH_ATTRIBUTE])
           depth = sqs_queue_attributes.attributes[SQS_QUEUE_DEPTH_ATTRIBUTE]
 
-          metrics.push Metric.new(:qd, depth, Time.now, queue_name)
+          metrics.push Metric.new(:qd, depth, time, queue_name)
         end
 
         log_collection(metrics)

@@ -68,7 +68,7 @@ module Judoscale
 
           if track_busy_jobs?
             busy_count = busy_count_by_queue[queue] || 0
-            metrics.push Metric.new(:busy, busy_count, Time.now, queue)
+            metrics.push Metric.new(:busy, busy_count, time, queue)
           end
         end
 
