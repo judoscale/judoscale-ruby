@@ -14,14 +14,13 @@ module Judoscale
     end
 
     def call(env)
-      Reporter.start
       request_metrics = RequestMetrics.new(env)
+      store = MetricsStore.instance
+      time = Time.now.utc
 
-      if request_metrics.track?
-        time = Time.now.utc
+      if request_metrics.track_queue_time?
         queue_time = request_metrics.queue_time(time)
         network_time = request_metrics.network_time
-        store = MetricsStore.instance
 
         # NOTE: Expose queue time to the app
         env["judoscale.queue_time"] = queue_time
@@ -35,7 +34,14 @@ module Judoscale
         logger.debug "Request queue_time=#{queue_time}ms network_time=#{network_time}ms request_id=#{request_metrics.request_id} size=#{request_metrics.size}"
       end
 
-      @app.call(env)
+      Reporter.start
+
+      app_time, response = request_metrics.elapsed_time do
+        @app.call(env)
+      end
+      store.push :at, app_time, time
+
+      response
     end
   end
 end

@@ -16,7 +16,7 @@ module Judoscale
       @request_start_header = env["HTTP_X_REQUEST_START"]
     end
 
-    def track?
+    def track_queue_time?
       @request_start_header && !ignore_large_request?
     end
 
@@ -29,6 +29,14 @@ module Judoscale
 
       # Safeguard against negative queue times (should not happen in practice)
       (queue_time > 0) ? queue_time : 0
+    end
+
+    def elapsed_time
+      start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      response = yield
+      finish = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+      [finish - start, response]
     end
 
     private
