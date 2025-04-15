@@ -12,6 +12,7 @@ module Judoscale
 
       def collect
         metrics = []
+        time = Time.now.utc
         current_queues = ::Resque.queues
 
         if track_busy_jobs?
@@ -31,12 +32,12 @@ module Judoscale
           depth = ::Resque.size(queue)
           latency = (::Resque.latency(queue) * 1000).ceil
 
-          metrics.push Metric.new(:qd, depth, Time.now, queue)
-          metrics.push Metric.new(:qt, latency, Time.now, queue)
+          metrics.push Metric.new(:qd, depth, time, queue)
+          metrics.push Metric.new(:qt, latency, time, queue)
 
           if track_busy_jobs?
             busy_count = busy_counts[queue]
-            metrics.push Metric.new(:busy, busy_count, Time.now, queue)
+            metrics.push Metric.new(:busy, busy_count, time, queue)
           end
         end
 

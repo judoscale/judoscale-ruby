@@ -12,6 +12,7 @@ module Judoscale
 
       def collect
         metrics = []
+        time = Time.now.utc
         queues_by_name = ::Sidekiq::Queue.all.each_with_object({}) do |queue, obj|
           obj[queue.name] = queue
         end
@@ -35,12 +36,12 @@ module Judoscale
           latency_ms = (queue.latency * 1000).ceil
           depth = queue.size
 
-          metrics.push Metric.new(:qt, latency_ms, Time.now, queue_name)
-          metrics.push Metric.new(:qd, depth, Time.now, queue_name)
+          metrics.push Metric.new(:qt, latency_ms, time, queue_name)
+          metrics.push Metric.new(:qd, depth, time, queue_name)
 
           if track_busy_jobs?
             busy_count = busy_counts[queue_name]
-            metrics.push Metric.new(:busy, busy_count, Time.now, queue_name)
+            metrics.push Metric.new(:busy, busy_count, time, queue_name)
           end
         end
 
