@@ -16,7 +16,7 @@ module Judoscale
       @request_start_header = env["HTTP_X_REQUEST_START"]
     end
 
-    def track?
+    def track_queue_time?
       @request_start_header && !ignore_large_request?
     end
 

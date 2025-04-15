@@ -93,7 +93,8 @@ module Judoscale
               middleware.call(env)
 
               metrics = MetricsStore.instance.flush
-              _(metrics.length).must_equal 0
+              _(metrics.length).must_equal 1
+              _(metrics[0].identifier).must_equal :at
             end
           end
 
