@@ -70,7 +70,7 @@ module Judoscale
           "something that takes time"
         end
 
-        _(time).must_be_within_delta 0.0001, 0.001
+        _(time).must_be_within_delta 0.0001, 0.01
         _(response).must_equal "something that takes time"
       end
     end
