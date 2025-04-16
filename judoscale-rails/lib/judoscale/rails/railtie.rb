@@ -4,6 +4,7 @@ require "rails"
 require "rails/railtie"
 require "judoscale/request_middleware"
 require "judoscale/rails/config"
+require "judoscale/rails/utilization_middleware"
 require "judoscale/logger"
 require "judoscale/reporter"
 
@@ -33,6 +34,10 @@ module Judoscale
 
       initializer "Judoscale.request_middleware" do |app|
         app.middleware.insert_before Rack::Runtime, RequestMiddleware
+
+        if judoscale_config.utilization_enabled
+          app.middleware.insert_after RequestMiddleware, UtilizationMiddleware, interval: judoscale_config.utilization_interval
+        end
       end
 
       config.after_initialize do
