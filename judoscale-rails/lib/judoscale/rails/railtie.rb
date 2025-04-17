@@ -28,15 +28,17 @@ module Judoscale
         ::Judoscale::Config.instance
       end
 
-      initializer "Judoscale.logger" do |app|
+      initializer "judoscale.logger" do |app|
         judoscale_config.logger = ::Rails.logger
       end
 
-      initializer "Judoscale.request_middleware" do |app|
+      initializer "judoscale.request_middleware" do |app|
         app.middleware.insert_before Rack::Runtime, RequestMiddleware
+      end
 
+      initializer "judoscale.utilization_middleware", after: :load_config_initializers do |app|
         if judoscale_config.utilization_enabled
-          app.middleware.insert_after RequestMiddleware, UtilizationMiddleware, interval: judoscale_config.utilization_interval
+          app.middleware.insert_before RequestMiddleware, UtilizationMiddleware, interval: judoscale_config.utilization_interval
         end
       end
 
