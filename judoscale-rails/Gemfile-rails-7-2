@@ -3,13 +3,7 @@ source "https://rubygems.org"
 gemspec name: "judoscale-rails"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
-gem "railties", "~> 6.1"
+gem "railties", "~> 7.2.0"
 gem "minitest"
 gem "minitest-stub-const"
 gem "rake"
-
-if RUBY_VERSION >= "3.3"
-  gem "base64"
-  gem "bigdecimal"
-  gem "mutex_m"
-end
