@@ -60,45 +60,43 @@ module Judoscale
   describe Judoscale::Rails::UtilizationMiddleware do
     include TrackerTest
 
-    describe "#call" do
-      after {
-        stop_tracker_thread
-        reset_tracker_count
-        MetricsStore.instance.clear
-      }
+    after {
+      stop_tracker_thread
+      reset_tracker_count
+      MetricsStore.instance.clear
+    }
 
-      let(:app) { MockApp.new }
-      let(:env) { Hash.new }
-      let(:middleware) { Rails::UtilizationMiddleware.new(app, interval: 1) }
+    let(:app) { MockApp.new }
+    let(:env) { Hash.new }
+    let(:middleware) { Rails::UtilizationMiddleware.new(app, interval: 1) }
 
-      it "passes the request env up the middleware stack, returning the app's response" do
-        response = middleware.call(env)
+    it "passes the request env up the middleware stack, returning the app's response" do
+      response = middleware.call(env)
 
-        _(response).must_equal app
-        _(app.env).must_equal env
+      _(response).must_equal app
+      _(app.env).must_equal env
+    end
+
+    it "starts the utilization tracker and counts active requests" do
+      stub_tracker_loop do
+        middleware.call(env)
       end
 
-      it "starts the utilization tracker and counts active requests" do
-        stub_tracker_loop do
-          middleware.call(env)
-        end
+      _(tracker_thread).must_be_instance_of Thread
+      _(tracker_count).must_equal 0
+      _(env["judoscale.test.tracker_count"]).must_equal 1
 
-        _(tracker_thread).must_be_instance_of Thread
-        _(tracker_count).must_equal 0
-        _(env["judoscale.test.tracker_count"]).must_equal 1
+      # Simulate 2 calls to the middleware as if there were 2 requests being handled simultaneously.
+      stub_tracker_loop do
+        other_app = ->(env) { middleware.call(env) }
 
-        # Simulate 2 calls to the middleware as if there were 2 requests being handled simultaneously.
-        stub_tracker_loop do
-          other_app = ->(env) { middleware.call(env) }
-
-          other_middleware = Rails::UtilizationMiddleware.new(other_app, interval: 1)
-          other_middleware.call(env)
-        end
-
-        _(tracker_thread).must_be_instance_of Thread
-        _(tracker_count).must_equal 0
-        _(env["judoscale.test.tracker_count"]).must_equal 2
+        other_middleware = Rails::UtilizationMiddleware.new(other_app, interval: 1)
+        other_middleware.call(env)
       end
+
+      _(tracker_thread).must_be_instance_of Thread
+      _(tracker_count).must_equal 0
+      _(env["judoscale.test.tracker_count"]).must_equal 2
     end
   end
 
