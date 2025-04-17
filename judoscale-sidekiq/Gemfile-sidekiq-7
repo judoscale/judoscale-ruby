@@ -1,9 +1,8 @@
 source "https://rubygems.org"
 
-gemspec name: "judoscale-rails"
+gemspec name: "judoscale-sidekiq"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
-gem "railties", "~> 7.1.0"
+gem "sidekiq", "~> 7.0"
 gem "minitest"
-gem "minitest-stub-const"
 gem "rake"
