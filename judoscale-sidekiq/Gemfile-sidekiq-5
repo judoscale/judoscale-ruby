@@ -6,3 +6,7 @@ gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "sidekiq", "~> 5.0"
 gem "minitest"
 gem "rake"
+
+if RUBY_VERSION >= "3.3"
+  gem "base64"
+end
