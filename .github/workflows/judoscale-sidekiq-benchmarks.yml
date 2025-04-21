@@ -14,11 +14,13 @@ jobs:
       matrix:
         gemfile:
           - Gemfile
+          - Gemfile-sidekiq-7
+          - Gemfile-sidekiq-6
           - Gemfile-sidekiq-5
         ruby:
           - "2.7"
           - "3.1"
-          - "3.3"
+          - "3.4"
         redis:
           - "5.0"
           - "6.0"
@@ -27,6 +29,13 @@ jobs:
           # Recent redis-client requires Redis 6+
           - gemfile: Gemfile
             redis: "5.0"
+          - gemfile: Gemfile-sidekiq-7
+            redis: "5.0"
+          # Sidekiq 8.0 requires Ruby 3.2
+          - gemfile: Gemfile
+            ruby: "3.1"
+          - gemfile: Gemfile
+            ruby: "2.7"
 
     runs-on: ubuntu-latest
 
