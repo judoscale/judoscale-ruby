@@ -3,11 +3,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # Require only the frameworks we currently use instead of loading everything.
 %w(activerecord actionpack actionview railties).each { |rails_gem|
-  gem rails_gem, "~> 7.0.1"
+  gem rails_gem, "~> 7.1.0"
 }
 
 gem "pg", "~> 1.1"
-gem "puma", "~> 5.0"
+gem "puma", "~> 6.0"
 
 gem "delayed_job_active_record"
 gem "delayed_job_web"
