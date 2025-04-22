@@ -82,6 +82,8 @@ GEM
     minitest (5.25.5)
     nokogiri (1.18.8-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.18.8-x86_64-linux-gnu)
+      racc (~> 1.4)
     pg (1.5.9)
     pp (0.6.2)
       prettyprint
@@ -138,6 +140,7 @@ GEM
 
 PLATFORMS
   arm64-darwin
+  x86_64-linux
 
 DEPENDENCIES
   activerecord
@@ -148,4 +151,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   2.6.5
+   2.6.8

@@ -70,6 +70,8 @@ GEM
     minitest-stub-const (0.6)
     nokogiri (1.18.8-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.18.8-x86_64-linux-gnu)
+      racc (~> 1.4)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -116,6 +118,7 @@ GEM
 
 PLATFORMS
   arm64-darwin
+  x86_64-linux
 
 DEPENDENCIES
   debug
@@ -126,4 +129,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   2.6.5
+   2.6.8

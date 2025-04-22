@@ -41,9 +41,7 @@ GEM
     tilt (2.6.0)
 
 PLATFORMS
-  arm64-darwin-21
-  arm64-darwin-23
-  arm64-darwin-24
+  arm64-darwin
 
 DEPENDENCIES
   judoscale-rack!
@@ -53,4 +51,4 @@ DEPENDENCIES
   sinatra
 
 BUNDLED WITH
-   2.5.4
+   2.6.8

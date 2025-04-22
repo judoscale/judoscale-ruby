@@ -41,8 +41,8 @@ GEM
     thor (1.3.2)
 
 PLATFORMS
-  arm64-darwin-23
-  ruby
+  arm64-darwin
+  x86_64-linux
 
 DEPENDENCIES
   aws-sdk-sqs
@@ -54,4 +54,4 @@ DEPENDENCIES
   shoryuken (~> 6.2)
 
 BUNDLED WITH
-   2.6.5
+   2.6.8
