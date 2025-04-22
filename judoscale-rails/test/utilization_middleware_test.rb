@@ -67,7 +67,7 @@ module Judoscale
     }
 
     let(:app) { MockApp.new }
-    let(:env) { Hash.new }
+    let(:env) { {} }
     let(:middleware) { Rails::UtilizationMiddleware.new(app, interval: 1) }
 
     it "passes the request env up the middleware stack, returning the app's response" do
