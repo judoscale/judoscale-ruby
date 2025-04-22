@@ -17,13 +17,6 @@ module Judoscale
       tracker.instance_variable_get(:@active_request_counter)
     end
 
-    def run_tracker_thread(interval: 1)
-      stub_tracker_loop {
-        tracker.start!(interval: interval)
-        tracker_thread.join
-      }
-    end
-
     def stop_tracker_thread
       tracker_thread&.terminate
     end
@@ -104,27 +97,26 @@ module Judoscale
     include TrackerTest
 
     after {
-      stop_tracker_thread
       reset_tracker_count
       MetricsStore.instance.clear
     }
 
-    it "tracks utilization metrics for active requests on each interval loop" do
-      run_tracker_thread
+    it "tracks utilization metrics for active requests" do
+      tracker.track_current_state
 
       metrics = MetricsStore.instance.flush
       _(metrics.map(&:identifier)).must_equal %i[pu ru]
       _(metrics.map(&:value)).must_equal [0, 0]
 
       3.times { tracker.incr }
-      run_tracker_thread
+      tracker.track_current_state
 
       metrics = MetricsStore.instance.flush
       _(metrics.map(&:identifier)).must_equal %i[pu ru]
       _(metrics.map(&:value)).must_equal [1, 3]
 
       tracker.decr
-      run_tracker_thread
+      tracker.track_current_state
 
       metrics = MetricsStore.instance.flush
       _(metrics.map(&:identifier)).must_equal %i[pu ru]
