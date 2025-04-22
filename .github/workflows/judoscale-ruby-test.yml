@@ -27,8 +27,12 @@ jobs:
       BUNDLE_GEMFILE: ${{ github.workspace }}/judoscale-ruby/${{ matrix.gemfile }}
     steps:
       - uses: actions/checkout@v4
+      - name: Setup default Bundler for Ruby <= 3.0
+        if: ${{ matrix.ruby <= '3.0' }}
+        run: echo "BUNDLER_VERSION=2.4.22" >> $GITHUB_ENV
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true # runs bundle install and caches installed gems automatically
+          bundler: ${{ env.BUNDLER_VERSION || 'Gemfile.lock' }}
       - run: bundle exec rake
