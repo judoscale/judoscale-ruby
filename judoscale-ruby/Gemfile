@@ -7,5 +7,3 @@ gem "minitest"
 gem "minitest-stub-const"
 gem "webmock"
 gem "public_suffix", "~> 5.0" # support for older Ruby versions
-gem "debug"
-

@@ -14,46 +14,25 @@ GEM
   remote: https://rubygems.org/
   specs:
     connection_pool (2.5.1)
-    date (3.4.1)
-    debug (1.10.0)
-      irb (~> 1.10)
-      reline (>= 0.3.8)
-    io-console (0.8.0)
-    irb (1.15.2)
-      pp (>= 0.6.0)
-      rdoc (>= 4.0.0)
-      reline (>= 0.4.2)
     json (2.10.2)
     logger (1.7.0)
     minitest (5.25.5)
-    pp (0.6.2)
-      prettyprint
-    prettyprint (0.2.0)
-    psych (5.2.3)
-      date
-      stringio
     rack (3.1.13)
     rake (13.2.1)
-    rdoc (6.13.1)
-      psych (>= 4.0.0)
     redis-client (0.24.0)
       connection_pool
-    reline (0.6.1)
-      io-console (~> 0.5)
     sidekiq (8.0.2)
       connection_pool (>= 2.5.0)
       json (>= 2.9.0)
       logger (>= 1.6.2)
       rack (>= 3.1.0)
       redis-client (>= 0.23.2)
-    stringio (3.1.7)
 
 PLATFORMS
   arm64-darwin
   x86_64-linux
 
 DEPENDENCIES
-  debug
   judoscale-ruby!
   judoscale-sidekiq!
   minitest
