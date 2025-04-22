@@ -1,0 +1,10 @@
+source "https://rubygems.org"
+
+gemspec name: "judoscale-rack"
+
+gem "judoscale-ruby", path: "../judoscale-ruby"
+gem "rack", "~> 2.0"
+gem "minitest"
+gem "rake"
+gem "sinatra", ">= 2.0"
+gem "rack-test"
