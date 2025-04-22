@@ -79,7 +79,7 @@ GEM
     loofah (2.24.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    minitest (5.25.5)
+    minitest (5.25.4)
     nokogiri (1.18.8-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.18.8-x86_64-linux-gnu)
@@ -146,7 +146,7 @@ DEPENDENCIES
   activerecord
   judoscale-ruby!
   judoscale-solid_queue!
-  minitest
+  minitest (= 5.25.4)
   pg
   rake
 

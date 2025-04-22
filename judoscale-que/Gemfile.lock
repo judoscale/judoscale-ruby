@@ -41,7 +41,7 @@ GEM
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     logger (1.7.0)
-    minitest (5.25.5)
+    minitest (5.25.4)
     pg (1.5.9)
     que (2.4.1)
     rake (13.2.1)
@@ -59,7 +59,7 @@ DEPENDENCIES
   activerecord
   judoscale-que!
   judoscale-ruby!
-  minitest
+  minitest (= 5.25.4)
   pg
   rake
 

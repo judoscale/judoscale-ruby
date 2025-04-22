@@ -16,7 +16,7 @@ GEM
     connection_pool (2.5.1)
     json (2.10.2)
     logger (1.7.0)
-    minitest (5.25.5)
+    minitest (5.25.4)
     rack (3.1.13)
     rake (13.2.1)
     redis-client (0.24.0)
@@ -35,7 +35,7 @@ PLATFORMS
 DEPENDENCIES
   judoscale-ruby!
   judoscale-sidekiq!
-  minitest
+  minitest (= 5.25.4)
   rake
   sidekiq (~> 8.0)
 
