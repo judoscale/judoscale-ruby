@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+DIR="sample-apps/*" bin/foreach bundle update

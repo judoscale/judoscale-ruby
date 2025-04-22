@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "fileutils"
+
+puts "Running foreach: #{ARGV.inspect}"
+puts
+
+Dir[ENV["DIR"] || "judoscale-*"].each do |dir|
+  FileUtils.cd(dir) do
+    puts "Running: #{dir}"
+    system(*ARGV)
+    puts
+  end
+end

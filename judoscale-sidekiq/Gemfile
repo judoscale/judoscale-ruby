@@ -4,6 +4,5 @@ gemspec name: "judoscale-sidekiq"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "sidekiq", "~> 8.0"
-gem "minitest"
+gem "minitest", "5.25.4" # latest version that supports Ruby 2.6
 gem "rake"
-gem "debug"

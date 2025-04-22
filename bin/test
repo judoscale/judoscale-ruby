@@ -1,12 +1,3 @@
-#!/usr/bin/env ruby
-# frozen_string_literal: true
+#!/usr/bin/env bash
 
-require "fileutils"
-
-Dir["judoscale-*"].each do |dir|
-  FileUtils.cd(dir) do
-    puts "Running tests: #{dir}"
-    system("bundle exec rake test")
-    puts
-  end
-end
+bin/foreach bundle exec rake test

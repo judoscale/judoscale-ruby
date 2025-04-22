@@ -1,0 +1,39 @@
+PATH
+  remote: .
+  specs:
+    judoscale-ruby (1.10.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.8.7)
+      public_suffix (>= 2.0.2, < 7.0)
+    bigdecimal (3.1.9)
+    crack (1.0.0)
+      bigdecimal
+      rexml
+    hashdiff (1.1.2)
+    minitest (5.25.4)
+    minitest-stub-const (0.6)
+    public_suffix (5.1.1)
+    rake (13.2.1)
+    rexml (3.4.1)
+    webmock (3.25.1)
+      addressable (>= 2.8.0)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
+
+PLATFORMS
+  arm64-darwin
+  x86_64-linux
+
+DEPENDENCIES
+  judoscale-ruby!
+  minitest (= 5.25.4)
+  minitest-stub-const
+  public_suffix (~> 5.0)
+  rake (>= 12.3.3)
+  webmock
+
+BUNDLED WITH
+   2.6.8

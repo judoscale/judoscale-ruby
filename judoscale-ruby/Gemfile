@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gemspec name: "judoscale-ruby"
 
 gem "rake", ">= 12.3.3"
-gem "minitest"
+gem "minitest", "5.25.4" # latest version that supports Ruby 2.6
 gem "minitest-stub-const"
 gem "webmock"
-gem "debug"
+gem "public_suffix", "~> 5.0" # support for older Ruby versions

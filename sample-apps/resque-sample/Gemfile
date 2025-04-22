@@ -3,10 +3,10 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # Require only the frameworks we currently use instead of loading everything.
 %w(actionpack actionview railties).each { |rails_gem|
-  gem rails_gem, "~> 7.0.1"
+  gem rails_gem, "~> 7.1.0"
 }
 
-gem "puma", "~> 5.0"
+gem "puma", "~> 6.0"
 
 gem "resque"
 

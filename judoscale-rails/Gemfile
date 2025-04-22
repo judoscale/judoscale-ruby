@@ -3,7 +3,6 @@ source "https://rubygems.org"
 gemspec name: "judoscale-rails"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
-gem "minitest"
+gem "minitest", "5.25.4" # latest version that supports Ruby 2.6
 gem "minitest-stub-const"
 gem "rake"
-gem "debug"

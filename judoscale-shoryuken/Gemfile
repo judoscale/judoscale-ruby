@@ -6,5 +6,5 @@ gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "shoryuken", "~> 6.2"
 gem "aws-sdk-sqs" # shoryuken integration with AWS SDK v3+
 gem "rexml" # aws-sdk-core requires an XML parser.
-gem "minitest"
+gem "minitest", "5.25.4" # latest version that supports Ruby 2.6
 gem "rake"

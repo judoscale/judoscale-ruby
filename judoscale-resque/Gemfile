@@ -3,6 +3,7 @@ source "https://rubygems.org"
 gemspec name: "judoscale-resque"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
-gem "minitest"
+gem "minitest", "5.25.4" # latest version that supports Ruby 2.6
 gem "rake"
-gem "debug"
+# Lock an older version of Sinatra that supports Ruby 2.6
+gem "sinatra", "~> 3.2"
