@@ -9,7 +9,7 @@ module Judoscale
 
     def call(env)
       @env = env
-      nil
+      self
     end
   end
 
@@ -35,9 +35,11 @@ module Judoscale
           Judoscale.configure { |config| config.api_base_url = "http://example.com" }
         }
 
-        it "passes the request up the middleware stack" do
-          middleware.call(env)
-          _(app.env).must_equal(env)
+        it "passes the request env up the middleware stack, returning the app's response" do
+          response = middleware.call(env)
+
+          _(response).must_equal app
+          _(app.env).must_equal env
         end
 
         it "starts the reporter" do
