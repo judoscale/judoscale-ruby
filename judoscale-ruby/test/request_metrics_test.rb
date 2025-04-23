@@ -64,13 +64,13 @@ module Judoscale
     end
 
     describe "#elapsed_time" do
-      it "calculates the time taken to run the given block, returning both the time and the result of the block" do
+      it "calculates the time taken to run the given block, returning both the time as milliseconds and the result of the block" do
         time, response = request.elapsed_time do
-          sleep 0.0001
+          sleep 0.001
           "something that takes time"
         end
 
-        _(time).must_be_within_delta 0.0001, 0.01
+        _(time).must_be_within_delta 1, 0.01
         _(response).must_equal "something that takes time"
       end
     end
