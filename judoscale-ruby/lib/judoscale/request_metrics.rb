@@ -36,7 +36,8 @@ module Judoscale
       response = yield
       finish = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
-      [finish - start, response]
+      elapsed = ((finish - start) * 1000).to_i
+      [elapsed, response]
     end
 
     private
