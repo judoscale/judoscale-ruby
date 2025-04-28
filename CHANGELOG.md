@@ -1,6 +1,20 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0](https://github.com/judoscale/judoscale-ruby/compare/v1.10.0...v1.11.0) (2025-04-24)
+
+
+### Features
+
+* Expand coverage with Ruby 3.4, Rails 7.2/8, Sidekiq 8 ([#241](https://github.com/judoscale/judoscale-ruby/issues/241)) ([664974d](https://github.com/judoscale/judoscale-ruby/commit/664974ddf482bd5129421fa0be9379f6db803fee))
+* Introduce new middleware to track & collect utilization metrics ([#240](https://github.com/judoscale/judoscale-ruby/issues/240)) ([48ad428](https://github.com/judoscale/judoscale-ruby/commit/48ad4284effd9ce03f5a1f6bbfa94a2dc1b72761))
+* Track app time as a new metric ([#238](https://github.com/judoscale/judoscale-ruby/issues/238)) ([bcb0e7a](https://github.com/judoscale/judoscale-ruby/commit/bcb0e7a4e596821ca0074c1390d67e07e2595007))
+
+
+### Bug Fixes
+
+* Add judoscale env var for max queues and long jobs ([#235](https://github.com/judoscale/judoscale-ruby/issues/235)) ([ad739e4](https://github.com/judoscale/judoscale-ruby/commit/ad739e4cf41e44a8e79c502afc02ffa461c5f8e1))
+
 ## [1.10.0](https://github.com/judoscale/judoscale-ruby/compare/v1.9.0...v1.10.0) (2025-02-17)
 
 
