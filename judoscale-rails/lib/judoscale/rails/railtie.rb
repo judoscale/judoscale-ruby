@@ -36,6 +36,7 @@ module Judoscale
         app.middleware.insert_before Rack::Runtime, RequestMiddleware
       end
 
+      # This initializer along with Scout and Sentry appears to cause a "stack level too deep" error.
       initializer "judoscale.utilization_middleware", after: :load_config_initializers do |app|
         if judoscale_config.utilization_enabled
           app.middleware.insert_before RequestMiddleware, UtilizationMiddleware, interval: judoscale_config.utilization_interval
