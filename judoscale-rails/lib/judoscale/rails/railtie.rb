@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "rails"
-require "rails/railtie"
+require "rails/engine"
 require "judoscale/request_middleware"
 require "judoscale/rails/config"
 require "judoscale/rails/utilization_middleware"
@@ -10,7 +10,12 @@ require "judoscale/reporter"
 
 module Judoscale
   module Rails
-    class Railtie < ::Rails::Railtie
+    # Inherit from `Engine`, even though we use none its specific features (yet), so we can safely rely
+    # on `load_config_initializers` to setup our initializers and avoid loading `config/initializers/*`
+    # too early, otherwise we can run into initialization order conflicts with other libraries like
+    # `Sentry` and `Scout`, which patch Ruby classes in different ways (`prepend` vs `alias_method`),
+    # and may cause `stack level too deep` errors if they are loaded too early in the init process.
+    class Railtie < ::Rails::Engine
       include Judoscale::Logger
 
       def in_rails_console_or_runner?
