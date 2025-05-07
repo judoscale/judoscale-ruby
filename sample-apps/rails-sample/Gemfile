@@ -12,9 +12,3 @@ gem "puma", "~> 6.0"
 # but we want to test against the local dev version of it, not a released gem, so we need to specify it too.
 gem "judoscale-ruby", path: "../../judoscale-ruby"
 gem "judoscale-rails", path: "../../judoscale-rails"
-# gem "judoscale-rails", "~> 1.10"
-
-# Monitoring and error tracking
-gem "scout_apm", "~> 5.0"
-gem "sentry-ruby", "~> 5.0"
-gem "sentry-rails", "~> 5.0"
