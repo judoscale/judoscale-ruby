@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - release-please--branches--main--components--release-please-action
 
 jobs:
   release-please:
@@ -11,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
-      pr_created: ${{ !!steps.release.outputs.pr }}
+      # pr_created: ${{ !!steps.release.outputs.pr }}
     steps:
       - name: Release
         id: release
@@ -26,7 +27,7 @@ jobs:
     name: Update version in Gemfile.lock files
     needs: release-please
     runs-on: ubuntu-latest
-    if: ${{ needs.release-please.outputs.pr_created == 'true' }}
+    # if: ${{ needs.release-please.outputs.pr_created == 'true' }}
 
     steps:
       - name: Checkout code
