@@ -39,7 +39,7 @@ jobs:
           ruby-version: "3.4"
 
       - name: Update versions
-        run:
+        run: |
           bin/foreach bundle install
           git commit -a -m 'Update Gemfile.lock versions'
 
