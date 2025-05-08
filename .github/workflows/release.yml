@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
+      pr_created: ${{ steps.release.outputs.prs_created }}
     steps:
       - name: Release
         id: release
@@ -20,6 +21,26 @@ jobs:
           package-name: release-please-action
           bump-minor-pre-major: true
           version-file: "judoscale-ruby/lib/judoscale/version.rb"
+
+  update-gemfile-versions:
+    name: Update version in Gemfile.lock files
+    needs: release-please
+    runs-on: ubuntu-latest
+    if: ${{ needs.release-please.outputs.pr_created == 'true' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+
+      - name: Update versions
+        run:
+          bin/foreach bundle install
+          git commit -a -m 'Update Gemfile.lock versions'
 
   publish:
     name: Publish to Rubygems
@@ -34,7 +55,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.3"
+          ruby-version: "3.4"
 
       - name: Publish gems
         env:
