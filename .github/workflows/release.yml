@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
-      pr_created: ${{ steps.release.outputs.prs_created }}
+      pr_created: ${{ !!steps.release.outputs.pr }}
     steps:
       - name: Release
         id: release
