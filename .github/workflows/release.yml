@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
-      # pr_created: ${{ !!steps.release.outputs.pr }}
     steps:
       - name: Release
         id: release
@@ -23,24 +22,20 @@ jobs:
           bump-minor-pre-major: true
           version-file: "judoscale-ruby/lib/judoscale/version.rb"
 
-  update-gemfile-versions:
-    name: Update version in Gemfile.lock files
-    needs: release-please
-    runs-on: ubuntu-latest
-    # if: ${{ needs.release-please.outputs.pr_created == 'true' }}
-
-    steps:
       - name: Checkout code
+        if: ${{ !!steps.release.outputs.pr }}
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ steps.release.outputs.pr.headBranchName }}
 
       - name: Setup Ruby
+        if: ${{ !!steps.release.outputs.pr }}
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.4"
 
       - name: Update versions
+        if: ${{ !!steps.release.outputs.pr }}
         run: |
           bin/foreach bundle install
           # https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-using-the-built-in-token
