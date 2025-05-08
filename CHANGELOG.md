@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.1](https://github.com/judoscale/judoscale-ruby/compare/v1.11.0...v1.11.1) (2025-05-08)
+
+
+### Bug Fixes
+
+* Switch to a `Rails::Engine` to fix init error with `Scout` + `Sentry` ([#245](https://github.com/judoscale/judoscale-ruby/issues/245)) ([d403357](https://github.com/judoscale/judoscale-ruby/commit/d403357737c196e0d769634611b142bb55ae1e08))
+
 ## [1.11.0](https://github.com/judoscale/judoscale-ruby/compare/v1.10.0...v1.11.0) (2025-04-24)
 
 
