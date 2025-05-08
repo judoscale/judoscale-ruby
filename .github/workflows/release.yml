@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -41,7 +43,11 @@ jobs:
       - name: Update versions
         run: |
           bin/foreach bundle install
-          git commit -a -m 'Update Gemfile.lock versions'
+          # https://github.com/actions/checkout?tab=readme-ov-file#push-a-commit-using-the-built-in-token
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -a -m "Update Gemfile.lock versions"
+          git push
 
   publish:
     name: Publish to Rubygems
