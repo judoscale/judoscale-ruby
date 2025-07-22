@@ -7,3 +7,5 @@ gem "minitest", "5.25.4" # latest version that supports Ruby 2.6
 gem "rake"
 # Lock an older version of Sinatra that supports Ruby 2.6
 gem "sinatra", "~> 3.2"
+# Lock an older version of multi_json that supports Ruby 2.6/2.7
+gem "multi_json", "~> 1.15.0"

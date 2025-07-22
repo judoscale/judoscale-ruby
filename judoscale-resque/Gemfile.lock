@@ -17,7 +17,7 @@ GEM
     connection_pool (2.5.3)
     minitest (5.25.4)
     mono_logger (1.1.2)
-    multi_json (1.17.0)
+    multi_json (1.15.0)
     mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
     rack (2.2.17)
@@ -52,6 +52,7 @@ DEPENDENCIES
   judoscale-resque!
   judoscale-ruby!
   minitest (= 5.25.4)
+  multi_json (~> 1.15.0)
   rake
   sinatra (~> 3.2)
 
