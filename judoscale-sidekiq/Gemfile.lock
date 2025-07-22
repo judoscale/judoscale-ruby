@@ -13,15 +13,15 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    connection_pool (2.5.1)
-    json (2.10.2)
+    connection_pool (2.5.3)
+    json (2.13.0)
     logger (1.7.0)
     minitest (5.25.4)
-    rack (3.1.13)
-    rake (13.2.1)
-    redis-client (0.24.0)
+    rack (3.1.16)
+    rake (13.3.0)
+    redis-client (0.25.1)
       connection_pool
-    sidekiq (8.0.2)
+    sidekiq (8.0.5)
       connection_pool (>= 2.5.0)
       json (>= 2.9.0)
       logger (>= 1.6.2)
@@ -40,4 +40,4 @@ DEPENDENCIES
   sidekiq (~> 8.0)
 
 BUNDLED WITH
-   2.6.8
+   2.7.1
