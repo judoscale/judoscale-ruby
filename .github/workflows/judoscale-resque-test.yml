@@ -30,6 +30,9 @@ jobs:
       - name: Setup default Bundler for Ruby <= 3.0
         if: ${{ matrix.ruby <= '3.0' }}
         run: echo "BUNDLER_VERSION=2.4.22" >> $GITHUB_ENV
+      - name: Setup default Bundler for Ruby > 3.0 & <= 3.1
+        if: ${{ matrix.ruby > '3.0' && matrix.ruby <= '3.1' }}
+        run: echo "BUNDLER_VERSION=2.6.9" >> $GITHUB_ENV
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
