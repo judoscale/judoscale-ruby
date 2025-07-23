@@ -1,20 +1,20 @@
 PATH
   remote: ../../judoscale-rails
   specs:
-    judoscale-rails (1.10.0)
-      judoscale-ruby (= 1.10.0)
+    judoscale-rails (1.11.1)
+      judoscale-ruby (= 1.11.1)
       railties
 
 PATH
   remote: ../../judoscale-ruby
   specs:
-    judoscale-ruby (1.10.0)
+    judoscale-ruby (1.11.1)
 
 PATH
   remote: ../../judoscale-shoryuken
   specs:
-    judoscale-shoryuken (1.10.0)
-      judoscale-ruby (= 1.10.0)
+    judoscale-shoryuken (1.11.1)
+      judoscale-ruby (= 1.11.1)
       shoryuken (>= 6.0)
 
 GEM

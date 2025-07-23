@@ -48,7 +48,7 @@ Run `./bin/dev` to run the app in development mode. This will...
 
 ## How to use this sample app
 
-Open https://judoscale-adapter-mock.requestcatcher.com in a browser. The sample app is configured to use this endpoint as a mock for the Judoscale Adapter API. This page will monitor all API requests sent from the adapter.
+Open https://judoscale-ruby.requestcatcher.com in a browser. The sample app is configured to use this endpoint as a mock for the Judoscale Adapter API. This page will monitor all API requests sent from the adapter.
 
 Run the app. Both the Rails and Shoryuken processes will send an initial request to the API once the app boots up. These can be inspected via request catcher.
 

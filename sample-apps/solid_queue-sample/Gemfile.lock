@@ -1,20 +1,20 @@
 PATH
   remote: ../../judoscale-rails
   specs:
-    judoscale-rails (1.10.0)
-      judoscale-ruby (= 1.10.0)
+    judoscale-rails (1.11.1)
+      judoscale-ruby (= 1.11.1)
       railties
 
 PATH
   remote: ../../judoscale-ruby
   specs:
-    judoscale-ruby (1.10.0)
+    judoscale-ruby (1.11.1)
 
 PATH
   remote: ../../judoscale-solid_queue
   specs:
-    judoscale-solid_queue (1.10.0)
-      judoscale-ruby (= 1.10.0)
+    judoscale-solid_queue (1.11.1)
+      judoscale-ruby (= 1.11.1)
       solid_queue (>= 0.3)
 
 GEM

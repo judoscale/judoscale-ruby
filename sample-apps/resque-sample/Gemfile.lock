@@ -1,21 +1,21 @@
 PATH
   remote: ../../judoscale-rails
   specs:
-    judoscale-rails (1.10.0)
-      judoscale-ruby (= 1.10.0)
+    judoscale-rails (1.11.1)
+      judoscale-ruby (= 1.11.1)
       railties
 
 PATH
   remote: ../../judoscale-resque
   specs:
-    judoscale-resque (1.10.0)
-      judoscale-ruby (= 1.10.0)
+    judoscale-resque (1.11.1)
+      judoscale-ruby (= 1.11.1)
       resque (>= 2.0)
 
 PATH
   remote: ../../judoscale-ruby
   specs:
-    judoscale-ruby (1.10.0)
+    judoscale-ruby (1.11.1)
 
 GEM
   remote: https://rubygems.org/
