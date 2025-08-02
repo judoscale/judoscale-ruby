@@ -58,7 +58,7 @@ module Judoscale
 
           if current_count == 1 && @idle_started_at
             # We were idle and now we're not - add to total idle time
-            @total_idle_time += current_time - @idle_started_at
+            @total_idle_time += get_current_time - @idle_started_at
             @idle_started_at = nil
           end
         end
@@ -70,14 +70,14 @@ module Judoscale
 
           if current_count == 0
             # We're now idle - start tracking idle time
-            @idle_started_at = current_time
+            @idle_started_at = get_current_time
           end
         end
       end
 
       def idle_ratio(reset: true)
         @mutex.synchronize do
-          current_time = self.current_time
+          current_time = get_current_time
 
           total_report_cycle_time = current_time - @report_cycle_started_at
 
@@ -110,14 +110,16 @@ module Judoscale
 
       private
 
-      def current_time
+      def get_current_time
         Process.clock_gettime(Process::CLOCK_MONOTONIC)
       end
 
       def reset_idle_report_cycle!
+        current_time = get_current_time
+
         @total_idle_time = 0.0
         @report_cycle_started_at = current_time
-        @idle_started_at = @report_cycle_started_at if @active_request_counter.value == 0
+        @idle_started_at = current_time if @active_request_counter.value == 0
       end
     end
   end
