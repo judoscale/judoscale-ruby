@@ -34,7 +34,7 @@ module Judoscale
 
       def start!(interval: 1)
         @mutex.synchronize do
-          reset_idle_report_cycle! unless @report_cycle_started_at
+          reset_idle_report_cycle!(init: true) unless @report_cycle_started_at
         end
 
         @thread_ref.update do |current_thread|
@@ -116,12 +116,15 @@ module Judoscale
         Process.clock_gettime(Process::CLOCK_MONOTONIC)
       end
 
-      def reset_idle_report_cycle!
+      def reset_idle_report_cycle!(init: false)
         current_time = get_current_time
 
         @total_idle_time = 0.0
         @report_cycle_started_at = current_time
-        @idle_started_at = current_time if @active_request_counter.value == 0
+
+        # Only set idle_started_at if we're setting things up for the first time,
+        # otherwise we'll handle it when capturing idle_ratio.
+        @idle_started_at = current_time if init
       end
     end
   end
