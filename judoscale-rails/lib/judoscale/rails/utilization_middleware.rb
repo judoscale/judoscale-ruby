@@ -34,7 +34,7 @@ module Judoscale
 
       def start!(interval: 1)
         @mutex.synchronize do
-          reset_idle_report_cycle!
+          reset_idle_report_cycle! unless @report_cycle_started_at
         end
 
         @thread_ref.update do |current_thread|

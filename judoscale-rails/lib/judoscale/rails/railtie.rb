@@ -54,6 +54,11 @@ module Judoscale
           logger.debug "No reporting since we're in a build process"
         elsif judoscale_config.start_reporter_after_initialize
           Reporter.start
+
+          if judoscale_config.utilization_enabled
+            tracker = UtilizationTracker.instance
+            tracker.start!(interval: judoscale_config.utilization_interval)
+          end
         end
       end
     end

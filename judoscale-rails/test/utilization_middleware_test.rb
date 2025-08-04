@@ -99,6 +99,7 @@ module Judoscale
     after {
       reset_tracker_count
       MetricsStore.instance.clear
+      tracker.instance_variable_set(:@report_cycle_started_at, nil)
     }
 
     it "tracks utilization metrics for active requests" do
@@ -241,6 +242,23 @@ module Judoscale
         # T=12: Report cycle
         current_time = 12
         _(tracker.idle_ratio).must_equal 0.25 # 1 second idle out of 4 total seconds = 25% idle
+      end
+    end
+
+    it "gracefully handles calling start! multiple times" do
+      current_time = 0
+
+      # Stub Process.clock_gettime to return our controlled monotonic time
+      Process.stub(:clock_gettime, ->(_) { current_time }) do
+        # T=0: Tracker starts
+        tracker.start!
+        _(tracker.idle_ratio(reset: false)).must_equal 0.0 # No time has passed yet
+
+        # T=1: Request 1 starts
+        current_time = 1
+        tracker.start!
+        tracker.incr
+        _(tracker.idle_ratio(reset: false)).must_equal 1.0 # 1 second idle out of 1 total second = 100% idle
       end
     end
   end
