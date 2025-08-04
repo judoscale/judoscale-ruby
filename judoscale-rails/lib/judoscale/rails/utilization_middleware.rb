@@ -77,6 +77,8 @@ module Judoscale
 
       def idle_ratio(reset: true)
         @mutex.synchronize do
+          return 0.0 if @report_cycle_started_at.nil?
+
           current_time = get_current_time
 
           total_report_cycle_time = current_time - @report_cycle_started_at
