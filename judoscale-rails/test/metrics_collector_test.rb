@@ -8,8 +8,14 @@ module Judoscale
   describe Rails::MetricsCollector do
     describe "#collect" do
       subject { Rails::MetricsCollector.new }
+
       before { Judoscale::Config.instance.utilization_enabled = true }
-      after { Rails::UtilizationTracker.instance.instance_variable_set(:@report_cycle_started_at, nil) }
+
+      after do
+        tracker = Rails::UtilizationTracker.instance
+        tracker.instance_variable_set(:@report_cycle_started_at, nil)
+        tracker.instance_variable_get(:@active_request_counter).value = 0
+      end
 
       it "collects utilization percentage" do
         tracker = Rails::UtilizationTracker.instance
