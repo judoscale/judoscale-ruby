@@ -50,11 +50,11 @@ module Judoscale
         Thread.current.thread_variable_set(:fork_safe, true)
 
         loop do
-          run_metrics_collection(config, metrics_collectors)
-
           # Stagger reporting to spread out reports from many processes
           multiplier = 1 - (rand / 4) # between 0.75 and 1.0
           sleep config.report_interval_seconds * multiplier
+
+          run_metrics_collection(config, metrics_collectors)
         end
       end
     end
