@@ -11,7 +11,7 @@ module Judoscale
       def collect
         metrics = super
 
-        if Judoscale::Config.instance.utilization_enabled
+        if Judoscale::Config.instance.utilization_enabled && UtilizationTracker.instance.running?
           # Report utilization percentage as a whole number (floats not supported)
           idle_ratio = UtilizationTracker.instance.idle_ratio
           utilization = (1.0 - idle_ratio) * 100.0
