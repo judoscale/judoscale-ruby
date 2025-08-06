@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.2](https://github.com/judoscale/judoscale-ruby/compare/v1.11.1...v1.11.2) (2025-08-06)
+
+
+### Bug Fixes
+
+* Sleep before running the first metrics collection ([#249](https://github.com/judoscale/judoscale-ruby/issues/249)) ([3315d24](https://github.com/judoscale/judoscale-ruby/commit/3315d24f23ca32142147fbaba0035eb7a321e6b2))
+
 ## [1.11.1](https://github.com/judoscale/judoscale-ruby/compare/v1.11.0...v1.11.1) (2025-05-08)
 
 
