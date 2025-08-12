@@ -48,6 +48,7 @@ module Judoscale
 
       _(response).must_equal app
       _(app.env).must_equal env
+      _(tracker.started?).must_equal true
     end
   end
 

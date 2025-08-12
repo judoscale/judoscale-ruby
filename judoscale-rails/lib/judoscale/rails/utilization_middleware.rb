@@ -11,6 +11,8 @@ module Judoscale
 
       def call(env)
         tracker = UtilizationTracker.instance
+        tracker.start! unless tracker.started?
+
         tracker.incr
 
         @app.call(env)
