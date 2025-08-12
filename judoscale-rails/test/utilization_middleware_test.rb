@@ -17,10 +17,6 @@ module Judoscale
       tracker.instance_variable_get(:@active_request_counter)
     end
 
-    def stop_tracker_thread
-      tracker_thread&.terminate
-    end
-
     def stub_tracker_loop
       tracker.stub(:loop, ->(&blk) { blk.call }) {
         tracker.stub(:sleep, true) {
@@ -33,16 +29,13 @@ module Judoscale
       tracker_request_counter.value
     end
 
-    def reset_tracker_count
-      tracker_request_counter.value = 0
-    end
-
     def reset_tracker_state
       # Reset all singleton state to ensure clean test isolation
       tracker.instance_variable_set(:@report_cycle_started_at, nil)
       tracker.instance_variable_set(:@idle_started_at, nil)
       tracker.instance_variable_set(:@total_idle_time, 0.0)
-      tracker.instance_variable_set(:@thread_ref, Concurrent::AtomicReference.new(nil))
+      tracker_thread&.terminate
+      tracker_request_counter.value = 0
     end
   end
 
@@ -61,13 +54,7 @@ module Judoscale
   describe Judoscale::Rails::UtilizationMiddleware do
     include TrackerTest
 
-    before {
-      reset_tracker_state
-    }
-
     after {
-      stop_tracker_thread
-      reset_tracker_count
       MetricsStore.instance.clear
       reset_tracker_state
     }
@@ -109,12 +96,7 @@ module Judoscale
   describe Judoscale::Rails::UtilizationTracker do
     include TrackerTest
 
-    before {
-      reset_tracker_state
-    }
-
     after {
-      reset_tracker_count
       MetricsStore.instance.clear
       reset_tracker_state
     }
