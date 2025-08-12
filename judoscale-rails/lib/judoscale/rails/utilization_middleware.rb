@@ -39,13 +39,13 @@ module Judoscale
 
       def incr
         @mutex.synchronize do
-          @active_request_counter += 1
-
-          if @active_request_counter == 1 && @idle_started_at
+          if @active_request_counter == 0 && @idle_started_at
             # We were idle and now we're not - add to total idle time
             @total_idle_time += get_current_time - @idle_started_at
             @idle_started_at = nil
           end
+
+          @active_request_counter += 1
         end
       end
 
