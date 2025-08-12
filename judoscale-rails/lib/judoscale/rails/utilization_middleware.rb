@@ -1,20 +1,16 @@
 # frozen_string_literal: true
 
 require "singleton"
-require "concurrent"
-require "judoscale/metrics_store"
 
 module Judoscale
   module Rails
     class UtilizationMiddleware
-      def initialize(app, interval: 1)
+      def initialize(app)
         @app = app
-        @interval = interval
       end
 
       def call(env)
         tracker = UtilizationTracker.instance
-        tracker.start!(interval: @interval)
         tracker.incr
 
         @app.call(env)
@@ -27,36 +23,25 @@ module Judoscale
       include Singleton
 
       def initialize
-        @active_request_counter = Concurrent::AtomicFixnum.new(0)
-        @thread_ref = Concurrent::AtomicReference.new(nil)
+        @active_request_counter = 0
         @mutex = Mutex.new
+        @started = false
       end
 
-      def start!(interval: 1)
-        @mutex.synchronize do
-          init_idle_report_cycle! unless running?
-        end
+      def start!
+        @started = true
+        init_idle_report_cycle!
+      end
 
-        @thread_ref.update do |current_thread|
-          next current_thread if current_thread&.alive?
-
-          Thread.new do
-            # Advise multi-threaded app servers to ignore this thread for the purposes of fork safety warnings.
-            Thread.current.thread_variable_set(:fork_safe, true)
-
-            loop do
-              sleep interval
-              track_current_state
-            end
-          end
-        end
+      def started?
+        @started
       end
 
       def incr
         @mutex.synchronize do
-          current_count = @active_request_counter.increment
+          @active_request_counter += 1
 
-          if current_count == 1 && @idle_started_at
+          if @active_request_counter == 1 && @idle_started_at
             # We were idle and now we're not - add to total idle time
             @total_idle_time += get_current_time - @idle_started_at
             @idle_started_at = nil
@@ -66,9 +51,9 @@ module Judoscale
 
       def decr
         @mutex.synchronize do
-          current_count = @active_request_counter.decrement
+          @active_request_counter -= 1
 
-          if current_count == 0
+          if @active_request_counter == 0
             # We're now idle - start tracking idle time
             @idle_started_at = get_current_time
           end
@@ -96,21 +81,6 @@ module Judoscale
           reset_idle_report_cycle!(current_time: current_time) if reset
 
           idle_ratio
-        end
-      end
-
-      def running?
-        @report_cycle_started_at.present?
-      end
-
-      def track_current_state
-        active_requests = @active_request_counter.value
-        active_processes = (active_requests > 0) ? 1 : 0
-        time = Time.now.utc
-
-        MetricsStore.instance.tap do |store|
-          store.push :pu, active_processes, time # pu = process utilization
-          store.push :ru, active_requests, time  # ru = request utilization
         end
       end
 

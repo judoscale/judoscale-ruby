@@ -14,7 +14,7 @@ module Judoscale
       after do
         tracker = Rails::UtilizationTracker.instance
         tracker.instance_variable_set(:@report_cycle_started_at, nil)
-        tracker.instance_variable_get(:@active_request_counter).value = 0
+        tracker.instance_variable_set(:@active_request_counter, 0)
       end
 
       it "collects utilization percentage" do

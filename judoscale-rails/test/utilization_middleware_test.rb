@@ -9,24 +9,8 @@ module Judoscale
       Rails::UtilizationTracker.instance
     end
 
-    def tracker_thread
-      tracker.instance_variable_get(:@thread_ref).get
-    end
-
-    def tracker_request_counter
-      tracker.instance_variable_get(:@active_request_counter)
-    end
-
-    def stub_tracker_loop
-      tracker.stub(:loop, ->(&blk) { blk.call }) {
-        tracker.stub(:sleep, true) {
-          yield
-        }
-      }
-    end
-
     def tracker_count
-      tracker_request_counter.value
+      tracker.instance_variable_get(:@active_request_counter)
     end
 
     def reset_tracker_state
@@ -34,19 +18,15 @@ module Judoscale
       tracker.instance_variable_set(:@report_cycle_started_at, nil)
       tracker.instance_variable_set(:@idle_started_at, nil)
       tracker.instance_variable_set(:@total_idle_time, 0.0)
-      tracker_thread&.terminate
-      tracker_request_counter.value = 0
+      tracker.instance_variable_set(:@active_request_counter, 0)
     end
   end
 
   class MockApp
-    include TrackerTest
-
     attr_reader :env
 
     def call(env)
       @env = env
-      @env["judoscale.test.tracker_count"] = tracker_count
       self
     end
   end
@@ -61,35 +41,13 @@ module Judoscale
 
     let(:app) { MockApp.new }
     let(:env) { {} }
-    let(:middleware) { Rails::UtilizationMiddleware.new(app, interval: 1) }
+    let(:middleware) { Rails::UtilizationMiddleware.new(app) }
 
     it "passes the request env up the middleware stack, returning the app's response" do
       response = middleware.call(env)
 
       _(response).must_equal app
       _(app.env).must_equal env
-    end
-
-    it "starts the utilization tracker and counts active requests" do
-      stub_tracker_loop do
-        middleware.call(env)
-      end
-
-      _(tracker_thread).must_be_instance_of Thread
-      _(tracker_count).must_equal 0
-      _(env["judoscale.test.tracker_count"]).must_equal 1
-
-      # Simulate 2 calls to the middleware as if there were 2 requests being handled simultaneously.
-      stub_tracker_loop do
-        other_app = ->(env) { middleware.call(env) }
-
-        other_middleware = Rails::UtilizationMiddleware.new(other_app, interval: 1)
-        other_middleware.call(env)
-      end
-
-      _(tracker_thread).must_be_instance_of Thread
-      _(tracker_count).must_equal 0
-      _(env["judoscale.test.tracker_count"]).must_equal 2
     end
   end
 
@@ -100,28 +58,6 @@ module Judoscale
       MetricsStore.instance.clear
       reset_tracker_state
     }
-
-    it "tracks utilization metrics for active requests" do
-      tracker.track_current_state
-
-      metrics = MetricsStore.instance.flush
-      _(metrics.map(&:identifier)).must_equal %i[pu ru]
-      _(metrics.map(&:value)).must_equal [0, 0]
-
-      3.times { tracker.incr }
-      tracker.track_current_state
-
-      metrics = MetricsStore.instance.flush
-      _(metrics.map(&:identifier)).must_equal %i[pu ru]
-      _(metrics.map(&:value)).must_equal [1, 3]
-
-      tracker.decr
-      tracker.track_current_state
-
-      metrics = MetricsStore.instance.flush
-      _(metrics.map(&:identifier)).must_equal %i[pu ru]
-      _(metrics.map(&:value)).must_equal [1, 2]
-    end
 
     it "tracks idle ratio based on time spent with no active requests" do
       # T=0:   Start tracker
@@ -241,23 +177,6 @@ module Judoscale
         # T=12: Report cycle
         current_time = 12
         _(tracker.idle_ratio).must_equal 0.25 # 1 second idle out of 4 total seconds = 25% idle
-      end
-    end
-
-    it "gracefully handles calling start! multiple times" do
-      current_time = 0
-
-      # Stub Process.clock_gettime to return our controlled monotonic time
-      Process.stub(:clock_gettime, ->(_) { current_time }) do
-        # T=0: Tracker starts
-        tracker.start!
-        _(tracker.idle_ratio(reset: false)).must_equal 0.0 # No time has passed yet
-
-        # T=1: Request 1 starts
-        current_time = 1
-        tracker.start!
-        tracker.incr
-        _(tracker.idle_ratio(reset: false)).must_equal 1.0 # 1 second idle out of 1 total second = 100% idle
       end
     end
   end
