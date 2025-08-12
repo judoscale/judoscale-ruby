@@ -29,8 +29,10 @@ module Judoscale
       end
 
       def start!
-        @started = true
-        init_idle_report_cycle!
+        @mutex.synchronize do
+          @started = true
+          init_idle_report_cycle!
+        end
       end
 
       def started?
