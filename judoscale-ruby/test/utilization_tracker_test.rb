@@ -1,64 +1,11 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "judoscale/rails/utilization_middleware"
+require "judoscale/utilization_tracker"
 
 module Judoscale
-  module TrackerTest
-    def tracker
-      Rails::UtilizationTracker.instance
-    end
-
-    def tracker_count
-      tracker.instance_variable_get(:@active_request_counter)
-    end
-
-    def reset_tracker_state
-      # Reset all singleton state to ensure clean test isolation
-      tracker.instance_variable_set(:@report_cycle_started_at, nil)
-      tracker.instance_variable_set(:@idle_started_at, nil)
-      tracker.instance_variable_set(:@total_idle_time, 0.0)
-      tracker.instance_variable_set(:@active_request_counter, 0)
-    end
-  end
-
-  class MockApp
-    attr_reader :env
-
-    def call(env)
-      @env = env
-      self
-    end
-  end
-
-  describe Judoscale::Rails::UtilizationMiddleware do
-    include TrackerTest
-
-    after {
-      MetricsStore.instance.clear
-      reset_tracker_state
-    }
-
-    let(:app) { MockApp.new }
-    let(:env) { {} }
-    let(:middleware) { Rails::UtilizationMiddleware.new(app) }
-
-    it "passes the request env up the middleware stack, returning the app's response" do
-      response = middleware.call(env)
-
-      _(response).must_equal app
-      _(app.env).must_equal env
-      _(tracker.started?).must_equal true
-    end
-  end
-
-  describe Judoscale::Rails::UtilizationTracker do
-    include TrackerTest
-
-    after {
-      MetricsStore.instance.clear
-      reset_tracker_state
-    }
+  describe Judoscale::UtilizationTracker do
+    after { reset_tracker_state }
 
     it "tracks idle ratio based on time spent with no active requests" do
       # T=0:   Start tracker
