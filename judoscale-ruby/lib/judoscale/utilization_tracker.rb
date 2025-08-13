@@ -7,15 +7,17 @@ module Judoscale
     include Singleton
 
     def initialize
-      @active_request_counter = 0
       @mutex = Mutex.new
+      @active_request_counter = 0
       @started = false
     end
 
     def start!
       @mutex.synchronize do
-        @started = true
-        init_idle_report_cycle!
+        unless started?
+          @started = true
+          init_idle_report_cycle!
+        end
       end
     end
 
@@ -73,13 +75,13 @@ module Judoscale
     private
 
     def get_current_time
-      Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      Process.clock_gettime Process::CLOCK_MONOTONIC
     end
 
     def init_idle_report_cycle!
       current_time = get_current_time
       @idle_started_at = current_time
-      reset_idle_report_cycle!(current_time: current_time)
+      reset_idle_report_cycle! current_time: current_time
     end
 
     def reset_idle_report_cycle!(current_time:)
