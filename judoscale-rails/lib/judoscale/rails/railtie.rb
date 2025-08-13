@@ -4,7 +4,6 @@ require "rails"
 require "rails/engine"
 require "judoscale/request_middleware"
 require "judoscale/rails/config"
-require "judoscale/utilization_middleware"
 require "judoscale/logger"
 require "judoscale/reporter"
 
