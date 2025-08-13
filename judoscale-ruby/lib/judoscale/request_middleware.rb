@@ -4,6 +4,7 @@ require "judoscale/metrics_store"
 require "judoscale/reporter"
 require "judoscale/logger"
 require "judoscale/request_metrics"
+require "judoscale/utilization_tracker"
 
 module Judoscale
   class RequestMiddleware
@@ -14,6 +15,10 @@ module Judoscale
     end
 
     def call(env)
+      tracker = UtilizationTracker.instance
+      tracker.start!
+      tracker.incr
+
       request_metrics = RequestMetrics.new(env)
       store = MetricsStore.instance
       time = Time.now.utc
@@ -42,6 +47,8 @@ module Judoscale
       store.push :at, app_time, time
 
       response
+    ensure
+      tracker.decr
     end
   end
 end

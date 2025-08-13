@@ -4,7 +4,7 @@ require "test_helper"
 require "judoscale/utilization_tracker"
 
 module Judoscale
-  describe Judoscale::UtilizationTracker do
+  describe UtilizationTracker do
     after { reset_tracker_state }
 
     it "tracks idle ratio based on time spent with no active requests" do
