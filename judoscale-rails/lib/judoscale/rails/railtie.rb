@@ -37,7 +37,7 @@ module Judoscale
         judoscale_config.logger = ::Rails.logger
       end
 
-      initializer "judoscale.request_middleware", after: :load_config_initializers do |app|
+      initializer "judoscale.request_middleware" do |app|
         app.middleware.insert_before Rack::Runtime, RequestMiddleware
       end
 
