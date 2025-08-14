@@ -49,9 +49,14 @@ module Judoscale
     end
 
     def utilization_pct(reset: true)
-      # Report utilization percentage as a whole number (floats not supported)
-      idle_ratio = idle_ratio(reset: reset)
-      ((1.0 - idle_ratio) * 100.0).to_i
+      @mutex.synchronize do
+        current_time = get_current_time
+        idle_ratio = get_idle_ratio(current_time: current_time)
+
+        reset_idle_report_cycle!(current_time: current_time) if reset
+
+        ((1.0 - idle_ratio) * 100.0).to_i
+      end
     end
 
     private
@@ -71,28 +76,20 @@ module Judoscale
       @report_cycle_started_at = current_time
     end
 
-    def idle_ratio(reset: true)
-      @mutex.synchronize do
-        return 0.0 if @report_cycle_started_at.nil?
+    def get_idle_ratio(current_time: get_current_time)
+      return 0.0 if @report_cycle_started_at.nil?
 
-        current_time = get_current_time
+      total_report_cycle_time = current_time - @report_cycle_started_at
 
-        total_report_cycle_time = current_time - @report_cycle_started_at
+      return 0.0 if total_report_cycle_time <= 0
 
-        return 0.0 if total_report_cycle_time <= 0
-
-        # Capture remaining idle time
-        if @idle_started_at
-          @total_idle_time += current_time - @idle_started_at
-          @idle_started_at = current_time
-        end
-
-        idle_ratio = @total_idle_time / total_report_cycle_time
-
-        reset_idle_report_cycle!(current_time: current_time) if reset
-
-        idle_ratio
+      # Capture remaining idle time
+      if @idle_started_at
+        @total_idle_time += current_time - @idle_started_at
+        @idle_started_at = current_time
       end
+
+      @total_idle_time / total_report_cycle_time
     end
   end
 end
