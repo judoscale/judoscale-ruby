@@ -50,7 +50,7 @@ module Judoscale
 
     def utilization_pct(reset: true)
       # Report utilization percentage as a whole number (floats not supported)
-      idle_ratio = self.idle_ratio(reset: reset)
+      idle_ratio = idle_ratio(reset: reset)
       ((1.0 - idle_ratio) * 100.0).to_i
     end
 
