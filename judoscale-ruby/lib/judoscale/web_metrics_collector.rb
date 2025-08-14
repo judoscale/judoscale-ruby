@@ -2,7 +2,6 @@
 
 require "judoscale/metrics_collector"
 require "judoscale/metrics_store"
-require "judoscale/config"
 require "judoscale/utilization_tracker"
 
 module Judoscale
