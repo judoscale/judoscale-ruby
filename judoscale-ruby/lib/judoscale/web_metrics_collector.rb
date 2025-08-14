@@ -11,10 +11,8 @@ module Judoscale
 
       # Only report utilization if a request has already started the tracker
       if UtilizationTracker.instance.started?
-        # Report utilization percentage as a whole number (floats not supported)
-        idle_ratio = UtilizationTracker.instance.idle_ratio
-        utilization = (1.0 - idle_ratio) * 100.0
-        metrics.push Metric.new(:up, utilization, Time.now)
+        utilization_pct = UtilizationTracker.instance.utilization_pct
+        metrics.push Metric.new(:up, utilization_pct, Time.now)
       end
 
       metrics
