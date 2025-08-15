@@ -18,6 +18,7 @@ module Judoscale
       after {
         Reporter.instance.stop!
         MetricsStore.instance.clear
+        reset_tracker_state
       }
 
       let(:app) { MockApp.new }
@@ -45,6 +46,11 @@ module Judoscale
         it "starts the reporter" do
           middleware.call(env)
           _(Reporter.instance).must_be :started?
+        end
+
+        it "starts the utilization tracker" do
+          middleware.call(env)
+          _(UtilizationTracker.instance).must_be :started?
         end
 
         describe "when the request includes HTTP_X_REQUEST_START" do

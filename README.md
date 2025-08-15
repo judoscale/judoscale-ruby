@@ -99,7 +99,7 @@ The reporter runs in its own thread so your web requests and background jobs are
 - Judoscale gem versions
 - Dyno name (example: web.1)
 - PID
-- Collection of queue time metrics (time and milliseconds) for web
+- Collection of queue time and utilization metrics for web
 - Collection of queue time and/or queue depth metrics, and busy metrics (if enabled), for workers (see below)
 
 Judoscale aggregates and stores this information to power the autoscaler algorithm and dashboard visualizations.
@@ -107,14 +107,14 @@ Judoscale aggregates and stores this information to power the autoscaler algorit
 ### What data is collected for each worker adapter?
 
 | adapter               | queue time | queue depth | busy (if enabled) |
-|-----------------------|------------|-------------|-------------------|
-| judoscale-sidekiq     | ✅         | ✅          | ✅               |
-| judoscale-solid_queue | ✅         | ❌          | ✅               |
-| judoscale-resque      | ✅         | ✅          | ✅               |
-| judoscale-delayed_job | ✅         | ❌          | ✅               |
-| judoscale-good_job    | ✅         | ❌          | ✅               |
-| judoscale-que         | ✅         | ❌          | ✅               |
-| judoscale-shoryuken   | ❌         | ✅          | ❌               |
+| --------------------- | ---------- | ----------- | ----------------- |
+| judoscale-sidekiq     | ✅         | ✅          | ✅                |
+| judoscale-solid_queue | ✅         | ❌          | ✅                |
+| judoscale-resque      | ✅         | ✅          | ✅                |
+| judoscale-delayed_job | ✅         | ❌          | ✅                |
+| judoscale-good_job    | ✅         | ❌          | ✅                |
+| judoscale-que         | ✅         | ❌          | ✅                |
+| judoscale-shoryuken   | ❌         | ✅          | ❌                |
 
 ## Migrating from `rails_autoscale_agent`
 
