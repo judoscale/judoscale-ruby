@@ -7,10 +7,6 @@ module UtilizationTrackerHelpers
     Judoscale::UtilizationTracker.instance
   end
 
-  def tracker_count
-    tracker.instance_variable_get(:@active_request_counter)
-  end
-
   def reset_tracker_state
     # Reset all singleton state to ensure clean test isolation
     tracker.instance_variable_set(:@started, false)
