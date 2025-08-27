@@ -1,13 +1,13 @@
 PATH
   remote: ../judoscale-ruby
   specs:
-    judoscale-ruby (1.11.1)
+    judoscale-ruby (1.12.0)
 
 PATH
   remote: .
   specs:
-    judoscale-resque (1.11.1)
-      judoscale-ruby (= 1.11.1)
+    judoscale-resque (1.12.0)
+      judoscale-ruby (= 1.12.0)
       resque (>= 2.0)
 
 GEM
@@ -18,7 +18,7 @@ GEM
     minitest (5.25.4)
     mono_logger (1.1.2)
     multi_json (1.15.0)
-    mustermann (3.0.3)
+    mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
     rack (2.2.17)
     rack-protection (3.2.0)
@@ -27,7 +27,7 @@ GEM
     rake (13.3.0)
     redis (5.4.1)
       redis-client (>= 0.22.0)
-    redis-client (0.25.1)
+    redis-client (0.25.2)
       connection_pool
     redis-namespace (1.11.0)
       redis (>= 4)

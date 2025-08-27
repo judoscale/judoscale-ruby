@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    judoscale-ruby (1.11.1)
+    judoscale-ruby (1.12.0)
 
 GEM
   remote: https://rubygems.org/
@@ -17,7 +17,7 @@ GEM
     minitest-stub-const (0.6)
     public_suffix (5.1.1)
     rake (13.3.0)
-    rexml (3.4.1)
+    rexml (3.4.2)
     webmock (3.25.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
