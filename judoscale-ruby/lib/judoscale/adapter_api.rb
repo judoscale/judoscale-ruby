@@ -38,7 +38,7 @@ module Judoscale
       uri = URI.parse("#{@config.api_base_url}#{options.fetch(:path)}")
       ssl = uri.scheme == "https"
 
-      response = Net::HTTP.start(uri.host, uri.port, use_ssl: ssl) do |http|
+      response = Net::HTTP.start(uri.host, uri.port, use_ssl: ssl, open_timeout: 5, read_timeout: 5, write_timeout: 5) do |http|
         request = Net::HTTP::Post.new(uri.request_uri, options[:headers] || {})
         request.body = options.fetch(:body)
 
