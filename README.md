@@ -9,17 +9,11 @@
 [![Build Status: judoscale-que](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-que-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 [![Build Status: judoscale-shoryuken](https://github.com/judoscale/judoscale-ruby/actions/workflows/judoscale-shoryuken-test.yml/badge.svg)](https://github.com/judoscale/judoscale-ruby/actions)
 
-These gems works together with the [Judoscale](https://judoscale.com) Heroku add-on to scale your web and worker dynos automatically. They gather a minimal set of metrics for each request and job queue, and periodically posts this data asynchronously to the Judoscale API.
-
-## Requirements
-
-- Rack-based app
-- Ruby 2.6 or newer
-- [Judoscale](https://elements.heroku.com/addons/judoscale) or [Rails Autoscale](https://elements.heroku.com/addons/rails-autoscale) installed on your Heroku app
+These gems work together with the [Judoscale](https://judoscale.com) autoscaling service to scale your web and worker services automatically. They gather a minimal set of metrics for each request and job queue, and periodically posts this data asynchronously to the Judoscale API.
 
 ## Installation
 
-To connect your app with Judoscale, add these lines to your application's `Gemfile` and run `bundle install`:
+To connect your Rails app with Judoscale, add these lines to your application's `Gemfile` and run `bundle install`:
 
 ```ruby
 gem "judoscale-rails"
@@ -35,7 +29,7 @@ gem "judoscale-rails"
 
 _If you're using a background job queue, make sure you include the corresponding judoscale-\* gem as well._
 
-The adapters report queue metrics to Judoscale every 10 seconds. The reporter will not run in development, or any other environment missing the `JUDOSCALE_URL` environment variable. (This environment variable is set for you automatically when provisioning the add-on.)
+The adapters report queue metrics to Judoscale every 10 seconds. The reporter will not run in development, or any other environment missing the `JUDOSCALE_URL` environment variable. (This environment variable is set for you automatically on Heroku when you install the Judoscale add-on.)
 
 ## Installation for Non-Rails Rack apps
 
@@ -203,7 +197,7 @@ Judoscale.configure do |config|
 end
 ```
 
-Alternatively, set the `JUDOSCALE_LOG_LEVEL` environment variable on your Heroku app:
+Alternatively, set the `JUDOSCALE_LOG_LEVEL` environment variable on your app, for example on Heroku:
 
 ```
 heroku config:set JUDOSCALE_LOG_LEVEL=info
@@ -224,13 +218,13 @@ Once installed, you should see something like this in your development log:
 
 > [Judoscale] Reporter not started: JUDOSCALE_URL is not set
 
-On the Heroku app where you've installed the add-on, run `heroku logs -t | grep Judoscale`, and you should see something like this:
+Tail your deployed application logs searching for `Judoscale` (for example on Heroku run `heroku logs -t | grep Judoscale`), and you should see something like this:
 
 > [Judoscale] Reporter starting, will report every 10 seconds
 
 If you don't see either of these, try running `bundle` again and restarting your Rails application.
 
-You can see more detailed (debug) logging by setting `JUDOSCALE_LOG_LEVEL` on your Heroku app:
+You can see more detailed (debug) logging by setting `JUDOSCALE_LOG_LEVEL` on your app, for example on Heroku:
 
 ```
 heroku config:set JUDOSCALE_LOG_LEVEL=debug
