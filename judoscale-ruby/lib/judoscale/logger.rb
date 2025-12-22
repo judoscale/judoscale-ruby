@@ -6,7 +6,15 @@ require "logger"
 module Judoscale
   module Logger
     def self.coerce_level(level)
-      ::Logger::Severity.coerce(level)
+      return level if level.is_a?(Integer)
+
+      upcased_level = level.to_s.upcase
+
+      if ::Logger::Severity.const_defined?(upcased_level)
+        ::Logger::Severity.const_get(upcased_level)
+      else
+        raise ArgumentError, "invalid log level: #{level}"
+      end
     end
 
     def logger
