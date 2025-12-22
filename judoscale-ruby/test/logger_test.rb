@@ -73,5 +73,40 @@ module Judoscale
         end
       end
     end
+
+    class LoggerSymbol < ::Logger
+      def level
+        ::Logger::SEV_LABEL[super].downcase.to_sym
+      end
+
+      def level=(new_level)
+        super ::Logger::Severity.coerce(new_level)
+      end
+
+      def add(severity, message = nil, *)
+        # Bypass the severity/level check inside Logger that'd fail with Integer vs symbol too.
+        # Log everything.
+        @logdev.write("LEVEL=#{level} SEVERITY=#{severity} #{message || yield}")
+        true
+      end
+    end
+
+    it "gracefully handles logger level using symbols/strings (such as rails-semantic-logger)" do
+      original_logger = LoggerSymbol.new(string_io)
+      original_logger.level = :info
+
+      use_config logger: original_logger, log_level: :warn do
+        logger.info "some info"
+        _(messages).wont_include "some info"
+
+        logger.warn "some warning"
+        _(messages).must_include "LEVEL=info SEVERITY=2 [Judoscale] some warning"
+
+        original_logger.level = :ERROR
+        logger.warn "other warning"
+
+        _(messages).must_include "LEVEL=error SEVERITY=3 [Judoscale] [WARN] other warning"
+      end
+    end
   end
 end
