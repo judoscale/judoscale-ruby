@@ -80,7 +80,7 @@ module Judoscale
       end
 
       def level=(new_level)
-        super ::Logger::Severity.coerce(new_level)
+        super Judoscale::Logger.coerce_level(new_level)
       end
 
       def add(severity, message = nil, *)
@@ -89,6 +89,7 @@ module Judoscale
         @logdev.write("LEVEL=#{level} SEVERITY=#{severity} #{message || yield}")
         true
       end
+      alias_method :log, :add
     end
 
     it "gracefully handles logger level using symbols/strings (such as rails-semantic-logger)" do
@@ -105,7 +106,7 @@ module Judoscale
         original_logger.level = :ERROR
         logger.warn "other warning"
 
-        _(messages).must_include "LEVEL=error SEVERITY=3 [Judoscale] [WARN] other warning"
+        _(messages).must_include "LEVEL=error SEVERITY=error [Judoscale] [WARN] other warning"
       end
     end
   end
