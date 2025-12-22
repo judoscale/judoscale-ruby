@@ -80,7 +80,7 @@ module Judoscale
       end
 
       def level=(new_level)
-        super Judoscale::Logger.coerce_level(new_level)
+        super Judoscale::Config.coerce_log_level(new_level)
       end
 
       def add(severity, message = nil, *)
