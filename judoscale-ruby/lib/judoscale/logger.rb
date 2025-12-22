@@ -5,6 +5,10 @@ require "logger"
 
 module Judoscale
   module Logger
+    def self.coerce_level(level)
+      ::Logger::Severity.coerce(level)
+    end
+
     def logger
       if @logger && @logger.log_level == Config.instance.log_level
         @logger
@@ -22,12 +26,13 @@ module Judoscale
         if log_level.nil?
           logger.public_send(severity_name.downcase) { tag(messages) }
         elsif severity_level >= log_level
-          if severity_level >= logger.level
+          logger_level = Logger.coerce_level(logger.level)
+          if severity_level >= logger_level
             logger.public_send(severity_name.downcase) { tag(messages) }
           else
             # Our logger proxy is configured with a lower severity level than the underlying logger,
             # so send this message using the underlying logger severity instead of the actual severity.
-            logger_severity_name = ::Logger::SEV_LABEL[logger.level].downcase
+            logger_severity_name = ::Logger::SEV_LABEL[logger_level].downcase
             logger.public_send(logger_severity_name) { tag(messages, tag_level: severity_name) }
           end
         end
