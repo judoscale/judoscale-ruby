@@ -14,7 +14,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     base64 (0.3.0)
-    connection_pool (3.0.2)
+    connection_pool (2.5.5)
     minitest (5.25.4)
     mono_logger (1.1.2)
     multi_json (1.15.0)
@@ -49,6 +49,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  connection_pool (< 3)
   judoscale-resque!
   judoscale-ruby!
   minitest (= 5.25.4)
