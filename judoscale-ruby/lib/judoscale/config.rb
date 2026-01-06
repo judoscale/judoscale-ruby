@@ -74,6 +74,20 @@ module Judoscale
       end
     end
 
+    def self.coerce_log_level(level)
+      if level.is_a?(Integer)
+        level
+      else
+        upcased_level = level.to_s.upcase
+
+        if ::Logger::Severity.const_defined?(upcased_level)
+          ::Logger::Severity.const_get(upcased_level)
+        else
+          raise ArgumentError, "invalid log level: #{level}"
+        end
+      end
+    end
+
     attr_accessor :api_base_url, :report_interval_seconds,
       :max_request_size_bytes, :logger, :log_tag, :current_runtime_container
     attr_reader :log_level
@@ -139,15 +153,10 @@ module Judoscale
     def get_severity_log_level(log_level)
       return nil if log_level.to_s.strip.empty?
 
-      upcased_log_level = log_level.to_s.upcase
-
-      if ::Logger::Severity.const_defined?(upcased_log_level)
-        ::Logger::Severity.const_get(upcased_log_level)
-      else
-        logger.warn "Invalid log_level detected: #{log_level}"
-
-        nil
-      end
+      self.class.coerce_log_level(log_level)
+    rescue ArgumentError
+      logger.warn "Invalid log_level detected: #{log_level}"
+      nil
     end
   end
 end
