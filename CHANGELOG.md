@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.2](https://github.com/judoscale/judoscale-ruby/compare/v1.12.1...v1.12.2) (2026-01-06)
+
+
+### Bug Fixes
+
+* Handle loggers with level returning an identifier instead of integer ([#257](https://github.com/judoscale/judoscale-ruby/issues/257)) ([7256878](https://github.com/judoscale/judoscale-ruby/commit/72568786c55a7bd8bc3cb3a5076c19fe817c3101))
+
 ## [1.12.1](https://github.com/judoscale/judoscale-ruby/compare/v1.12.0...v1.12.1) (2025-10-16)
 
 

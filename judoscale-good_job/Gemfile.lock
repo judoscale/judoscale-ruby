@@ -1,14 +1,14 @@
 PATH
   remote: ../judoscale-ruby
   specs:
-    judoscale-ruby (1.12.1)
+    judoscale-ruby (1.12.2)
 
 PATH
   remote: .
   specs:
-    judoscale-good_job (1.12.1)
+    judoscale-good_job (1.12.2)
       good_job (>= 3.0, < 5.0)
-      judoscale-ruby (= 1.12.1)
+      judoscale-ruby (= 1.12.2)
 
 GEM
   remote: https://rubygems.org/

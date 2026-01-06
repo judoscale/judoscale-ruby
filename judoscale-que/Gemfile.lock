@@ -1,13 +1,13 @@
 PATH
   remote: ../judoscale-ruby
   specs:
-    judoscale-ruby (1.12.1)
+    judoscale-ruby (1.12.2)
 
 PATH
   remote: .
   specs:
-    judoscale-que (1.12.1)
-      judoscale-ruby (= 1.12.1)
+    judoscale-que (1.12.2)
+      judoscale-ruby (= 1.12.2)
       que (>= 1.0)
 
 GEM
