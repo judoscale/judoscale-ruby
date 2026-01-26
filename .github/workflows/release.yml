@@ -25,7 +25,7 @@ jobs:
         if: ${{ !!steps.release.outputs.pr }}
         uses: actions/checkout@v6
         with:
-          ref: ${{ steps.release.outputs.pr.headBranchName }}
+          ref: release-please--branches--main--components--release-please-action
 
       - name: Setup Ruby
         if: ${{ !!steps.release.outputs.pr }}
