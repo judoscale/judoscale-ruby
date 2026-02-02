@@ -103,6 +103,32 @@ module Judoscale
       end
     end
 
+    it "initializes the config from JUDOSCALE_CONTAINER ENV var" do
+      env = {
+        "JUDOSCALE_CONTAINER" => "custom-container-123",
+        "JUDOSCALE_URL" => "https://adapter.judoscale.com/api/1234567890"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
+        _(config.current_runtime_container).must_equal "custom-container-123"
+      end
+    end
+
+    it "prioritizes JUDOSCALE_CONTAINER over platform-specific ENV vars" do
+      env = {
+        "JUDOSCALE_CONTAINER" => "custom-container-123",
+        "DYNO" => "web.1",
+        "JUDOSCALE_URL" => "https://adapter.judoscale.com/api/1234567890"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.current_runtime_container).must_equal "custom-container-123"
+      end
+    end
+
     it "allows ENV vars config overrides for the debug and URL" do
       env = {
         "DYNO" => "web.2",

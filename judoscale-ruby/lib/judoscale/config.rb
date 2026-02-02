@@ -108,7 +108,9 @@ module Judoscale
       self.class.adapter_configs.each(&:reset)
 
       @current_runtime_container =
-        if ENV.include?("DYNO")
+        if ENV.include?("JUDOSCALE_CONTAINER")
+          RuntimeContainer.new ENV["JUDOSCALE_CONTAINER"]
+        elsif ENV.include?("DYNO")
           RuntimeContainer.new ENV["DYNO"]
         elsif ENV.include?("RENDER_INSTANCE_ID")
           # Deprecated API url using the service ID for legacy render services not using `JUDOSCALE_URL`.
