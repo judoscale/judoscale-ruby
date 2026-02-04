@@ -31,6 +31,8 @@ jobs:
           - gemfile: Gemfile
             ruby: "2.7"
           - gemfile: Gemfile-activerecord-7
+            ruby: "4.0"
+          - gemfile: Gemfile-activerecord-7
             ruby: "2.7"
     runs-on: ubuntu-latest
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps

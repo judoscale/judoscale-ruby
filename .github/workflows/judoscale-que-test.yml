@@ -23,6 +23,7 @@ jobs:
           - "3.2"
           - "3.3"
           - "3.4"
+          - "4.0"
         exclude:
           - gemfile: Gemfile
             ruby: "3.1"
@@ -30,6 +31,8 @@ jobs:
             ruby: "3.0"
           - gemfile: Gemfile
             ruby: "2.7"
+          - gemfile: Gemfile-que-1
+            ruby: "4.0"
           - gemfile: Gemfile-que-1
             ruby: "3.4"
           - gemfile: Gemfile-que-1
