@@ -17,7 +17,6 @@ jobs:
           - Gemfile-rails-7-2
           - Gemfile-rails-7-1
           - Gemfile-rails-7-0
-          - Gemfile-rails-6-1
         ruby:
           - "2.7"
           - "3.0"
