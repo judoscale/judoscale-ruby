@@ -18,13 +18,17 @@ GEM
     logger (1.7.0)
     minitest (5.26.1)
     mono_logger (1.1.2)
-    multi_json (1.15.0)
+    multi_json (1.19.1)
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
-    rack (2.2.21)
-    rack-protection (3.2.0)
+    rack (3.2.4)
+    rack-protection (4.2.1)
       base64 (>= 0.1.0)
-      rack (~> 2.2, >= 2.2.4)
+      logger (>= 1.6.0)
+      rack (>= 3.0.0, < 4)
+    rack-session (2.1.1)
+      base64 (>= 0.1.0)
+      rack (>= 3.0.0)
     rake (13.3.1)
     redis (5.4.1)
       redis-client (>= 0.22.0)
@@ -41,10 +45,12 @@ GEM
       redis-namespace (~> 1.6)
       sinatra (>= 2.0)
     ruby2_keywords (0.0.5)
-    sinatra (3.2.0)
+    sinatra (4.2.1)
+      logger (>= 1.6.0)
       mustermann (~> 3.0)
-      rack (~> 2.2, >= 2.2.4)
-      rack-protection (= 3.2.0)
+      rack (>= 3.0.0, < 4)
+      rack-protection (= 4.2.1)
+      rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
     tilt (2.7.0)
 
@@ -57,7 +63,6 @@ DEPENDENCIES
   judoscale-resque!
   judoscale-ruby!
   minitest (= 5.26.1)
-  multi_json (~> 1.15.0)
   rake
 
 BUNDLED WITH
