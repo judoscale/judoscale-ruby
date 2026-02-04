@@ -4,7 +4,7 @@ gemspec name: "judoscale-sidekiq"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "sidekiq", "~> 5.0"
-gem "minitest", "5.25.4" # latest version that supports Ruby 2.6
+gem "minitest", "5.26.1" # latest version that supports Ruby 2.7
 gem "rake"
 
 if RUBY_VERSION >= "3.3"

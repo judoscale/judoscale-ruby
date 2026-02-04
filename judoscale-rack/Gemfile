@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gemspec name: "judoscale-rack"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
-gem "minitest", "5.25.4" # latest version that supports Ruby 2.6
+gem "minitest", "5.26.1" # latest version that supports Ruby 2.7
 gem "rake"
 gem "sinatra", ">= 2.0"
 gem "rack-test"

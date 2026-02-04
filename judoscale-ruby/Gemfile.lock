@@ -13,7 +13,7 @@ GEM
       bigdecimal
       rexml
     hashdiff (1.2.1)
-    minitest (5.25.4)
+    minitest (5.26.1)
     minitest-stub-const (0.6)
     public_suffix (5.1.1)
     rake (13.3.1)
@@ -29,7 +29,7 @@ PLATFORMS
 
 DEPENDENCIES
   judoscale-ruby!
-  minitest (= 5.25.4)
+  minitest (= 5.26.1)
   minitest-stub-const
   public_suffix (~> 5.0)
   rake (>= 12.3.3)

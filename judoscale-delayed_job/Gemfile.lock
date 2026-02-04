@@ -49,7 +49,7 @@ GEM
       concurrent-ruby (~> 1.0)
     json (2.18.1)
     logger (1.7.0)
-    minitest (5.25.4)
+    minitest (5.26.1)
     pg (1.6.3-arm64-darwin)
     pg (1.6.3-x86_64-linux)
     rake (13.3.1)
@@ -67,7 +67,7 @@ DEPENDENCIES
   activerecord
   judoscale-delayed_job!
   judoscale-ruby!
-  minitest (= 5.25.4)
+  minitest (= 5.26.1)
   pg
   rake
 

@@ -15,7 +15,7 @@ GEM
   specs:
     base64 (0.3.0)
     logger (1.7.0)
-    minitest (5.25.4)
+    minitest (5.26.1)
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
     rack (3.2.4)
@@ -46,7 +46,7 @@ PLATFORMS
 DEPENDENCIES
   judoscale-rack!
   judoscale-ruby!
-  minitest (= 5.25.4)
+  minitest (= 5.26.1)
   rack-test
   rake
   sinatra (>= 2.0)
