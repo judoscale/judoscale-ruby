@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     judoscale-ruby (1.12.2)
+      logger
 
 GEM
   remote: https://rubygems.org/
@@ -13,6 +14,7 @@ GEM
       bigdecimal
       rexml
     hashdiff (1.2.1)
+    logger (1.7.0)
     minitest (5.26.1)
     minitest-stub-const (0.6)
     public_suffix (5.1.1)
