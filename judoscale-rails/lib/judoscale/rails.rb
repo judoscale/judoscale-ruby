@@ -8,5 +8,5 @@ require "rails/version"
 
 Judoscale.add_adapter :"judoscale-rails", {
   adapter_version: Judoscale::VERSION,
-  framework_version: ::Rails.version
+  runtime_version: ::Rails.version
 }, metrics_collector: Judoscale::WebMetricsCollector
