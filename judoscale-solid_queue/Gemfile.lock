@@ -9,7 +9,7 @@ PATH
   specs:
     judoscale-solid_queue (1.12.2)
       judoscale-ruby (= 1.12.2)
-      solid_queue (>= 0.3)
+      solid_queue (>= 1.0)
 
 GEM
   remote: https://rubygems.org/

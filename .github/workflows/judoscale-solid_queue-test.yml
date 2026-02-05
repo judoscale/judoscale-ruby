@@ -14,7 +14,6 @@ jobs:
       matrix:
         gemfile:
           - Gemfile
-          - Gemfile-solid_queue-0-3
         ruby:
           - "3.1"
           - "3.2"
@@ -24,8 +23,6 @@ jobs:
         exclude:
           - gemfile: Gemfile
             ruby: "3.1"
-          - gemfile: Gemfile-solid_queue-0-3
-            ruby: "4.0"
     runs-on: ubuntu-latest
     env: # $BUNDLE_GEMFILE must be set at the job level, so it is set for all steps
       BUNDLE_GEMFILE: ${{ github.workspace }}/judoscale-solid_queue/${{ matrix.gemfile }}
