@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     judoscale-ruby (1.12.2)
+      logger
 
 GEM
   remote: https://rubygems.org/
@@ -13,7 +14,8 @@ GEM
       bigdecimal
       rexml
     hashdiff (1.2.1)
-    minitest (5.25.4)
+    logger (1.7.0)
+    minitest (5.27.0)
     minitest-stub-const (0.6)
     public_suffix (5.1.1)
     rake (13.3.1)
@@ -29,11 +31,11 @@ PLATFORMS
 
 DEPENDENCIES
   judoscale-ruby!
-  minitest (= 5.25.4)
+  minitest (~> 5.27)
   minitest-stub-const
   public_suffix (~> 5.0)
   rake (>= 12.3.3)
   webmock
 
 BUNDLED WITH
-   2.7.1
+  4.0.6
