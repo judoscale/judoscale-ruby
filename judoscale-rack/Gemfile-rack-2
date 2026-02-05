@@ -4,7 +4,7 @@ gemspec name: "judoscale-rack"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
 gem "rack", "~> 2.0"
-gem "minitest", "5.26.1" # latest version that supports Ruby 2.7
+gem "minitest", "~> 5.27" # v5 supports Ruby 3.1
 gem "rake"
 gem "sinatra", ">= 2.0"
 gem "rack-test"

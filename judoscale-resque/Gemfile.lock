@@ -17,7 +17,7 @@ GEM
     base64 (0.3.0)
     connection_pool (2.5.5)
     logger (1.7.0)
-    minitest (5.26.1)
+    minitest (5.27.0)
     mono_logger (1.1.2)
     multi_json (1.19.1)
     mustermann (3.0.4)
@@ -63,7 +63,7 @@ DEPENDENCIES
   connection_pool (< 3)
   judoscale-resque!
   judoscale-ruby!
-  minitest (= 5.26.1)
+  minitest (~> 5.27)
   rake
 
 BUNDLED WITH
