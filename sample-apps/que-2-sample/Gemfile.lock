@@ -3,7 +3,7 @@ PATH
   specs:
     judoscale-que (1.12.2)
       judoscale-ruby (= 1.12.2)
-      que (>= 1.0)
+      que (>= 2.0)
 
 PATH
   remote: ../../judoscale-rails
@@ -16,6 +16,7 @@ PATH
   remote: ../../judoscale-ruby
   specs:
     judoscale-ruby (1.12.2)
+      logger
 
 GEM
   remote: https://rubygems.org/
@@ -159,4 +160,4 @@ DEPENDENCIES
   railties (~> 7.1.0)
 
 BUNDLED WITH
-   2.7.2
+  4.0.6

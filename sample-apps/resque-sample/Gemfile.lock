@@ -16,6 +16,7 @@ PATH
   remote: ../../judoscale-ruby
   specs:
     judoscale-ruby (1.12.2)
+      logger
 
 GEM
   remote: https://rubygems.org/
@@ -178,4 +179,4 @@ DEPENDENCIES
   resque
 
 BUNDLED WITH
-   2.7.2
+  4.0.6

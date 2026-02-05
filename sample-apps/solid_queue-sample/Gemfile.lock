@@ -9,13 +9,14 @@ PATH
   remote: ../../judoscale-ruby
   specs:
     judoscale-ruby (1.12.2)
+      logger
 
 PATH
   remote: ../../judoscale-solid_queue
   specs:
     judoscale-solid_queue (1.12.2)
       judoscale-ruby (= 1.12.2)
-      solid_queue (>= 0.3)
+      solid_queue (>= 1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -217,4 +218,4 @@ DEPENDENCIES
   sprockets-rails
 
 BUNDLED WITH
-   2.7.2
+  4.0.6
