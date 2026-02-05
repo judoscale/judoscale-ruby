@@ -9,7 +9,7 @@ PATH
   specs:
     judoscale-que (1.12.2)
       judoscale-ruby (= 1.12.2)
-      que (>= 1.0)
+      que (>= 2.0)
 
 GEM
   remote: https://rubygems.org/
