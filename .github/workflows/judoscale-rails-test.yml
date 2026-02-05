@@ -14,6 +14,7 @@ jobs:
       matrix:
         gemfile:
           - Gemfile
+          - Gemfile-rails-8-0
           - Gemfile-rails-7-2
           - Gemfile-rails-7-1
           - Gemfile-rails-7-0
@@ -26,6 +27,10 @@ jobs:
         exclude:
           - gemfile: Gemfile
             ruby: "3.1"
+          - gemfile: Gemfile-rails-8-0
+            ruby: "3.1"
+          - gemfile: Gemfile-rails-8-0
+            ruby: "4.0"
           - gemfile: Gemfile-rails-7-2
             ruby: "4.0"
           - gemfile: Gemfile-rails-7-1
