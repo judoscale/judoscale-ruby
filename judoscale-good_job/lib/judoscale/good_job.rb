@@ -14,7 +14,7 @@ require "judoscale/good_job/metrics_collector"
 Judoscale.add_adapter :"judoscale-good_job",
   {
     adapter_version: Judoscale::VERSION,
-    runtime_version: ::GoodJob::VERSION
+    framework_version: ::GoodJob::VERSION
   },
   metrics_collector: Judoscale::GoodJob::MetricsCollector,
   expose_config: Judoscale::Config::JobAdapterConfig.new(:good_job)

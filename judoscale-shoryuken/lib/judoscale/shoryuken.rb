@@ -9,7 +9,7 @@ require "shoryuken"
 Judoscale.add_adapter :"judoscale-shoryuken",
   {
     adapter_version: Judoscale::VERSION,
-    runtime_version: ::Shoryuken::VERSION
+    framework_version: ::Shoryuken::VERSION
   },
   metrics_collector: Judoscale::Shoryuken::MetricsCollector,
   expose_config: Judoscale::Config::JobAdapterConfig.new(:shoryuken, support_busy_jobs: false)
