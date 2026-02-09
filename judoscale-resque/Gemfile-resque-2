@@ -1,9 +1,9 @@
 source "https://rubygems.org"
 
-gemspec name: "judoscale-rails"
+gemspec name: "judoscale-resque"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
-gem "railties", "~> 7.1.0"
+gem "resque", "~> 2.0"
+gem "connection_pool", "< 3" # v3 bumped support to Ruby 3.2
 gem "minitest", "~> 5.27" # v5 supports Ruby 3.1
-gem "minitest-stub-const"
 gem "rake"

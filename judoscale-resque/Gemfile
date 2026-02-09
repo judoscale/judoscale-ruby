@@ -3,10 +3,6 @@ source "https://rubygems.org"
 gemspec name: "judoscale-resque"
 
 gem "judoscale-ruby", path: "../judoscale-ruby"
-gem "connection_pool", "< 3" # v2.x supports Ruby 2.5+, v3 bumped support to Ruby 3.2
-gem "minitest", "5.25.4" # latest version that supports Ruby 2.6
+gem "connection_pool", "< 3" # v3 bumped support to Ruby 3.2
+gem "minitest", "~> 5.27" # v5 supports Ruby 3.1
 gem "rake"
-# Lock an older version of Sinatra that supports Ruby 2.6
-gem "sinatra", "~> 3.2"
-# Lock an older version of multi_json that supports Ruby 2.6/2.7
-gem "multi_json", "~> 1.15.0"

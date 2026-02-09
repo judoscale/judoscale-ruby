@@ -1,44 +1,45 @@
 PATH
   remote: ../../judoscale-rack
   specs:
-    judoscale-rack (1.11.1)
-      judoscale-ruby (= 1.11.1)
+    judoscale-rack (1.12.2)
+      judoscale-ruby (= 1.12.2)
       rack
 
 PATH
   remote: ../../judoscale-ruby
   specs:
-    judoscale-ruby (1.11.1)
+    judoscale-ruby (1.12.2)
+      logger
 
 GEM
   remote: https://rubygems.org/
   specs:
-    base64 (0.2.0)
+    base64 (0.3.0)
     logger (1.7.0)
-    mustermann (3.0.3)
+    mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
-    nio4r (2.7.4)
-    puma (6.6.0)
+    nio4r (2.7.5)
+    puma (7.2.0)
       nio4r (~> 2.0)
-    rack (3.1.13)
-    rack-protection (4.1.1)
+    rack (3.2.4)
+    rack-protection (4.2.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
-    rack-session (2.1.0)
+    rack-session (2.1.1)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
-    rackup (2.2.1)
+    rackup (2.3.1)
       rack (>= 3)
     ruby2_keywords (0.0.5)
-    sinatra (4.1.1)
+    sinatra (4.2.1)
       logger (>= 1.6.0)
       mustermann (~> 3.0)
       rack (>= 3.0.0, < 4)
-      rack-protection (= 4.1.1)
+      rack-protection (= 4.2.1)
       rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
-    tilt (2.6.0)
+    tilt (2.7.0)
 
 PLATFORMS
   arm64-darwin
@@ -51,4 +52,4 @@ DEPENDENCIES
   sinatra
 
 BUNDLED WITH
-   2.6.8
+  4.0.6

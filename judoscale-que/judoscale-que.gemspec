@@ -23,8 +23,8 @@ Gem::Specification.new do |spec|
   spec.files = Dir["lib/**/*"].reject { |f| f.match?(%r{rails-autoscale}) }
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 3.1.0"
 
   spec.add_dependency "judoscale-ruby", Judoscale::VERSION
-  spec.add_dependency "que", ">= 1.0"
+  spec.add_dependency "que", ">= 2.0"
 end

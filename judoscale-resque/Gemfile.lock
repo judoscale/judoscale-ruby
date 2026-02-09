@@ -2,6 +2,7 @@ PATH
   remote: ../judoscale-ruby
   specs:
     judoscale-ruby (1.12.2)
+      logger
 
 PATH
   remote: .
@@ -15,34 +16,44 @@ GEM
   specs:
     base64 (0.3.0)
     connection_pool (2.5.5)
-    minitest (5.25.4)
+    logger (1.7.0)
+    minitest (5.27.0)
     mono_logger (1.1.2)
-    multi_json (1.15.0)
+    multi_json (1.19.1)
     mustermann (3.0.4)
       ruby2_keywords (~> 0.0.1)
-    rack (2.2.21)
-    rack-protection (3.2.0)
+    rack (3.2.4)
+    rack-protection (4.2.1)
       base64 (>= 0.1.0)
-      rack (~> 2.2, >= 2.2.4)
+      logger (>= 1.6.0)
+      rack (>= 3.0.0, < 4)
+    rack-session (2.1.1)
+      base64 (>= 0.1.0)
+      rack (>= 3.0.0)
     rake (13.3.1)
     redis (5.4.1)
       redis-client (>= 0.22.0)
-    redis-client (0.26.2)
+    redis-client (0.26.4)
       connection_pool
     redis-namespace (1.11.0)
       redis (>= 4)
-    resque (2.7.0)
+    resque (3.0.0)
+      base64 (~> 0.1)
+      logger
       mono_logger (~> 1)
       multi_json (~> 1.0)
+      redis (>= 4.0)
       redis-namespace (~> 1.6)
-      sinatra (>= 0.9.2)
+      sinatra (>= 2.0)
     ruby2_keywords (0.0.5)
-    sinatra (3.2.0)
+    sinatra (4.2.1)
+      logger (>= 1.6.0)
       mustermann (~> 3.0)
-      rack (~> 2.2, >= 2.2.4)
-      rack-protection (= 3.2.0)
+      rack (>= 3.0.0, < 4)
+      rack-protection (= 4.2.1)
+      rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
-    tilt (2.6.1)
+    tilt (2.7.0)
 
 PLATFORMS
   arm64-darwin
@@ -52,10 +63,8 @@ DEPENDENCIES
   connection_pool (< 3)
   judoscale-resque!
   judoscale-ruby!
-  minitest (= 5.25.4)
-  multi_json (~> 1.15.0)
+  minitest (~> 5.27)
   rake
-  sinatra (~> 3.2)
 
 BUNDLED WITH
-   2.7.1
+  4.0.6
