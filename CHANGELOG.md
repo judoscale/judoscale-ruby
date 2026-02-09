@@ -1,6 +1,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0](https://github.com/judoscale/judoscale-ruby/compare/v1.12.2...v1.13.0) (2026-02-09)
+
+
+### Features
+
+* Add support to JUDOSCALE_CONTAINER ENV var for custom containers ([#261](https://github.com/judoscale/judoscale-ruby/issues/261)) ([c992dee](https://github.com/judoscale/judoscale-ruby/commit/c992dee62bb07347fef3768ef8d2872c44a7f2c1))
+* Update version support ([#263](https://github.com/judoscale/judoscale-ruby/issues/263)) ([0189a1a](https://github.com/judoscale/judoscale-ruby/commit/0189a1a181c5c99850e66c30e3827d25e8308357))
+
+
+### Bug Fixes
+
+* Switch to reporting `runtime_version` across the board for consistency ([#264](https://github.com/judoscale/judoscale-ruby/issues/264)) ([2c58f8a](https://github.com/judoscale/judoscale-ruby/commit/2c58f8ac4ba60f37deda5688fe91f0487e8bbbd2))
+
 ## [1.12.2](https://github.com/judoscale/judoscale-ruby/compare/v1.12.1...v1.12.2) (2026-01-06)
 
 
