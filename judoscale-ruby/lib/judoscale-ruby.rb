@@ -33,7 +33,7 @@ module Judoscale
 
   add_adapter :"judoscale-ruby", {
     adapter_version: VERSION,
-    language_version: RUBY_VERSION
+    runtime_version: RUBY_VERSION
   }
 end
 
