@@ -1,14 +1,14 @@
 PATH
   remote: ../judoscale-ruby
   specs:
-    judoscale-ruby (1.13.0)
+    judoscale-ruby (1.13.1)
       logger
 
 PATH
   remote: .
   specs:
-    judoscale-shoryuken (1.13.0)
-      judoscale-ruby (= 1.13.0)
+    judoscale-shoryuken (1.13.1)
+      judoscale-ruby (= 1.13.1)
       shoryuken (>= 6.0)
 
 GEM
