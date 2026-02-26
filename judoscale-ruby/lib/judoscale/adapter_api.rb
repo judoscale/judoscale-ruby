@@ -53,7 +53,7 @@ module Judoscale
     rescue *TRANSIENT_ERRORS => ex
       if attempts < 3
         # TCP timeouts happen sometimes, but they can usually be successfully retried in a moment
-        sleep 0.01
+        sleep 0.25 * (2**(attempts - 1))
         attempts += 1
         retry
       else
