@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.1](https://github.com/judoscale/judoscale-ruby/compare/v1.13.0...v1.13.1) (2026-02-26)
+
+
+### Bug Fixes
+
+* Add a backoff to API retries ([#265](https://github.com/judoscale/judoscale-ruby/issues/265)) ([f55e984](https://github.com/judoscale/judoscale-ruby/commit/f55e984a87cbcad603a46a0b3524011c75111cd4))
+
 ## [1.13.0](https://github.com/judoscale/judoscale-ruby/compare/v1.12.2...v1.13.0) (2026-02-09)
 
 
