@@ -155,6 +155,47 @@ module Judoscale
 
         _(log_string).must_include "Reporter starting, will report every ~10 seconds (adapters: test_web, judoscale-ruby[skipped], test_job[skipped])"
       end
+
+      it "logs exceptions when a metrics collector fails to initialize and continues with remaining collectors" do
+        failing_collector_class = Class.new(Test::TestJobMetricsCollector) {
+          define_method(:initialize) { raise "INIT BOOM!" }
+        }
+        failing_adapter = Judoscale::Adapter.new(:failing_job, {}, failing_collector_class)
+
+        adapters_with_failure = Judoscale.adapters + [failing_adapter]
+
+        run_loop_stub = proc do |config, metrics_collectors|
+          _(metrics_collectors.size).must_equal 2
+          _(metrics_collectors[0]).must_be_instance_of Test::TestWebMetricsCollector
+          _(metrics_collectors[1]).must_be_instance_of Test::TestJobMetricsCollector
+        end
+
+        Reporter.instance.stub(:run_loop, run_loop_stub) {
+          Reporter.instance.start!(Config.instance, adapters_with_failure)
+        }
+
+        _(log_string).must_include "Reporter error: #<RuntimeError: INIT BOOM!>"
+      end
+
+      it "does not run the reporter thread when all metrics collectors fail to initialize" do
+        failing_web_class = Class.new(Test::TestWebMetricsCollector) {
+          define_method(:initialize) { raise "WEB INIT BOOM!" }
+        }
+        failing_job_class = Class.new(Test::TestJobMetricsCollector) {
+          define_method(:initialize) { raise "JOB INIT BOOM!" }
+        }
+
+        failing_adapters = [
+          Judoscale::Adapter.new(:failing_web, {}, failing_web_class),
+          Judoscale::Adapter.new(:failing_job, {}, failing_job_class)
+        ]
+
+        Reporter.instance.stub(:run_loop, ->(*) { raise "SHOULD NOT BE CALLED" }) {
+          Reporter.instance.start!(Config.instance, failing_adapters)
+        }
+
+        _(log_string).must_include "All metrics collectors failed to initialize"
+      end
     end
 
     describe "#run_metrics_collection" do
