@@ -39,7 +39,14 @@ module Judoscale
 
       logger.info "Reporter starting, will report every ~#{config.report_interval_seconds} seconds (adapters: #{adapters_msg})"
 
-      metrics_collectors = metrics_collectors_classes.map(&:new)
+      metrics_collectors = metrics_collectors_classes.filter_map { |klass|
+        log_exceptions { klass.new }
+      }
+
+      if metrics_collectors.empty?
+        logger.warn "All metrics collectors failed to initialize"
+        return
+      end
 
       run_loop(config, metrics_collectors)
     end
