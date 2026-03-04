@@ -104,9 +104,7 @@ module Judoscale
 
         metrics = subject.collect
 
-        _(metrics.size).must_equal 1
-        _(metrics[0].queue_name).must_equal "default"
-        _(metrics[0].value).must_equal 0
+        _(metrics).must_be :empty?
       end
 
       it "ignores claimed jobs being processed" do
@@ -119,9 +117,7 @@ module Judoscale
 
         metrics = subject.collect
 
-        _(metrics.size).must_equal 1
-        _(metrics[0].queue_name).must_equal "default"
-        _(metrics[0].value).must_equal 0
+        _(metrics).must_be :empty?
       end
 
       it "ignores failed jobs waiting on retry (re-scheduled via Active Job)" do
@@ -134,9 +130,7 @@ module Judoscale
 
         metrics = subject.collect
 
-        _(metrics.size).must_equal 1
-        _(metrics[0].queue_name).must_equal "default"
-        _(metrics[0].value).must_equal 0
+        _(metrics).must_be :empty?
       end
 
       it "ignores failed jobs" do
@@ -154,9 +148,7 @@ module Judoscale
 
         metrics = subject.collect
 
-        _(metrics.size).must_equal 1
-        _(metrics[0].queue_name).must_equal "default"
-        _(metrics[0].value).must_equal 0
+        _(metrics).must_be :empty?
       end
 
       it "collects metrics for jobs without a queue name" do

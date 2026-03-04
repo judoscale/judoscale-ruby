@@ -54,13 +54,11 @@ module Judoscale
 
       it "always collects for known queues" do
         Delayable.set(queue: "high").perform_later
-        ::GoodJob::JobPerformer.new("high").next
 
         metrics = subject.collect
 
         _(metrics.size).must_equal 1
         _(metrics[0].queue_name).must_equal "high"
-        _(metrics[0].value).must_equal 0
 
         Delayable.set(queue: "default").perform_later
 

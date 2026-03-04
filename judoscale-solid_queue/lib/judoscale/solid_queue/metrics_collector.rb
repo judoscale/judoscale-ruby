@@ -17,15 +17,6 @@ module Judoscale
         super && ActiveRecordHelper.table_exists_for_model?(::SolidQueue::Job)
       end
 
-      def initialize
-        super
-
-        queue_names = run_silently do
-          ::SolidQueue::Job.distinct.pluck(:queue_name)
-        end
-        self.queues |= queue_names
-      end
-
       def collect
         metrics = []
         time = Time.now.utc

@@ -27,13 +27,7 @@ module Judoscale
 
       def initialize
         super
-
         @good_job_base_class = self.class.good_job_base_class
-
-        queue_names = run_silently do
-          @good_job_base_class.select("distinct queue_name").map(&:queue_name)
-        end
-        self.queues |= queue_names
       end
 
       def collect
