@@ -34,6 +34,10 @@ module Judoscale
         metrics = []
         time = Time.now.utc
 
+        if queues.empty?
+          self.queues |= run_silently { @good_job_base_class.distinct.pluck(:queue_name) }
+        end
+
         # logically we don't need the finished_at condition, but it lets postgres use the indexes
         oldest_execution_time_by_queue = run_silently do
           @good_job_base_class

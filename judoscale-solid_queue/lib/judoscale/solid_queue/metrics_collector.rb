@@ -21,6 +21,10 @@ module Judoscale
         metrics = []
         time = Time.now.utc
 
+        if queues.empty?
+          self.queues |= run_silently { ::SolidQueue::Job.distinct.pluck(:queue_name) }
+        end
+
         oldest_execution_time_by_queue = run_silently do
           ::SolidQueue::ReadyExecution.group(:queue_name).minimum(:created_at)
         end
