@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.2](https://github.com/judoscale/judoscale-ruby/compare/v1.13.1...v1.13.2) (2026-03-05)
+
+
+### Bug Fixes
+
+* Prevent scanning for worker queues on init ([#269](https://github.com/judoscale/judoscale-ruby/issues/269)) ([345c0e2](https://github.com/judoscale/judoscale-ruby/commit/345c0e24efaf29b8a8d41bbefe3a0a74a7144d51))
+
 ## [1.13.1](https://github.com/judoscale/judoscale-ruby/compare/v1.13.0...v1.13.1) (2026-02-26)
 
 
