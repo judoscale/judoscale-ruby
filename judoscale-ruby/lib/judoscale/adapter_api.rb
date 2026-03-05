@@ -9,7 +9,7 @@ module Judoscale
   class AdapterApi
     include Logger
 
-    SUCCESS = "success"
+    MAX_RETRIES = 3
     TRANSIENT_ERRORS = [
       Errno::ECONNREFUSED,
       Errno::ECONNRESET,
@@ -51,7 +51,7 @@ module Judoscale
       else FailureResponse.new([response.code, response.message].join(" - "))
       end
     rescue *TRANSIENT_ERRORS => ex
-      if attempts < 3
+      if attempts < MAX_RETRIES
         # TCP timeouts happen sometimes, but they can usually be successfully retried in a moment
         sleep 0.25 * (2**(attempts - 1))
         attempts += 1
