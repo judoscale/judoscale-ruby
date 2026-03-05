@@ -27,18 +27,16 @@ module Judoscale
 
       def initialize
         super
-
         @good_job_base_class = self.class.good_job_base_class
-
-        queue_names = run_silently do
-          @good_job_base_class.select("distinct queue_name").map(&:queue_name)
-        end
-        self.queues |= queue_names
       end
 
       def collect
         metrics = []
         time = Time.now.utc
+
+        if queues.empty?
+          self.queues |= run_silently { @good_job_base_class.distinct.pluck(:queue_name) }
+        end
 
         # logically we don't need the finished_at condition, but it lets postgres use the indexes
         oldest_execution_time_by_queue = run_silently do
