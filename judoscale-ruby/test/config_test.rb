@@ -129,6 +129,19 @@ module Judoscale
       end
     end
 
+    it "initializes the config from default Scalingo ENV vars" do
+      env = {
+        "CONTAINER" => "web-1",
+        "JUDOSCALE_URL" => "https://adapter.judoscale.com/api/1234567890"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
+        _(config.current_runtime_container).must_equal "web-1"
+      end
+    end
+
     it "allows ENV vars config overrides for the debug and URL" do
       env = {
         "DYNO" => "web.2",

@@ -125,6 +125,9 @@ module Judoscale
           RuntimeContainer.new ENV["FLY_MACHINE_ID"]
         elsif ENV.include?("RAILWAY_REPLICA_ID")
           RuntimeContainer.new ENV["RAILWAY_REPLICA_ID"]
+        elsif ENV.include?("CONTAINER")
+          # Scalingo exposes the container type and index (e.g. "web-1") via CONTAINER.
+          RuntimeContainer.new ENV["CONTAINER"]
         else
           # Unsupported platform...
           RuntimeContainer.new("")
