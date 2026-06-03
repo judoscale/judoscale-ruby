@@ -6,13 +6,14 @@ require "logger"
 module Judoscale
   class Config
     class RuntimeContainer < String
-      # Since Heroku exposes ordinal dyno 'numbers', we can tell if the current
-      # instance is redundant (and thus skip collecting some metrics sometimes)
-      # We don't have a means of determining that on Render though — so every
-      # instance must be considered non-redundant
+      # Job metrics are collected from a single container per process type when we
+      # can identify the ordinal instance (Heroku "web.2", Scalingo "web-2").
+      # Opaque IDs (Render, ECS, Railway, etc.) are always non-redundant.
+      ORDINAL_CONTAINER = /\A[a-z_]+[.-](\d{1,3})\z/
+
       def redundant_instance?
-        instance_number = split(".")[1].to_i
-        instance_number > 1
+        match = match(ORDINAL_CONTAINER)
+        match ? match[1].to_i > 1 : false
       end
     end
 
