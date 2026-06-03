@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.3](https://github.com/judoscale/judoscale-ruby/compare/v1.13.2...v1.13.3) (2026-06-03)
+
+
+### Bug Fixes
+
+* Read Scalingo container identity from CONTAINER env var ([#271](https://github.com/judoscale/judoscale-ruby/issues/271)) ([106b744](https://github.com/judoscale/judoscale-ruby/commit/106b74441d611be2b4feddaffa570439e7c9f837))
+
 ## [1.13.2](https://github.com/judoscale/judoscale-ruby/compare/v1.13.1...v1.13.2) (2026-03-05)
 
 
