@@ -12,6 +12,9 @@ module Judoscale
           web.1
           worker.1
           custom_name.1
+          web-1
+          worker-1
+          tcp-1
           5497f74465-m5wwr
           aaacff2165-m5wwr
         ].each do |container_id|
@@ -26,6 +29,9 @@ module Judoscale
           web.2
           worker.8
           custom_name.15
+          web-2
+          worker-8
+          tcp-2
         ].each do |container_id|
           Judoscale.configure do |config|
             config.current_runtime_container = Config::RuntimeContainer.new(container_id)

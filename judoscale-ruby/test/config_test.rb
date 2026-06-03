@@ -129,6 +129,34 @@ module Judoscale
       end
     end
 
+    it "initializes the config from default Scalingo ENV vars" do
+      env = {
+        "CONTAINER" => "web-1",
+        "JUDOSCALE_URL" => "https://adapter.judoscale.com/api/1234567890"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
+        _(config.current_runtime_container).must_equal "web-1"
+      end
+    end
+
+    describe Config::RuntimeContainer do
+      it "treats only ordinal instances beyond the first as redundant when the id format is known" do
+        _(Config::RuntimeContainer.new("web.1").redundant_instance?).must_equal false
+        _(Config::RuntimeContainer.new("web.2").redundant_instance?).must_equal true
+        _(Config::RuntimeContainer.new("web-1").redundant_instance?).must_equal false
+        _(Config::RuntimeContainer.new("web-2").redundant_instance?).must_equal true
+      end
+
+      it "does not treat opaque container ids as redundant" do
+        _(Config::RuntimeContainer.new("5497f74465-m5wwr").redundant_instance?).must_equal false
+        _(Config::RuntimeContainer.new("a8880ee042bc4db3ba878dce65b769b6-2750272591").redundant_instance?).must_equal false
+        _(Config::RuntimeContainer.new("abcdef-2750272591").redundant_instance?).must_equal false
+      end
+    end
+
     it "allows ENV vars config overrides for the debug and URL" do
       env = {
         "DYNO" => "web.2",
