@@ -155,6 +155,19 @@ module Judoscale
         _(Config::RuntimeContainer.new("a8880ee042bc4db3ba878dce65b769b6-2750272591").redundant_instance?).must_equal false
         _(Config::RuntimeContainer.new("abcdef-2750272591").redundant_instance?).must_equal false
       end
+
+      it "treats Heroku and Scalingo one-off containers as one-off" do
+        _(Config::RuntimeContainer.new("run.1234").one_off?).must_equal true
+        _(Config::RuntimeContainer.new("one-off-1234").one_off?).must_equal true
+      end
+
+      it "does not treat formation containers as one-off" do
+        _(Config::RuntimeContainer.new("web.1").one_off?).must_equal false
+        _(Config::RuntimeContainer.new("web-1").one_off?).must_equal false
+        _(Config::RuntimeContainer.new("worker-2").one_off?).must_equal false
+        _(Config::RuntimeContainer.new("runner-1").one_off?).must_equal false
+        _(Config::RuntimeContainer.new("5497f74465-m5wwr").one_off?).must_equal false
+      end
     end
 
     it "allows ENV vars config overrides for the debug and URL" do
