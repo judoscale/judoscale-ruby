@@ -28,7 +28,7 @@ module Judoscale
       end
 
       def in_one_off_container?
-        judoscale_config.current_runtime_container.one_off?
+        judoscale_config.current_platform.one_off?
       end
 
       def judoscale_config
