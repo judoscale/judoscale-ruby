@@ -193,6 +193,10 @@ module Judoscale
         _(Platform::Unknown.new("").one_off?).must_equal false
       end
 
+      it "strips the service id prefix from the Render instance id" do
+        _(Platform::Render.new("srv-x-5497f74465-m5wwr", service_id: "srv-x").container).must_equal "5497f74465-m5wwr"
+      end
+
       it "lets legacy Render services derive the API url from the service id" do
         _(Platform::Render.new("abc", service_id: "srv-x").default_api_base_url).must_equal "https://adapter.judoscale.com/api/srv-x"
         _(Platform::Heroku.new("web.1").default_api_base_url).must_be_nil

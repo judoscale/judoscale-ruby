@@ -37,9 +37,7 @@ module Judoscale
       elsif env.include?("DYNO")
         Heroku.new env["DYNO"]
       elsif env.include?("RENDER_INSTANCE_ID")
-        service_id = env["RENDER_SERVICE_ID"]
-        instance = env["RENDER_INSTANCE_ID"].delete_prefix("#{service_id}-")
-        Render.new instance, service_id: service_id
+        Render.new env["RENDER_INSTANCE_ID"], service_id: env["RENDER_SERVICE_ID"]
       elsif env.include?("ECS_CONTAINER_METADATA_URI")
         Ecs.new env["ECS_CONTAINER_METADATA_URI"].split("/").last
       elsif env.include?("FLY_MACHINE_ID")
@@ -83,9 +81,10 @@ module Judoscale
     end
 
     class Render < Platform
-      def initialize(container, service_id:)
-        super(container)
+      def initialize(instance_id, service_id:)
         @service_id = service_id
+        # Render prefixes the instance id with the service id, which isn't part of the instance.
+        super(instance_id.delete_prefix("#{service_id}-"))
       end
 
       # Legacy Render services not using JUDOSCALE_URL derive the adapter URL
