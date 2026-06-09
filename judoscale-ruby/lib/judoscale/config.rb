@@ -11,9 +11,18 @@ module Judoscale
       # Opaque IDs (Render, ECS, Railway, etc.) are always non-redundant.
       ORDINAL_CONTAINER = /\A[a-z_]+[.-](\d{1,3})\z/
 
+      # One-off containers (Heroku "run.1234", Scalingo "one-off-1234") are never
+      # part of an autoscaled formation, so there's no point reporting metrics from
+      # them — they only duplicate queue metrics already sent by the workers.
+      ONE_OFF_CONTAINER = /\A(run\.|one-off)/
+
       def redundant_instance?
         match = match(ORDINAL_CONTAINER)
         match ? match[1].to_i > 1 : false
+      end
+
+      def one_off?
+        match?(ONE_OFF_CONTAINER)
       end
     end
 
