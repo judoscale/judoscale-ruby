@@ -76,7 +76,7 @@ module Judoscale
 
       # Scalingo one-off containers are named "one-off-1234".
       def one_off?
-        container.start_with?("one-off")
+        container.start_with?("one-off-")
       end
     end
 
