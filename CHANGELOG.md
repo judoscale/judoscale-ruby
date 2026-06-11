@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.4](https://github.com/judoscale/judoscale-ruby/compare/v1.13.3...v1.13.4) (2026-06-11)
+
+
+### Bug Fixes
+
+* skip the reporter in one-off containers ([#273](https://github.com/judoscale/judoscale-ruby/issues/273)) ([cfcbe12](https://github.com/judoscale/judoscale-ruby/commit/cfcbe12df5e6c29bf7954204d56c2ace2b8eddc4))
+
 ## [1.13.3](https://github.com/judoscale/judoscale-ruby/compare/v1.13.2...v1.13.3) (2026-06-03)
 
 
