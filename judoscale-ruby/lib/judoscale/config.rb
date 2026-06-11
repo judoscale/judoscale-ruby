@@ -2,30 +2,10 @@
 
 require "singleton"
 require "logger"
+require "judoscale/platform"
 
 module Judoscale
   class Config
-    class RuntimeContainer < String
-      # Job metrics are collected from a single container per process type when we
-      # can identify the ordinal instance (Heroku "web.2", Scalingo "web-2").
-      # Opaque IDs (Render, ECS, Railway, etc.) are always non-redundant.
-      ORDINAL_CONTAINER = /\A[a-z_]+[.-](\d{1,3})\z/
-
-      # One-off containers (Heroku "run.1234", Scalingo "one-off-1234") are never
-      # part of an autoscaled formation, so there's no point reporting metrics from
-      # them — they only duplicate queue metrics already sent by the workers.
-      ONE_OFF_CONTAINER = /\A(run\.|one-off)/
-
-      def redundant_instance?
-        match = match(ORDINAL_CONTAINER)
-        match ? match[1].to_i > 1 : false
-      end
-
-      def one_off?
-        match?(ONE_OFF_CONTAINER)
-      end
-    end
-
     class JobAdapterConfig
       UUID_REGEXP = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
       DEFAULT_QUEUE_FILTER = ->(queue_name) { !UUID_REGEXP.match?(queue_name) }
@@ -99,7 +79,7 @@ module Judoscale
     end
 
     attr_accessor :api_base_url, :report_interval_seconds,
-      :max_request_size_bytes, :logger, :log_tag, :current_runtime_container
+      :max_request_size_bytes, :logger, :log_tag, :current_platform
     attr_reader :log_level
 
     def initialize
@@ -117,31 +97,9 @@ module Judoscale
 
       self.class.adapter_configs.each(&:reset)
 
-      @current_runtime_container =
-        if ENV.include?("JUDOSCALE_CONTAINER")
-          RuntimeContainer.new ENV["JUDOSCALE_CONTAINER"]
-        elsif ENV.include?("DYNO")
-          RuntimeContainer.new ENV["DYNO"]
-        elsif ENV.include?("RENDER_INSTANCE_ID")
-          # Deprecated API url using the service ID for legacy render services not using `JUDOSCALE_URL`.
-          @api_base_url ||= "https://adapter.judoscale.com/api/#{ENV["RENDER_SERVICE_ID"]}"
-
-          instance = ENV["RENDER_INSTANCE_ID"].delete_prefix("#{ENV["RENDER_SERVICE_ID"]}-")
-          RuntimeContainer.new instance
-        elsif ENV.include?("ECS_CONTAINER_METADATA_URI")
-          instance = ENV["ECS_CONTAINER_METADATA_URI"].split("/").last
-          RuntimeContainer.new instance
-        elsif ENV.include?("FLY_MACHINE_ID")
-          RuntimeContainer.new ENV["FLY_MACHINE_ID"]
-        elsif ENV.include?("RAILWAY_REPLICA_ID")
-          RuntimeContainer.new ENV["RAILWAY_REPLICA_ID"]
-        elsif ENV.include?("CONTAINER")
-          # Scalingo exposes the container type and index (e.g. "web-1") via CONTAINER.
-          RuntimeContainer.new ENV["CONTAINER"]
-        else
-          # Unsupported platform...
-          RuntimeContainer.new("")
-        end
+      @current_platform = Platform.detect(ENV)
+      # Legacy Render services not using JUDOSCALE_URL derive the API url from the platform.
+      @api_base_url ||= @current_platform.default_api_base_url
     end
 
     def log_level=(new_level)

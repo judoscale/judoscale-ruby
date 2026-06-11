@@ -8,33 +8,34 @@ module Judoscale
   describe JobMetricsCollector do
     describe ".collect?" do
       it "collects only from the first container in the formation (if we know that), to avoid redundant collection from multiple containers when possible" do
-        %w[
-          web.1
-          worker.1
-          custom_name.1
-          web-1
-          worker-1
-          tcp-1
-          5497f74465-m5wwr
-          aaacff2165-m5wwr
-        ].each do |container_id|
+        [
+          Platform::Heroku.new("web.1"),
+          Platform::Heroku.new("worker.1"),
+          Platform::Heroku.new("custom_name.1"),
+          Platform::Scalingo.new("web-1"),
+          Platform::Scalingo.new("worker-1"),
+          Platform::Scalingo.new("tcp-1"),
+          # Opaque-id platforms can't identify an ordinal, so they always collect.
+          Platform::Render.new("5497f74465-m5wwr", service_id: "srv-x"),
+          Platform::Ecs.new("aaacff2165-m5wwr")
+        ].each do |platform|
           Judoscale.configure do |config|
-            config.current_runtime_container = Config::RuntimeContainer.new(container_id)
+            config.current_platform = platform
           end
 
           _(Test::TestJobMetricsCollector.collect?(Judoscale::Config.instance)).must_equal true
         end
 
-        %w[
-          web.2
-          worker.8
-          custom_name.15
-          web-2
-          worker-8
-          tcp-2
-        ].each do |container_id|
+        [
+          Platform::Heroku.new("web.2"),
+          Platform::Heroku.new("worker.8"),
+          Platform::Heroku.new("custom_name.15"),
+          Platform::Scalingo.new("web-2"),
+          Platform::Scalingo.new("worker-8"),
+          Platform::Scalingo.new("tcp-2")
+        ].each do |platform|
           Judoscale.configure do |config|
-            config.current_runtime_container = Config::RuntimeContainer.new(container_id)
+            config.current_platform = platform
           end
 
           _(Test::TestJobMetricsCollector.collect?(Judoscale::Config.instance)).must_equal false
@@ -43,7 +44,7 @@ module Judoscale
 
       it "skips collecting if the adapter has been explicitly disabled" do
         Judoscale.configure { |config|
-          config.current_runtime_container = Config::RuntimeContainer.new("web.1")
+          config.current_platform = Platform::Heroku.new("web.1")
           config.test_job_config.enabled = true
         }
 

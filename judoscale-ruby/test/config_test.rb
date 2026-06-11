@@ -14,7 +14,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
-        _(config.current_runtime_container).must_equal "web.1"
+        _(config.current_platform.container).must_equal "web.1"
         _(config.log_level).must_be_nil
         _(config.logger).must_be_instance_of ::Logger
         _(config.max_request_size_bytes).must_equal 100_000
@@ -42,7 +42,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/srv-cfa1es5a49987h4vcvfg"
-        _(config.current_runtime_container).must_equal "5497f74465-m5wwr"
+        _(config.current_platform.container).must_equal "5497f74465-m5wwr"
       end
     end
 
@@ -57,7 +57,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
-        _(config.current_runtime_container).must_equal "5497f74465-m5wwr"
+        _(config.current_platform.container).must_equal "5497f74465-m5wwr"
       end
     end
 
@@ -71,7 +71,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
-        _(config.current_runtime_container).must_equal "a8880ee042bc4db3ba878dce65b769b6-2750272591"
+        _(config.current_platform.container).must_equal "a8880ee042bc4db3ba878dce65b769b6-2750272591"
       end
     end
 
@@ -85,7 +85,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
-        _(config.current_runtime_container).must_equal "683d924b322418"
+        _(config.current_platform.container).must_equal "683d924b322418"
       end
     end
 
@@ -99,7 +99,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
-        _(config.current_runtime_container).must_equal "f9c88b6e-0e96-46f2-9884-ece3bf53d009"
+        _(config.current_platform.container).must_equal "f9c88b6e-0e96-46f2-9884-ece3bf53d009"
       end
     end
 
@@ -112,7 +112,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
-        _(config.current_runtime_container).must_equal "custom-container-123"
+        _(config.current_platform.container).must_equal "custom-container-123"
       end
     end
 
@@ -125,7 +125,7 @@ module Judoscale
 
       use_env env do
         config = Config.instance
-        _(config.current_runtime_container).must_equal "custom-container-123"
+        _(config.current_platform.container).must_equal "custom-container-123"
       end
     end
 
@@ -138,35 +138,65 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
-        _(config.current_runtime_container).must_equal "web-1"
+        _(config.current_platform.container).must_equal "web-1"
       end
     end
 
-    describe Config::RuntimeContainer do
-      it "treats only ordinal instances beyond the first as redundant when the id format is known" do
-        _(Config::RuntimeContainer.new("web.1").redundant_instance?).must_equal false
-        _(Config::RuntimeContainer.new("web.2").redundant_instance?).must_equal true
-        _(Config::RuntimeContainer.new("web-1").redundant_instance?).must_equal false
-        _(Config::RuntimeContainer.new("web-2").redundant_instance?).must_equal true
+    describe Platform do
+      it "detects the platform from environment variables, JUDOSCALE_CONTAINER winning over platform vars" do
+        _(Platform.detect("JUDOSCALE_CONTAINER" => "x", "DYNO" => "web.1")).must_be_instance_of Platform::Custom
+        _(Platform.detect("DYNO" => "web.1")).must_be_instance_of Platform::Heroku
+        _(Platform.detect("RENDER_INSTANCE_ID" => "srv-x-abc", "RENDER_SERVICE_ID" => "srv-x")).must_be_instance_of Platform::Render
+        _(Platform.detect("ECS_CONTAINER_METADATA_URI" => "http://169.254.170.2/v3/abc")).must_be_instance_of Platform::Ecs
+        _(Platform.detect("FLY_MACHINE_ID" => "683d924b322418")).must_be_instance_of Platform::Fly
+        _(Platform.detect("RAILWAY_REPLICA_ID" => "f9c88b6e")).must_be_instance_of Platform::Railway
+        _(Platform.detect("CONTAINER" => "web-1")).must_be_instance_of Platform::Scalingo
+        _(Platform.detect({})).must_be_instance_of Platform::Unknown
       end
 
-      it "does not treat opaque container ids as redundant" do
-        _(Config::RuntimeContainer.new("5497f74465-m5wwr").redundant_instance?).must_equal false
-        _(Config::RuntimeContainer.new("a8880ee042bc4db3ba878dce65b769b6-2750272591").redundant_instance?).must_equal false
-        _(Config::RuntimeContainer.new("abcdef-2750272591").redundant_instance?).must_equal false
+      it "treats only ordinal instances beyond the first as redundant on Heroku and Scalingo" do
+        _(Platform::Heroku.new("web.1").redundant_instance?).must_equal false
+        _(Platform::Heroku.new("web.2").redundant_instance?).must_equal true
+        _(Platform::Scalingo.new("web-1").redundant_instance?).must_equal false
+        _(Platform::Scalingo.new("web-2").redundant_instance?).must_equal true
+        _(Platform::Heroku.new("web.1000").redundant_instance?).must_equal true
+        _(Platform::Scalingo.new("worker-1024").redundant_instance?).must_equal true
+      end
+
+      it "never treats opaque-id platforms as redundant" do
+        _(Platform::Render.new("5497f74465-m5wwr", service_id: "srv-x").redundant_instance?).must_equal false
+        _(Platform::Ecs.new("a8880ee042bc4db3ba878dce65b769b6-2750272591").redundant_instance?).must_equal false
+        _(Platform::Fly.new("683d924b322418").redundant_instance?).must_equal false
+        _(Platform::Railway.new("f9c88b6e-0e96-46f2-9884-ece3bf53d009").redundant_instance?).must_equal false
+        _(Platform::Custom.new("abcdef-2750272591").redundant_instance?).must_equal false
+        _(Platform::Unknown.new("").redundant_instance?).must_equal false
       end
 
       it "treats Heroku and Scalingo one-off containers as one-off" do
-        _(Config::RuntimeContainer.new("run.1234").one_off?).must_equal true
-        _(Config::RuntimeContainer.new("one-off-1234").one_off?).must_equal true
+        _(Platform::Heroku.new("run.1234").one_off?).must_equal true
+        _(Platform::Scalingo.new("one-off-1234").one_off?).must_equal true
       end
 
       it "does not treat formation containers as one-off" do
-        _(Config::RuntimeContainer.new("web.1").one_off?).must_equal false
-        _(Config::RuntimeContainer.new("web-1").one_off?).must_equal false
-        _(Config::RuntimeContainer.new("worker-2").one_off?).must_equal false
-        _(Config::RuntimeContainer.new("runner-1").one_off?).must_equal false
-        _(Config::RuntimeContainer.new("5497f74465-m5wwr").one_off?).must_equal false
+        _(Platform::Heroku.new("web.1").one_off?).must_equal false
+        _(Platform::Scalingo.new("web-1").one_off?).must_equal false
+        _(Platform::Scalingo.new("worker-2").one_off?).must_equal false
+        _(Platform::Heroku.new("runner-1").one_off?).must_equal false
+      end
+
+      it "never treats opaque-id platforms as one-off" do
+        _(Platform::Render.new("5497f74465-m5wwr", service_id: "srv-x").one_off?).must_equal false
+        _(Platform::Fly.new("683d924b322418").one_off?).must_equal false
+        _(Platform::Unknown.new("").one_off?).must_equal false
+      end
+
+      it "strips the service id prefix from the Render instance id" do
+        _(Platform::Render.new("srv-x-5497f74465-m5wwr", service_id: "srv-x").container).must_equal "5497f74465-m5wwr"
+      end
+
+      it "lets legacy Render services derive the API url from the service id" do
+        _(Platform::Render.new("abc", service_id: "srv-x").default_api_base_url).must_equal "https://adapter.judoscale.com/api/srv-x"
+        _(Platform::Heroku.new("web.1").default_api_base_url).must_be_nil
       end
     end
 
@@ -180,7 +210,7 @@ module Judoscale
       use_env env do
         config = Config.instance
         _(config.api_base_url).must_equal "https://custom.example.com"
-        _(config.current_runtime_container).must_equal "web.2"
+        _(config.current_platform.container).must_equal "web.2"
         _(config.log_level).must_equal ::Logger::Severity::DEBUG
       end
     end
@@ -228,7 +258,7 @@ module Judoscale
       test_logger = ::Logger.new(StringIO.new)
 
       Judoscale.configure do |config|
-        config.current_runtime_container = Config::RuntimeContainer.new("web.3")
+        config.current_platform = Platform::Heroku.new("web.3")
 
         config.api_base_url = "https://block.example.com"
         config.log_level = :info
@@ -242,7 +272,7 @@ module Judoscale
 
       config = Config.instance
       _(config.api_base_url).must_equal "https://block.example.com"
-      _(config.current_runtime_container).must_equal "web.3"
+      _(config.current_platform.container).must_equal "web.3"
       _(config.log_level).must_equal ::Logger::Severity::INFO
       _(config.logger).must_equal test_logger
       _(config.max_request_size_bytes).must_equal 50_000
