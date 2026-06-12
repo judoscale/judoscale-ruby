@@ -4,8 +4,9 @@ module Judoscale
   # The hosting platform we detected from the environment. The container/instance
   # id is just one property of the platform — behavior that only applies to
   # certain platforms (whether an instance is a redundant member of a formation,
-  # or a one-off task) lives on the platform subclasses that actually have those
-  # concepts, instead of being re-derived from the shape of the container string.
+  # or an ephemeral process) lives on the platform subclasses that actually have
+  # those concepts, instead of being re-derived from the shape of the container
+  # string.
   class Platform
     attr_reader :container
 
@@ -14,13 +15,13 @@ module Judoscale
     end
 
     # Most platforms expose opaque, non-ordinal instance ids (Render, ECS, Fly,
-    # Railway, custom), so by default no instance is redundant and none is one-off.
+    # Railway, custom), so by default no instance is redundant or ephemeral.
     # Platforms that have those concepts override these.
     def redundant_instance?
       false
     end
 
-    def one_off?
+    def ephemeral_instance?
       false
     end
 
@@ -61,9 +62,9 @@ module Judoscale
         match ? match[1].to_i > 1 : false
       end
 
-      # Heroku one-off dynos are named "run.1234".
-      def one_off?
-        container.start_with?("run.")
+      # Heroku release phase and one-off dynos are named "release.1234" and "run.1234".
+      def ephemeral_instance?
+        container.downcase.start_with?("release.") || container.start_with?("run.")
       end
     end
 
@@ -75,7 +76,7 @@ module Judoscale
       end
 
       # Scalingo one-off containers are named "one-off-1234".
-      def one_off?
+      def ephemeral_instance?
         container.start_with?("one-off-")
       end
     end

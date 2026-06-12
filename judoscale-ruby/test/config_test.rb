@@ -172,22 +172,28 @@ module Judoscale
         _(Platform::Unknown.new("").redundant_instance?).must_equal false
       end
 
-      it "treats Heroku and Scalingo one-off containers as one-off" do
-        _(Platform::Heroku.new("run.1234").one_off?).must_equal true
-        _(Platform::Scalingo.new("one-off-1234").one_off?).must_equal true
+      it "treats Heroku release phase and one-off dynos as ephemeral instances" do
+        _(Platform::Heroku.new("release.1").ephemeral_instance?).must_equal true
+        _(Platform::Heroku.new("Release.1234").ephemeral_instance?).must_equal true
+        _(Platform::Heroku.new("run.1234").ephemeral_instance?).must_equal true
       end
 
-      it "does not treat formation containers as one-off" do
-        _(Platform::Heroku.new("web.1").one_off?).must_equal false
-        _(Platform::Scalingo.new("web-1").one_off?).must_equal false
-        _(Platform::Scalingo.new("worker-2").one_off?).must_equal false
-        _(Platform::Heroku.new("runner-1").one_off?).must_equal false
+      it "treats Scalingo one-off containers as ephemeral instances" do
+        _(Platform::Scalingo.new("one-off-1234").ephemeral_instance?).must_equal true
       end
 
-      it "never treats opaque-id platforms as one-off" do
-        _(Platform::Render.new("5497f74465-m5wwr", service_id: "srv-x").one_off?).must_equal false
-        _(Platform::Fly.new("683d924b322418").one_off?).must_equal false
-        _(Platform::Unknown.new("").one_off?).must_equal false
+      it "does not treat formation containers as ephemeral instances" do
+        _(Platform::Heroku.new("web.1").ephemeral_instance?).must_equal false
+        _(Platform::Heroku.new("worker.2").ephemeral_instance?).must_equal false
+        _(Platform::Heroku.new("runner-1").ephemeral_instance?).must_equal false
+        _(Platform::Scalingo.new("web-1").ephemeral_instance?).must_equal false
+        _(Platform::Scalingo.new("worker-2").ephemeral_instance?).must_equal false
+      end
+
+      it "never treats opaque-id platforms as ephemeral instances" do
+        _(Platform::Render.new("5497f74465-m5wwr", service_id: "srv-x").ephemeral_instance?).must_equal false
+        _(Platform::Fly.new("683d924b322418").ephemeral_instance?).must_equal false
+        _(Platform::Unknown.new("").ephemeral_instance?).must_equal false
       end
 
       it "strips the service id prefix from the Render instance id" do
