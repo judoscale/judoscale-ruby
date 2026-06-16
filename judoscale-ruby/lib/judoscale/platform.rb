@@ -64,7 +64,9 @@ module Judoscale
 
       # Heroku release phase and one-off dynos are named "release.1234" and "run.1234".
       def ephemeral_instance?
-        container.downcase.start_with?("release.") || container.start_with?("run.")
+        normalized_container = container.downcase
+        normalized_container.start_with?("release.") ||
+          normalized_container.start_with?("run.")
       end
     end
 

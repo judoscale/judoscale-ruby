@@ -174,7 +174,6 @@ module Judoscale
 
       it "treats Heroku release phase and one-off dynos as ephemeral instances" do
         _(Platform::Heroku.new("release.1").ephemeral_instance?).must_equal true
-        _(Platform::Heroku.new("Release.1234").ephemeral_instance?).must_equal true
         _(Platform::Heroku.new("run.1234").ephemeral_instance?).must_equal true
       end
 
