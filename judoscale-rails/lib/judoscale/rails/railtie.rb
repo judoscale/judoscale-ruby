@@ -27,10 +27,6 @@ module Judoscale
         top_level_tasks.any? { |task| task_regex.match?(task) }
       end
 
-      def in_one_off_container?
-        judoscale_config.current_platform.one_off?
-      end
-
       def judoscale_config
         # Disambiguate from Judoscale::Rails::Config
         ::Judoscale::Config.instance
@@ -47,8 +43,6 @@ module Judoscale
       config.after_initialize do
         if in_rails_console_or_runner?
           logger.debug "No reporting since we're in a Rails console or runner process"
-        elsif in_one_off_container?
-          logger.debug "No reporting since we're in a one-off container"
         elsif in_rake_task?(judoscale_config.rake_task_ignore_regex)
           logger.debug "No reporting since we're in a build process"
         elsif judoscale_config.start_reporter_after_initialize

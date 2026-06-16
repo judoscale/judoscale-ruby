@@ -132,6 +132,22 @@ module Judoscale
         _(log_string).must_include "Set api_base_url to enable metrics reporting"
       end
 
+      [
+        ["Heroku release", Platform::Heroku.new("release.1")],
+        ["Heroku", Platform::Heroku.new("run.1234")],
+        ["Scalingo", Platform::Scalingo.new("one-off-1234")]
+      ].each do |platform_name, platform|
+        it "does not run the reporter thread in a #{platform_name} ephemeral instance" do
+          Judoscale.configure { |config| config.current_platform = platform }
+
+          Reporter.instance.stub(:run_loop, ->(*) { raise "SHOULD NOT BE CALLED" }) {
+            Reporter.instance.start!(Config.instance, Judoscale.adapters)
+          }
+
+          _(log_string).must_include "Reporter not started: in an ephemeral container"
+        end
+      end
+
       it "does not run the reporter thread when there are no metrics collectors" do
         Reporter.instance.stub(:run_loop, ->(*) { raise "SHOULD NOT BE CALLED" }) {
           Reporter.instance.start!(Config.instance, Judoscale.adapters.select { |a| a.metrics_collector.nil? })

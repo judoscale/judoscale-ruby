@@ -19,6 +19,11 @@ module Judoscale
     def start!(config, adapters)
       @pid = Process.pid
 
+      if config.current_platform.ephemeral_instance?
+        logger.debug "Reporter not started: in an ephemeral container"
+        return
+      end
+
       if config.api_base_url.nil? || config.api_base_url.strip.empty?
         logger.debug "Set api_base_url to enable metrics reporting"
         return
