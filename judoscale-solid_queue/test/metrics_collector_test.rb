@@ -25,8 +25,23 @@ module Judoscale
     describe "#collect" do
       after {
         clear_enqueued_jobs
+        ::SolidQueue::Process.delete_all
         subject.clear_queues
       }
+
+      it "collects for queues processed by running workers, even before any jobs are enqueued" do
+        register_worker = ->(queues) {
+          ::SolidQueue::Process.register(kind: "Worker", pid: 1, hostname: "test", name: "worker-#{queues}", metadata: {queues: queues})
+        }
+        register_worker.call("default")
+        register_worker.call("memory_hog, low,background*,*")
+        ::SolidQueue::Process.register(kind: "Dispatcher", pid: 1, hostname: "test", name: "dispatcher", metadata: {queues: "dispatcher_queue"})
+
+        metrics = subject.collect
+
+        _(metrics.map(&:queue_name).sort).must_equal %w[default low memory_hog]
+        _(metrics.map(&:value)).must_equal [0, 0, 0]
+      end
 
       it "collects latency for each queue, using the oldest enqueued job" do
         now = Time.now.utc
