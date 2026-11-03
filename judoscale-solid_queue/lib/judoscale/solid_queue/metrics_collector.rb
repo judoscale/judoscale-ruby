@@ -25,6 +25,16 @@ module Judoscale
           self.queues |= run_silently { ::SolidQueue::Job.distinct.pluck(:queue_name) }
         end
 
+        # Running workers register the queues they process, which lets us report on queues
+        # that haven't had any jobs yet. Wildcards like "*" or "prefix*" can't be resolved
+        # to queue names, so we skip them.
+        worker_queues = run_silently do
+          ::SolidQueue::Process.where(kind: "Worker").pluck(:metadata).flat_map { |metadata|
+            metadata["queues"].to_s.split(",").map(&:strip)
+          }
+        end
+        self.queues |= worker_queues.reject { |queue| queue.empty? || queue.include?("*") }
+
         oldest_execution_time_by_queue = run_silently do
           ::SolidQueue::ReadyExecution.group(:queue_name).minimum(:created_at)
         end

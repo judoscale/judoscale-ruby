@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+# GoodJob v4.24.1+ uses ActiveModel without requiring it, which blows up on Rails 7 outside a full app boot.
+require "active_model"
 require "judoscale-good_job"
 
 require "minitest/autorun"
