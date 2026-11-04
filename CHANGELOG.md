@@ -1,6 +1,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.4](https://github.com/judoscale/judoscale-ruby/compare/v1.13.3...v1.13.4) (2026-11-03)
+
+
+### Bug Fixes
+
+* detect Solid Queue queues from running workers ([#277](https://github.com/judoscale/judoscale-ruby/issues/277)) ([43d0f3d](https://github.com/judoscale/judoscale-ruby/commit/43d0f3d4caddfdb17425d3bbb0346479b150370e))
+* skip the reporter in one-off containers ([#273](https://github.com/judoscale/judoscale-ruby/issues/273)) ([cfcbe12](https://github.com/judoscale/judoscale-ruby/commit/cfcbe12df5e6c29bf7954204d56c2ace2b8eddc4))
+* treat ephemeral containers consistently ([#276](https://github.com/judoscale/judoscale-ruby/issues/276)) ([ce7dc28](https://github.com/judoscale/judoscale-ruby/commit/ce7dc288515d942a2297f691d624fa1d264f1b44))
+
 ## [1.13.3](https://github.com/judoscale/judoscale-ruby/compare/v1.13.2...v1.13.3) (2026-06-03)
 
 
