@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.0](https://github.com/judoscale/judoscale-ruby/compare/v1.13.4...v1.14.0) (2026-11-13)
+
+
+### Features
+
+* report Hatchbox and Northflank instance names as the container ([#278](https://github.com/judoscale/judoscale-ruby/issues/278)) ([a104894](https://github.com/judoscale/judoscale-ruby/commit/a104894e67c47a622b4368b1232fd4c44763126a))
+
 ## [1.13.4](https://github.com/judoscale/judoscale-ruby/compare/v1.13.3...v1.13.4) (2026-11-03)
 
 
