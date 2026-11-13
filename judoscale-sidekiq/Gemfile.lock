@@ -1,14 +1,14 @@
 PATH
   remote: ../judoscale-ruby
   specs:
-    judoscale-ruby (1.13.4)
+    judoscale-ruby (1.14.0)
       logger
 
 PATH
   remote: .
   specs:
-    judoscale-sidekiq (1.13.4)
-      judoscale-ruby (= 1.13.4)
+    judoscale-sidekiq (1.14.0)
+      judoscale-ruby (= 1.14.0)
       sidekiq (>= 5.0)
 
 GEM
