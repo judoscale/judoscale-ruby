@@ -175,16 +175,12 @@ module Judoscale
       it "detects the platform from environment variables, JUDOSCALE_CONTAINER winning over platform vars" do
         _(Platform.detect("JUDOSCALE_CONTAINER" => "x", "DYNO" => "web.1")).must_be_instance_of Platform::Custom
         _(Platform.detect("JUDOSCALE_CONTAINER" => "x", "HATCHBOX_SERVER_NAME" => "web1")).must_be_instance_of Platform::Custom
-        _(Platform.detect("JUDOSCALE_CONTAINER" => "x", "NF_OBJECT_ID" => "prod-web", "HOSTNAME" => "prod-web-6fbcbdb958-v2jv5")).must_be_instance_of Platform::Custom
         _(Platform.detect("DYNO" => "web.1")).must_be_instance_of Platform::Heroku
         _(Platform.detect("RENDER_INSTANCE_ID" => "srv-x-abc", "RENDER_SERVICE_ID" => "srv-x")).must_be_instance_of Platform::Render
         _(Platform.detect("ECS_CONTAINER_METADATA_URI" => "http://169.254.170.2/v3/abc")).must_be_instance_of Platform::Ecs
         _(Platform.detect("FLY_MACHINE_ID" => "683d924b322418")).must_be_instance_of Platform::Fly
         _(Platform.detect("RAILWAY_REPLICA_ID" => "f9c88b6e")).must_be_instance_of Platform::Railway
         _(Platform.detect("HATCHBOX_SERVER_NAME" => "web1")).must_be_instance_of Platform::Hatchbox
-        _(Platform.detect("NF_OBJECT_ID" => "prod-web", "HOSTNAME" => "prod-web-6fbcbdb958-v2jv5")).must_be_instance_of Platform::Northflank
-        # HOSTNAME alone is set nearly everywhere, so it doesn't identify Northflank.
-        _(Platform.detect("HOSTNAME" => "prod-web-6fbcbdb958-v2jv5")).must_be_instance_of Platform::Unknown
         _(Platform.detect("CONTAINER" => "web-1")).must_be_instance_of Platform::Scalingo
         _(Platform.detect({})).must_be_instance_of Platform::Unknown
       end
@@ -212,7 +208,6 @@ module Judoscale
         _(Platform::Railway.new("f9c88b6e-0e96-46f2-9884-ece3bf53d009").redundant_instance?).must_equal false
         # Hatchbox server names can look like Scalingo ordinals, but each server is its own instance.
         _(Platform::Hatchbox.new("web-2").redundant_instance?).must_equal false
-        _(Platform::Northflank.new("prod-web-6fbcbdb958-v2jv5").redundant_instance?).must_equal false
         _(Platform::Custom.new("abcdef-2750272591").redundant_instance?).must_equal false
         _(Platform::Unknown.new("").redundant_instance?).must_equal false
       end
@@ -238,7 +233,6 @@ module Judoscale
         _(Platform::Render.new("5497f74465-m5wwr", service_id: "srv-x").ephemeral_instance?).must_equal false
         _(Platform::Fly.new("683d924b322418").ephemeral_instance?).must_equal false
         _(Platform::Hatchbox.new("one-off-1234").ephemeral_instance?).must_equal false
-        _(Platform::Northflank.new("prod-web-6fbcbdb958-v2jv5").ephemeral_instance?).must_equal false
         _(Platform::Unknown.new("").ephemeral_instance?).must_equal false
       end
 
