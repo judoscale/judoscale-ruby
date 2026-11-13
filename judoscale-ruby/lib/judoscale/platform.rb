@@ -15,8 +15,8 @@ module Judoscale
     end
 
     # Most platforms expose opaque, non-ordinal instance ids (Render, ECS, Fly,
-    # Railway, custom), so by default no instance is redundant or ephemeral.
-    # Platforms that have those concepts override these.
+    # Railway, Hatchbox, custom), so by default no instance is redundant or
+    # ephemeral. Platforms that have those concepts override these.
     def redundant_instance?
       false
     end
@@ -45,11 +45,17 @@ module Judoscale
         Fly.new env["FLY_MACHINE_ID"]
       elsif env.include?("RAILWAY_REPLICA_ID")
         Railway.new env["RAILWAY_REPLICA_ID"]
+      elsif env.include?("HATCHBOX_SERVER_NAME")
+        # Hatchbox passes each server's name (e.g. "web1") into its containers.
+        Hatchbox.new env["HATCHBOX_SERVER_NAME"]
       elsif env.include?("CONTAINER")
         # Scalingo exposes the container type and index (e.g. "web-1") via CONTAINER.
         Scalingo.new env["CONTAINER"]
       else
-        Unknown.new ""
+        # Docker and Kubernetes set HOSTNAME to the container or pod name, which
+        # tells instances apart on platforms we don't otherwise detect. On
+        # Northflank it's the pod name shown as the container id in its UI.
+        Unknown.new env["HOSTNAME"]
       end
     end
 
@@ -103,6 +109,9 @@ module Judoscale
     end
 
     class Railway < Platform
+    end
+
+    class Hatchbox < Platform
     end
 
     # User-provided container id via JUDOSCALE_CONTAINER.

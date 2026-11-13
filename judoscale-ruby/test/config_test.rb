@@ -103,6 +103,35 @@ module Judoscale
       end
     end
 
+    it "initializes the config from default Hatchbox ENV vars" do
+      env = {
+        "HATCHBOX_SERVER_NAME" => "autoscale-web-801dea",
+        "HATCHBOX_SERVER_ID" => "11835",
+        "HATCHBOX_SERVER_ROLES" => "web",
+        "JUDOSCALE_URL" => "https://adapter.judoscale.com/api/1234567890"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
+        _(config.current_platform.container).must_equal "autoscale-web-801dea"
+      end
+    end
+
+    it "initializes the config from default Northflank ENV vars" do
+      env = {
+        "NF_OBJECT_ID" => "prod-web",
+        "HOSTNAME" => "prod-web-6fbcbdb958-v2jv5",
+        "JUDOSCALE_URL" => "https://adapter.judoscale.com/api/1234567890"
+      }
+
+      use_env env do
+        config = Config.instance
+        _(config.api_base_url).must_equal "https://adapter.judoscale.com/api/1234567890"
+        _(config.current_platform.container).must_equal "prod-web-6fbcbdb958-v2jv5"
+      end
+    end
+
     it "initializes the config from JUDOSCALE_CONTAINER ENV var" do
       env = {
         "JUDOSCALE_CONTAINER" => "custom-container-123",
@@ -145,13 +174,22 @@ module Judoscale
     describe Platform do
       it "detects the platform from environment variables, JUDOSCALE_CONTAINER winning over platform vars" do
         _(Platform.detect("JUDOSCALE_CONTAINER" => "x", "DYNO" => "web.1")).must_be_instance_of Platform::Custom
+        _(Platform.detect("JUDOSCALE_CONTAINER" => "x", "HATCHBOX_SERVER_NAME" => "web1")).must_be_instance_of Platform::Custom
         _(Platform.detect("DYNO" => "web.1")).must_be_instance_of Platform::Heroku
         _(Platform.detect("RENDER_INSTANCE_ID" => "srv-x-abc", "RENDER_SERVICE_ID" => "srv-x")).must_be_instance_of Platform::Render
         _(Platform.detect("ECS_CONTAINER_METADATA_URI" => "http://169.254.170.2/v3/abc")).must_be_instance_of Platform::Ecs
         _(Platform.detect("FLY_MACHINE_ID" => "683d924b322418")).must_be_instance_of Platform::Fly
         _(Platform.detect("RAILWAY_REPLICA_ID" => "f9c88b6e")).must_be_instance_of Platform::Railway
+        _(Platform.detect("HATCHBOX_SERVER_NAME" => "web1")).must_be_instance_of Platform::Hatchbox
         _(Platform.detect("CONTAINER" => "web-1")).must_be_instance_of Platform::Scalingo
         _(Platform.detect({})).must_be_instance_of Platform::Unknown
+      end
+
+      it "uses HOSTNAME as the container on undetected platforms" do
+        _(Platform.detect("HOSTNAME" => "5c686f7df6-kb6kj").container).must_equal "5c686f7df6-kb6kj"
+        _(Platform.detect({}).container).must_equal ""
+        # HOSTNAME is only a fallback: detected platforms keep their own instance id.
+        _(Platform.detect("DYNO" => "web.1", "HOSTNAME" => "5c686f7df6-kb6kj").container).must_equal "web.1"
       end
 
       it "treats only ordinal instances beyond the first as redundant on Heroku and Scalingo" do
@@ -168,6 +206,8 @@ module Judoscale
         _(Platform::Ecs.new("a8880ee042bc4db3ba878dce65b769b6-2750272591").redundant_instance?).must_equal false
         _(Platform::Fly.new("683d924b322418").redundant_instance?).must_equal false
         _(Platform::Railway.new("f9c88b6e-0e96-46f2-9884-ece3bf53d009").redundant_instance?).must_equal false
+        # Hatchbox server names can look like Scalingo ordinals, but each server is its own instance.
+        _(Platform::Hatchbox.new("web-2").redundant_instance?).must_equal false
         _(Platform::Custom.new("abcdef-2750272591").redundant_instance?).must_equal false
         _(Platform::Unknown.new("").redundant_instance?).must_equal false
       end
@@ -192,6 +232,7 @@ module Judoscale
       it "never treats opaque-id platforms as ephemeral instances" do
         _(Platform::Render.new("5497f74465-m5wwr", service_id: "srv-x").ephemeral_instance?).must_equal false
         _(Platform::Fly.new("683d924b322418").ephemeral_instance?).must_equal false
+        _(Platform::Hatchbox.new("one-off-1234").ephemeral_instance?).must_equal false
         _(Platform::Unknown.new("").ephemeral_instance?).must_equal false
       end
 
