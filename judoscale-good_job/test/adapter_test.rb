@@ -19,15 +19,15 @@ module Judoscale
       _(config.good_job.enabled).must_equal true
       _(config.good_job.max_queues).must_equal 20
       _(config.good_job.queues).must_equal []
-      _(config.good_job.track_busy_jobs).must_equal false
+      _(config.good_job.track_busy_jobs).must_equal true
 
       Judoscale.configure do |config|
         config.good_job.queues = %w[test drive]
-        config.good_job.track_busy_jobs = true
+        config.good_job.track_busy_jobs = false
       end
 
       _(config.good_job.queues).must_equal %w[test drive]
-      _(config.good_job.track_busy_jobs).must_equal true
+      _(config.good_job.track_busy_jobs).must_equal false
 
       report = ::Judoscale::Report.new(Judoscale.adapters, Judoscale::Config.instance, [])
       _(report.as_json[:config]).must_include(:good_job)

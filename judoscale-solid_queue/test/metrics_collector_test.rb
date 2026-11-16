@@ -17,6 +17,9 @@ module Judoscale
   describe SolidQueue::MetricsCollector do
     subject { SolidQueue::MetricsCollector.new }
 
+    # Busy jobs are tracked by default; tests that cover busy jobs turn it back on.
+    before { Judoscale::Config.instance.solid_queue.track_busy_jobs = false }
+
     def clear_enqueued_jobs
       ::SolidQueue::Job.delete_all
       ::SolidQueue::ReadyExecution.delete_all

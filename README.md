@@ -94,13 +94,13 @@ The reporter runs in its own thread so your web requests and background jobs are
 - Dyno name (example: web.1)
 - PID
 - Collection of queue time and utilization metrics for web
-- Collection of queue time and/or queue depth metrics, and busy metrics (if enabled), for workers (see below)
+- Collection of queue time and/or queue depth metrics, and busy metrics, for workers (see below)
 
 Judoscale aggregates and stores this information to power the autoscaler algorithm and dashboard visualizations.
 
 ### What data is collected for each worker adapter?
 
-| adapter               | queue time | queue depth | busy (if enabled) |
+| adapter               | queue time | queue depth | busy              |
 | --------------------- | ---------- | ----------- | ----------------- |
 | judoscale-sidekiq     | ✅         | ✅          | ✅                |
 | judoscale-solid_queue | ✅         | ❌          | ✅                |
@@ -156,12 +156,12 @@ Judoscale.configure do |config|
   # Default: (queues that look like a UUID are rejected)
   # config.sidekiq.queue_filter = ->(queue_name) { /custom/.match?(queue_name) }
 
-  # Enables reporting for active (busy) workers so that downscaling can be
-  # suppressed.
+  # Reports the number of active (busy) jobs, so that downscaling can be suppressed while jobs are running.
   # See https://judoscale.com/docs/long-running-jobs/.
+  # Set to false (or set JUDOSCALE_LONG_JOBS=false) to stop reporting busy jobs.
   # Note: judoscale-shoryuken does not support reporting busy jobs.
-  # Default: false
-  # config.sidekiq.track_busy_jobs = true
+  # Default: true (false for judoscale-shoryuken)
+  # config.sidekiq.track_busy_jobs = false
 
   # Disable reporting for this worker adapter.
   # Default: true

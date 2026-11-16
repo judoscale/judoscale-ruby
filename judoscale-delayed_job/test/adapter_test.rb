@@ -19,15 +19,15 @@ module Judoscale
       _(config.delayed_job.enabled).must_equal true
       _(config.delayed_job.max_queues).must_equal 20
       _(config.delayed_job.queues).must_equal []
-      _(config.delayed_job.track_busy_jobs).must_equal false
+      _(config.delayed_job.track_busy_jobs).must_equal true
 
       Judoscale.configure do |config|
         config.delayed_job.queues = %w[test drive]
-        config.delayed_job.track_busy_jobs = true
+        config.delayed_job.track_busy_jobs = false
       end
 
       _(config.delayed_job.queues).must_equal %w[test drive]
-      _(config.delayed_job.track_busy_jobs).must_equal true
+      _(config.delayed_job.track_busy_jobs).must_equal false
 
       report = ::Judoscale::Report.new(Judoscale.adapters, Judoscale::Config.instance, [])
       _(report.as_json[:config]).must_include(:delayed_job)

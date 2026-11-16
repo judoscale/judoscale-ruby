@@ -9,6 +9,9 @@ module Judoscale
   describe Sidekiq::MetricsCollector do
     subject { Sidekiq::MetricsCollector.new }
 
+    # Busy jobs are tracked by default; tests that cover busy jobs turn it back on.
+    before { Judoscale::Config.instance.sidekiq.track_busy_jobs = false }
+
     describe "#collect" do
       after {
         subject.clear_queues
