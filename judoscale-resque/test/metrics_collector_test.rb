@@ -5,9 +5,10 @@ require "judoscale/resque/metrics_collector"
 require "securerandom"
 
 module Judoscale
-  ResqueWorkerStub = Struct.new(:job) do
-    def idle?
-      job.nil?
+  ResqueWorkerStub = Struct.new(:queue) do
+    def job(reload = true)
+      raise "the collector should reuse the job Resque.working loaded" if reload
+      {"queue" => queue}
     end
   end
 
@@ -104,17 +105,16 @@ module Judoscale
         end
       end
 
-      it "tracks busy jobs when the configuration is enabled, ignoring idle workers" do
+      it "tracks busy jobs when the configuration is enabled" do
         use_adapter_config :resque, track_busy_jobs: true do
           queues = ["default", "high"]
           size = 2
           latency = 1.0
 
           workers = [
-            ResqueWorkerStub.new({"queue" => "default"}),
-            ResqueWorkerStub.new({"queue" => "default"}),
-            ResqueWorkerStub.new({"queue" => "high"}),
-            ResqueWorkerStub.new # idle, shouldn't be tracked
+            ResqueWorkerStub.new("default"),
+            ResqueWorkerStub.new("default"),
+            ResqueWorkerStub.new("high")
           ]
 
           metrics = ::Resque.stub(:queues, queues) {
@@ -143,7 +143,7 @@ module Judoscale
             queues = ["default"]
             size = 2
             latency = 1.0
-            workers = [ResqueWorkerStub.new({"queue" => "default"})]
+            workers = [ResqueWorkerStub.new("default")]
 
             ::Resque.stub(:queues, queues) {
               ::Resque.stub(:size, size) {

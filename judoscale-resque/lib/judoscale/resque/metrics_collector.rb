@@ -18,10 +18,10 @@ module Judoscale
         if track_busy_jobs?
           busy_counts = Hash.new { |h, k| h[k] = 0 }
 
+          # `Resque.working` reads every worker's job in one call and skips idle workers. `job(false)` uses
+          # that job instead of fetching it again, which would cost a Redis round trip per busy worker.
           ::Resque.working.each do |worker|
-            if !worker.idle? && (job = worker.job)
-              busy_counts[job["queue"]] += 1
-            end
+            busy_counts[worker.job(false)["queue"]] += 1
           end
         end
 

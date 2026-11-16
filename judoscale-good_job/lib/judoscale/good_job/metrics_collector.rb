@@ -38,22 +38,23 @@ module Judoscale
           self.queues |= run_silently { @good_job_base_class.distinct.pluck(:queue_name) }
         end
 
-        # logically we don't need the finished_at condition, but it lets postgres use the indexes
-        oldest_execution_time_by_queue = run_silently do
+        # Read the oldest pending job and the count of running jobs per queue in one scan of unfinished jobs, so
+        # busy job tracking adds no queries. Running means performed but not finished, matching GoodJob's
+        # `running` scope on v3's Execution and v4.2+'s Job (v4.0-4.1 checked advisory locks).
+        # The finished_at condition lets postgres use the indexes.
+        rows = run_silently do
           @good_job_base_class
-            .where(performed_at: nil, finished_at: nil)
+            .where(finished_at: nil)
             .group(:queue_name)
-            .pluck(:queue_name, Arel.sql("min(coalesce(scheduled_at, created_at))"))
-            .to_h
+            .pluck(
+              :queue_name,
+              Arel.sql("min(coalesce(scheduled_at, created_at)) FILTER (WHERE performed_at IS NULL)"),
+              Arel.sql("count(*) FILTER (WHERE performed_at IS NOT NULL)")
+            )
         end
-        self.queues |= oldest_execution_time_by_queue.keys
-
-        if track_busy_jobs?
-          busy_count_by_queue = run_silently do
-            @good_job_base_class.running.group(:queue_name).count
-          end
-          self.queues |= busy_count_by_queue.keys
-        end
+        oldest_execution_time_by_queue = rows.to_h { |queue, run_at, _| [queue, run_at] }
+        busy_count_by_queue = rows.to_h { |queue, _, busy_count| [queue, busy_count] }
+        self.queues |= rows.map(&:first)
 
         queues.each do |queue|
           run_at = oldest_execution_time_by_queue[queue]

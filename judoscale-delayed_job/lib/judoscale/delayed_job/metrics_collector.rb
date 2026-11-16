@@ -9,20 +9,15 @@ module Judoscale
     class MetricsCollector < Judoscale::JobMetricsCollector
       include ActiveRecordHelper
 
+      # Returns the oldest unlocked job and the count of locked (busy) jobs per queue in a single pass,
+      # since `delayed_jobs` has no index for either filter and each separate query scans the whole table.
       METRICS_SQL = ActiveRecordHelper.cleanse_sql(<<~SQL)
-        SELECT COALESCE(queue, 'default'), min(run_at)
+        SELECT COALESCE(queue, 'default'),
+          min(CASE WHEN locked_at IS NULL THEN run_at END),
+          sum(CASE WHEN locked_at IS NOT NULL THEN 1 ELSE 0 END)
         FROM delayed_jobs
-        WHERE locked_at IS NULL
-        AND failed_at IS NULL
-        GROUP BY queue
-      SQL
-
-      BUSY_METRICS_SQL = ActiveRecordHelper.cleanse_sql(<<~SQL)
-        SELECT COALESCE(queue, 'default'), count(*)
-        FROM delayed_jobs
-        WHERE locked_at IS NOT NULL
-        AND locked_by IS NOT NULL
-        AND failed_at IS NULL
+        WHERE failed_at IS NULL
+        AND (locked_at IS NULL OR locked_by IS NOT NULL)
         GROUP BY 1
       SQL
 
@@ -38,13 +33,10 @@ module Judoscale
         metrics = []
         time = Time.now.utc
 
-        run_at_by_queue = select_rows_silently(METRICS_SQL).to_h
-        self.queues |= run_at_by_queue.keys
-
-        if track_busy_jobs?
-          busy_count_by_queue = select_rows_silently(BUSY_METRICS_SQL).to_h
-          self.queues |= busy_count_by_queue.keys
-        end
+        rows = select_rows_silently(METRICS_SQL)
+        run_at_by_queue = rows.to_h { |queue, run_at, _| [queue, run_at] }
+        busy_count_by_queue = rows.to_h { |queue, _, busy_count| [queue, busy_count.to_i] }
+        self.queues |= rows.map(&:first)
 
         queues.each do |queue|
           run_at = run_at_by_queue[queue]
