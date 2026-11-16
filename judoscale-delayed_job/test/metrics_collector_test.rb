@@ -16,6 +16,14 @@ module Judoscale
       ActiveRecord::Base.connection.execute("DELETE FROM delayed_jobs")
     end
 
+    # Counts the queries the block runs, ignoring schema lookups.
+    def count_queries(&block)
+      count = 0
+      counter = ->(*, payload) { count += 1 unless payload[:name] == "SCHEMA" }
+      ActiveSupport::Notifications.subscribed(counter, "sql.active_record", &block)
+      count
+    end
+
     describe "#collect" do
       after {
         clear_enqueued_jobs
@@ -115,6 +123,20 @@ module Judoscale
           _(metrics[3].queue_name).must_equal "high"
           _(metrics[3].identifier).must_equal :busy
         end
+      end
+
+      it "tracks busy jobs without running extra queries" do
+        Delayable.new.delay(queue: "default").perform
+        Delayable.new.delay(queue: "default").perform
+        Delayed::Worker.new.send(:reserve_job)
+
+        query_counts = [false, true].map { |track_busy_jobs|
+          use_adapter_config :delayed_job, track_busy_jobs: track_busy_jobs do
+            count_queries { DelayedJob::MetricsCollector.new.collect }
+          end
+        }
+
+        _(query_counts[1]).must_equal query_counts[0]
       end
 
       it "excludes busy jobs from latency when tracking busy jobs" do
