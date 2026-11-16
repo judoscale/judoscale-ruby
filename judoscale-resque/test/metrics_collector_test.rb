@@ -5,10 +5,11 @@ require "judoscale/resque/metrics_collector"
 require "securerandom"
 
 module Judoscale
-  ResqueWorkerStub = Struct.new(:job) do
-    def idle?
-      job.nil?
-    end
+  # Stands in for Resque's data store, holding each worker's encoded job payload (nil when idle).
+  ResqueDataStoreStub = Struct.new(:payloads_by_worker) do
+    def worker_ids = payloads_by_worker.keys
+
+    def workers_map(worker_ids) = payloads_by_worker.slice(*worker_ids)
   end
 
   describe Resque::MetricsCollector do
@@ -110,17 +111,17 @@ module Judoscale
           size = 2
           latency = 1.0
 
-          workers = [
-            ResqueWorkerStub.new({"queue" => "default"}),
-            ResqueWorkerStub.new({"queue" => "default"}),
-            ResqueWorkerStub.new({"queue" => "high"}),
-            ResqueWorkerStub.new # idle, shouldn't be tracked
-          ]
+          data_store = ResqueDataStoreStub.new({
+            "host:1:default,high" => ::Resque.encode({"queue" => "default"}),
+            "host:2:default,high" => ::Resque.encode({"queue" => "default"}),
+            "host:3:default,high" => ::Resque.encode({"queue" => "high"}),
+            "host:4:default,high" => nil # idle, shouldn't be tracked
+          })
 
           metrics = ::Resque.stub(:queues, queues) {
             ::Resque.stub(:size, size) {
               ::Resque.stub(:latency, latency) {
-                ::Resque.stub(:working, workers) {
+                ::Resque.stub(:data_store, data_store) {
                   subject.collect
                 }
               }
@@ -143,12 +144,12 @@ module Judoscale
             queues = ["default"]
             size = 2
             latency = 1.0
-            workers = [ResqueWorkerStub.new({"queue" => "default"})]
+            data_store = ResqueDataStoreStub.new({"host:1:default" => ::Resque.encode({"queue" => "default"})})
 
             ::Resque.stub(:queues, queues) {
               ::Resque.stub(:size, size) {
                 ::Resque.stub(:latency, latency) {
-                  ::Resque.stub(:working, workers) {
+                  ::Resque.stub(:data_store, data_store) {
                     subject.collect
                   }
                 }

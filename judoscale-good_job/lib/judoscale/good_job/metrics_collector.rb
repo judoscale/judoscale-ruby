@@ -38,22 +38,34 @@ module Judoscale
           self.queues |= run_silently { @good_job_base_class.distinct.pluck(:queue_name) }
         end
 
-        # logically we don't need the finished_at condition, but it lets postgres use the indexes
-        oldest_execution_time_by_queue = run_silently do
-          @good_job_base_class
-            .where(performed_at: nil, finished_at: nil)
-            .group(:queue_name)
-            .pluck(:queue_name, Arel.sql("min(coalesce(scheduled_at, created_at))"))
-            .to_h
+        if track_busy_jobs?
+          # Read the oldest pending job and the count of running jobs per queue from one scan of unfinished
+          # jobs, which costs the same as the latency query alone. Running means performed but not finished,
+          # matching GoodJob's `running` scope on v3's Execution and v4.2+'s Job (v4.0-4.1 checked advisory locks).
+          rows = run_silently do
+            @good_job_base_class
+              .where(finished_at: nil)
+              .group(:queue_name)
+              .pluck(
+                :queue_name,
+                Arel.sql("min(coalesce(scheduled_at, created_at)) FILTER (WHERE performed_at IS NULL)"),
+                Arel.sql("count(*) FILTER (WHERE performed_at IS NOT NULL)")
+              )
+          end
+          oldest_execution_time_by_queue = rows.each_with_object({}) { |(queue, run_at, _), h| h[queue] = run_at if run_at }
+          busy_count_by_queue = rows.each_with_object({}) { |(queue, _, busy_count), h| h[queue] = busy_count if busy_count > 0 }
+          self.queues |= busy_count_by_queue.keys
+        else
+          # logically we don't need the finished_at condition, but it lets postgres use the indexes
+          oldest_execution_time_by_queue = run_silently do
+            @good_job_base_class
+              .where(performed_at: nil, finished_at: nil)
+              .group(:queue_name)
+              .pluck(:queue_name, Arel.sql("min(coalesce(scheduled_at, created_at))"))
+              .to_h
+          end
         end
         self.queues |= oldest_execution_time_by_queue.keys
-
-        if track_busy_jobs?
-          busy_count_by_queue = run_silently do
-            @good_job_base_class.running.group(:queue_name).count
-          end
-          self.queues |= busy_count_by_queue.keys
-        end
 
         queues.each do |queue|
           run_at = oldest_execution_time_by_queue[queue]

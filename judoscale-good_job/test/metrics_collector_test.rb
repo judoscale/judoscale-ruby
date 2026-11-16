@@ -157,6 +157,25 @@ module Judoscale
         end
       end
 
+      it "excludes busy jobs from latency when tracking busy jobs" do
+        use_adapter_config :good_job, track_busy_jobs: true do
+          # A job that has been running for an hour shouldn't count as waiting in the queue.
+          hour_ago = Time.now.utc - 3600
+          %w[default low].each do |queue|
+            Delayable.set(queue: queue).perform_later
+            ::GoodJob::Job.where(queue_name: queue).update_all(scheduled_at: hour_ago, created_at: hour_ago, performed_at: hour_ago)
+          end
+          Delayable.set(queue: "default").perform_later
+
+          metrics = subject.collect.to_h { |m| [[m.queue_name, m.identifier], m.value] }
+
+          _(metrics[["default", :qt]]).must_be :<, 1000
+          _(metrics[["default", :busy]]).must_equal 1
+          _(metrics[["low", :qt]]).must_equal 0
+          _(metrics[["low", :busy]]).must_equal 1
+        end
+      end
+
       it "logs debug information about busy jobs being collected" do
         use_config log_level: :debug do
           use_adapter_config :good_job, track_busy_jobs: true do
