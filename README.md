@@ -158,7 +158,7 @@ Judoscale.configure do |config|
 
   # Reports the number of active (busy) jobs, so that downscaling can be suppressed while jobs are running.
   # See https://judoscale.com/docs/long-running-jobs/.
-  # Set to false (or set JUDOSCALE_LONG_JOBS=false) to stop reporting busy jobs.
+  # Set to false to stop reporting busy jobs.
   # Note: judoscale-shoryuken does not support reporting busy jobs.
   # Default: true (false for judoscale-shoryuken)
   # config.sidekiq.track_busy_jobs = false
