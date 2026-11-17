@@ -19,15 +19,15 @@ module Judoscale
       _(config.sidekiq.enabled).must_equal true
       _(config.sidekiq.max_queues).must_equal 20
       _(config.sidekiq.queues).must_equal []
-      _(config.sidekiq.track_busy_jobs).must_equal false
+      _(config.sidekiq.track_busy_jobs).must_equal true
 
       Judoscale.configure do |config|
         config.sidekiq.queues = %w[test drive]
-        config.sidekiq.track_busy_jobs = true
+        config.sidekiq.track_busy_jobs = false
       end
 
       _(config.sidekiq.queues).must_equal %w[test drive]
-      _(config.sidekiq.track_busy_jobs).must_equal true
+      _(config.sidekiq.track_busy_jobs).must_equal false
 
       report = ::Judoscale::Report.new(Judoscale.adapters, Judoscale::Config.instance, [])
       _(report.as_json[:config]).must_include(:sidekiq)

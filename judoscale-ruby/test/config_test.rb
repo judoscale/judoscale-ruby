@@ -27,7 +27,7 @@ module Judoscale
           adapter_config = config.public_send(adapter_name)
           _(adapter_config.enabled).must_equal true
           _(adapter_config.max_queues).must_equal 20
-          _(adapter_config.track_busy_jobs).must_equal false
+          _(adapter_config.track_busy_jobs).must_equal true
         end
       end
     end
@@ -300,6 +300,12 @@ module Judoscale
       end
     end
 
+    it "turns off busy job tracking with the legacy ENV var" do
+      use_env "JUDOSCALE_LONG_JOBS" => "false" do
+        _(Config.instance.test_job_config.track_busy_jobs).must_equal false
+      end
+    end
+
     it "allows configuring all options via a block" do
       test_logger = ::Logger.new(StringIO.new)
 
@@ -312,7 +318,7 @@ module Judoscale
         config.max_request_size_bytes = 50_000
         config.report_interval_seconds = 20
         config.test_job_config.max_queues = 100
-        config.test_job_config.track_busy_jobs = true
+        config.test_job_config.track_busy_jobs = false
         config.test_job_config.enabled = false
       end
 
@@ -325,7 +331,7 @@ module Judoscale
       _(config.report_interval_seconds).must_equal 20
       _(config.test_job_config.enabled).must_equal false
       _(config.test_job_config.max_queues).must_equal 100
-      _(config.test_job_config.track_busy_jobs).must_equal true
+      _(config.test_job_config.track_busy_jobs).must_equal false
 
       enabled_adapter_configs = Config.adapter_configs.select(&:enabled).map(&:identifier)
       _(enabled_adapter_configs).must_be :empty?
@@ -363,7 +369,7 @@ module Judoscale
           max_queues: 20,
           queues: [],
           queue_filter: false,
-          track_busy_jobs: false
+          track_busy_jobs: true
         }
       })
     end

@@ -26,7 +26,9 @@ module Judoscale
 
         # Support for deprecated legacy env var configs.
         @max_queues = (ENV["JUDOSCALE_MAX_QUEUES"] || ENV["RAILS_AUTOSCALE_MAX_QUEUES"] || 20).to_i
-        self.track_busy_jobs = (ENV["JUDOSCALE_LONG_JOBS"] || ENV["RAILS_AUTOSCALE_LONG_JOBS"]) == "true"
+        # Busy jobs are tracked by default when the adapter supports it. The env var can turn it off ("false").
+        long_jobs = ENV["JUDOSCALE_LONG_JOBS"] || ENV["RAILS_AUTOSCALE_LONG_JOBS"]
+        self.track_busy_jobs = long_jobs ? long_jobs == "true" : @support_busy_jobs
       end
 
       def track_busy_jobs=(value)

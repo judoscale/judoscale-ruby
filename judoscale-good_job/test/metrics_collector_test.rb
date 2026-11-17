@@ -15,6 +15,9 @@ module Judoscale
   describe GoodJob::MetricsCollector do
     subject { GoodJob::MetricsCollector.new }
 
+    # Busy jobs are tracked by default; tests that cover busy jobs turn it back on.
+    before { Judoscale::Config.instance.good_job.track_busy_jobs = false }
+
     def clear_enqueued_jobs
       ActiveRecord::Base.connection.execute("DELETE FROM good_jobs")
     end

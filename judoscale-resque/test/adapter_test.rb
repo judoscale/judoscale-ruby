@@ -19,15 +19,15 @@ module Judoscale
       _(config.resque.enabled).must_equal true
       _(config.resque.max_queues).must_equal 20
       _(config.resque.queues).must_equal []
-      _(config.resque.track_busy_jobs).must_equal false
+      _(config.resque.track_busy_jobs).must_equal true
 
       Judoscale.configure do |config|
         config.resque.queues = %w[test drive]
-        config.resque.track_busy_jobs = true
+        config.resque.track_busy_jobs = false
       end
 
       _(config.resque.queues).must_equal %w[test drive]
-      _(config.resque.track_busy_jobs).must_equal true
+      _(config.resque.track_busy_jobs).must_equal false
 
       report = ::Judoscale::Report.new(Judoscale.adapters, Judoscale::Config.instance, [])
       _(report.as_json[:config]).must_include(:resque)

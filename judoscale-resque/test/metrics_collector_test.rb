@@ -15,6 +15,9 @@ module Judoscale
   describe Resque::MetricsCollector do
     subject { Resque::MetricsCollector.new }
 
+    # Busy jobs are tracked by default; tests that cover busy jobs turn it back on.
+    before { Judoscale::Config.instance.resque.track_busy_jobs = false }
+
     describe "#collect" do
       after {
         subject.clear_queues

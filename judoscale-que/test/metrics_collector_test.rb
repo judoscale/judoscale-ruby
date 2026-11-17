@@ -31,6 +31,9 @@ module Judoscale
 
     subject { Que::MetricsCollector.new }
 
+    # Busy jobs are tracked by default; tests that cover busy jobs turn it back on.
+    before { Judoscale::Config.instance.que.track_busy_jobs = false }
+
     describe "#collect" do
       after {
         clear_enqueued_jobs
