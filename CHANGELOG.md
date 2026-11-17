@@ -1,6 +1,18 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.15.0](https://github.com/judoscale/judoscale-ruby/compare/v1.14.0...v1.15.0) (2026-11-17)
+
+
+### Features
+
+* report busy jobs by default ([#282](https://github.com/judoscale/judoscale-ruby/issues/282)) ([0246175](https://github.com/judoscale/judoscale-ruby/commit/0246175ca1764529e2059a31fb2ee3ec65f2f27b))
+
+
+### Performance Improvements
+
+* collect busy jobs without extra queries in Delayed Job, GoodJob, and Resque ([#280](https://github.com/judoscale/judoscale-ruby/issues/280)) ([057418e](https://github.com/judoscale/judoscale-ruby/commit/057418e1567dd3bb0ab4fe47c5fd9df49abd8cc6))
+
 ## [1.14.0](https://github.com/judoscale/judoscale-ruby/compare/v1.13.4...v1.14.0) (2026-11-13)
 
 
