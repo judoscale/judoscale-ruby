@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.16.0](https://github.com/judoscale/judoscale-ruby/compare/v1.15.0...v1.16.0) (2026-11-18)
+
+
+### Features
+
+* report how long the longest-running job in each queue has been running ([#283](https://github.com/judoscale/judoscale-ruby/issues/283)) ([34604d4](https://github.com/judoscale/judoscale-ruby/commit/34604d435cfdf9f21354a36f530e7cb5f76614cc))
+
 ## [1.15.0](https://github.com/judoscale/judoscale-ruby/compare/v1.14.0...v1.15.0) (2026-11-17)
 
 
