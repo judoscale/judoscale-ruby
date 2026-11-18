@@ -118,13 +118,10 @@ module Judoscale
 
           metrics = subject.collect
 
-          _(metrics.size).must_equal 4
-          _(metrics[1].value).must_equal 2
-          _(metrics[1].queue_name).must_equal "default"
-          _(metrics[1].identifier).must_equal :busy
-          _(metrics[3].value).must_equal 1
-          _(metrics[3].queue_name).must_equal "high"
-          _(metrics[3].identifier).must_equal :busy
+          metrics = metrics.to_h { |m| [[m.queue_name, m.identifier], m.value] }
+          _(metrics.size).must_equal 6
+          _(metrics[["default", :busy]]).must_equal 2
+          _(metrics[["high", :busy]]).must_equal 1
         end
       end
 
@@ -160,6 +157,31 @@ module Judoscale
         end
       end
 
+      it "reports how long the longest-running job in each queue has been running, ignoring stale locks" do
+        use_adapter_config :delayed_job, track_busy_jobs: true do
+          now = Time.at(Time.now.to_i).utc
+          lock = ->(queue, seconds_ago, worker_name) {
+            Delayable.new.delay(queue: queue).perform
+            Delayed::Job.where(queue: queue, locked_at: nil).limit(1)
+              .update_all(locked_at: now - seconds_ago, locked_by: worker_name)
+          }
+          lock.call("default", 600, "dj_worker_1")
+          lock.call("default", 60, "dj_worker_2")
+          lock.call("low", 30, "dj_worker_3")
+          # A lock older than the max run time was left behind by a dead worker.
+          lock.call("low", Delayed::Worker.max_run_time + 60, "dj_worker_dead")
+          Delayable.new.delay(queue: "high").perform
+
+          metrics = freeze_time(now) { subject.collect }.to_h { |m| [[m.queue_name, m.identifier], m.value] }
+
+          _(metrics[["default", :busy]]).must_equal 2
+          _(metrics[["default", :bt]]).must_equal 600_000
+          _(metrics[["low", :busy]]).must_equal 1
+          _(metrics[["low", :bt]]).must_equal 30_000
+          _(metrics[["high", :bt]]).must_equal 0
+        end
+      end
+
       it "logs debug information about busy jobs being collected" do
         use_config log_level: :debug do
           use_adapter_config :delayed_job, track_busy_jobs: true do
@@ -168,7 +190,7 @@ module Judoscale
 
             subject.collect
 
-            _(log_string).must_match %r{delayed_job-qt.default=.+ delayed_job-busy.default=1}
+            _(log_string).must_match %r{delayed_job-qt.default=.+ delayed_job-busy.default=1 delayed_job-bt.default=\d+ms}
           end
         end
       end

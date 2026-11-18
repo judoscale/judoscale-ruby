@@ -161,10 +161,12 @@ module Judoscale
             metrics = subject.collect
           end
 
-          _(metrics.size).must_equal 2
+          _(metrics.size).must_equal 3
           _(metrics[1].value).must_equal 1
           _(metrics[1].queue_name).must_equal "default"
           _(metrics[1].identifier).must_equal :busy
+          _(metrics[2].queue_name).must_equal "default"
+          _(metrics[2].identifier).must_equal :bt
         end
       end
 
@@ -201,6 +203,28 @@ module Judoscale
         end
       end
 
+      it "reports how long the longest-running job in each queue has been running" do
+        use_adapter_config :good_job, track_busy_jobs: true do
+          now = Time.at(Time.now.to_i).utc
+          {"default" => [600, 60], "low" => [30]}.each do |queue, seconds_ago_list|
+            seconds_ago_list.each do |seconds_ago|
+              Delayable.set(queue: queue).perform_later
+              ::GoodJob::Job.where(queue_name: queue, performed_at: nil).update_all(performed_at: now - seconds_ago)
+            end
+          end
+          # Waiting and finished jobs don't count as running.
+          Delayable.set(queue: "high").perform_later
+          Delayable.set(queue: "high").perform_later
+          ::GoodJob::Job.where(queue_name: "high").limit(1).update_all(performed_at: now - 900, finished_at: now - 800)
+
+          metrics = freeze_time(now) { subject.collect }.to_h { |m| [[m.queue_name, m.identifier], m.value] }
+
+          _(metrics[["default", :bt]]).must_equal 600_000
+          _(metrics[["low", :bt]]).must_equal 30_000
+          _(metrics[["high", :bt]]).must_equal 0
+        end
+      end
+
       it "logs debug information about busy jobs being collected" do
         use_config log_level: :debug do
           use_adapter_config :good_job, track_busy_jobs: true do
@@ -213,7 +237,7 @@ module Judoscale
               subject.collect
             end
 
-            _(log_string).must_match %r{good_job-qt.default=.+ good_job-busy.default=1}
+            _(log_string).must_match %r{good_job-qt.default=.+ good_job-busy.default=1 good_job-bt.default=\d+ms}
           end
         end
       end

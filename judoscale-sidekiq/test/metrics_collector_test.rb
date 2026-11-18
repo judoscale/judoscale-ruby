@@ -89,29 +89,37 @@ module Judoscale
 
       it "tracks busy jobs when the configuration is enabled" do
         use_adapter_config :sidekiq, track_busy_jobs: true do
+          now = Time.at(Time.now.to_i)
           queues = [
             SidekiqQueueStub.new(name: "default", latency: 11, size: 1),
-            SidekiqQueueStub.new(name: "high", latency: 22.222222, size: 2)
+            SidekiqQueueStub.new(name: "high", latency: 22.222222, size: 2),
+            SidekiqQueueStub.new(name: "low", latency: 0, size: 0)
           ]
+          high_work = {"queue" => "high", "run_at" => now.to_i - 5, "payload" => '{"queue":"high"}'}
+          # Sidekiq 7.2+ yields Sidekiq::Work objects instead of hashes
+          high_work = ::Sidekiq::Work.new("pid1", "tid3", high_work) if defined?(::Sidekiq::Work)
           workers = [
-            ["pid1", "tid1", {"payload" => {"queue" => "default"}}],
-            ["pid1", "tid2", {"payload" => {"queue" => "default"}}],
-            ["pid1", "tid3", {"payload" => {"queue" => "high"}}]
+            ["pid1", "tid1", {"run_at" => now.to_i - 10, "payload" => {"queue" => "default"}}],
+            ["pid1", "tid2", {"run_at" => now.to_i - 30, "payload" => {"queue" => "default"}}],
+            ["pid1", "tid3", high_work]
           ]
 
-          metrics = ::Sidekiq::Workers.stub(:new, workers) {
-            ::Sidekiq::Queue.stub(:all, queues) {
-              subject.collect
+          metrics = freeze_time(now) {
+            ::Sidekiq::Workers.stub(:new, workers) {
+              ::Sidekiq::Queue.stub(:all, queues) {
+                subject.collect
+              }
             }
           }
 
-          _(metrics.size).must_equal 6
-          _(metrics[2].value).must_equal 2
-          _(metrics[2].queue_name).must_equal "default"
-          _(metrics[2].identifier).must_equal :busy
-          _(metrics[5].value).must_equal 1
-          _(metrics[5].queue_name).must_equal "high"
-          _(metrics[5].identifier).must_equal :busy
+          metrics = metrics.to_h { |metric| [[metric.queue_name, metric.identifier], metric.value] }
+          _(metrics.size).must_equal 12
+          _(metrics[["default", :busy]]).must_equal 2
+          _(metrics[["default", :bt]]).must_equal 30_000
+          _(metrics[["high", :busy]]).must_equal 1
+          _(metrics[["high", :bt]]).must_equal 5_000
+          _(metrics[["low", :busy]]).must_equal 0
+          _(metrics[["low", :bt]]).must_equal 0
         end
       end
 
@@ -122,7 +130,7 @@ module Judoscale
           ]
           workers = [
             # The payload appears to be a JSON string in Sidekiq 7
-            ["pid1", "tid1", {"payload" => '{"queue":"default"}'}]
+            ["pid1", "tid1", {"run_at" => Time.now.to_i, "payload" => '{"queue":"default"}'}]
           ]
 
           metrics = ::Sidekiq::Workers.stub(:new, workers) {
@@ -131,7 +139,7 @@ module Judoscale
             }
           }
 
-          _(metrics.size).must_equal 3
+          _(metrics.size).must_equal 4
           _(metrics[2].value).must_equal 1
           _(metrics[2].queue_name).must_equal "default"
           _(metrics[2].identifier).must_equal :busy
@@ -142,7 +150,7 @@ module Judoscale
         use_config log_level: :debug do
           use_adapter_config :sidekiq, track_busy_jobs: true do
             queues = [SidekiqQueueStub.new(name: "default", latency: 11, size: 1)]
-            workers = [["pid1", "tid1", {"payload" => {"queue" => "default"}}]]
+            workers = [["pid1", "tid1", {"run_at" => Time.now.to_i - 2, "payload" => {"queue" => "default"}}]]
 
             ::Sidekiq::Workers.stub(:new, workers) {
               ::Sidekiq::Queue.stub(:all, queues) {
@@ -150,7 +158,7 @@ module Judoscale
               }
             }
 
-            _(log_string).must_match %r{sidekiq-qt.default=.+ sidekiq-qd.default=.+ sidekiq-busy.default=1}
+            _(log_string).must_match %r{sidekiq-qt.default=.+ sidekiq-qd.default=.+ sidekiq-busy.default=1 sidekiq-bt.default=\d+ms}
           end
         end
       end

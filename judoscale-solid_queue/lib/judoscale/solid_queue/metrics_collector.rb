@@ -41,9 +41,12 @@ module Judoscale
         self.queues |= oldest_execution_time_by_queue.keys
 
         if track_busy_jobs?
-          busy_count_by_queue = run_silently do
-            ::SolidQueue::Job.joins(:claimed_execution).group(:queue_name).count
+          busy_rows = run_silently do
+            ::SolidQueue::Job.joins(:claimed_execution).group(:queue_name)
+              .pluck(:queue_name, Arel.star.count, ::SolidQueue::ClaimedExecution.arel_table[:created_at].minimum)
           end
+          busy_count_by_queue = busy_rows.to_h { |queue, busy_count, _| [queue, busy_count] }
+          oldest_claimed_at_by_queue = busy_rows.to_h { |queue, _, claimed_at| [queue, claimed_at] }
           self.queues |= busy_count_by_queue.keys
         end
 
@@ -57,6 +60,11 @@ module Judoscale
           if track_busy_jobs?
             busy_count = busy_count_by_queue[queue] || 0
             metrics.push Metric.new(:busy, busy_count, time, queue)
+
+            claimed_at = oldest_claimed_at_by_queue[queue]
+            busy_time_ms = claimed_at ? ((time - claimed_at) * 1000).ceil : 0
+            busy_time_ms = 0 if busy_time_ms < 0
+            metrics.push Metric.new(:bt, busy_time_ms, time, queue)
           end
         end
 

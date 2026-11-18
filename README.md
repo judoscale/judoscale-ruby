@@ -100,15 +100,17 @@ Judoscale aggregates and stores this information to power the autoscaler algorit
 
 ### What data is collected for each worker adapter?
 
-| adapter               | queue time | queue depth | busy              |
-| --------------------- | ---------- | ----------- | ----------------- |
-| judoscale-sidekiq     | ✅         | ✅          | ✅                |
-| judoscale-solid_queue | ✅         | ❌          | ✅                |
-| judoscale-resque      | ✅         | ✅          | ✅                |
-| judoscale-delayed_job | ✅         | ❌          | ✅                |
-| judoscale-good_job    | ✅         | ❌          | ✅                |
-| judoscale-que         | ✅         | ❌          | ✅                |
-| judoscale-shoryuken   | ❌         | ✅          | ❌                |
+| adapter               | queue time | queue depth | busy              | busy time         |
+| --------------------- | ---------- | ----------- | ----------------- | ----------------- |
+| judoscale-sidekiq     | ✅         | ✅          | ✅                | ✅                |
+| judoscale-solid_queue | ✅         | ❌          | ✅                | ✅                |
+| judoscale-resque      | ✅         | ✅          | ✅                | ✅                |
+| judoscale-delayed_job | ✅         | ❌          | ✅                | ✅                |
+| judoscale-good_job    | ✅         | ❌          | ✅                | ✅                |
+| judoscale-que         | ✅         | ❌          | ✅                | ❌                |
+| judoscale-shoryuken   | ❌         | ✅          | ❌                | ❌                |
+
+Busy time is how long the longest-running job in each queue has been running. It's reported along with busy jobs.
 
 ## Migrating from `rails_autoscale_agent`
 
@@ -156,7 +158,8 @@ Judoscale.configure do |config|
   # Default: (queues that look like a UUID are rejected)
   # config.sidekiq.queue_filter = ->(queue_name) { /custom/.match?(queue_name) }
 
-  # Reports the number of active (busy) jobs, so that downscaling can be suppressed while jobs are running.
+  # Reports the number of active (busy) jobs and how long the longest one has been running, so that downscaling
+  # can be suppressed while jobs are running.
   # See https://judoscale.com/docs/long-running-jobs/.
   # Set to false to stop reporting busy jobs.
   # Note: judoscale-shoryuken does not support reporting busy jobs.

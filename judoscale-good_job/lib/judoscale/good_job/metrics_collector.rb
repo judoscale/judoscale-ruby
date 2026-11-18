@@ -38,8 +38,8 @@ module Judoscale
           self.queues |= run_silently { @good_job_base_class.distinct.pluck(:queue_name) }
         end
 
-        # Read the oldest pending job and the count of running jobs per queue in one scan of unfinished jobs, so
-        # busy job tracking adds no queries. Running means performed but not finished, matching GoodJob's
+        # Read the oldest pending job and the count and oldest start of running jobs per queue in one scan of
+        # unfinished jobs, so busy job tracking adds no queries. Running means performed but not finished, matching GoodJob's
         # `running` scope on v3's Execution and v4.2+'s Job (v4.0-4.1 checked advisory locks).
         # The finished_at condition lets postgres use the indexes.
         rows = run_silently do
@@ -49,11 +49,13 @@ module Judoscale
             .pluck(
               :queue_name,
               Arel.sql("min(coalesce(scheduled_at, created_at)) FILTER (WHERE performed_at IS NULL)"),
-              Arel.sql("count(*) FILTER (WHERE performed_at IS NOT NULL)")
+              Arel.sql("count(*) FILTER (WHERE performed_at IS NOT NULL)"),
+              Arel.sql("min(performed_at)")
             )
         end
-        oldest_execution_time_by_queue = rows.to_h { |queue, run_at, _| [queue, run_at] }
-        busy_count_by_queue = rows.to_h { |queue, _, busy_count| [queue, busy_count] }
+        oldest_execution_time_by_queue = rows.to_h { |queue, run_at, _, _| [queue, run_at] }
+        busy_count_by_queue = rows.to_h { |queue, _, busy_count, _| [queue, busy_count] }
+        oldest_performed_at_by_queue = rows.to_h { |queue, _, _, performed_at| [queue, performed_at] }
         self.queues |= rows.map(&:first)
 
         queues.each do |queue|
@@ -68,6 +70,12 @@ module Judoscale
           if track_busy_jobs?
             busy_count = busy_count_by_queue[queue] || 0
             metrics.push Metric.new(:busy, busy_count, time, queue)
+
+            performed_at = oldest_performed_at_by_queue[queue]
+            performed_at = DateTime.parse(performed_at) if performed_at.is_a?(String)
+            busy_time_ms = performed_at ? ((time - performed_at) * 1000).ceil : 0
+            busy_time_ms = 0 if busy_time_ms < 0
+            metrics.push Metric.new(:bt, busy_time_ms, time, queue)
           end
         end
 
