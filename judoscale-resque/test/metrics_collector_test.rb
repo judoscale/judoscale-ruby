@@ -5,10 +5,10 @@ require "judoscale/resque/metrics_collector"
 require "securerandom"
 
 module Judoscale
-  ResqueWorkerStub = Struct.new(:queue) do
+  ResqueWorkerStub = Struct.new(:queue, :run_at) do
     def job(reload = true)
       raise "the collector should reuse the job Resque.working loaded" if reload
-      {"queue" => queue}
+      {"queue" => queue, "run_at" => (run_at || Time.now).utc.iso8601}
     end
   end
 
@@ -110,33 +110,37 @@ module Judoscale
 
       it "tracks busy jobs when the configuration is enabled" do
         use_adapter_config :resque, track_busy_jobs: true do
-          queues = ["default", "high"]
+          now = Time.at(Time.now.to_i)
+          queues = ["default", "high", "low"]
           size = 2
           latency = 1.0
 
           workers = [
-            ResqueWorkerStub.new("default"),
-            ResqueWorkerStub.new("default"),
-            ResqueWorkerStub.new("high")
+            ResqueWorkerStub.new("default", now - 10),
+            ResqueWorkerStub.new("default", now - 30),
+            ResqueWorkerStub.new("high", now - 5)
           ]
 
-          metrics = ::Resque.stub(:queues, queues) {
-            ::Resque.stub(:size, size) {
-              ::Resque.stub(:latency, latency) {
-                ::Resque.stub(:working, workers) {
-                  subject.collect
+          metrics = freeze_time(now) {
+            ::Resque.stub(:queues, queues) {
+              ::Resque.stub(:size, size) {
+                ::Resque.stub(:latency, latency) {
+                  ::Resque.stub(:working, workers) {
+                    subject.collect
+                  }
                 }
               }
             }
           }
 
-          _(metrics.size).must_equal 6
-          _(metrics[2].value).must_equal 2
-          _(metrics[2].queue_name).must_equal "default"
-          _(metrics[2].identifier).must_equal :busy
-          _(metrics[5].value).must_equal 1
-          _(metrics[5].queue_name).must_equal "high"
-          _(metrics[5].identifier).must_equal :busy
+          metrics = metrics.to_h { |metric| [[metric.queue_name, metric.identifier], metric.value] }
+          _(metrics.size).must_equal 12
+          _(metrics[["default", :busy]]).must_equal 2
+          _(metrics[["default", :bt]]).must_equal 30_000
+          _(metrics[["high", :busy]]).must_equal 1
+          _(metrics[["high", :bt]]).must_equal 5_000
+          _(metrics[["low", :busy]]).must_equal 0
+          _(metrics[["low", :bt]]).must_equal 0
         end
       end
 
@@ -158,7 +162,7 @@ module Judoscale
               }
             }
 
-            _(log_string).must_match %r{resque-qd.default=2 resque-qt.default=1000ms resque-busy.default=1}
+            _(log_string).must_match %r{resque-qd.default=2 resque-qt.default=1000ms resque-busy.default=1 resque-bt.default=\d+ms}
           end
         end
       end
