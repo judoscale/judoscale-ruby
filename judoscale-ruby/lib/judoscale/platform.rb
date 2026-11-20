@@ -59,12 +59,12 @@ module Judoscale
       end
     end
 
-    # Heroku dynos are named "web.2". We collect job metrics from a single
-    # container per process type, so any instance beyond the first is redundant —
+    # Heroku dynos are named "web.2" or "worker_5s.2". We collect job metrics from
+    # a single container per process type, so any instance beyond the first is redundant —
     # it would only duplicate the queue metrics the first instance already reports.
     class Heroku < Platform
       def redundant_instance?
-        match = container.match(/\A[a-z_]+\.(\d+)\z/)
+        match = container.match(/\A[\w-]+\.(\d+)\z/)
         match ? match[1].to_i > 1 : false
       end
 
@@ -78,7 +78,7 @@ module Judoscale
     # Scalingo containers are named "web-2", same redundancy rule as Heroku.
     class Scalingo < Platform
       def redundant_instance?
-        match = container.match(/\A[a-z_]+-(\d+)\z/)
+        match = container.match(/\A[\w-]+-(\d+)\z/)
         match ? match[1].to_i > 1 : false
       end
 

@@ -199,6 +199,11 @@ module Judoscale
         _(Platform::Scalingo.new("web-2").redundant_instance?).must_equal true
         _(Platform::Heroku.new("web.1000").redundant_instance?).must_equal true
         _(Platform::Scalingo.new("worker-1024").redundant_instance?).must_equal true
+        _(Platform::Heroku.new("worker_5s.1").redundant_instance?).must_equal false
+        _(Platform::Heroku.new("worker_5s.2").redundant_instance?).must_equal true
+        _(Platform::Heroku.new("worker2.3").redundant_instance?).must_equal true
+        _(Platform::Scalingo.new("worker_5s-1").redundant_instance?).must_equal false
+        _(Platform::Scalingo.new("worker2-3").redundant_instance?).must_equal true
       end
 
       it "never treats opaque-id platforms as redundant" do
