@@ -59,17 +59,19 @@ module Judoscale
       end
 
       it "sends a report with collected metrics in the reporter thread loop" do
-        web_metrics = Test::TestWebMetricsCollector.new.collect
-        job_metrics = Test::TestJobMetricsCollector.new.collect
-        all_metrics = web_metrics + job_metrics
+        freeze_time do
+          web_metrics = Test::TestWebMetricsCollector.new.collect
+          job_metrics = Test::TestJobMetricsCollector.new.collect
+          all_metrics = web_metrics + job_metrics
 
-        expected_body = Report.new(Judoscale.adapters, Config.instance, all_metrics).as_json
-        stub = stub_request(:post, "http://example.com/api/test-token/v3/reports")
-          .with(body: JSON.generate(expected_body))
+          expected_body = Report.new(Judoscale.adapters, Config.instance, all_metrics).as_json
+          stub = stub_request(:post, "http://example.com/api/test-token/v3/reports")
+            .with(body: JSON.generate(expected_body))
 
-        run_reporter_start_thread
+          run_reporter_start_thread
 
-        assert_requested stub
+          assert_requested stub
+        end
       end
 
       it "initializes the reporter with all registered web and job metrics collectors when on the first runtime container" do
@@ -175,17 +177,19 @@ module Judoscale
 
     describe "#run_metrics_collection" do
       it "collects and report metrics to the API" do
-        web_metrics_collector = Test::TestWebMetricsCollector.new
-        job_metrics_collector = Test::TestJobMetricsCollector.new
-        all_metrics = web_metrics_collector.collect + job_metrics_collector.collect
+        freeze_time do
+          web_metrics_collector = Test::TestWebMetricsCollector.new
+          job_metrics_collector = Test::TestJobMetricsCollector.new
+          all_metrics = web_metrics_collector.collect + job_metrics_collector.collect
 
-        expected_body = Report.new(Judoscale.adapters, Config.instance, all_metrics).as_json
-        stub = stub_request(:post, "http://example.com/api/test-token/v3/reports")
-          .with(body: JSON.generate(expected_body))
+          expected_body = Report.new(Judoscale.adapters, Config.instance, all_metrics).as_json
+          stub = stub_request(:post, "http://example.com/api/test-token/v3/reports")
+            .with(body: JSON.generate(expected_body))
 
-        Reporter.instance.run_metrics_collection Config.instance, [web_metrics_collector, job_metrics_collector]
+          Reporter.instance.run_metrics_collection Config.instance, [web_metrics_collector, job_metrics_collector]
 
-        assert_requested stub
+          assert_requested stub
+        end
       end
 
       it "logs reporting failures" do
@@ -209,21 +213,23 @@ module Judoscale
       end
 
       it "logs exceptions when collecting information, while still reporting other metrics successfully" do
-        web_metrics_collector = Test::TestWebMetricsCollector.new
-        job_metrics_collector = Test::TestJobMetricsCollector.new
-        web_metrics = web_metrics_collector.collect
+        freeze_time do
+          web_metrics_collector = Test::TestWebMetricsCollector.new
+          job_metrics_collector = Test::TestJobMetricsCollector.new
+          web_metrics = web_metrics_collector.collect
 
-        expected_body = Report.new(Judoscale.adapters, Config.instance, web_metrics).as_json
-        stub = stub_request(:post, "http://example.com/api/test-token/v3/reports")
-          .with(body: JSON.generate(expected_body))
+          expected_body = Report.new(Judoscale.adapters, Config.instance, web_metrics).as_json
+          stub = stub_request(:post, "http://example.com/api/test-token/v3/reports")
+            .with(body: JSON.generate(expected_body))
 
-        job_metrics_collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
-          Reporter.instance.run_metrics_collection(Config.instance, [web_metrics_collector, job_metrics_collector])
-        }
+          job_metrics_collector.stub(:collect, ->(*) { raise "ADAPTER BOOM!" }) {
+            Reporter.instance.run_metrics_collection(Config.instance, [web_metrics_collector, job_metrics_collector])
+          }
 
-        _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
-        _(log_string).must_include "lib/judoscale/reporter.rb"
-        assert_requested stub
+          _(log_string).must_include "Reporter error: #<RuntimeError: ADAPTER BOOM!>"
+          _(log_string).must_include "lib/judoscale/reporter.rb"
+          assert_requested stub
+        end
       end
     end
   end
