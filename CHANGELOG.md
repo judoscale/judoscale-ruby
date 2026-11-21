@@ -1,6 +1,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.16.1](https://github.com/judoscale/judoscale-ruby/compare/v1.16.0...v1.16.1) (2026-11-20)
+
+
+### Bug Fixes
+
+* treat Heroku and Scalingo instances with digits in the process type as redundant ([#286](https://github.com/judoscale/judoscale-ruby/issues/286)) ([f26b9ea](https://github.com/judoscale/judoscale-ruby/commit/f26b9ea58ea70a7f7c306c3b7c381b465e1f7ce6))
+
 ## [1.16.0](https://github.com/judoscale/judoscale-ruby/compare/v1.15.0...v1.16.0) (2026-11-18)
 
 
